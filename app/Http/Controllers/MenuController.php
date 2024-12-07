@@ -1,0 +1,181 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Menu;
+use Illuminate\Support\Facades\View;
+use App\Http\Requests\StoreMenuRequest;
+use App\Http\Requests\UpdateMenuRequest;
+use App\Models\Language;
+
+class MenuController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $menus = Menu::get();
+        // $languages = Language::all();
+        // foreach($languages as $language){
+        //     if($language->default){
+        //         \App::setLocale($language->code);
+        //     }
+        // }
+
+        return view('admin.menu.index', compact('menus'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $menus = Menu::orderBy('order')->get();
+
+        return view('admin.menu.create', compact('menus'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreMenuRequest $request)
+    {
+        // if($request->input('lang')){
+        //     \App::setLocale($request->input('lang'));
+        // }
+        // dd($request->input('lang'));
+        // dd($request->all());
+        $order = $request->input('order');
+        if(!is_null($order)){
+            $order += 0.5;
+            // dd($order);
+            $menus = Menu::orderBy('order')->get();
+            $tmpMenus = ['new' => $order];
+            foreach($menus as $item){
+                // if($item->id === $menu->id){
+                //     $item->order = $order;
+                // }
+                $tmpMenus[$item->id] = $item->order;
+            }
+            asort($tmpMenus);
+            // dd($tmpMenus);
+            $tmpMenus2 = [];
+            foreach($tmpMenus as $key => $value){
+                if($value > $order){
+                    $value++;
+                }
+                if( $value === $order){
+                    $tmpMenus2[$key] = (int) ($value + 0.5);
+                }else{
+                    $tmpMenus2[$key] = $value;
+                }
+            }
+            // dd($tmpMenus2);
+            $tmpMenus = [];
+            $i = 1;
+            foreach($tmpMenus2 as $key => $value){
+                $tmpMenus[$key] = $i++;
+            }
+            foreach($tmpMenus as $key => $value){
+                if($key === 'new'){
+                    // $menu ?= new Menu;
+                    // $menu->name = $request->input('name');
+                    // $menu-
+                    Menu::create([
+                        'name' => $request->input('name'),
+                        'link' => \Str::slug($request->input('link')),
+                        'parent_id' => $request->input('parent_id'),
+                        'order' => $value
+                    ]);
+                }else{
+                    $tmpMenu = Menu::find($key);
+                    $tmpMenu->order = $value;
+                    $tmpMenu->save();
+                }
+            }
+        }
+        
+        return redirect()->route('admin.menus.index');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Menu $menu)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Menu $menu)
+    {
+        $menus = Menu::orderBy('order')->get();
+
+        return view('admin.menu.edit', compact('menus', 'menu'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateMenuRequest $request, Menu $menu)
+    {
+        // if($request->input('lang')){
+        //     \App::setLocale($request->input('lang'));
+        // }
+        // dd($request->all());
+        $order = $request->input('order');
+        if(!is_null($order)){
+            $order += 0.5;
+            // dd($order);
+            $menus = Menu::orderBy('order')->get();
+            $tmpMenus = [];
+            foreach($menus as $item){
+                if($item->id === $menu->id){
+                    $item->order = $order;
+                }
+                $tmpMenus[$item->id] = $item->order;
+            }
+            asort($tmpMenus);
+            $tmpMenus2 = [];
+            foreach($tmpMenus as $key => $value){
+                if($value > $order){
+                    $value++;
+                }
+                if( $value === $order){
+                    $tmpMenus2[$key] = (int) ($value + 0.5);
+                }else{
+                    $tmpMenus2[$key] = $value;
+                }
+            }
+            $tmpMenus = [];
+            $i = 1;
+            foreach($tmpMenus2 as $key => $value){
+                $tmpMenus[$key] = $i++;
+            }
+            foreach($tmpMenus as $key => $value){
+                $tmpMenu = Menu::find($key);
+                $tmpMenu->order = $value;
+                $tmpMenu->save();
+            }
+        }
+        $menu->name = $request->input('name');
+        $menu->link = $request->input('link');
+        $menu->parent_id = $request->input('parent_id');
+        $menu->save();
+        
+        return redirect()->back();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Menu $menu)
+    {
+        $menu->delete();
+
+        return redirect()->back();
+    }
+}
