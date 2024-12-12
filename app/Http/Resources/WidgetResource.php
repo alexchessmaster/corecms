@@ -14,6 +14,7 @@ class WidgetResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this->fieldValues);
         // return parent::toArray($request);
         return [
             "id" => $this->id,
@@ -25,7 +26,8 @@ class WidgetResource extends JsonResource
             "active" => $this->active,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
-            "fields" => FieldResource::collection($this->fields),
+            "fields" => $this->relationLoaded('fields') ? FieldResource::collection($this->fields) : null,
+            "fieldValues" => $this->relationLoaded('fieldValues') ? FieldValueResource::collection($this->fieldValues) : null,
         ];
     }
 }

@@ -19,4 +19,9 @@ class Page extends Model
                     ->withPivot('position')
                     ->withTimestamps();
     }
+
+    public function pageWidgets()
+    {
+        return $this->hasMany(PageWidget::class);
+    }
 }

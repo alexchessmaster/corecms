@@ -18,4 +18,11 @@ class Field extends Model
         return $this->belongsTo(Widget::class);
     }
 
+    /**
+     * Get the values for this field.
+     */
+    public function values()
+    {
+        return $this->hasMany(FieldValue::class);
+    }
 }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\WidgetResource;
 use App\Models\Page;
 use App\Models\Widget;
+use App\Models\PageWidget;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\WidgetResource;
 
 class WidgetController extends Controller
 {
@@ -84,14 +85,8 @@ class WidgetController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Page not found']);
         }
 
-        // Get the widget at the given position
-        $widget = $page->widgets()->wherePivot('position', $positionId)->first();
-        if (! $widget) {
-            return response()->json(['status' => 'error', 'message' => 'No widget found at the given position']);
-        }
-
         // Detach the widget from the page
-        $page->widgets()->detach($widget->id);
+        $widget = $page->widgets()->wherePivot('position', $positionId)->detach();
 
         // After detaching, reorganize the positions of the remaining widgets
         $widgets = $page->widgets()->orderBy('position', 'asc')->get();

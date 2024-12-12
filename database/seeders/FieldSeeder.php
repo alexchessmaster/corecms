@@ -15,40 +15,33 @@ class FieldSeeder extends Seeder
     public function run(): void
     {
         $field = new Field;
-        $field->widget_id = 1;
+        $field->widget_id = 5;
         $field->type = 'text';
-        $field->setTranslations('value', [
-            'en' => 'hello',
-            'da' => 'hej',
-        ]);
         $field->user_note = 'hello text';
         $field->save();
         
         $field = new Field;
-        $field->widget_id = 2;
+        $field->widget_id = 6;
         $field->type = 'text';
-        $field->setTranslations('value', [
-            'en' => 'Bye',
-            'da' => 'Farvel',
-        ]);
+        $field->user_note = 'hi text';
         $field->save();
 
         $field = new Field;
-        $field->widget_id = 1;
-        $field->type = 'color';
-        $field->setTranslations('value', [
-            'en' => '#00ff00',
-            'da' => '#00ff00',
-        ]);
+        $field->widget_id = 6;
+        $field->type = 'text';
+        $field->user_note = 'bye text';
         $field->save();
 
-        $field = new Field;
-        $field->widget_id = 3;
-        $field->type = 'select_option';
-        $field->setTranslations('value', [
-            'en' => 'left,center,right',
-            'da' => 'left,center,right',
-        ]);
-        $field->save();
+        // $field = new Field;
+        // $field->widget_id = 5;
+        // $field->type = 'color';
+        // $field->user_note = 'bg color';
+        // $field->save();
+
+        // $field = new Field;
+        // $field->widget_id = 6;
+        // $field->type = 'select_option';
+        // $field->user_note = 'position';
+        // $field->save();
     }
 }

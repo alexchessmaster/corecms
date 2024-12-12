@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FieldResource extends JsonResource
+class PageWidgetResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,16 +15,14 @@ class FieldResource extends JsonResource
     public function toArray(Request $request): array
     {
         // return parent::toArray($request);
-        return [
+        $data = [
             "id" => $this->id,
+            "page_id" => $this->page_id,
             "widget_id" => $this->widget_id,
-            // "key" => $this->key,
-            // "value" => FieldValueResource::collection($this->values),
-            "type" => $this->type,
-            // "order" => $this->order,
-            "user_note" => $this->user_note,
-            "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at,
+            "position" => $this->position,
+            "fieldValues" => FieldValueResource::collection($this->fieldValues),
         ];
+
+        return $data;
     }
 }

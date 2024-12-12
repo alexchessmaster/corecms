@@ -17,6 +17,8 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\Auth;
 
+use function Pest\Laravel\json;
+
 class ContentController extends Controller
 {
     public function fetchContent()
@@ -63,6 +65,11 @@ class ContentController extends Controller
             }
             app()->setLocale($lang);
         }
+
+        // return response()->json(Page::with([
+        //     'widgets' => fn($query) => $query->orderBy('page_widget.position'),
+        //     "widgets.fields"
+        // ])->where('slug->' . app()->getLocale(), $path)->first());
 
         $settings = Setting::all();
         $languages = Language::all();

@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Page;
+use App\Models\Widget;
+use App\Models\PageWidget;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\WidgetResource;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
@@ -16,11 +20,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('admin', function(){
+Route::get('admin', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified']);
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [/*AdminMiddleware::class,*/ LanguageAdminMiddleware::class]], function(){
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [/*AdminMiddleware::class,*/LanguageAdminMiddleware::class]], function () {
     Route::resource('menus', MenuController::class);
     Route::resource('upload', UploadController::class);
     Route::resource('settings', SettingController::class);
@@ -30,10 +34,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [/*AdminMid
     Route::resource('fields', FieldController::class);
     Route::resource('users', UserController::class);
 
-    Route::post('user-locale', function(){
+    Route::post('user-locale', function () {
         session(['lang' => request()->lang]);
         App::setLocale(request()->lang);
-        
+
         return redirect()->back();
     })->name('user-locale');
 });
@@ -48,4 +52,53 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+// TODO: get the fields value here first
+Route::get('test', function () {
+    // $page = Page::find(1);
+
+    $pageId = 1;
+    // $widgetId = 5;
+    $position = 1;
+
+    $page = Page::find($pageId);
+    dd($page->pageWidgets[0]->fieldValues);
+    $widget = $page->widgets[0];//Widget::find(5); //
+    dd($widget->fieldValues);
+
+    // $pageWidget = PageWidget::where('page_id', $pageId)->where('widget_id', $widgetId)->where('position', $position)->first();
+    // $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $position)->first();
+
+    // // dd($pageWidget);
+    // dd($pageWidget->fieldValues);
+
+    $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $position)->first();
+
+    $fieldValues = $pageWidget->fieldValues;
+
+    dd($fieldValues);
+
+    $widgetId = $pageWidget->widget_id;
+
+    // $widget = Widget::find($widgetId);
+
+
+    // $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $position)->first();
+
+    // $fieldValues = $pageWidget->fieldValues;
+
+    // $widgetId = $pageWidget->widget_id;
+
+    $widget = Widget::with('fields.values')->find($widgetId);
+
+    // dd($widget->fields[0]);
+    // $widget = Widget::find($widgetId);
+
+    // dd(new WidgetResource($widget));
+    // $field = $widget->fields[0];
+
+    $widget = new WidgetResource($widget);
+
+    return view('welcome', compact('widget'));
+});
+
+require __DIR__ . '/auth.php';

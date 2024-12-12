@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Page;
 use App\Models\Field;
+use App\Models\FieldValue;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,7 +26,12 @@ class Widget extends Model
 
     public function fields()
     {
-        return $this->hasMany(Field::class);
+        return $this->hasMany(Field::class);//??? // TODO: belongsToMany ?
+    }
+
+    public function fieldValues()
+    {
+        return $this->hasMany(FieldValue::class, 'page_widget_id');
     }
 
     public function pages()

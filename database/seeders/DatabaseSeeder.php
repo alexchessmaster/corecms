@@ -32,5 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call(WidgetSeeder::class);
 
         $this->call(FieldSeeder::class);
+
+        $this->call(FieldValueSeeder::class);
     }
 }

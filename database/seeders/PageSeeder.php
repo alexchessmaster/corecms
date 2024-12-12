@@ -20,8 +20,8 @@ class PageSeeder extends Seeder
             'en' => 'Front Page'
         ]);
         $page->setTranslations('slug', [
-            'da' => Str::slug('/'),
-            'en' => Str::slug('/')
+            'da' => '/' . Str::slug('/'),
+            'en' => '/' . Str::slug('/')
         ]);
         $page->save();
 

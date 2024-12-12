@@ -53,6 +53,28 @@
         }
     </style>
 
+    <div class="modal fade" id="widgetEditModal" tabindex="-1" role="dialog" aria-labelledby="widgetEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="widgetEditModalLabel">Fields</h5>
+                    <button type="button" class="close" id="edit-fieldValue-close-btn-x" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id>
+                    <form action="" id="edit-fieldValue-form">
+                        <div id="field-edit-container"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="edit-fieldValue-close-btn">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="edit-fieldValue-save-btn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Widget Box -->
     <div class="modal fade" id="widgetModal" tabindex="-1" role="dialog" aria-labelledby="widgetModalLabel"
         aria-hidden="true">
@@ -117,8 +139,6 @@
             });
         });
 
-        // const widgetList = [];
-
         // Handle the Confirm button click
         document.getElementById('confirmSelection').addEventListener('click', function() {
             const selectedOption = document.querySelector('.widget-option.selected');
@@ -151,6 +171,60 @@
             }
         });
 
+        const createHiddenInformationInput = (pageId, widgetPosition) => {
+            const divEl = document.createElement('div');
+            divEl.classList.add('col-md-12');
+            
+            const pageIdInputEl = document.createElement('input');
+            pageIdInputEl.name = 'page-id';
+            // pageIdInputEl.type = 'hidden';
+            pageIdInputEl.value = pageId;
+
+            const widgetPositionInputEl = document.createElement('input');
+            widgetPositionInputEl.name = 'widget-position';
+            // widgetPositionInputEl.type = 'hidden';
+            widgetPositionInputEl.value = widgetPosition;
+
+            const languageInputEl = document.createElement('input');
+            languageInputEl.name = 'language';
+            // languageInputEl.type = 'hidden';
+            languageInputEl.value = currentLanguage;
+
+            divEl.appendChild(pageIdInputEl);
+            divEl.appendChild(widgetPositionInputEl);
+            divEl.appendChild(languageInputEl);
+
+            document.getElementById('field-edit-container').appendChild(divEl);
+        };
+        
+        const createTextInput = (item) => {
+            const divEl = document.createElement('div');
+            divEl.classList.add('col-md-12');
+
+            const labelEl = document.createElement('label');
+            labelEl.textContent = item.user_note;
+            labelEl.classList.add('form-label');
+            console.log('itiiiiiiiiiiiiiiiiiiiie', item)
+            const inputEl = document.createElement('input');
+            inputEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
+            // inputEl.id = 'id-' + item.id;
+            inputEl.classList.add('form-control');
+            inputEl.value = item?.vf?.value;
+
+            // I can get the value from FieldValueController here
+
+            divEl.appendChild(labelEl);
+            divEl.appendChild(inputEl);
+
+            document.getElementById('field-edit-container').appendChild(divEl);
+
+            // <div class="mb-3">
+            //     <label for="name" class="form-label">Name</label>
+            //     <input type="text" name="name" id="name" class="form-control"
+            //         value="{{ old('name', $widget->name ?? '') }}" required>
+            // </div>
+        };
+
         
         const widgetContainer = document.getElementById('widgets-container');
         const createWidget = widget => {
@@ -181,6 +255,8 @@
             // Create the Edit button with an icon
             const editBtn = document.createElement('button');
             editBtn.classList.add('btn', 'btn-primary', 'mr-2'); // Styling button
+            editBtn.setAttribute('data-toggle', 'modal');
+            editBtn.setAttribute('data-target', '#widgetEditModal');
             editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit'; // FontAwesome edit icon
 
             // Create the Delete button with an icon
@@ -202,9 +278,68 @@
             widgetContainer.appendChild(divEl);
 
             // Add event listeners for the buttons (example: log actions)
-            editBtn.addEventListener('click', () => {
-                console.log('Edit button clicked for widget ID:', widget.pivot.position);
+            editBtn.addEventListener('click', async () => {
+                emptyFieldEditContainer();
+                // console.log('widget dsjfkj3j3fj3j',widget)
+                const widgetPosition = widget.pivot.position;
+                const pageId = '{!! $page->id !!}';
                 // Add your edit functionality here
+                // get widget fields
+                // TODO: we should go to the fieldValue here: not widget
+                let allFields = await fetch(`/api/widgets/${widget.id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        return data.fields
+                        // .forEach(item => {
+                        //     console.log('item', item)
+                        // })
+                    });
+
+                console.log('allFields', allFields)
+                
+                let allFieldValues = await fetch(`/api/pages/${pageId}/widget-position/${widgetPosition}/field-values/${currentLanguage}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        // console.log('dataaaaa', data);
+                        return data.fieldValues;
+                        // data.fieldValues.forEach(item => {
+                        //     createHiddenInformationInput(pageId, widgetPosition);
+                        //     switch(item.field.type){
+                        //         case 'text':                                    
+                        //             createTextInput(item);
+                        //             break;
+                        //     }
+                        // })
+                    });
+
+                console.log('allFieldValues', allFieldValues)
+
+                let allFieldsWithValues = [];
+                allFields.forEach(field => {
+                    allFieldValues.forEach((fieldValue) => {
+                        if(field.id === fieldValue.field_id) {
+                            // console.log('field', field)
+                            const exists = allFieldsWithValues.some(item => item.id === field.id);
+                            if(!exists) {
+                                field.vf = fieldValue
+                                // TODO: we should take care of repeated data  
+                            }
+                        }
+                    })
+                    allFieldsWithValues.push(field)
+                });
+
+                createHiddenInformationInput(pageId, widgetPosition);
+                allFieldsWithValues.forEach((item, index) => {
+                    // console.log('itemmmm', item)
+                    switch(item.type){
+                        case 'text':
+                            createTextInput(item);
+                            break;
+                    }
+                });
+
+                console.log('allFieldsWithValues', allFieldsWithValues)
             });
 
             deleteBtn.addEventListener('click', () => {
@@ -264,6 +399,34 @@
                 })
         }
         refreshWidgetList();
+
+        const emptyFieldEditContainer = () => {
+            document.getElementById('field-edit-container').innerHTML = '';
+        };
+
+        document.getElementById('edit-fieldValue-save-btn').addEventListener('click', (e) => {
+            const form = document.getElementById('edit-fieldValue-form');
+            const formData = {};
+            form.querySelectorAll('input').forEach(input => {
+                // Save each input's name and value to the formData object
+                formData[input.name] = input.value;
+            });
+            fetch("/api/pages/widget-position/update-field-value", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log('form saved !!!!!!!!', data)
+                    // emptyFieldEditContainer();
+                });
+
+            console.log('save clicked', formData)
+        });
+
     </script>
 
     <script>
@@ -290,11 +453,10 @@
                 .replace(/[\s_-]+/g, '-')
                 .replace(/^-+|-+$/g, '');
         }
-        const titleInput = document.getElementById('page_title'); // ID of the title input
-        const slugInput = document.getElementById('page_slug'); // ID of the slug input
-        const currentLanguage = '{!! App::currentLocale() !!}';
-        // Listen for input changes in the title field
 
+        const titleInput = document.getElementById('page_title');
+        const slugInput = document.getElementById('page_slug');
+        const currentLanguage = '{!! App::currentLocale() !!}';
 
         const updatePostUrlOrSlug = () => {
             console.log('hererererer 1111111')

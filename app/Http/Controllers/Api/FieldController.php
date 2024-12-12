@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Field;
+use App\Models\Widget;
+use App\Models\PageWidget;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FieldResource;
-use App\Models\Field;
-use Illuminate\Http\Request;
 
 class FieldController extends Controller
 {
@@ -38,4 +40,5 @@ class FieldController extends Controller
     {
         $field->delete();
     }
+
 }
