@@ -25,7 +25,7 @@ class PageWidgetController extends Controller
 
     public function updateFieldValue(Request $request)
     {
-        // Log::info(json_encode());
+        // Log::info(json_encode($request->all()));
         $inputs = $request->all();
         $language = $inputs['language'];
         app()->setLocale($language);
@@ -39,7 +39,9 @@ class PageWidgetController extends Controller
             $inputKeyArr = explode('-', $inputKey);
             $fieldValueId = null;
             foreach($inputKeyArr as $key => $value){
+                // info('hiiiiiiiii-1');
                 $fieldId = $inputKeyArr[1];
+                // info('hiiiiiiiii-2');
                 if(array_key_exists(3, $inputKeyArr)){
                     $fieldValueId = $inputKeyArr[3];
                 }

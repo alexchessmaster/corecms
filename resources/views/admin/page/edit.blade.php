@@ -2,6 +2,25 @@
 @section('content-card-title', 'Pages')
 @section('content-card-body')
 
+    @push('styles')
+        
+    <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    @endpush
+
+
+    {{-- <div class="form-group">
+        <label>Color picker with addon:</label>
+
+        <div class="input-group my-colorpicker2d colorpicker-element" data-colorpicker-id="2">
+            <input type="text" class="form-control" data-original-title="" title="">
+            <div class="input-group-append">
+                <span class="input-group-text">
+                    <i class="fas fa-square" style="color: rgb(119, 27, 27);"></i>
+                </span>
+            </div>
+        </div>
+    </div> --}}
+
     <div class="row">
         <div class="col-sm-12">
             <form id="page_form">
@@ -177,17 +196,17 @@
             
             const pageIdInputEl = document.createElement('input');
             pageIdInputEl.name = 'page-id';
-            // pageIdInputEl.type = 'hidden';
+            pageIdInputEl.type = 'hidden';
             pageIdInputEl.value = pageId;
 
             const widgetPositionInputEl = document.createElement('input');
             widgetPositionInputEl.name = 'widget-position';
-            // widgetPositionInputEl.type = 'hidden';
+            widgetPositionInputEl.type = 'hidden';
             widgetPositionInputEl.value = widgetPosition;
 
             const languageInputEl = document.createElement('input');
             languageInputEl.name = 'language';
-            // languageInputEl.type = 'hidden';
+            languageInputEl.type = 'hidden';
             languageInputEl.value = currentLanguage;
 
             divEl.appendChild(pageIdInputEl);
@@ -204,14 +223,11 @@
             const labelEl = document.createElement('label');
             labelEl.textContent = item.user_note;
             labelEl.classList.add('form-label');
-            console.log('itiiiiiiiiiiiiiiiiiiiie', item)
+            
             const inputEl = document.createElement('input');
             inputEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
-            // inputEl.id = 'id-' + item.id;
             inputEl.classList.add('form-control');
             inputEl.value = item?.vf?.value;
-
-            // I can get the value from FieldValueController here
 
             divEl.appendChild(labelEl);
             divEl.appendChild(inputEl);
@@ -225,7 +241,87 @@
             // </div>
         };
 
-        
+        const createColorPickerInput = (item) => {
+            const divGroup = document.createElement('div');
+            divGroup.classList.add('form-group', 'col-md-12', 'mt-3');
+
+            const labelEl = document.createElement('label');
+            labelEl.textContent = item.label || 'Color picker with addon:';
+            divGroup.appendChild(labelEl);
+
+            const inputGroup = document.createElement('div');
+            inputGroup.classList.add('input-group', 'my-colorpicker2', 'colorpicker-element');
+
+            const inputEl = document.createElement('input');
+            inputEl.type = 'text';
+            inputEl.classList.add('form-control');
+            inputEl.title = item.title || '';
+            inputEl.value = item?.vf?.value;
+            inputEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
+            inputGroup.appendChild(inputEl);
+
+            const addonDiv = document.createElement('div');
+            addonDiv.classList.add('input-group-append');
+
+            const iconSpan = document.createElement('span');
+            iconSpan.classList.add('input-group-text');
+            
+            const icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-square');
+            icon.style.color = item?.vf?.value || 'rgb(119, 27, 27)'; // Set the color if provided
+
+            iconSpan.appendChild(icon);
+            addonDiv.appendChild(iconSpan);
+            inputGroup.appendChild(addonDiv);
+            divGroup.appendChild(inputGroup);
+            document.getElementById('field-edit-container').appendChild(divGroup);
+            
+            if (typeof $(inputGroup).colorpicker === 'function') {
+                $(inputGroup).colorpicker();
+            }
+
+            // <div class="form-group">
+            //     <label>Color picker with addon:</label>
+            //     <div class="input-group my-colorpicker2 colorpicker-element" data-colorpicker-id="2">
+            //         <input type="text" class="form-control" data-original-title="" title="">
+            //         <div class="input-group-append">
+            //             <span class="input-group-text"><i class="fas fa-square"></i></span>
+            //         </div>
+            //     </div>
+            // </div>
+        }
+
+        // const createSelectInput = (item) => {
+        //     console.log('guguguuuuuuuuuuuuuuuu');
+        //     const divEl = document.createElement('div');
+        //     divEl.classList.add('form-group');
+
+        //     const labelEl = document.createElement('label');
+        //     labelEl.setAttribute('for', 'exampleFormControlSelect1');
+        //     labelEl.textContent = item.labelText || 'Example select';
+
+        //     const selectEl = document.createElement('select');
+        //     selectEl.classList.add('form-control');
+        //     selectEl.id = 'exampleFormControlSelect1';
+
+        //     // Parse options and set the first as selected
+        //     const optionsArray = item.options.split(',');
+        //     optionsArray.forEach((optionValue, index) => {
+        //         const optionEl = document.createElement('option');
+        //         optionEl.textContent = optionValue;
+        //         if (index === 0) {
+        //             optionEl.selected = true;
+        //         }
+        //         selectEl.appendChild(optionEl);
+        //     });
+
+        //     divEl.appendChild(labelEl);
+        //     divEl.appendChild(selectEl);
+
+        //     document.getElementById('field-edit-container').appendChild(divEl);
+        // };
+
+
         const widgetContainer = document.getElementById('widgets-container');
         const createWidget = widget => {
             // Create the outer div (col-md-4)
@@ -302,14 +398,6 @@
                     .then(data => {
                         // console.log('dataaaaa', data);
                         return data.fieldValues;
-                        // data.fieldValues.forEach(item => {
-                        //     createHiddenInformationInput(pageId, widgetPosition);
-                        //     switch(item.field.type){
-                        //         case 'text':                                    
-                        //             createTextInput(item);
-                        //             break;
-                        //     }
-                        // })
                     });
 
                 console.log('allFieldValues', allFieldValues)
@@ -336,6 +424,13 @@
                         case 'text':
                             createTextInput(item);
                             break;
+                        case 'color':
+                            createColorPickerInput(item);
+                            break;
+                        // case 'select_option':
+                        //     createSelectInput(item);
+                        //     break;
+
                     }
                 });
 
@@ -374,7 +469,7 @@
                     data.page.widgets.forEach((item, index) => {
 
                         const btnEl = document.createElement('button');
-                        btnEl.classList.add('btn', 'btn-primary');
+                        btnEl.classList.add('btn', 'btn-primary', 'mb-3');
                         btnEl.setAttribute('data-toggle', 'modal');
                         btnEl.setAttribute('data-target', '#widgetModal');
                         const iconEl = document.createElement('i');
@@ -492,4 +587,11 @@
         slugInput.addEventListener('focusout', updatePostUrlOrSlug);
     </script>
 
+    @push('scripts')
+        
+    <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+    <script>
+        $('.my-colorpicker2').colorpicker()
+    </script>
+    @endpush
 @endsection

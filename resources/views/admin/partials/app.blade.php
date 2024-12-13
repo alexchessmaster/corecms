@@ -32,6 +32,7 @@
 
 
     @yield('style')
+    @stack('styles')
 
 
 
@@ -181,7 +182,7 @@
 
 
     @yield('script')
-    @stack('script')
+    @stack('scripts')
 
     
 </body>
