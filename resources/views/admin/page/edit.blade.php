@@ -291,35 +291,47 @@
             // </div>
         }
 
-        // const createSelectInput = (item) => {
-        //     console.log('guguguuuuuuuuuuuuuuuu');
-        //     const divEl = document.createElement('div');
-        //     divEl.classList.add('form-group');
+        const createSelectInput = (item) => {
+            console.log(item);
+            const divEl = document.createElement('div');
+            divEl.classList.add('form-group', 'col-md-12');
 
-        //     const labelEl = document.createElement('label');
-        //     labelEl.setAttribute('for', 'exampleFormControlSelect1');
-        //     labelEl.textContent = item.labelText || 'Example select';
+            const labelEl = document.createElement('label');
+            labelEl.setAttribute('for', 'alignmentSelect');
+            labelEl.textContent = 'Alignment';
 
-        //     const selectEl = document.createElement('select');
-        //     selectEl.classList.add('form-control');
-        //     selectEl.id = 'exampleFormControlSelect1';
+            const selectEl = document.createElement('select');
+            selectEl.classList.add('form-control');
+            selectEl.id = 'alignmentSelect';
+            selectEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
 
-        //     // Parse options and set the first as selected
-        //     const optionsArray = item.options.split(',');
-        //     optionsArray.forEach((optionValue, index) => {
-        //         const optionEl = document.createElement('option');
-        //         optionEl.textContent = optionValue;
-        //         if (index === 0) {
-        //             optionEl.selected = true;
-        //         }
-        //         selectEl.appendChild(optionEl);
-        //     });
+            // Add options for alignment: left, center, right
+            ['left', 'center', 'right'].forEach(optionValue => {
+                const optionEl = document.createElement('option');
+                optionEl.textContent = optionValue;
+                optionEl.value = optionValue;
+                if (optionValue === item?.vf?.value) {
+                    optionEl.selected = true;
+                }
+                selectEl.appendChild(optionEl);
+            });
 
-        //     divEl.appendChild(labelEl);
-        //     divEl.appendChild(selectEl);
+            divEl.appendChild(labelEl);
+            divEl.appendChild(selectEl);
 
-        //     document.getElementById('field-edit-container').appendChild(divEl);
-        // };
+            document.getElementById('field-edit-container').appendChild(divEl);
+
+            //  <div class="form-group col-md-12">
+            //      <label for="alignmentSelect">Alignment</label>
+            //      <select class="form-control" 
+            //      id="alignmentSelect" 
+            //      name="field_id-10-field_value_id-7">
+            //          <option value="left">left</option>  
+            //          <option value="center">center</option>
+            //          <option value="right">right</option>
+            //      </select>
+            //  </div>
+        };
 
 
         const widgetContainer = document.getElementById('widgets-container');
@@ -376,50 +388,52 @@
             // Add event listeners for the buttons (example: log actions)
             editBtn.addEventListener('click', async () => {
                 emptyFieldEditContainer();
-                // console.log('widget dsjfkj3j3fj3j',widget)
                 const widgetPosition = widget.pivot.position;
                 const pageId = '{!! $page->id !!}';
                 // Add your edit functionality here
                 // get widget fields
                 // TODO: we should go to the fieldValue here: not widget
-                let allFields = await fetch(`/api/widgets/${widget.id}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        return data.fields
-                        // .forEach(item => {
-                        //     console.log('item', item)
-                        // })
-                    });
+                // let allFields = await fetch(`/api/widgets/${widget.id}`)
+                //     .then(res => res.json())
+                //     .then(data => {
+                //         return data.fields
+                //         // .forEach(item => {
+                //         //     console.log('item', item)
+                //         // })
+                //     });
 
-                console.log('allFields', allFields)
+                // console.log('allFields', allFields)
                 
-                let allFieldValues = await fetch(`/api/pages/${pageId}/widget-position/${widgetPosition}/field-values/${currentLanguage}`)
+                // let allFieldValues = await fetch(`/api/pages/${pageId}/widget-position/${widgetPosition}/field-values/${currentLanguage}`)
+                //     .then(res => res.json())
+                //     .then(data => {
+                //         // console.log('dataaaaa', data);
+                //         return data.fieldValues;
+                //     });
+
+                // console.log('allFieldValues', allFieldValues)
+
+                // let allFieldsWithValues = [];
+                // allFields.forEach(field => {
+                //     allFieldValues.forEach((fieldValue) => {
+                //         if(field.id === fieldValue.field_id) {
+                //             // console.log('field', field)
+                //             const exists = allFieldsWithValues.some(item => item.id === field.id);
+                //             if(!exists) {
+                //                 field.vf = fieldValue
+                //                 // TODO: we should take care of repeated data  
+                //             }
+                //         }
+                //     })
+                //     allFieldsWithValues.push(field)
+                // });
+
+                let allFieldsWithValues = await fetch(`/api/page/${pageId}/widget/${widget.id}/widget-position/${widgetPosition}/fields-with-values/${currentLanguage}`)
                     .then(res => res.json())
-                    .then(data => {
-                        // console.log('dataaaaa', data);
-                        return data.fieldValues;
-                    });
-
-                console.log('allFieldValues', allFieldValues)
-
-                let allFieldsWithValues = [];
-                allFields.forEach(field => {
-                    allFieldValues.forEach((fieldValue) => {
-                        if(field.id === fieldValue.field_id) {
-                            // console.log('field', field)
-                            const exists = allFieldsWithValues.some(item => item.id === field.id);
-                            if(!exists) {
-                                field.vf = fieldValue
-                                // TODO: we should take care of repeated data  
-                            }
-                        }
-                    })
-                    allFieldsWithValues.push(field)
-                });
+                    .then(data => data);
 
                 createHiddenInformationInput(pageId, widgetPosition);
                 allFieldsWithValues.forEach((item, index) => {
-                    // console.log('itemmmm', item)
                     switch(item.type){
                         case 'text':
                             createTextInput(item);
@@ -427,9 +441,9 @@
                         case 'color':
                             createColorPickerInput(item);
                             break;
-                        // case 'select_option':
-                        //     createSelectInput(item);
-                        //     break;
+                        case 'select_option':
+                            createSelectInput(item);
+                            break;
 
                     }
                 });
@@ -506,6 +520,12 @@
                 // Save each input's name and value to the formData object
                 formData[input.name] = input.value;
             });
+            
+            form.querySelectorAll('select').forEach(select => {
+                // Save each select's name and value to the formData object
+                formData[select.name] = select.value;
+            });
+
             fetch("/api/pages/widget-position/update-field-value", {
                 method: "PATCH",
                 headers: {

@@ -18,6 +18,7 @@ Route::post('/content', [ContentController::class, 'fetchContent']);
 
 Route::apiResource('/pages', PageController::class);
 Route::get('/pages/{page}/widget-position/{widgets_position}/field-values/{lang?}', [PageWidgetController::class, 'fieldValue']);
+Route::get('/page/{pageId}/widget/{widgetId}/widget-position/{position}/fields-with-values/{lang?}', [WidgetController::class, 'getWidgetFieldsWithValues']);
 Route::patch('/pages/widget-position/update-field-value', [PageWidgetController::class, 'updateFieldValue']);
 Route::patch('/widgets/detach', [WidgetController::class, 'detach']);
 Route::patch('/widgets/attach', [WidgetController::class, 'attach']);

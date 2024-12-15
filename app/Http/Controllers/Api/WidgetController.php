@@ -8,6 +8,8 @@ use App\Models\PageWidget;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WidgetResource;
+use App\Http\Resources\FieldWithValueResource;
+use stdClass;
 
 class WidgetController extends Controller
 {
@@ -16,6 +18,55 @@ class WidgetController extends Controller
         $widget = Widget::with('fields')->find($id);
 
         return response()->json(new WidgetResource($widget));
+    }
+
+    // In your controller
+    public function getWidgetFieldsWithValues($pageId, $widgetId, $position, $lang = 'en')
+    {
+        if (!empty($lang)) {
+            app()->setLocale($lang);
+        }
+
+        $widget = Widget::with('fields')->find($widgetId);
+        
+        if (!$widget) {
+            return response()->json(['error' => 'Widget not found'], 404);
+        }
+        
+        $pageWidget = PageWidget::with('fieldValues.field')
+            ->where('page_id', $pageId)
+            ->where('position', $position)
+            ->first();
+
+        if (!$pageWidget) {
+            return response()->json(['error' => 'Page widget not found'], 404);
+        }
+
+        $fields = $widget->fields;
+        $fieldValues = $pageWidget->fieldValues;
+
+        $allFieldsWithValues = $fields->map(function ($field) use ($fieldValues) {
+            $matchingFieldValue = $fieldValues->firstWhere('field_id', $field->id);
+            if ($matchingFieldValue) {
+                $field->vf = new \stdClass;
+                $field->vf->id = $matchingFieldValue->id;
+                $field->vf->value = $matchingFieldValue->getTranslation('value', app()->getLocale());
+                $field->vf->page_widget_id = $matchingFieldValue->page_widget_id;
+                $field->vf->field_id = $matchingFieldValue->field_id;
+
+                $tmpField = new \stdClass;
+                $tmpField->id = $matchingFieldValue->field->id;
+                $tmpField->page_widget_id = $matchingFieldValue->field->page_widget_id;
+                $tmpField->user_note = $matchingFieldValue->field->user_note;
+                $tmpField->type = $matchingFieldValue->field->type;
+
+                $field->vf->field = $tmpField;
+            }
+
+            return $field;
+        });
+
+        return response()->json(FieldWithValueResource::collection($allFieldsWithValues));
     }
 
     public function attach()
