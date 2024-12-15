@@ -5,6 +5,17 @@
     @push('styles')
         
     <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <style>
+        .tox-promotion {
+            visibility: hidden;
+        }
+        .tox .tox-editor-container {
+            border: 1px solid #d2d2d2 !important;  /* Set your desired color */
+        }
+        .tox .tox-edit-area iframe {
+            border: 1px solid #e7e7e7 !important;  /* Set your desired color */
+        }
+    </style>
     @endpush
 
 
@@ -221,7 +232,7 @@
             divEl.classList.add('col-md-12');
 
             const labelEl = document.createElement('label');
-            labelEl.textContent = item.user_note;
+            labelEl.textContent = item.user_note + ':';
             labelEl.classList.add('form-label');
             
             const inputEl = document.createElement('input');
@@ -246,7 +257,7 @@
             divGroup.classList.add('form-group', 'col-md-12', 'mt-3');
 
             const labelEl = document.createElement('label');
-            labelEl.textContent = item.label || 'Color picker with addon:';
+            labelEl.textContent = item.user_note + ':' || 'Color picker with addon:';
             divGroup.appendChild(labelEl);
 
             const inputGroup = document.createElement('div');
@@ -292,7 +303,6 @@
         }
 
         const createSelectInput = (item) => {
-            console.log(item);
             const divEl = document.createElement('div');
             divEl.classList.add('form-group', 'col-md-12');
 
@@ -332,6 +342,73 @@
             //      </select>
             //  </div>
         };
+
+        const createTextareaInput = (item, size = 'normal') => {
+            const divEl = document.createElement('div');
+            divEl.classList.add('col-md-12');
+
+            const labelEl = document.createElement('label');
+            labelEl.textContent = item.user_note + ':';
+            labelEl.classList.add('form-label');
+            
+            const textareaEl = document.createElement('textarea');
+            textareaEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
+            textareaEl.classList.add('form-control');
+            textareaEl.value = item?.vf?.value || '';
+            textareaEl.id = 'textarea-' + item.id; // Add a unique ID for TinyMCE initialization
+
+            divEl.appendChild(labelEl);
+            divEl.appendChild(textareaEl);
+
+            document.getElementById('field-edit-container').appendChild(divEl);
+
+            // Destroy existing TinyMCE instances if any
+            tinymce.remove(`#textarea-${item.id}`);
+
+            // Initialize TinyMCE for the new textarea
+            let tinyConfig = {};
+            if(size === 'text') {
+                tinyConfig = {
+                    selector: `#textarea-` + item.id, // Replace with the ID or class of your target element
+                    menubar: false,
+                    toolbar: 'bold italic underline | forecolor backcolor', // Added color options to toolbar
+                    height: 110,
+                    forced_root_block: false, // Prevents wrapping content in <p>
+                    valid_elements: '*[*]', // Allow any inline elements (if applicable)
+                    content_style: 'white-space: nowrap;', // Forces single-line editing
+                    statusbar: false,
+                    setup: (editor) => {
+                        editor.on('keydown', (e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault(); // Prevent multi-line entry
+                            }
+                        });
+                    }
+                }
+            }
+            if(size === 'small') {
+                tinyConfig = {
+                    selector: `#textarea-` + item.id, // Replace with the ID or class of your target element
+                    menubar: false,
+                    toolbar: 'bold italic underline | forecolor backcolor', // Added color options to toolbar
+                    height: 230,
+                    forced_root_block: false, // Prevents wrapping content in <p>
+                    valid_elements: '*[*]', // Allow any inline elements (if applicable)
+                    content_style: 'white-space: nowrap;', // Forces single-line editing
+                    statusbar: false,
+                    newline_behavior: 'linebreak',
+                }
+            }
+            if(size === 'large') {
+                tinyConfig = {
+                    selector: `#textarea-` + item.id,
+                    plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+                    // toolbar_mode: 'floating',
+                    // menubar: false,
+                }
+            }
+            tinymce.init(tinyConfig);
+        }
 
 
         const widgetContainer = document.getElementById('widgets-container');
@@ -435,14 +512,23 @@
                 createHiddenInformationInput(pageId, widgetPosition);
                 allFieldsWithValues.forEach((item, index) => {
                     switch(item.type){
-                        case 'text':
-                            createTextInput(item);
-                            break;
                         case 'color':
                             createColorPickerInput(item);
                             break;
                         case 'select_option':
                             createSelectInput(item);
+                            break;
+                        case 'text':
+                            createTextareaInput(item, 'text');
+                            break;
+                        case 'textarea_small':
+                            createTextareaInput(item, 'small');
+                            break;
+                        case 'textarea_large':
+                            createTextareaInput(item, 'large');
+                            break;
+                        case 'input':
+                            createTextInput(item);
                             break;
 
                     }
@@ -524,6 +610,12 @@
             form.querySelectorAll('select').forEach(select => {
                 // Save each select's name and value to the formData object
                 formData[select.name] = select.value;
+            });
+
+            tinymce.triggerSave();
+            form.querySelectorAll('textarea').forEach(textarea => {
+                // Save each textarea's name and value to the formData object
+                formData[textarea.name] = textarea.value;
             });
 
             fetch("/api/pages/widget-position/update-field-value", {
@@ -612,6 +704,12 @@
     <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
     <script>
         $('.my-colorpicker2').colorpicker()
+    </script>
+
+    <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+            
     </script>
     @endpush
 @endsection

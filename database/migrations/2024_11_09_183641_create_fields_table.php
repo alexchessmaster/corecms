@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('widget_id');
             $table->string('user_note')->nullable();
             // $table->json('value')->nullable();
-            $table->enum('type', ['text', 'textarea', 'file', 'color', 'input', 'select_option'])->default('text');// file, text, textarea, color
+            $table->enum('type', ['text', 'textarea_small', 'textarea_large', 'file', 'input', 'color', 'select_option'])->default('text');// file, text, textarea, color
             // $table->integer('order')->default(0);
             $table->timestamps();
 
