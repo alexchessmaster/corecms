@@ -33,8 +33,14 @@ class PageController extends Controller
 
     public function show($pageId)
     {
-        $page = Page::with('widgets')->find($pageId);
-        // dd($page);
+        // $page = Page::with(['pageWidgets' => function($query){
+        //     $query->orderBy('position', 'asc');
+        // }])->find($pageId);
+        $page = Page::with(['widgets' => function($query){
+            $query->orderBy('position');
+        }])->find($pageId);
+        // $page = Page::with('widgets')->find($pageId);
+
         return response()->json([
             'page' => $page
         ]);

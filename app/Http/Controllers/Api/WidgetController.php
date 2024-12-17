@@ -87,40 +87,53 @@ class WidgetController extends Controller
         }
 
         // Get the current widgets attached to the page
-        $existingWidgets = $page->widgets()->orderBy('position', 'asc')->get();
+        // $existingWidgets = $page->widgets()->orderBy('position', 'asc')->get();
+
+        // info('addWidgetPosition=' . $addWidgetPosition . ' $widgetId=' . $widgetId . ' $pageId=' . $pageId);
+        // info(json_encode($existingWidgets));
 
         // If no widgets are attached, attach the widget with position 0
-        if ($existingWidgets->isEmpty()) {
-            $page->widgets()->attach($widgetId, ['position' => 0]);
-        } else {
-            $updatedWidgets = [];
-            $positionUpdated = false;
-            $i = 0;
+        // if ($existingWidgets->isEmpty()) {
+        //     $page->widgets()->attach($widgetId, ['position' => 0]);
+        // } else {
+            // $updatedWidgets = [];
+            // $positionUpdated = false;
+            // $i = 0;
 
-            // Iterate through the existing widgets to reorganize positions
-            foreach ($existingWidgets as $existingWidget) {
-                // If the position matches where we want to add the new widget
-                if (!$positionUpdated && $i == $addWidgetPosition) {
-                    $updatedWidgets[] = ['id' => $widgetId, 'position' => $i];
-                    $positionUpdated = true; // Mark that we've added the widget at the desired position
-                }
+            // // Iterate through the existing widgets to reorganize positions
+            // foreach ($existingWidgets as $existingWidget) {
+            //     // If the position matches where we want to add the new widget
+            //     if (!$positionUpdated && $i == $addWidgetPosition) {
+            //         $updatedWidgets[] = ['id' => $widgetId, 'position' => $i];
+            //         $positionUpdated = true; // Mark that we've added the widget at the desired position
+            //     }
 
-                // Add the existing widget with its current position
-                $updatedWidgets[] = ['id' => $existingWidget->id, 'position' => $i];
-                $i++;
+            //     // Add the existing widget with its current position
+            //     $updatedWidgets[] = ['id' => $existingWidget->id, 'position' => $i];
+            //     $i++;
+            // }
+
+            // // If the new widget wasn't added, it goes to the end
+            // if (!$positionUpdated) {
+            //     $updatedWidgets[] = ['id' => $widgetId, 'position' => $i];
+            // }
+
+            // $page->widgets()->orderBy('position', 'asc')->get();
+
+            $pageWidgets = PageWidget::where('page_id', $page->id)->where('position', '>=', $addWidgetPosition)->get();
+
+            foreach($pageWidgets as $pageWidget) {
+                $pageWidget->increment('position');
             }
 
-            // If the new widget wasn't added, it goes to the end
-            if (!$positionUpdated) {
-                $updatedWidgets[] = ['id' => $widgetId, 'position' => $i];
-            }
+            $page->widgets()->attach($widgetId, ['position' => $addWidgetPosition]);
 
-            // Now, sync the widgets with the updated positions
-            $page->widgets()->sync([]);
-            foreach ($updatedWidgets as $widgetData) {
-                $page->widgets()->attach($widgetData['id'], ['position' => $widgetData['position']]);
-            }
-        }
+            // // Now, sync the widgets with the updated positions
+            // $page->widgets()->sync([]);
+            // foreach ($updatedWidgets as $widgetData) {
+            //     $page->widgets()->attach($widgetData['id'], ['position' => $widgetData['position']]);
+            // }
+        // }
 
         return response()->json(['status' => 'success', 'pageWidgets' => $page->widgets]);
     }

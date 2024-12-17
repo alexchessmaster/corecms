@@ -425,7 +425,7 @@
             // Create the img element for the widget image
             const imgEl = document.createElement('img');
             imgEl.src = widget.image; // Use the widget's image URL
-            imgEl.alt = 'Option 1';
+            imgEl.alt = 'Option 12345';
             imgEl.classList.add('card-img-top');
 
             // Create the card body div
@@ -455,7 +455,9 @@
             cardBody.appendChild(deleteBtn);
 
             // Create a div to hold the card body and the image (keep the layout tidy)
-            widgetOption.appendChild(imgEl);
+            if(widget.image ) {
+                widgetOption.appendChild(imgEl);
+            }
             widgetOption.appendChild(cardBody);
             divEl.appendChild(widgetOption);
 

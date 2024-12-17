@@ -81,13 +81,11 @@ class ContentController extends Controller
             'page' => collect(),
             'auth' => collect(),
         ];
-
-        // $page = Page::with(['widgets.fields'])->where('slug->' . app()->getLocale(), $path)->first();
-        // dd($page);
         
         $page = Page::with([
-            'widgets' => fn($query) => $query->orderBy('page_widget.position'),
-            "widgets.fields"
+            'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
+            'pageWidgets.widget',
+            'pageWidgets.fieldValues.field',
         ])->where('slug->' . app()->getLocale(), $path)->first();
 
         $responseCode = 200;

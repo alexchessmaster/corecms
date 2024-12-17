@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\PageWidgetResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PageResource extends JsonResource
@@ -20,7 +21,9 @@ class PageResource extends JsonResource
             "slug" => $this->slug,
             "title" => $this->title,
             "template" => $this->blog,
-            "widgets" => WidgetResource::collection($this->widgets),
+            "widgets" => $this->relationLoaded('widgets') ? WidgetResource::collection($this->widgets) : null,
+            "pageWidgets" => $this->relationLoaded('pageWidgets') ? PageWidgetResource::collection($this->pageWidgets) : null,
+
             // "widget and fields"
         ];
     }
