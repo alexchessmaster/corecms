@@ -62,6 +62,14 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="/admin/articles" class="nav-link">
+                    <i class="nav-icon fas fa-file-alt"></i>
+                    <p>
+                        Articles
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="/admin/settings" class="nav-link">
                     <i class="nav-icon fas fa-cogs"></i>
                     <p>

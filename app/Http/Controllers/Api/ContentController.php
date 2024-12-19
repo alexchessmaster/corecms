@@ -66,11 +66,6 @@ class ContentController extends Controller
             app()->setLocale($lang);
         }
 
-        // return response()->json(Page::with([
-        //     'widgets' => fn($query) => $query->orderBy('page_widget.position'),
-        //     "widgets.fields"
-        // ])->where('slug->' . app()->getLocale(), $path)->first());
-
         $settings = Setting::all();
         $languages = Language::all();
         $menus = Menu::all();

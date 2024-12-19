@@ -41,7 +41,7 @@
                         <div class="form-group">
                             <label for="page_title">Page title</label>
                             <input type="text" class="form-control" id="page_title" aria-describedby=""
-                                placeholder="Page title" value="{{ !empty($page) ? $page->title : '' }}">
+                                placeholder="Page title" value="{{ !empty($page) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
                             <small id="" class="form-text text-muted">The title of the page.</small>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                             <input type="text" class="form-control" id="page_slug" aria-describedby=""
                                 placeholder="Page URL" value="{{ !empty($page) ? $page->slug : '' }}">
                             <small class="form-text text-muted"><a id="visit-page" target="_blank"
-                                    href="{{ !empty($page) ? $page->slug : '' }}">{{ !empty($page) ? $page->slug : '' }}</a></small>
+                                    href="{{ !empty($page) ? $page->slug : '' }}">{{ !empty($page) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}</a></small>
                         </div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                     </button>
                 </div>
                 <div class="modal-body" id>
-                    <form action="" id="edit-fieldValue-form">
+                    <form action="" id="edit-fieldValue-form" enctype="multipart/form-data">
                         <div id="field-edit-container"></div>
                     </form>
                 </div>
@@ -227,7 +227,7 @@
             document.getElementById('field-edit-container').appendChild(divEl);
         };
         
-        const createTextInput = (item) => {
+        const createInputTextInput = (item) => {
             const divEl = document.createElement('div');
             divEl.classList.add('col-md-12');
 
@@ -410,6 +410,83 @@
             tinymce.init(tinyConfig);
         }
 
+        const createFileInput = (item) => {
+            const divEl = document.createElement('div');
+            divEl.classList.add('mb-3');
+
+            const labelEl = document.createElement('label');
+            labelEl.setAttribute('for', 'file-input');
+            labelEl.textContent = 'File';
+            labelEl.classList.add('form-label');
+
+            const inputEl = document.createElement('input');
+            inputEl.type = 'file';
+            inputEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
+            inputEl.id = 'file-input' + item.id;
+            inputEl.classList.add('form-control');
+
+            const imgEl = document.createElement('img');
+            imgEl.classList.add('mt-2');
+            imgEl.style.maxWidth = '100px';
+
+            const aEl = document.createElement('a');
+            aEl.classList.add('mt-2');
+            aEl.innerHTML = 'Link to download';
+
+            const infoEl = document.createElement('div');
+            infoEl.classList.add('mt-2');
+            
+            divEl.appendChild(labelEl);
+            divEl.appendChild(inputEl);
+            divEl.appendChild(inputEl);
+
+            // If there's an old value, determine if it's an image or not
+            if (item?.vf?.value) {
+                const value = item.vf.value;
+                const isImage = value.match(/(jpg|jpeg|png|gif|bmp|webp)/i);
+                if (isImage?.length === 2) {
+                    imgEl.src = value;
+                    imgEl.alt = 'Widget Image';
+                    divEl.appendChild(imgEl);
+                }
+                aEl.href = value;
+                aEl.download = value;
+                divEl.appendChild(aEl);
+            }
+
+            // Add event listener for live preview of uploaded image
+            inputEl.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const isImage = file.type.startsWith('image/');
+                    if (isImage) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            imgEl.src = e.target.result;
+                            imgEl.alt = 'Selected Image';
+                            if (!imgEl.parentElement) {
+                                divEl.appendChild(imgEl);
+                            }
+                            if (infoEl.parentElement) {
+                                infoEl.remove();
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        infoEl.textContent = 'File selected: ' + file.name;
+                        if (!infoEl.parentElement) {
+                            divEl.appendChild(infoEl);
+                        }
+                        if (imgEl.parentElement) {
+                            imgEl.remove();
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('field-edit-container').appendChild(divEl);
+        };
+
 
         const widgetContainer = document.getElementById('widgets-container');
         const createWidget = widget => {
@@ -530,7 +607,10 @@
                             createTextareaInput(item, 'large');
                             break;
                         case 'input':
-                            createTextInput(item);
+                            createInputTextInput(item);
+                            break;
+                        case 'file':
+                            createFileInput(item);
                             break;
 
                     }
@@ -601,25 +681,42 @@
             document.getElementById('field-edit-container').innerHTML = '';
         };
 
-        document.getElementById('edit-fieldValue-save-btn').addEventListener('click', (e) => {
+        document.getElementById('edit-fieldValue-save-btn').addEventListener('click', async (e) => {
             const form = document.getElementById('edit-fieldValue-form');
             const formData = {};
+
+            // Process all inputs
             form.querySelectorAll('input').forEach(input => {
-                // Save each input's name and value to the formData object
-                formData[input.name] = input.value;
+                if (input.type === 'file' && input.files.length > 0) {
+                    // Convert file to base64
+                    const file = input.files[0];
+                    formData[input.name] = 'Processing file...'; // Placeholder until conversion is done
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        formData[input.name] = event.target.result; // Base64 encoded string
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // Save non-file input values
+                    formData[input.name] = input.value;
+                }
             });
-            
+
+            // Process all selects
             form.querySelectorAll('select').forEach(select => {
-                // Save each select's name and value to the formData object
                 formData[select.name] = select.value;
             });
 
+            // Save TinyMCE editor content
             tinymce.triggerSave();
             form.querySelectorAll('textarea').forEach(textarea => {
-                // Save each textarea's name and value to the formData object
                 formData[textarea.name] = textarea.value;
             });
 
+            // Wait for all file inputs to finish reading
+            await new Promise(resolve => setTimeout(resolve, 100)); // Ensure files are read (adjust time as necessary)
+
+            // Send the data to the backend
             fetch("/api/pages/widget-position/update-field-value", {
                 method: "PATCH",
                 headers: {
@@ -629,12 +726,13 @@
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log('form saved !!!!!!!!', data)
+                    console.log('form saved !!!!!!!!', data);
                     // emptyFieldEditContainer();
                 });
 
-            console.log('save clicked', formData)
+            console.log('save clicked', formData);
         });
+
 
     </script>
 
@@ -681,6 +779,7 @@
                     body: JSON.stringify({
                         title: title.value,
                         slug: slug.value,
+                        lang: currentLanguage,
                     })
                 })
                 .then(response => {

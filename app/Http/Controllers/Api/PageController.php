@@ -55,8 +55,9 @@ class PageController extends Controller
             ]);
         }
         $page = Page::find($pageId);
-        $page->title = request()->title;
-        $page->slug = Str::slug(request()->slug);
+        $lang = request()->lang ?: app()->getLocale();
+        $page->setTranslation('title', $lang, request()->title);
+        $page->setTranslation('slug', $lang, '/' . Str::slug(request()->slug));
         $page->save();
 
         return response()->json([

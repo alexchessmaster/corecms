@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Widget;
-use App\Models\PageWidget;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PageWidgetResource;
-use App\Http\Resources\WidgetResource;
 use App\Models\FieldValue;
+use App\Models\PageWidget;
+use App\Helpers\FileHelper;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\WidgetResource;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\PageWidgetResource;
 
 class PageWidgetController extends Controller
 {
@@ -23,6 +26,16 @@ class PageWidgetController extends Controller
         return response()->json(new PageWidgetResource($pageWidget));
     }
 
+    /**
+     * example of input:
+     *       // {
+     *       //     "page-id":"1",
+     *       //     "widget-position":"2",
+     *       //     "language":"da",
+     *       //     "field-id-2-field-value-id-3":"danish first field value two columns widget in page 1",
+     *       //     "field-id-3-field-value-id-4":"danish second field value two columns widget in page 1"
+     *       // }
+     */
     public function updateFieldValue(Request $request)
     {
         // Log::info(json_encode($request->all()));
@@ -39,50 +52,65 @@ class PageWidgetController extends Controller
             $inputKeyArr = explode('-', $inputKey);
             $fieldValueId = null;
             foreach($inputKeyArr as $key => $value){
-                // info('hiiiiiiiii-1');
                 $fieldId = $inputKeyArr[1];
-                // info('hiiiiiiiii-2');
                 if(array_key_exists(3, $inputKeyArr)){
                     $fieldValueId = $inputKeyArr[3];
                 }
             }
 
+            if (Str::startsWith($inputValue, 'data:') && Str::contains($inputValue, ';base64,')) {
+                // Split the base64 string into MIME type and file content
+                $fileParts = explode(';base64,', $inputValue);
+                $mimeType = str_replace('data:', '', $fileParts[0]); // Extract MIME type
+                $base64Content = $fileParts[1]; // Extract base64 content
+
+                // Decode the base64 content
+                $decodedFile = base64_decode($base64Content, true);
+            
+                if ($decodedFile === false) {
+                    return response()->json(['error' => 'Invalid base64 content'], 400);
+                }
+            
+                // Generate a unique file name based on the MIME type
+                $extension = Str::after($mimeType, '/'); // e.g., "jpeg"
+                $fileName = uniqid() . '.' . $extension;
+            
+                // Define the file path
+                $filePath = public_path('uploads/' . $fileName);
+            
+                // Ensure the uploads directory exists
+                if (!file_exists(public_path('uploads'))) {
+                    mkdir(public_path('uploads'), 0755, true);
+                }
+            
+                // Save the decoded file to the uploads directory
+                file_put_contents($filePath, $decodedFile);
+
+                $inputValue = '/uploads/' . $fileName;
+            }
+
             if(!empty($fieldValueId) && $fieldValueId !== 'undefined') {
-                // Log::info('nnnnnnnnnnnnnnot empty' . $fieldValueId);
                 if(!empty($fieldId)) {
                     $fieldValueTmp = FieldValue::find($fieldValueId);
                     $fieldValueTmp->setTranslation('value', $language, $inputValue);
                     $fieldValueTmp->save();
                 }
-                // $fieldValueTmp
-
             } else {
                 $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $widgetPosition)->first();
                 if(!empty($pageWidget) && !empty($fieldId)){
-                    info('uuu');
                     $fieldValueTmp = new FieldValue;
                     $fieldValueTmp->field_id = $fieldId;
                     $fieldValueTmp->page_widget_id = $pageWidget->id;
                     $fieldValueTmp->setTranslation('value', $language, $inputValue);
                     $fieldValueTmp->save();
                 }
-                info('uuu2');
             }
 
-            
-            // strpos('expl')
-            // {
-            //     "page-id":"1",
-            //     "widget-position":"2",
-            //     "language":"da",
-            //     "field-id-2-field-value-id-3":"danish first field value two columns widget in page 1",
-            //     "field-id-3-field-value-id-4":"danish second field value two columns widget in page 1"
-            // }
 
         }
 
         return response()->json([
-            'message' => ''
+            'message' => 'saved'
         ]);
     }
 }
