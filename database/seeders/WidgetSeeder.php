@@ -17,62 +17,126 @@ class WidgetSeeder extends Seeder
     {
         Widget::insert([
             [//1
+                'name' => 'Article',
+                'key' => Str::slug('Article'),
+                'image' => '/uploads/article_widget.jpeg',
+                'type' => 'template',
+            ],
+            [//2
+                'name' => 'Category',
+                'key' => Str::slug('Category'),
+                'image' => '/uploads/category_widget.jpeg',
+                'type' => 'template',
+            ],
+            [//3
+                'name' => 'Tag',
+                'key' => Str::slug('Tag'),
+                'image' => '/uploads/tag_widget.jpeg',
+                'type' => 'template',
+            ],
+        ]);
+
+        Widget::insert([
+            [//4
+                'name' => 'Header Big',
+                'key' => Str::slug('Header Big'),
+                'image' => '/uploads/header_big_widget.jpeg',
+            ],
+            [//5
+                'name' => 'Header Small',
+                'key' => Str::slug('Header Small'),
+                'image' => '/uploads/header_small_widget.jpeg',
+            ],
+            [//6
+                'name' => 'Footer',
+                'key' => Str::slug('Footer'),
+                'image' => '/uploads/footer_widget.png',
+            ],
+        ]);
+
+        $page = Page::find(1);
+        $page->widgets()->attach([4 => ['position' => 0]]);
+        $page->widgets()->attach([1 => ['position' => 1]]);
+        $page->widgets()->attach([6 => ['position' => 2]]);
+        
+        Widget::insert([
+            [//7
                 'name' => 'Code',
                 'key' => Str::slug('Code'),
                 'image' => '/uploads/code.png',
             ],
-            [//2
+            [//8
                 'name' => 'Space',
                 'key' => Str::slug('Space'),
                 'image' => '/uploads/space.png',
             ],
-            [//3
+            [//9
                 'name' => 'Block Starts',
                 'key' => Str::slug('Block Start'),
                 'image' => '/uploads/block-starts.png',
             ],
-            [//4
+            [//10
                 'name' => 'Block Ends',
                 'key' => Str::slug('Block End'),
                 'image' => '/uploads/block-ends.png',
             ],
-            [//5
+            [//11
                 'name' => 'Text One Column',
                 'key' => Str::slug('Text One Column'),
                 'image' => '/uploads/one-column-text.png',
             ],
-            [//6
+            [//12
                 'name' => 'Text Two Columns',
                 'key' => Str::slug('Text Two Columns'),
                 'image' => '/uploads/two-columns-text.png',
             ],
-            [//7
+            [//13
                 'name' => 'Text Three Columns',
                 'key' => Str::slug('Text Three Columns'),
                 'image' => '/uploads/three-columns-text.png',
             ],
-            [//8
+            [//14
                 'name' => 'Image One Column',
                 'key' => Str::slug('Image One Column'),
                 'image' => '/uploads/one-column-image.png',
             ],
-            [//9
+            [//15
                 'name' => 'Image Two Columns',
                 'key' => Str::slug('Image Two Columns'),
                 'image' => '/uploads/two-columns-image.png',
             ],
-            [//10
+            [//16
                 'name' => 'Image Three Columns',
                 'key' => Str::slug('Image Three Columns'),
                 'image' => '/uploads/three-columns-image.png',
             ],
         ]);
 
-        $page = Page::find(1);
-        $page->widgets()->attach([5 => ['position' => 0]]);
-        $page->widgets()->attach([5 => ['position' => 1]]);
-        $page->widgets()->attach([6 => ['position' => 2]]);
-        $page->widgets()->attach([8 => ['position' => 3]]);
+        $page = Page::find(4);
+        $page->widgets()->attach([11 => ['position' => 0]]);
+        $page->widgets()->attach([11 => ['position' => 1]]);
+        $page->widgets()->attach([12 => ['position' => 2]]);
+        $page->widgets()->attach([14 => ['position' => 3]]);
 
+        Widget::insert([
+            [//17
+                'name' => 'article_list',
+                'key' => Str::slug('article_list'),
+                'image' => '/uploads/article_list_widget.jpeg',
+                'type' => 'page',
+            ],
+            [//18
+                'name' => 'category_list',
+                'key' => Str::slug('category_list'),
+                'image' => '/uploads/category_list_widget.jpeg',
+                'type' => 'page',
+            ],
+            [//19
+                'name' => 'tag_list',
+                'key' => Str::slug('tag_list'),
+                'image' => '/uploads/tag_list_widget.jpeg',
+                'type' => 'page',
+            ],
+        ]);
     }
 }

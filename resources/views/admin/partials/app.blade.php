@@ -100,7 +100,8 @@
                         <!-- Main row -->
                         <div class="row">
                             <!-- Left col -->
-                            <section class="col-lg-12 connectedSortable">
+                            <section class="col-lg-12 {{-- connectedSortable --}}"> 
+                                
                                 <!-- Custom tabs (Charts with tabs)-->
                                 <div class="card">
                                     <div class="card-header">
@@ -116,6 +117,8 @@
                                         <div class="tab-content p-0">
                                             <!-- Morris chart - Sales -->
                                             
+                                            @include('admin.partials.message')
+
                                             
                                             @yield('content-card-body')
                                             

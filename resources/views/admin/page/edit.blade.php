@@ -1,5 +1,5 @@
 @extends('admin.partials.app')
-@section('content-card-title', 'Pages')
+@section('content-card-title', ucfirst($pageType) . 's')
 @section('content-card-body')
 
     @push('styles')
@@ -39,19 +39,19 @@
                     <div class="col-sm-6">
                         <input type="hidden" name="page_id" id="page_id" value="{{ !empty($page) ? $page->id : '' }}">
                         <div class="form-group">
-                            <label for="page_title">Page title</label>
+                            <label for="page_title">{{ ucfirst($pageType) }} title</label>
                             <input type="text" class="form-control" id="page_title" aria-describedby=""
-                                placeholder="Page title" value="{{ !empty($page) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
+                                placeholder="Page title" value="{{ !empty($page->getTranslation('title', app()->getLocale(), false)) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
                             <small id="" class="form-text text-muted">The title of the page.</small>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="page_slug">Page slug</label>
+                            <label for="page_slug">{{ ucfirst($pageType) }} slug</label>
                             <input type="text" class="form-control" id="page_slug" aria-describedby=""
-                                placeholder="Page URL" value="{{ !empty($page) ? $page->slug : '' }}">
-                            <small class="form-text text-muted"><a id="visit-page" target="_blank"
-                                    href="{{ !empty($page) ? $page->slug : '' }}">{{ !empty($page) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}</a></small>
+                                placeholder="Page URL" value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
+                            {{-- <small class="form-text text-muted"><a id="visit-page" target="_blank"
+                                    href="{{ !empty($page) ? $page->slug : '' }}"></a></small> --}}
                         </div>
                     </div>
                 </div>
@@ -809,8 +809,5 @@
 
     <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 
-    <script>
-            
-    </script>
     @endpush
 @endsection

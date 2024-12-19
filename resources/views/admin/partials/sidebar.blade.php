@@ -55,9 +55,26 @@
             </li>
             <li class="nav-item">
                 <a href="/admin/pages" class="nav-link">
-                    <i class="nav-icon fas fa-file-alt"></i>
+                    <i class="nav-icon fas fa-sticky-note"></i>
                     <p>
                         Pages
+                    </p>
+                </a>
+            </li>
+            <div style="border: 1px gray solid"></div>
+            <li class="nav-item">
+                <a href="/admin/templates" class="nav-link">
+                    <i class="nav-icon fas fa-border-style"></i>
+                    <p>
+                        Templates
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/categories" class="nav-link">
+                    <i class="nav-icon fas fa-cubes"></i>
+                    <p>
+                        Categories
                     </p>
                 </a>
             </li>
@@ -70,18 +87,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/admin/settings" class="nav-link">
-                    <i class="nav-icon fas fa-cogs"></i>
+                <a href="/admin/tags" class="nav-link">
+                    <i class="nav-icon fas fa-tags"></i>
                     <p>
-                        Settings
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/users" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        Users
+                        Tags
                     </p>
                 </a>
             </li>
@@ -94,12 +103,27 @@
                     </p>
                 </a>
             </li>
-            <div style="border: 1px gray solid"></div>
             <li class="nav-item">
                 <a href="/admin/upload" class="nav-link" target="_blank">
                     <i class="nav-icon fas fa-upload"></i>
                     <p>
                         Upload
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/users" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>
+                        Users
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/settings" class="nav-link">
+                    <i class="nav-icon fas fa-cogs"></i>
+                    <p>
+                        Settings
                     </p>
                 </a>
             </li>

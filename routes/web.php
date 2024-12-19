@@ -14,7 +14,10 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TagController;
 use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Http\Controllers\ArticleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,7 +27,7 @@ Route::get('admin', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified']);
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [/*AdminMiddleware::class,*/LanguageAdminMiddleware::class]], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [AdminMiddleware::class, LanguageAdminMiddleware::class]], function () {
     Route::resource('menus', MenuController::class);
     Route::resource('upload', UploadController::class);
     Route::resource('settings', SettingController::class);
@@ -33,6 +36,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [/*AdminMid
     Route::post('widgets/sort', [WidgetController::class, 'sort'])->name('widgets.sort');
     Route::resource('fields', FieldController::class);
     Route::resource('users', UserController::class);
+    Route::resource('templates', PageController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('articles', ArticleController::class);
+    Route::resource('tags', TagController::class);
 
     Route::post('user-locale', function () {
         session(['lang' => request()->lang]);

@@ -12,12 +12,12 @@ class Language extends Model
         [
             'name' => 'English', 
             'code' => 'en', 
-            'default' => false
+            'default' => true
         ],
         [
             'name' => 'Danish',
             'code' => 'da',
-            'default' => true
+            'default' => false
         ],
     ];
 }

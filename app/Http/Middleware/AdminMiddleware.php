@@ -19,6 +19,8 @@ class AdminMiddleware
             return $next($request);
         }
 
+        return redirect('/login');
+
         // Redirect or handle unauthorized access
         return response()->json([
             'status' => 'error',

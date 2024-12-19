@@ -4,6 +4,21 @@
 <script src="/tinymce/js/tinymce/plugins/table/plugin.min.js" referrerpolicy="origin"></script>
 <script src="/tinymce/js/tinymce/plugins/anchor/plugin.min.js" referrerpolicy="origin"></script>
 
+<style>
+    div.tox-promotion{
+        display: none;
+    }
+    span.tox-statusbar__branding{
+        display: none;
+    }
+    .tox .tox-editor-container {
+        border: 1px solid #d2d2d2 !important;  /* Set your desired color */
+    }
+    .tox .tox-edit-area iframe {
+        border: 1px solid #e7e7e7 !important;  /* Set your desired color */
+    }
+</style>
+
 <script>
     tinymce.init({
         selector: '.tinymcemini',

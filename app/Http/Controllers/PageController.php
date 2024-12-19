@@ -16,9 +16,15 @@ class PageController extends Controller
      */
     public function index()
     {
-        $pages = Page::get();
+        if(str_contains(request()->path(), 'admin/templates')) {
+            $pages = Page::where('type', 'template')->get();
+            $pageType = 'template';
+        } else {
+            $pages = Page::where('type', 'page')->get();
+            $pageType = 'page';
+        }
 
-        return view('admin.page.index', compact('pages'));
+        return view('admin.page.index', compact('pages', 'pageType'));
     }
 
     /**
@@ -26,7 +32,12 @@ class PageController extends Controller
      */
     public function create()
     {
-        return view('admin.page.create');
+        $pageType = 'page';
+        if(str_contains(request()->path(), 'admin/templates')) {
+            $pageType = 'template';
+        }
+
+        return view('admin.page.create', compact('pageType'));
     }
 
     /**
@@ -35,13 +46,19 @@ class PageController extends Controller
     public function store(StorePageRequest $request)
     {
         $page = new Page;
-        $page->setTranslation('title', $request->getLocale(), $request->title);
-        $slug = Str::slug($request->slug);
-        if(! str_starts_with($slug, '/')){
-            $slug = '/' . $slug;
+        $page->setTranslation('title', app()->getLocale(), $request->title);
+        $slug = '/' . Str::slug($request->slug);
+        $page->setTranslation('slug', app()->getLocale(), $slug);
+        $pageType = 'page';
+        if(str_contains(request()->path(), 'admin/templates')) {
+            $pageType = 'template';
         }
-        $page->setTranslation('slug', $request->getLocale(), $slug);
+        $page->type = $pageType;
         $page->save();
+
+        if($pageType === 'template') {
+            return redirect()->route('admin.templates.edit', $page->id);
+        }
 
         return redirect()->route('admin.pages.edit', $page->id);
     }
@@ -57,16 +74,18 @@ class PageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Page $page)
+    public function edit($pageId)
     {
-        $allWidgets = Widget::all();
+        $page = Page::findOrFail($pageId);
         $pageWidgets = $page->widgets;
+        $pageType = $page->type;
+        if($pageType === 'template') {
+            $allWidgets = Widget::all();
+        } else {
+            $allWidgets = Widget::where('type', 'page')->get();
+        }
 
-        return view('admin.page.edit', compact('page', 'allWidgets', 'pageWidgets'));
-
-        // $widgets = $page->widgets()->orderBy('order')->get();
-        
-        // return view('admin.page.widget-builder', compact('page', 'widgets'));
+        return view('admin.page.edit', compact('page', 'allWidgets', 'pageWidgets', 'pageType'));
     }
 
     /**
@@ -74,10 +93,10 @@ class PageController extends Controller
      */
     public function update(UpdatePageRequest $request, Page $page)
     {
-        $page->title = request()->input('title');
-        $page->slug = request()->input('slug');
+        $page->setTranslation('title', app()->getLocale(), request()->input('title'));
+        $page->setTranslation('slug', app()->getLocale(), request()->input('slug'));
         $page->save();
-        
+
         return response()->json([
             'status' => 'ok',
             'message' => 'Page updated successfully.'

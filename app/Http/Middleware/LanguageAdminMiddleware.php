@@ -22,7 +22,7 @@ class LanguageAdminMiddleware
         if (empty( $locale)) {
             $locale = Language::where('default', true)->pluck('code')->first();
         }
-        App::setLocale($locale);
+        app()->setLocale($locale);
 
         return $next($request);
     }

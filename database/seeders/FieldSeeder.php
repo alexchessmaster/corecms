@@ -31,17 +31,5 @@ class FieldSeeder extends Seeder
         $field->type = 'text';
         $field->user_note = 'bye text';
         $field->save();
-
-        // $field = new Field;
-        // $field->widget_id = 5;
-        // $field->type = 'color';
-        // $field->user_note = 'bg color';
-        // $field->save();
-
-        // $field = new Field;
-        // $field->widget_id = 6;
-        // $field->type = 'select_option';
-        // $field->user_note = 'position';
-        // $field->save();
     }
 }

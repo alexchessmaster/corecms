@@ -1,27 +1,33 @@
 @extends('admin.partials.app')
+
+@if(isset($pageType) && $pageType === 'template')
+@section('content-card-title', 'Templates')
+@else
 @section('content-card-title', 'Pages')
+@endif
+
 @section('content-card-body')
 
     <div class="row">
         <div class="col-sm-12">
-            <form id="page_form" action="{{ route('admin.pages.store') }}" method="POST" >
+            <form id="page_form" action="{{ $pageType === 'page' ? route('admin.pages.store') : route('admin.templates.store') }}" method="POST" >
                 @csrf
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="page_title">Page title</label>
+                            <label for="page_title">{{ ucfirst($pageType) }} title</label>
                             <input type="text" name="title" class="form-control" id="page_title" aria-describedby=""
-                                placeholder="Page title" value="{{ !empty($page) ? $page->title : '' }}">
-                            <small id="" class="form-text text-muted">The title of the page.</small>
+                                placeholder="Page title" value="">
+                            <small id="" class="form-text text-muted">The title of the {{ $pageType }}.</small>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="page_slug">Page slug</label>
+                            <label for="page_slug">{{ ucfirst($pageType) }} slug</label>
                             <input type="text" name="slug" class="form-control" id="page_slug" aria-describedby=""
-                                placeholder="Page URL" value="{{ !empty($page) ? $page->slug : '' }}">
-                            <small class="form-text text-muted"><a id="visit-page" target="_blank"
-                                    href="{{ !empty($page) ? $page->slug : '' }}">{{ !empty($page) ? $page->slug : '' }}</a></small>
+                                placeholder="Page URL" value="">
+                            {{-- <small class="form-text text-muted"><a id="visit-page" target="_blank"
+                                    href="{{ !empty($page) ? $page->slug : '' }}">{{ !empty($page) ? $page->slug : '' }}</a></small> --}}
                         </div>
                     </div>
                 </div>

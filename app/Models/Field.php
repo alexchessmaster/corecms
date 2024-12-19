@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Widget;
+use App\Models\FieldValue;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 

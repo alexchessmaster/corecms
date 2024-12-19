@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->json('slug');//->index();
             $table->json('title');
-            $table->enum('template', ['blog', 'wide'])->default('blog');
+            $table->enum('type', ['page', 'template'])->default('page');
             $table->timestamps();
         });
     }

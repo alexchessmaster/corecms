@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('user_note')->nullable();
             $table->string('image')->nullable();
+            $table->enum('type', ['page', 'template'])->default('page');
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
