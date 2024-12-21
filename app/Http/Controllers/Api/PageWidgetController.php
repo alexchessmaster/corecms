@@ -14,6 +14,8 @@ use App\Http\Resources\WidgetResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PageWidgetResource;
 
+use function Laravel\Prompts\error;
+
 class PageWidgetController extends Controller
 {
     public function fieldValue($pageId, $position, $lang = 'en')
@@ -40,13 +42,19 @@ class PageWidgetController extends Controller
     {
         // Log::info(json_encode($request->all()));
         $inputs = $request->all();
+
         $language = $inputs['language'];
         app()->setLocale($language);
         $widgetPosition = $inputs['widget-position'];
         $pageId = $inputs['page-id'];
+        $widgetId = $inputs['widget-id'];
+        $widgetLocked = $inputs['widget-locked'];
         unset($inputs['language']);
         unset($inputs['widget-position']);
         unset($inputs['page-id']);
+        unset($inputs['widget-id']);
+        unset($inputs['widget-locked']);
+
         foreach($inputs as $inputKey => $inputValue){
 
             $inputKeyArr = explode('-', $inputKey);
@@ -58,7 +66,9 @@ class PageWidgetController extends Controller
                 }
             }
 
+            
             if (Str::startsWith($inputValue, 'data:') && Str::contains($inputValue, ';base64,')) {
+                // File widget
                 // Split the base64 string into MIME type and file content
                 $fileParts = explode(';base64,', $inputValue);
                 $mimeType = str_replace('data:', '', $fileParts[0]); // Extract MIME type
@@ -94,6 +104,8 @@ class PageWidgetController extends Controller
                     $fieldValueTmp = FieldValue::find($fieldValueId);
                     $fieldValueTmp->setTranslation('value', $language, $inputValue);
                     $fieldValueTmp->save();
+                } else {
+                    error('dsfkjdsjfjsdkf ' . json_encode(request()));
                 }
             } else {
                 $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $widgetPosition)->first();
@@ -103,10 +115,20 @@ class PageWidgetController extends Controller
                     $fieldValueTmp->page_widget_id = $pageWidget->id;
                     $fieldValueTmp->setTranslation('value', $language, $inputValue);
                     $fieldValueTmp->save();
+                } else {
+                    error('dsfkjdsjdsfsdfsdfsfjsdkf ' . json_encode(request()));
                 }
             }
 
-
+            if($widgetLocked === '1') {
+                // update FieldValue everywhere else
+                $pageWidgetIds = PageWidget::where('widget_id', $widgetId)->pluck('id');
+                $fieldValues = FieldValue::whereIn('page_widget_id', $pageWidgetIds)->where('field_id', $fieldId)->get();
+                foreach($fieldValues as $fieldValueTmp){
+                    $fieldValueTmp->setTranslation('value', $language, $inputValue);
+                    $fieldValueTmp->save();
+                }
+            }
         }
 
         return response()->json([

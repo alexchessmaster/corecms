@@ -23,7 +23,7 @@ class WidgetResource extends JsonResource
             "name" => $this->name,
             "user_note" => $this->user_note,
             "image" => $this->image,
-            "active" => $this->active,
+            "locked_fields_value" => $this->locked_fields_value,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             "fields" => $this->relationLoaded('fields') ? FieldResource::collection($this->fields) : null,

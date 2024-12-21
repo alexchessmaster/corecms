@@ -15,19 +15,19 @@ class FieldSeeder extends Seeder
     public function run(): void
     {
         $field = new Field;
-        $field->widget_id = 5;
+        $field->widget_id = 11;
         $field->type = 'text';
         $field->user_note = 'hello text';
         $field->save();
         
         $field = new Field;
-        $field->widget_id = 6;
+        $field->widget_id = 12;
         $field->type = 'text';
         $field->user_note = 'hi text';
         $field->save();
 
         $field = new Field;
-        $field->widget_id = 6;
+        $field->widget_id = 12;
         $field->type = 'text';
         $field->user_note = 'bye text';
         $field->save();

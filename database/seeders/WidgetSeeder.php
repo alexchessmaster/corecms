@@ -125,18 +125,6 @@ class WidgetSeeder extends Seeder
                 'image' => '/uploads/article_list_widget.jpeg',
                 'type' => 'page',
             ],
-            [//18
-                'name' => 'category_list',
-                'key' => Str::slug('category_list'),
-                'image' => '/uploads/category_list_widget.jpeg',
-                'type' => 'page',
-            ],
-            [//19
-                'name' => 'tag_list',
-                'key' => Str::slug('tag_list'),
-                'image' => '/uploads/tag_list_widget.jpeg',
-                'type' => 'page',
-            ],
         ]);
     }
 }

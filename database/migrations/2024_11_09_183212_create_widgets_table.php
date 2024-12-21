@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->enum('type', ['page', 'template'])->default('page');
             $table->boolean('active')->default(true);
+            $table->boolean('locked_fields_value')->default(false);
             $table->timestamps();
         });
     }

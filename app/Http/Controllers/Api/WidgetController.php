@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WidgetResource;
 use App\Http\Resources\FieldWithValueResource;
+use App\Http\Resources\PageWidgetResource;
+use App\Models\FieldValue;
 use stdClass;
 
 class WidgetController extends Controller
@@ -66,7 +68,10 @@ class WidgetController extends Controller
             return $field;
         });
 
-        return response()->json(FieldWithValueResource::collection($allFieldsWithValues));
+        return response()->json([
+            'widget' => new WidgetResource($widget),
+            'field_with_value' => FieldWithValueResource::collection($allFieldsWithValues)
+        ]);
     }
 
     public function attach()
@@ -87,54 +92,35 @@ class WidgetController extends Controller
         }
 
         // Get the current widgets attached to the page
-        // $existingWidgets = $page->widgets()->orderBy('position', 'asc')->get();
+        $pageWidgets = PageWidget::where('page_id', $page->id)->where('position', '>=', $addWidgetPosition)->get();
+        foreach($pageWidgets as $pageWidget) {
+            $pageWidget->increment('position');
+        }
+        $page->widgets()->attach($widgetId, ['position' => $addWidgetPosition]);
 
-        // info('addWidgetPosition=' . $addWidgetPosition . ' $widgetId=' . $widgetId . ' $pageId=' . $pageId);
-        // info(json_encode($existingWidgets));
-
-        // If no widgets are attached, attach the widget with position 0
-        // if ($existingWidgets->isEmpty()) {
-        //     $page->widgets()->attach($widgetId, ['position' => 0]);
-        // } else {
-            // $updatedWidgets = [];
-            // $positionUpdated = false;
-            // $i = 0;
-
-            // // Iterate through the existing widgets to reorganize positions
-            // foreach ($existingWidgets as $existingWidget) {
-            //     // If the position matches where we want to add the new widget
-            //     if (!$positionUpdated && $i == $addWidgetPosition) {
-            //         $updatedWidgets[] = ['id' => $widgetId, 'position' => $i];
-            //         $positionUpdated = true; // Mark that we've added the widget at the desired position
-            //     }
-
-            //     // Add the existing widget with its current position
-            //     $updatedWidgets[] = ['id' => $existingWidget->id, 'position' => $i];
-            //     $i++;
-            // }
-
-            // // If the new widget wasn't added, it goes to the end
-            // if (!$positionUpdated) {
-            //     $updatedWidgets[] = ['id' => $widgetId, 'position' => $i];
-            // }
-
-            // $page->widgets()->orderBy('position', 'asc')->get();
-
-            $pageWidgets = PageWidget::where('page_id', $page->id)->where('position', '>=', $addWidgetPosition)->get();
-
-            foreach($pageWidgets as $pageWidget) {
-                $pageWidget->increment('position');
+        if($widget->locked_fields_value) {
+            // if locked_fields_value is true, we need some null values for each field
+            $fields = $widget->fields;
+            $pageWidgetLast = PageWidget::where('widget_id', $widget->id)->orderBy('id', 'desc')->first();
+            foreach($fields as $field) {
+                $fieldValueTmp = new FieldValue;
+                $fieldValueTmp->field_id = $field->id;
+                $fieldValueTmp->page_widget_id = $pageWidgetLast->id;
+                $fieldValueTmp->value = null;
+                $fieldValueTmp->save();
             }
-
-            $page->widgets()->attach($widgetId, ['position' => $addWidgetPosition]);
-
-            // // Now, sync the widgets with the updated positions
-            // $page->widgets()->sync([]);
-            // foreach ($updatedWidgets as $widgetData) {
-            //     $page->widgets()->attach($widgetData['id'], ['position' => $widgetData['position']]);
-            // }
-        // }
-
+            
+            // initialize with the same values in another place when we add a new widget
+            // if there is another value for this widget, we should copy the old data and create new filed_values
+            $pageWidget = PageWidget::where('widget_id', $widget->id)->first();
+            $fieldValues = FieldValue::where('page_widget_id', $pageWidget->id)->get();
+            foreach($fieldValues as $fieldValue) {
+                $fieldValueTmp = FieldValue::where('field_id', $fieldValue->field_id)->where('page_widget_id', $pageWidgetLast->id)->first();
+                $fieldValueTmp->value = $fieldValue->value;
+                $fieldValueTmp->save();
+            }
+        }
+        
         return response()->json(['status' => 'success', 'pageWidgets' => $page->widgets]);
     }
 
@@ -153,11 +139,12 @@ class WidgetController extends Controller
         $widget = $page->widgets()->wherePivot('position', $positionId)->detach();
 
         // After detaching, reorganize the positions of the remaining widgets
-        $widgets = $page->widgets()->orderBy('position', 'asc')->get();
+        $pageWidgets = $page->pageWidgets()->orderBy('position', 'asc')->get();
 
         // Update positions for all remaining widgets
-        foreach ($widgets as $index => $widget) {
-            $page->widgets()->updateExistingPivot($widget->id, ['position' => $index]);
+        foreach ($pageWidgets as $index => $pageWidget) {
+            $pageWidget->position = $index;
+            $pageWidget->save();
         }
 
         return response()->json(['status' => 'success', 'message' => 'Widget detached successfully', 'pageWidgets' => $page->widgets]);

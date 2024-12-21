@@ -38,6 +38,7 @@ class WidgetController extends Controller
             'user_note' => 'nullable|string',
             'image' => 'nullable|image',
             'active' => 'required|boolean',
+            'locked_fields_value' => 'required|boolean',
         ]);
 
         $widget = new Widget($validated);
@@ -56,7 +57,7 @@ class WidgetController extends Controller
     public function edit($id)
     {
         $widget = Widget::findOrFail($id);
-        $fieldTypes = ['text', 'textarea_small', 'textarea_large', 'file', 'input', 'color', 'select_option'];
+        $fieldTypes = ['text', 'textarea_small', 'textarea_large', 'file', 'input', 'color', 'code', 'select_option_left_center_right', 'select_option_on_off'];
 
         return view('admin.widgets.edit', compact('widget', 'fieldTypes'));
     }
@@ -71,6 +72,7 @@ class WidgetController extends Controller
             'user_note' => 'nullable|string',
             'image' => 'nullable|image',
             'active' => 'required|boolean',
+            'locked_fields_value' => 'required|boolean',
         ]);
 
         $widget->fill($validated);

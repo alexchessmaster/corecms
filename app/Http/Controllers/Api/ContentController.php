@@ -72,9 +72,9 @@ class ContentController extends Controller
         $languages = Language::all();
         $menus = Menu::all();
         $responseData = [
-            'settings' => SettingResource::collection($settings),
-            'languages' => LanguageResource::collection($languages),
-            'menus' => MenuResource::collection($menus),
+            // 'settings' => SettingResource::collection($settings),
+            // 'languages' => LanguageResource::collection($languages),
+            // 'menus' => MenuResource::collection($menus),
             'page' => collect(),
             'article' => collect(),
             'category' => collect(),
@@ -99,7 +99,11 @@ class ContentController extends Controller
             }
         } else {
             $articlePath = $pathArray[2];
-            $article = Article::with(['category', 'tags'])->where('slug->' . app()->getLocale(), $articlePath)->first();
+            $article = Article::with(['category', 'tags', 
+                'page.pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
+                'page.pageWidgets.widget',
+                'page.pageWidgets.fieldValues.field',
+            ])->where('slug->' . app()->getLocale(), $articlePath)->first();
             if($article) {
                 $responseData["article"] = ArticleResource::make($article);
             } else {

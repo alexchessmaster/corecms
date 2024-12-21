@@ -37,6 +37,15 @@
             }
         </style>
 
+        <style>
+            @media screen and (min-width: 768px) {
+                #widgetOptions .field-type-option .card-body .card-title {
+                    overflow-wrap: break-word !important;
+                    max-width: 122px;
+                }
+            }
+        </style>
+
         <!-- Modal Widget Box -->
         <div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="Label"
             aria-hidden="true">

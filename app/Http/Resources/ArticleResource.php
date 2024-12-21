@@ -27,7 +27,7 @@ class ArticleResource extends JsonResource
             "category" => $this->relationLoaded('category') ? new CategoryResource($this->category) : null,
             "tags" => $this->relationLoaded('tags') ? TagResource::collection($this->tags) : null,
             "template_page_id" => $this->template_page_id,
-            "page_title" => $this->relationLoaded('page') ? $this->page->title : null,
+            "template_page" => $this->relationLoaded('page') ? new PageResource($this->page) : null,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
         ];

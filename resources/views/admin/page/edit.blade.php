@@ -201,7 +201,7 @@
             }
         });
 
-        const createHiddenInformationInput = (pageId, widgetPosition) => {
+        const createInformationInputs = (pageId, widgetPosition, widget) => {
             const divEl = document.createElement('div');
             divEl.classList.add('col-md-12');
             
@@ -220,9 +220,27 @@
             languageInputEl.type = 'hidden';
             languageInputEl.value = currentLanguage;
 
+            const widgetInputEl = document.createElement('input');
+            widgetInputEl.name = 'widget-id';
+            widgetInputEl.type = 'hidden';
+            widgetInputEl.value = widget.id;
+
+            const widgetLockedInputEl = document.createElement('input');
+            widgetLockedInputEl.name = 'widget-locked';
+            widgetLockedInputEl.type = 'hidden';
+            widgetLockedInputEl.value = widget.locked_fields_value;
+
+            const widgetLockedMessageEl = document.createElement('div');
+            widgetLockedMessageEl.innerHTML = '<div><small class="form-text mb-4 text-muted"><span style="color:red;">* </span>This widget is locked. if you change the values, everywhere else that you used this widget, the values will change.</small></div>';
+
             divEl.appendChild(pageIdInputEl);
             divEl.appendChild(widgetPositionInputEl);
             divEl.appendChild(languageInputEl);
+            divEl.appendChild(widgetInputEl);
+            divEl.appendChild(widgetLockedInputEl);
+            if(widget.locked_fields_value) {
+                divEl.appendChild(widgetLockedMessageEl);
+            }
 
             document.getElementById('field-edit-container').appendChild(divEl);
         };
@@ -249,6 +267,31 @@
             //     <label for="name" class="form-label">Name</label>
             //     <input type="text" name="name" id="name" class="form-control"
             //         value="{{ old('name', $widget->name ?? '') }}" required>
+            // </div>
+        };
+
+        const createCodeInput = (item) => {
+            const divEl = document.createElement('div');
+            divEl.classList.add('col-md-12');
+
+            const labelEl = document.createElement('label');
+            labelEl.textContent = item.user_note + ':';
+            labelEl.classList.add('form-label');
+            
+            const textareaEl = document.createElement('textarea');
+            textareaEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
+            textareaEl.classList.add('form-control');
+            textareaEl.innerHTML = item?.vf?.value;
+
+            divEl.appendChild(labelEl);
+            divEl.appendChild(textareaEl);
+
+            document.getElementById('field-edit-container').appendChild(divEl);
+            // <div class="mb-3">
+            //     <label for="name" class="form-label">Name</label>
+            //     <textarea type="text" name="name" id="name" class="form-control">
+            //         {{ old('name', $widget->name ?? '') }}
+            //     </textarea>
             // </div>
         };
 
@@ -302,21 +345,23 @@
             // </div>
         }
 
-        const createSelectInput = (item) => {
+        const createSelectInput = (item, optionsArray) => {
             const divEl = document.createElement('div');
             divEl.classList.add('form-group', 'col-md-12');
 
             const labelEl = document.createElement('label');
             labelEl.setAttribute('for', 'alignmentSelect');
-            labelEl.textContent = 'Alignment';
+            labelEl.textContent = 'Select';
 
             const selectEl = document.createElement('select');
             selectEl.classList.add('form-control');
             selectEl.id = 'alignmentSelect';
             selectEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
 
+            
             // Add options for alignment: left, center, right
-            ['left', 'center', 'right'].forEach(optionValue => {
+            // ['left', 'center', 'right']
+            optionsArray.forEach(optionValue => {
                 const optionEl = document.createElement('option');
                 optionEl.textContent = optionValue;
                 optionEl.value = optionValue;
@@ -588,14 +633,17 @@
                     .then(res => res.json())
                     .then(data => data);
 
-                createHiddenInformationInput(pageId, widgetPosition);
-                allFieldsWithValues.forEach((item, index) => {
+                createInformationInputs(pageId, widgetPosition, allFieldsWithValues.widget);
+                allFieldsWithValues.field_with_value.forEach((item, index) => {
                     switch(item.type){
                         case 'color':
                             createColorPickerInput(item);
                             break;
-                        case 'select_option':
-                            createSelectInput(item);
+                        case 'select_option_left_center_right':
+                            createSelectInput(item, ['left', 'center', 'right']);
+                            break;
+                        case 'select_option_on_off':
+                            createSelectInput(item, ['on', 'off']);
                             break;
                         case 'text':
                             createTextareaInput(item, 'text');
@@ -611,6 +659,9 @@
                             break;
                         case 'file':
                             createFileInput(item);
+                            break;
+                        case 'code':
+                            createCodeInput(item);
                             break;
 
                     }
