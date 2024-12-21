@@ -8,11 +8,13 @@ use App\Models\Setting;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ArticleResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\SettingResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\UserResource;
+use App\Models\Article;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\Auth;
@@ -74,20 +76,37 @@ class ContentController extends Controller
             'languages' => LanguageResource::collection($languages),
             'menus' => MenuResource::collection($menus),
             'page' => collect(),
+            'article' => collect(),
+            'category' => collect(),
+            'tag' => collect(),
             'auth' => collect(),
         ];
         
-        $page = Page::with([
-            'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
-            'pageWidgets.widget',
-            'pageWidgets.fieldValues.field',
-        ])->where('slug->' . app()->getLocale(), $path)->first();
-
+        $pathArray = explode('/', $path);
         $responseCode = 200;
-        if ($page) {
-            $responseData["page"] = PageResource::make($page);
+        if(count($pathArray) < 3) {
+            $page = Page::with([
+                'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
+                'pageWidgets.widget',
+                'pageWidgets.fieldValues.field',
+            ])->where('slug->' . app()->getLocale(), $path)->first();
+            if ($page) {
+                $responseData["page"] = PageResource::make($page);
+            } else {
+                // search for category
+                // search for tag
+                $responseCode = 404;
+            }
         } else {
-            $responseCode = 404;
+            $articlePath = $pathArray[2];
+            $article = Article::with(['category', 'tags'])->where('slug->' . app()->getLocale(), $articlePath)->first();
+            if($article) {
+                $responseData["article"] = ArticleResource::make($article);
+            } else {
+                $responseCode = 404;
+            }
+
+            
         }
 
         if (auth()->check()) {

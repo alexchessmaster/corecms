@@ -9,14 +9,24 @@
     <div class="mb-2" id="preview-container" style="display: none;">
         <img id="image-preview" style="max-width: 150px; height: auto;" />
     </div>
-    <input type="file" class="form-control" id="image" name="image" required>
+    <input type="file" class="form-control" id="image" name="image" 
+    @if(!(isset($article) && $article->image))
+    required
+    @endif
+    >
 </div>
-
 <div class="mb-3">
     <label for="title" class="form-label">Title</label>
     <input type="text" class="form-control" id="title" name="title" 
            value="{{ isset($article) ? $article->getTranslation('title', app()->getLocale(), false) : '' }}" required>
 </div>
+@if(isset($article))
+<div class="mb-3">
+    <label for="slug" class="form-label">Slug</label>
+    <input type="text" class="form-control" id="slug" name="slug" 
+           value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
+</div>
+@endif
 <div class="mb-3">
     <label for="content" class="form-label">Content</label>
     <textarea class="form-control tinymce" id="content" name="content" rows="5" required>

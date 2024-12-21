@@ -22,7 +22,7 @@ class PageWidgetResource extends JsonResource
             "widget_id" => $this->widget_id,
             "widget" => $this->relationLoaded('widget') ? new WidgetResource($this->widget) : null,
             "position" => $this->position,
-            "fieldValues" => $this->relationLoaded('fieldValues') ? FieldValueResource::collection($this->fieldValues) : null,
+            "field_values" => $this->relationLoaded('fieldValues') ? FieldValueResource::collection($this->fieldValues) : null,
         ];
 
         return $data;

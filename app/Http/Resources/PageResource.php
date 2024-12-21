@@ -22,7 +22,7 @@ class PageResource extends JsonResource
             "title" => $this->title,
             "template" => $this->blog,
             "widgets" => $this->relationLoaded('widgets') ? WidgetResource::collection($this->widgets) : null,
-            "pageWidgets" => $this->relationLoaded('pageWidgets') ? PageWidgetResource::collection($this->pageWidgets) : null,
+            "page_widgets" => $this->relationLoaded('pageWidgets') ? PageWidgetResource::collection($this->pageWidgets) : null,
 
             // "widget and fields"
         ];

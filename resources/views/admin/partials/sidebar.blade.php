@@ -104,14 +104,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/admin/upload" class="nav-link" target="_blank">
-                    <i class="nav-icon fas fa-upload"></i>
-                    <p>
-                        Upload
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="/admin/users" class="nav-link">
                     <i class="nav-icon fas fa-users"></i>
                     <p>
@@ -124,6 +116,14 @@
                     <i class="nav-icon fas fa-cogs"></i>
                     <p>
                         Settings
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/upload" class="nav-link" target="_blank">
+                    <i class="nav-icon fas fa-upload"></i>
+                    <p>
+                        Upload
                     </p>
                 </a>
             </li>
