@@ -105,6 +105,16 @@ class ContentController extends Controller
                 'page.pageWidgets.fieldValues.field',
             ])->where('slug->' . app()->getLocale(), $articlePath)->first();
             if($article) {
+                // TODO: plan for nested categories
+                // first check if nested categories, return nested category page with related articles, then check for articles
+                // TODO: add slug to category
+                // TODO: if category is not correct, should return 404
+                // TODO: add slug to tag
+                // TODO: if tag is not correct, should return 404
+                // TODO: redirect table
+                // TODO: not-found table
+                // TODO: db-back-up script
+                // TODO: visitors and statistic 
                 $responseData["article"] = ArticleResource::make($article);
             } else {
                 $responseCode = 404;

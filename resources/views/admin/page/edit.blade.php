@@ -591,44 +591,8 @@
                 emptyFieldEditContainer();
                 const widgetPosition = widget.pivot.position;
                 const pageId = '{!! $page->id !!}';
-                // Add your edit functionality here
-                // get widget fields
-                // TODO: we should go to the fieldValue here: not widget
-                // let allFields = await fetch(`/api/widgets/${widget.id}`)
-                //     .then(res => res.json())
-                //     .then(data => {
-                //         return data.fields
-                //         // .forEach(item => {
-                //         //     console.log('item', item)
-                //         // })
-                //     });
 
-                // console.log('allFields', allFields)
-                
-                // let allFieldValues = await fetch(`/api/pages/${pageId}/widget-position/${widgetPosition}/field-values/${currentLanguage}`)
-                //     .then(res => res.json())
-                //     .then(data => {
-                //         // console.log('dataaaaa', data);
-                //         return data.fieldValues;
-                //     });
-
-                // console.log('allFieldValues', allFieldValues)
-
-                // let allFieldsWithValues = [];
-                // allFields.forEach(field => {
-                //     allFieldValues.forEach((fieldValue) => {
-                //         if(field.id === fieldValue.field_id) {
-                //             // console.log('field', field)
-                //             const exists = allFieldsWithValues.some(item => item.id === field.id);
-                //             if(!exists) {
-                //                 field.vf = fieldValue
-                //                 // TODO: we should take care of repeated data  
-                //             }
-                //         }
-                //     })
-                //     allFieldsWithValues.push(field)
-                // });
-
+                // Add edit functionality here
                 let allFieldsWithValues = await fetch(`/api/page/${pageId}/widget/${widget.id}/widget-position/${widgetPosition}/fields-with-values/${currentLanguage}`)
                     .then(res => res.json())
                     .then(data => data);

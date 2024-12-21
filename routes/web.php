@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// TODO: get the fields value here first
+
 Route::get('test', function () {
     // $page = Page::find(1);
 
