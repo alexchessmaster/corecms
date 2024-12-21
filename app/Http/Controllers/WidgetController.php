@@ -7,7 +7,6 @@ use App\Models\Field;
 use App\Models\Widget;
 use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
-use App\Helpers\WidgetHelper;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\WidgetDefaultValueHelper;
 use App\Http\Requests\StoreWidgetRequest;
