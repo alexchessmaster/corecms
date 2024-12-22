@@ -22,7 +22,7 @@ class Article extends Model
         static::creating(function($article){
             if(empty($article->slug)){
                 // TODO: we need slug-2 slug-3 and ... if duplicated
-                $article->slug = Str::slug($article->title);
+                $article->setTranslation('slug', app()->getLocale(), Str::slug($article->title));
             }
         });
     }

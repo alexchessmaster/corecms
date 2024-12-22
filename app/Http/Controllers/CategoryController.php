@@ -25,6 +25,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
         ]);
@@ -49,6 +50,8 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string',
+            'slug' => 'required|string|max:255',
         ]);
 
         $category->setTranslation('name', app()->getLocale(), $request->name);

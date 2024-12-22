@@ -546,7 +546,9 @@
 
             // Create the img element for the widget image
             const imgEl = document.createElement('img');
-            imgEl.src = widget.image; // Use the widget's image URL
+            if(widget.image) {
+                imgEl.src = widget.image; // Use the widget's image URL
+            }
             imgEl.alt = 'Option 12345';
             imgEl.classList.add('card-img-top');
 

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->json('name'); // Translatable field
+            $table->json('slug'); // Translatable field
             $table->json('description')->nullable(); // Translatable field
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->unsignedBigInteger('template_page_id')->nullable();

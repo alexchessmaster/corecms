@@ -72,9 +72,9 @@ class ContentController extends Controller
         $languages = Language::all();
         $menus = Menu::all();
         $responseData = [
-            // 'settings' => SettingResource::collection($settings),
-            // 'languages' => LanguageResource::collection($languages),
-            // 'menus' => MenuResource::collection($menus),
+            'settings' => SettingResource::collection($settings),
+            'languages' => LanguageResource::collection($languages),
+            'menus' => MenuResource::collection($menus),
             'page' => collect(),
             'article' => collect(),
             'category' => collect(),

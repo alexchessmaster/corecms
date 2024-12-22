@@ -30,11 +30,17 @@
     <!-- summernote -->
     <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css">
 
-
     @yield('style')
     @stack('styles')
 
-
+    <!-- add asterisk in front of the labels with required class -->
+    <style>
+        label.required::after {
+            content: "*";
+            color: red;
+            margin-left: 5px;
+        }
+    </style>
 
 </head>
 

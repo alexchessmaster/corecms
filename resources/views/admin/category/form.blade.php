@@ -1,7 +1,20 @@
 <div class="mb-3">
-    <label for="name" class="form-label">Name</label>
+    <label for="name" class="form-label required">Name</label>
     <input type="text" class="form-control" id="name" name="name"
         value="{{ isset($category) ? $category->getTranslation('name', app()->getLocale(), false) : '' }}" required>
+</div>
+<div class="mb-3">
+    <label for="slug" class="form-label
+        @if(isset($category))
+            required
+        @endif
+    ">Slug</label>
+    <input type="text" class="form-control" id="slug" name="slug"
+        value="{{ isset($category) ? $category->getTranslation('slug', app()->getLocale(), false) : '' }}" 
+        @if(isset($category))
+            required
+        @endif
+    >
 </div>
 <div class="mb-3">
     <label for="parent_id" class="form-label">Parent Category</label>
@@ -16,7 +29,7 @@
     </select>
 </div>
 <div class="mb-3">
-    <label for="description" class="form-label">Description</label>
+    <label for="description" class="form-label required">Description</label>
     <textarea class="form-control tinymce" id="description" name="description" rows="5" required>
         {{ isset($category) ? $category->getTranslation('description', app()->getLocale(), false) : '' }}
     </textarea>
