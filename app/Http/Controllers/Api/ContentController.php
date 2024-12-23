@@ -70,7 +70,7 @@ class ContentController extends Controller
 
         $settings = Setting::all();
         $languages = Language::all();
-        $menus = Menu::all();
+        $menus = Menu::with('children')->get();
         $responseData = [
             'settings' => SettingResource::collection($settings),
             'languages' => LanguageResource::collection($languages),

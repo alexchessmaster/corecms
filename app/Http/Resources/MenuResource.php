@@ -20,6 +20,7 @@ class MenuResource extends JsonResource
             "name" => $this->name,
             "link" => $this->link,
             "parent_id" => $this->parent_id,
+            "children" => $this->relationLoaded('children') ? MenuResource::collection($this->children) : null,
             "order" => $this->order,
             "is_active" => $this->is_active,
         ];

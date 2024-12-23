@@ -21,6 +21,7 @@ class CategoryResource extends JsonResource
             "slug" => $this->slug,
             "description" => $this->description,
             "parent_id" => $this->parent_id,
+            "children" => $this->relationLoaded('children') ? CategoryResource::collection($this->children) : null,
             "template_page_id" => $this->template_page_id,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
