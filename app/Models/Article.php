@@ -12,8 +12,8 @@ class Article extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['image', 'title', 'slug', 'content', 'category_id'];
-    public $translatable = ['title', 'slug','content'];
+    protected $fillable = ['image', 'title', 'slug', 'content', 'category_id', 'description'];
+    public $translatable = ['title', 'slug','content', 'description'];
 
     protected static function boot()
     {

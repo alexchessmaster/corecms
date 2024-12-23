@@ -32,6 +32,7 @@ class ArticleController extends Controller
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1500',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|array',
@@ -53,6 +54,7 @@ class ArticleController extends Controller
         }
 
         $article->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->setTranslation('content', app()->getLocale(), $request->input('content'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
@@ -77,6 +79,7 @@ class ArticleController extends Controller
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1500',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|array',
@@ -98,6 +101,7 @@ class ArticleController extends Controller
         $article->setTranslation('title', app()->getLocale(), $request->input('title'));
         $article->setTranslation('content', app()->getLocale(), $request->input('content'));
         $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
         $article->save();

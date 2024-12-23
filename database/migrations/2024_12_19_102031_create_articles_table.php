@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->json('title');
             $table->json('slug');
+            $table->json('description')->nullable();
             $table->json('content');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('category_id');
