@@ -250,7 +250,7 @@
             divEl.classList.add('col-md-12');
 
             const labelEl = document.createElement('label');
-            labelEl.textContent = item.user_note + ':';
+            labelEl.textContent = item.key + ':';
             labelEl.classList.add('form-label');
             
             const inputEl = document.createElement('input');
@@ -275,7 +275,7 @@
             divEl.classList.add('col-md-12');
 
             const labelEl = document.createElement('label');
-            labelEl.textContent = item.user_note + ':';
+            labelEl.textContent = item.key + ':';
             labelEl.classList.add('form-label');
             
             const textareaEl = document.createElement('textarea');
@@ -300,7 +300,7 @@
             divGroup.classList.add('form-group', 'col-md-12', 'mt-3');
 
             const labelEl = document.createElement('label');
-            labelEl.textContent = item.user_note + ':' || 'Color picker with addon:';
+            labelEl.textContent = item.key + ':' || 'Color picker with addon:';
             divGroup.appendChild(labelEl);
 
             const inputGroup = document.createElement('div');
@@ -393,7 +393,7 @@
             divEl.classList.add('col-md-12');
 
             const labelEl = document.createElement('label');
-            labelEl.textContent = item.user_note + ':';
+            labelEl.textContent = item.key + ':';
             labelEl.classList.add('form-label');
             
             const textareaEl = document.createElement('textarea');

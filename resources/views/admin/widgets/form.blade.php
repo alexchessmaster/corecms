@@ -20,8 +20,8 @@
     </div>
 
     <div class="mb-3">
-        <label for="user_note" class="form-label">User Note</label>
-        <textarea name="user_note" id="user_note" class="form-control">{{ old('user_note', $widget->user_note ?? '') }}</textarea>
+        <label for="key" class="form-label">User Note</label>
+        <textarea name="key" id="key" class="form-control">{{ old('key', $widget->key ?? '') }}</textarea>
     </div>
 
     <div class="mb-3">

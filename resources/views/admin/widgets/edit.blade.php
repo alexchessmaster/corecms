@@ -59,8 +59,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="field_user_note" class="form-label">User Note</label>
-                            <textarea name="field_user_note" id="field_user_note" class="form-control">{{ old('user_note', $field->user_note ?? '') }}</textarea>
+                            <label for="field_key" class="form-label required">Field Key</label>
+                            <input value="{{ old('key', $field->key ?? '') }}" name="field_key" id="field_key" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <h5 class="modal-title" id="Label">Choose field type</h5>
@@ -120,10 +120,10 @@
         document.getElementById('confirmSelection').addEventListener('click', function() {
             const selectedOption = document.querySelector('.field-type-option.selected');
             if (selectedOption) {
-                const userNote = document.getElementById('field_user_note');
+                const key = document.getElementById('field_key');
                 const fieldType = selectedOption.getAttribute('data-value');
-
-                fetch('/api/fields ', {
+                if(key.value !== ""){
+                    fetch('/api/fields ', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -131,19 +131,16 @@
                         body: JSON.stringify({
                             widget_id: '{{ $widget->id }}',
                             type: fieldType,
-                            user_note: userNote.value,
+                            key: key.value,
                         })
-                    })
-                    .then(response => {
+                    }).then(response => {
                         return response.json();
-                    })
-                    .then(data => {
+                    }).then(data => {
                         console.log('updated', data)
 
                         refreshFieldsList();
                     })
-
-
+                }
             } else {
                 alert('Please select a widget.');
             }
@@ -167,7 +164,7 @@
             // Create the title (h5 element)
             const cardTitle = document.createElement('h5');
             cardTitle.classList.add('card-title');
-            cardTitle.innerHTML = '<strong>' + field.user_note + '</strong>' + ' type: <strong>' + field.type + '</strong>'; // Use the widget's name
+            cardTitle.innerHTML = '<strong>' + field.key + '</strong>' + ' type: <strong>' + field.type + '</strong>'; // Use the widget's name
 
             // Create the Delete button with an icon
             const deleteBtn = document.createElement('button');
@@ -207,7 +204,7 @@
         }
         let addWidgetButtonPosition = null;
         const refreshFieldsList = () => {
-            document.getElementById('field_user_note').value = '';
+            document.getElementById('field_key').value = '';
             widgetContainer.innerHTML = null;
             fetch('/api/widgets/{!! $widget->id !!}')
                 .then(response => {

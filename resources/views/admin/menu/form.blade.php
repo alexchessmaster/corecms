@@ -1,19 +1,19 @@
 <div class="form-group">
-    <label for="exampleInputEmail1">Name</label>
+    <label for="exampleInputEmail1 required">Name</label>
     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter name"
         name="name" value="{{ isset($menu) ? $menu->name : '' }}">
     <small id="name" class="form-text text-muted">Name of the menu</small>
 </div>
 
 <div class="group">
-    
-
-
-
+    <label for="exampleInputEmail1 required">Link</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter link"
+        name="link" value="{{ isset($menu) ? $menu->link : '' }}">
+    <small id="link" class="form-text text-muted">Link of the menu</small>
 </div>
 
 <div class="form-group">
-    <label for="exampleFormControlSelect12">Position</label>
+    <label for="exampleFormControlSelect12 required">Position</label>
     <select class="form-control" name="order" id="exampleFormControlSelect12">
         @if (isset($menu))
             <option value="">- Keep current position</option>

@@ -32,8 +32,8 @@
     <textarea class="form-control" id="description" name="description" rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
-    <label for="content" class="form-label">Content</label>
-    <textarea class="form-control tinymce" id="content" name="content" rows="5" required>{{ isset($article) ? $article->getTranslation('content', app()->getLocale(), false) : '' }}</textarea>
+    <label for="content" class="form-label required">Content</label>
+    <textarea class="form-control tinymce" id="content" name="content" rows="5" >{{ isset($article) ? $article->getTranslation('content', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
     <label for="category_id" class="form-label">Category</label>

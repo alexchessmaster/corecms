@@ -4,16 +4,13 @@
         value="{{ isset($category) ? $category->getTranslation('name', app()->getLocale(), false) : '' }}" required>
 </div>
 <div class="mb-3">
-    <label for="slug" class="form-label
-        @if(isset($category))
-            required
-        @endif
-    ">Slug</label>
+    <label for="slug" class="form-label" >Slug</label>
     <input type="text" class="form-control" id="slug" name="slug"
         value="{{ isset($category) ? $category->getTranslation('slug', app()->getLocale(), false) : '' }}" 
         @if(isset($category))
             required
         @endif
+        disabled
     >
 </div>
 <div class="mb-3">
