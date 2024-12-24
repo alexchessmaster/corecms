@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Tag;
 use App\Models\Menu;
 use App\Models\Page;
+use App\Models\Article;
 use App\Models\Setting;
+use App\Models\Category;
 use App\Models\Language;
 use Illuminate\Http\Request;
+use function Pest\Laravel\json;
+use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ArticleResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
-use App\Http\Resources\SettingResource;
-use App\Http\Resources\LanguageResource;
 use App\Http\Resources\UserResource;
-use App\Models\Article;
-use App\Models\Category;
-use Barryvdh\Debugbar\Facades\Debugbar;
-use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ArticleResource;
+use App\Http\Resources\SettingResource;
+use Barryvdh\Debugbar\Facades\Debugbar;
 
-use function Pest\Laravel\json;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\LanguageResource;
+use DebugBar\DebugBar as DebugBarDebugBar;
 
 class ContentController extends Controller
 {
@@ -89,9 +92,9 @@ class ContentController extends Controller
             $responseData["auth"] = UserResource::make(auth()->user());
         }
         
-        
         $responseCode = 200;
         
+        // Is Page
         $page = Page::with([
             'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
             'pageWidgets.widget',
@@ -103,10 +106,23 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
-        $category = Category::with(['articles' => fn($query) => $query->limit(10)])->where('slug', $path);
+        // Is Category
+        $category = Category::with(['children', 'parent'])->where('slug->' . app()->getLocale(), $path)->first();//with(['articles' => fn($query) => $query->limit(10)])->
+        if($category) {
+            $responseData["category"] = CategoryResource::make($category);
 
+            return response()->json(['data' => $responseData], $responseCode); 
+        }
 
-        
+        // Is Tag
+        $tag = Tag::where('name->' . app()->getLocale(), $path)->first();// with(['articles' => fn($query) => $query->limit(10)])->
+        if($tag) {
+            $responseData["tag"] = TagResource::make($tag);
+
+            return response()->json(['data' => $responseData], $responseCode); 
+        }
+
+        // Is Article
         $article = Article::with(['category', 'tags', 
             'page.pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
             'page.pageWidgets.widget',
@@ -114,24 +130,21 @@ class ContentController extends Controller
         ])->where('slug->' . app()->getLocale(), $path)->first();
         if($article) {
             //make a front-end for this backend and check if we have everything we need
-
-            // TODO: plan for nested categories
-            // first check if nested categories, return nested category page with related articles, then check for articles
-            // TODO: if category is not correct, should return 404
-            // TODO: add slug to tag
-            // TODO: if tag is not correct, should return 404
             // TODO: redirect table
             // TODO: not-found table
             // TODO: db-back-up script
-            // TODO: visitors and statistic 
+            // TODO: visitors and statistic
 
             // here check if category is correct do it, otherwise return 404
             $responseData["article"] = ArticleResource::make($article);
 
-            return response()->json(['data' => $responseData], $responseCode);            
+            return response()->json(['data' => $responseData], $responseCode);
         }
 
+        // Is Redirect
 
+        // Is 404
+        $responseCode = 404;
 
         // $responseData["debuger"] = debugbar()->getData();
 
@@ -144,7 +157,8 @@ class ContentController extends Controller
         // $sort = "newest", "most_views", "oldest", ...
         // $limit = 10;
         // $tag = "Tag Name";
-        $limit = request()->limit ?? 10;
+        $page = request()->page ?? 1;
+        $perPage = request()->per_page ?? 10;
         $sort = request()->sort ?? "newest";
         $category = request()->category ?? "";
         $tag = request()->tag ?? ""; // tag is common, not tags
@@ -163,7 +177,9 @@ class ContentController extends Controller
         } else if ($sort === "most_view") {
             // count views on articles
         }
-        $query->limit($limit);
+        $offset = $perPage * ($page - 1);
+        $query->offset($offset);
+        $query->limit($perPage);
         $articles = $query->get();
 
         return ArticleResource::collection($articles);
