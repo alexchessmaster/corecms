@@ -1,0 +1,99 @@
+<?php
+
+namespace App\Observers;
+
+use App\Models\Category;
+use Illuminate\Support\Str;
+
+class CategoryObserver
+{
+    /**
+     * Handle the Article "creating" event.
+     */
+    public function creating(Category $category)
+    {
+        $category->slug = $this->generateSlug($category);
+    }
+
+    /**
+     * Handle the category "updating" event.
+     */
+    public function updating(Category $category)
+    {
+        if ($category->isDirty('name') || $category->isDirty('parent_id') || empty($category->slug)) {
+            $category->slug = $this->generateSlug($category, $category->id);
+        }
+    }
+
+    /**
+     * Generate a unique slug for the article.
+     */
+    private function generateSlug(Category $category, $ignoreId = null)
+    {
+        $slug = rtrim($this->getFullLink($category), '/');
+        $slug = '/' . ltrim($slug, '/');     
+        // Handle duplicate slugs
+        $originalSlug = $slug;
+        $counter = 2;
+        while (Category::where('slug->' . app()->getLocale(), $slug)
+            ->when($ignoreId, fn($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()
+        ) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Get the full link based on the category hierarchy.
+     */
+    private function getFullLink($category, $link = "")
+    {
+        // Handle missing category
+        if (empty($category)) {
+            return "/" . $link;
+        }
+        $slug = Str::slug($category->name);
+        // Root category check
+        if (empty($category->parent_id)) {
+            return $slug . "/" . $link;
+        }
+        $parentCategory = Category::find($category->parent_id);
+        // Recursive call for parent category
+        return $this->getFullLink($parentCategory, $slug . "/");
+    }
+
+    /**
+     * Handle the Category "updated" event.
+     */
+    public function updated(Category $category): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Category "deleted" event.
+     */
+    public function deleted(Category $category): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Category "restored" event.
+     */
+    public function restored(Category $category): void
+    {
+        //
+    }
+
+    /**
+     * Handle the Category "force deleted" event.
+     */
+    public function forceDeleted(Category $category): void
+    {
+        //
+    }
+}

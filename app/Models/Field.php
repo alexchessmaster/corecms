@@ -14,6 +14,11 @@ class Field extends Model
     protected $translatable = ['value'];
     protected $guarded = [];
 
+    public static function getTypes()
+    {
+        return ['input', 'textarea_one_line', 'textarea_small', 'textarea_large', 'file', 'color', 'code', 'select_option_left_center_right', 'select_option_on_off'];
+    }
+
     public function widgets()
     {
         return $this->belongsTo(Widget::class);

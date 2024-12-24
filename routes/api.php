@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/content', [ContentController::class, 'fetchContent']);
+Route::post('/articles', [ContentController::class, 'fetchArticles']);
 // Route::get('/common-data', [CommonDataController::class, 'index']);
 
 Route::apiResource('/pages', PageController::class);
@@ -23,5 +24,4 @@ Route::patch('/pages/widget-position/update-field-value', [PageWidgetController:
 Route::patch('/widgets/detach', [WidgetController::class, 'detach']);
 Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
 Route::get('/widgets/{id}', [WidgetController::class, 'show']);
-// Route::apiResource('/widgets', WidgetController::class);
 Route::apiResource('/fields', FieldController::class);

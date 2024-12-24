@@ -51,7 +51,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'slug' => 'required|string|max:255',
+            // 'slug' => 'required|string|max:255',
         ]);
 
         $category->setTranslation('name', app()->getLocale(), $request->name);

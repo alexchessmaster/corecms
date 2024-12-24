@@ -22,7 +22,7 @@ class FieldResource extends JsonResource
             // "value" => FieldValueResource::collection($this->values),
             "type" => $this->type,
             // "order" => $this->order,
-            "user_note" => $this->user_note,
+            "key" => $this->key,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
         ];

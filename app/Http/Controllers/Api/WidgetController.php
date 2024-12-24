@@ -59,7 +59,7 @@ class WidgetController extends Controller
                 $tmpField = new \stdClass;
                 $tmpField->id = $matchingFieldValue->field->id;
                 $tmpField->page_widget_id = $matchingFieldValue->field->page_widget_id;
-                $tmpField->user_note = $matchingFieldValue->field->user_note;
+                $tmpField->key = $matchingFieldValue->field->key;
                 $tmpField->type = $matchingFieldValue->field->type;
 
                 $field->vf->field = $tmpField;

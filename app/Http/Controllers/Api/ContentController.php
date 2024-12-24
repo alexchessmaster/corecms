@@ -15,6 +15,7 @@ use App\Http\Resources\SettingResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\UserResource;
 use App\Models\Article;
+use App\Models\Category;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\Auth;
@@ -70,68 +71,101 @@ class ContentController extends Controller
 
         $settings = Setting::all();
         $languages = Language::all();
-        $menus = Menu::with('children')->get();
+        $menus = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
         $responseData = [
-            'settings' => SettingResource::collection($settings),
-            'languages' => LanguageResource::collection($languages),
-            'menus' => MenuResource::collection($menus),
+            
             'page' => collect(),
             'article' => collect(),
             'category' => collect(),
             'tag' => collect(),
             'auth' => collect(),
+
+            'settings' => SettingResource::collection($settings),
+            'languages' => LanguageResource::collection($languages),
+            'menus' => MenuResource::collection($menus),
         ];
-        
-        $pathArray = explode('/', $path);
-        $responseCode = 200;
-        if(count($pathArray) < 3) {
-            $page = Page::with([
-                'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
-                'pageWidgets.widget',
-                'pageWidgets.fieldValues.field',
-            ])->where('slug->' . app()->getLocale(), $path)->first();
-            if ($page) {
-                $responseData["page"] = PageResource::make($page);
-            } else {
-                // search for category
-                // search for tag
-                $responseCode = 404;
-            }
-        } else {
-            $articlePath = $pathArray[2];
-            $article = Article::with(['category', 'tags', 
-                'page.pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
-                'page.pageWidgets.widget',
-                'page.pageWidgets.fieldValues.field',
-            ])->where('slug->' . app()->getLocale(), $articlePath)->first();
-            if($article) {
-                //make a front-end for this backend and check if we have everything we need
-
-                // TODO: plan for nested categories
-                // first check if nested categories, return nested category page with related articles, then check for articles
-                // TODO: if category is not correct, should return 404
-                // TODO: add slug to tag
-                // TODO: if tag is not correct, should return 404
-                // TODO: redirect table
-                // TODO: not-found table
-                // TODO: db-back-up script
-                // TODO: visitors and statistic 
-
-                // here check if category is correct do it, otherwise return 404
-                $responseData["article"] = ArticleResource::make($article);
-            } else {
-                $responseCode = 404;
-            }
-
-            
-        }
 
         if (auth()->check()) {
             $responseData["auth"] = UserResource::make(auth()->user());
         }
+        
+        
+        $responseCode = 200;
+        
+        $page = Page::with([
+            'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
+            'pageWidgets.widget',
+            'pageWidgets.fieldValues.field',
+        ])->where('slug->' . app()->getLocale(), $path)->first();
+        if ($page) {
+            $responseData["page"] = PageResource::make($page);
+
+            return response()->json(['data' => $responseData], $responseCode);
+        }
+
+        $category = Category::with(['articles' => fn($query) => $query->limit(10)])->where('slug', $path);
+
+
+        
+        $article = Article::with(['category', 'tags', 
+            'page.pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
+            'page.pageWidgets.widget',
+            'page.pageWidgets.fieldValues.field',
+        ])->where('slug->' . app()->getLocale(), $path)->first();
+        if($article) {
+            //make a front-end for this backend and check if we have everything we need
+
+            // TODO: plan for nested categories
+            // first check if nested categories, return nested category page with related articles, then check for articles
+            // TODO: if category is not correct, should return 404
+            // TODO: add slug to tag
+            // TODO: if tag is not correct, should return 404
+            // TODO: redirect table
+            // TODO: not-found table
+            // TODO: db-back-up script
+            // TODO: visitors and statistic 
+
+            // here check if category is correct do it, otherwise return 404
+            $responseData["article"] = ArticleResource::make($article);
+
+            return response()->json(['data' => $responseData], $responseCode);            
+        }
+
+
 
         // $responseData["debuger"] = debugbar()->getData();
 
         return response()->json(['data' => $responseData], $responseCode);
+    }
+
+    public function fetchArticles()
+    {
+        // $category = "category slug"
+        // $sort = "newest", "most_views", "oldest", ...
+        // $limit = 10;
+        // $tag = "Tag Name";
+        $limit = request()->limit ?? 10;
+        $sort = request()->sort ?? "newest";
+        $category = request()->category ?? "";
+        $tag = request()->tag ?? ""; // tag is common, not tags
+
+        $query = Article::query();
+        if(!empty($category)) {
+            $category = Category::where('slug', $category)->first();
+            $query = $category->articles()->query(); // TODO check later if it's working
+        }
+        if(!empty($tag)) {
+            $tag = Tag::where('name', $tag)->first();
+            $query = $tag->articles()->query(); // TODO check later if it's working
+        }
+        if($sort === 'newest') {
+            $query->orderBy('created_at', 'desc');
+        } else if ($sort === "most_view") {
+            // count views on articles
+        }
+        $query->limit($limit);
+        $articles = $query->get();
+
+        return ArticleResource::collection($articles);
     }
 }

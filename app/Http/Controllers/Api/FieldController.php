@@ -14,12 +14,12 @@ class FieldController extends Controller
     public function store(Request $request)
     {
         $widgetId = $request->widget_id;
-        $userNote = $request->user_note;
+        $key = $request->key;
         $type = $request->type;
 
         $field = new Field;
         $field->widget_id = $widgetId;
-        $field->user_note = $userNote;
+        $field->key = $key;
         $field->type = $type;
         // save default value for each language?
         $field->save();

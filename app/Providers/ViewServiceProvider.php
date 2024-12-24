@@ -20,7 +20,7 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $languages = Language::all();  // Replace with your dynamic source
+        $languages = Language::all();
 
         // Share the $languages variable with all views
         \View::share('languages', $languages);

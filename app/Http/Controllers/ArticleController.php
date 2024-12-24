@@ -9,13 +9,46 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Yajra\DataTables\Facades\DataTables;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::with(['category', 'tags'])->get();
-        return view('admin.article.index', compact('articles'));
+        if ($request->ajax()) {
+            $articles = Article::with(['category', 'tags'])->orderBy('created_at', 'desc');
+
+            return DataTables::of($articles)
+                ->editColumn('title', function ($article) {
+                    $title = $article->getTranslation('title', app()->getLocale(), false);
+                    return $title ?: '<em class="text-danger">-Not translated-</em>';
+                })
+                ->addColumn('category', function ($article) {
+                    return $article->category->getTranslation('name', app()->getLocale());
+                })
+                ->addColumn('tags', function ($article) {
+                    return $article->tags->map(function ($tag) {
+                        return '<span class="badge bg-info text-dark">' . $tag->getTranslation('name', app()->getLocale()) . '</span>';
+                    })->implode(' ');
+                })
+                ->addColumn('actions', function ($article) {
+                    return '
+                    <a href="' . route('admin.articles.edit', $article) . '" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form action="' . route('admin.articles.destroy', $article) . '" method="POST" style="display:inline;">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                ';
+                })
+                ->rawColumns(['tags', 'actions', 'title'])
+                ->make(true);
+        }
+
+        return view('admin.article.index');
     }
 
     public function create()
@@ -41,7 +74,7 @@ class ArticleController extends Controller
         ]);
 
         $article = new Article;
-        
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();

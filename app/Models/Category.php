@@ -14,16 +14,16 @@ class Category extends Model
     protected $fillable = ['name', 'slug', 'description', 'parent_id'];
     public $translatable = ['name', 'slug', 'description'];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function($category){
-            if(empty($category->slug)){
-                // TODO: we need slug-2 slug-3 and ... if duplicated
-                $category->setTranslation('slug', app()->getLocale(), Str::slug($category->name));
-            }
-        });
-    }
+// protected static function boot()
+// {
+//     parent::boot();
+//     static::creating(function($category){
+//         if(empty($category->slug)){
+//             // TODO: we need slug-2 slug-3 and ... if duplicated
+//             $category->setTranslation('slug', app()->getLocale(), Str::slug($category->name));
+//         }
+//     });
+// }
 
     public function parent()
     {

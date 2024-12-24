@@ -15,18 +15,6 @@ class Article extends Model
     protected $fillable = ['image', 'title', 'slug', 'content', 'category_id', 'description'];
     public $translatable = ['title', 'slug','content', 'description'];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function($article){
-            if(empty($article->slug)){
-                // TODO: we need slug-2 slug-3 and ... if duplicated
-                $article->setTranslation('slug', app()->getLocale(), Str::slug($article->title));
-            }
-        });
-    }
-
     public function category()
     {
         return $this->belongsTo(Category::class);

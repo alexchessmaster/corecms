@@ -96,7 +96,7 @@ class MenuController extends Controller
             }
         }
         
-        return redirect()->route('admin.menus.index');
+        return redirect()->route('admin.menus.index')->with('success', 'Menu created successfully.');
     }
 
     /**
@@ -166,7 +166,7 @@ class MenuController extends Controller
         $menu->parent_id = $request->input('parent_id');
         $menu->save();
         
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Menu updated successfully.');
     }
 
     /**

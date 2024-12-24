@@ -56,7 +56,7 @@ class WidgetController extends Controller
     public function edit($id)
     {
         $widget = Widget::findOrFail($id);
-        $fieldTypes = ['text', 'textarea_small', 'textarea_large', 'file', 'input', 'color', 'code', 'select_option_left_center_right', 'select_option_on_off'];
+        $fieldTypes = Field::getTypes();
 
         return view('admin.widgets.edit', compact('widget', 'fieldTypes'));
     }
