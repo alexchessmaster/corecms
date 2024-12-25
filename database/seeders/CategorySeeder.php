@@ -15,6 +15,14 @@ class CategorySeeder extends Seeder
     {
         $category = new Category();
         $category->setTranslations('name', [
+            'en' => 'uncategorized',
+            'da' => 'uncategorized'
+        ]);
+        $category->template_page_id = 2;
+        $category->save();
+
+        $category = new Category();
+        $category->setTranslations('name', [
             'en' => 'car',
             'da' => 'bil'
         ]);

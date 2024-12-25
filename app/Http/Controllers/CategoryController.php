@@ -64,7 +64,11 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        $newCategory = $category->parent ?? Category::where("slug->" . app()->getLocale(), '/uncategorized')->firstOrFail();
+        $category->articles()->update(['category_id' => $newCategory->id]);
         $category->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Category deleted successfully.');
     }
 }

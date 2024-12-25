@@ -18,12 +18,16 @@
                 <td>{{ empty($category->getTranslation('name', app()->getLocale(), false)) ? '-Not translated- (' . $category->getTranslation('name', app()->getLocale()) . ')' : $category->getTranslation('name', app()->getLocale(), false)  }}</td>
                 <td>{{ $category->parent ? $category->parent->getTranslation('name', app()->getLocale()) : 'None' }}</td>
                 <td>
-                    <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    @if($category->slug === '/uncategorized')
+                    -
+                    @else
+                        <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    @endif
                 </td>
             </tr>
             @endforeach

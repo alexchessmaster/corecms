@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('restrict');
+            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
         });
     }
 

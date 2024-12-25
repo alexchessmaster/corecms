@@ -18,12 +18,12 @@ return new class extends Migration
             $table->json('description')->nullable();
             $table->json('content');
             $table->string('image')->nullable();
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('template_page_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('restrict');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
+            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
         });
     }
 

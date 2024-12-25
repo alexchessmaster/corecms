@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\Category;
 use Illuminate\Support\Str;
+use App\Models\RedirectSlugChange;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryObserver
 {
@@ -13,6 +15,20 @@ class CategoryObserver
     public function creating(Category $category)
     {
         $category->slug = $this->generateSlug($category);
+    }
+
+    /**
+     * Handle the Article "created" event.
+     */
+    public function created(Category $category)
+    {
+        RedirectSlugChange::create([
+            'old_slug' => null,
+            'new_slug' => $category->slug,
+            'type' => 'category_created',
+            'user_id' => Auth::id() ?? null,
+            'language' => app()->getLocale(),
+        ]);
     }
 
     /**
@@ -31,7 +47,7 @@ class CategoryObserver
     private function generateSlug(Category $category, $ignoreId = null)
     {
         $slug = rtrim($this->getFullLink($category), '/');
-        $slug = '/' . ltrim($slug, '/');     
+        $slug = '/' . ltrim($slug, '/');
         // Handle duplicate slugs
         $originalSlug = $slug;
         $counter = 2;
@@ -66,21 +82,34 @@ class CategoryObserver
     }
 
     /**
-     * Handle the Category "updated" event.
+     * Handle the Article "updated" event.
      */
-    public function updated(Category $category): void
+    public function updated(Category $category)
     {
-        //
+        if ($category->isDirty('slug')) {
+            RedirectSlugChange::create([
+                'old_slug' => $category->getOriginal('slug')[app()->getLocale()],
+                'new_slug' => $category->slug,
+                'type' => 'category_updated',
+                'user_id' => Auth::id() ?? null,
+                'language' => app()->getLocale(),
+            ]);
+        }
     }
 
     /**
-     * Handle the Category "deleted" event.
+     * Handle the Article "deleted" event.
      */
-    public function deleted(Category $category): void
+    public function deleted(Category $category)
     {
-        //
+        RedirectSlugChange::create([
+            'old_slug' => $category->slug,
+            'new_slug' => $category?->parent?->slug ?? '/',
+            'type' => 'category_deleted',
+            'user_id' => Auth::id() ?? null,
+            'language' => app()->getLocale(),
+        ]);
     }
-
     /**
      * Handle the Category "restored" event.
      */

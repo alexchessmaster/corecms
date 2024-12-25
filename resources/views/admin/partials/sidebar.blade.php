@@ -62,14 +62,7 @@
                 </a>
             </li>
             <div style="border: 1px gray solid"></div>
-            <li class="nav-item">
-                <a href="/admin/templates" class="nav-link">
-                    <i class="nav-icon fas fa-border-style"></i>
-                    <p>
-                        Templates
-                    </p>
-                </a>
-            </li>
+
             <li class="nav-item">
                 <a href="/admin/categories" class="nav-link">
                     <i class="nav-icon fas fa-cubes"></i>
@@ -100,6 +93,23 @@
                     <i class="nav-icon fas fa-th-list"></i>
                     <p>
                         Widgets
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/templates" class="nav-link">
+                    <i class="nav-icon fas fa-border-style"></i>
+                    <p>
+                        Templates
+                    </p>
+                </a>
+            </li>
+            <div style="border: 1px gray solid"></div>
+            <li class="nav-item">
+                <a href="/admin/redirects" class="nav-link">
+                    <i class="nav-icon fas fa-directions"></i>
+                    <p>
+                        Redirects
                     </p>
                 </a>
             </li>

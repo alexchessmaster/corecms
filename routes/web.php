@@ -20,7 +20,7 @@ use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\ArticleController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('editorial.index');
 });
 
 Route::get('admin', function () {

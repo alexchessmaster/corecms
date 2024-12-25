@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('redirects', function (Blueprint $table) {
             $table->id();
-            $table->json('name'); // Translatable field
-            $table->unsignedBigInteger('template_page_id')->nullable();
+            $table->string('from');
+            $table->string('to');
+            $table->string('language')->nullable();
+            $table->enum('type', ['manual', 'import', 'slug_changed'])->default('slug_changed');
+            $table->boolean('active')->default(true);
             $table->timestamps();
-
-            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('redirects');
     }
 };
