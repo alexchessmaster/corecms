@@ -23,6 +23,8 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
+use App\Http\Resources\RedirectResource;
+use App\Models\Redirect;
 use DebugBar\DebugBar as DebugBarDebugBar;
 
 class ContentController extends Controller
@@ -82,6 +84,7 @@ class ContentController extends Controller
             'category' => collect(),
             'tag' => collect(),
             'auth' => collect(),
+            'redirect' => collect(),
 
             'settings' => SettingResource::collection($settings),
             'languages' => LanguageResource::collection($languages),
@@ -142,12 +145,17 @@ class ContentController extends Controller
         }
 
         // Is Redirect
+        $redirect = Redirect::where('from', $path)->where('language', $lang)->orderBy('id', 'desc')->first();
+        if($redirect) {
+            $responseData["redirect"] = RedirectResource::make($redirect);
+
+            return response()->json(['data' => $responseData], $responseCode);
+        }
 
         // Is 404
         $responseCode = 404;
 
         // $responseData["debuger"] = debugbar()->getData();
-
         return response()->json(['data' => $responseData], $responseCode);
     }
 

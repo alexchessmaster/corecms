@@ -80,7 +80,7 @@ class ArticleController extends Controller
             $filename = time() . '_' . $image->getClientOriginalName();
             $destinationPath = public_path('uploads/articles');
             if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0755, true);
+                File::makeDirectory($destinationPath, 0775, true);
             }
             $image->move($destinationPath, $filename);
             $article->image = '/uploads/articles/' . $filename;

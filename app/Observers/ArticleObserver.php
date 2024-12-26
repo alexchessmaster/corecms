@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\SlugChangedEvent;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Support\Str;
@@ -57,6 +58,8 @@ class ArticleObserver
                 'user_id' => Auth::id() ?? null,
                 'language' => app()->getLocale(),
             ]);
+
+            event(new SlugChangedEvent());
         }
     }
 
@@ -102,6 +105,8 @@ class ArticleObserver
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);
+
+        event(new SlugChangedEvent());
     }
 
     /**

@@ -12,7 +12,7 @@ class RedirectRemoveDuplicateCommandTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $dbData = [
+    private $redirectsTableData = [
         ['from' => 'a', 'to' => 'b', 'language' => 'en'], // 
         ['from' => 'a', 'to' => 'c', 'language' => 'en'], // Duplicate and Chain 1.a
         ['from' => 'c', 'to' => 'a', 'language' => 'en'], // Chain 1.b
@@ -33,7 +33,7 @@ class RedirectRemoveDuplicateCommandTest extends TestCase
         parent::setUp();
 
         // Seed the database or set up your test environment
-        DB::table('redirects')->insert($this->dbData);
+        DB::table('redirects')->insert($this->redirectsTableData);
     }
 
     public function testCommandRemovesDuplicates()

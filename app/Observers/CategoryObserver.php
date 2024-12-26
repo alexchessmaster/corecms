@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Category;
 use Illuminate\Support\Str;
+use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
@@ -94,6 +95,8 @@ class CategoryObserver
                 'user_id' => Auth::id() ?? null,
                 'language' => app()->getLocale(),
             ]);
+
+            event(new SlugChangedEvent());
         }
     }
 
@@ -109,6 +112,8 @@ class CategoryObserver
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);
+
+        event(new SlugChangedEvent());
     }
     /**
      * Handle the Category "restored" event.
