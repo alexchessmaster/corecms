@@ -1,19 +1,20 @@
 <?php
 
-use App\Http\Controllers\Api\CommonDataController;
-use App\Http\Controllers\Api\ContentController;
-use App\Http\Controllers\Api\FieldController;
-use App\Http\Controllers\Api\PageController;
-use App\Http\Controllers\Api\PageWidgetController;
-use App\Http\Controllers\Api\WidgetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PageController;
+use App\Http\Controllers\Api\FieldController;
+use App\Http\Controllers\Api\WidgetController;
+use App\Http\Controllers\Api\ContentController;
+use App\Http\Middleware\LogVisitedUrlMiddleware;
+use App\Http\Controllers\Api\CommonDataController;
+use App\Http\Controllers\Api\PageWidgetController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/content', [ContentController::class, 'fetchContent']);
+Route::post('/content', [ContentController::class, 'fetchContent'])->middleware(LogVisitedUrlMiddleware::class);
 Route::post('/articles', [ContentController::class, 'fetchArticles']);
 // Route::get('/common-data', [CommonDataController::class, 'index']);
 

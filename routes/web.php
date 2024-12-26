@@ -18,6 +18,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\UrlLogController;
 
 Route::get('/', function () {
     return view('editorial.index');
@@ -40,6 +42,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => [AdminMiddl
     Route::resource('categories', CategoryController::class);
     Route::resource('articles', ArticleController::class);
     Route::resource('tags', TagController::class);
+    Route::resource('redirects', RedirectController::class);
+    Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
+    Route::resource('url-logs', UrlLogController::class);
 
     Route::post('user-locale', function () {
         session(['lang' => request()->lang]);

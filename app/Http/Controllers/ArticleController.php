@@ -16,7 +16,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $articles = Article::with(['category', 'tags'])->orderBy('created_at', 'desc');
+            $articles = Article::with(['category', 'tags']);
 
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {

@@ -130,6 +130,22 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="/admin/url-logs" class="nav-link">
+                    <i class="nav-icon fas fa-history"></i>
+                    <p>
+                        URL logs
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/url-logs/statistics" class="nav-link">
+                    <i class="nav-icon fas fa-chart-pie"></i>
+                    <p>
+                        Visit statistics
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="/admin/upload" class="nav-link" target="_blank">
                     <i class="nav-icon fas fa-upload"></i>
                     <p>
