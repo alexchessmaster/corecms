@@ -3,19 +3,22 @@
 @section('content-card-body')
 
     @push('styles')
-        
-    <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
-    <style>
-        .tox-promotion {
-            visibility: hidden;
-        }
-        .tox .tox-editor-container {
-            border: 1px solid #d2d2d2 !important;  /* Set your desired color */
-        }
-        .tox .tox-edit-area iframe {
-            border: 1px solid #e7e7e7 !important;  /* Set your desired color */
-        }
-    </style>
+        <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+        <style>
+            .tox-promotion {
+                visibility: hidden;
+            }
+
+            .tox .tox-editor-container {
+                border: 1px solid #d2d2d2 !important;
+                /* Set your desired color */
+            }
+
+            .tox .tox-edit-area iframe {
+                border: 1px solid #e7e7e7 !important;
+                /* Set your desired color */
+            }
+        </style>
     @endpush
 
 
@@ -41,7 +44,8 @@
                         <div class="form-group">
                             <label for="page_title">{{ ucfirst($pageType) }} title</label>
                             <input type="text" class="form-control" id="page_title" aria-describedby=""
-                                placeholder="Page title" value="{{ !empty($page->getTranslation('title', app()->getLocale(), false)) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
+                                placeholder="Page title"
+                                value="{{ !empty($page->getTranslation('title', app()->getLocale(), false)) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
                             <small id="" class="form-text text-muted">The title of the page.</small>
                         </div>
                     </div>
@@ -49,9 +53,14 @@
                         <div class="form-group">
                             <label for="page_slug">{{ ucfirst($pageType) }} slug</label>
                             <input type="text" class="form-control" id="page_slug" aria-describedby=""
-                                placeholder="Page URL" value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
-                            {{-- <small class="form-text text-muted"><a id="visit-page" target="_blank"
-                                    href="{{ !empty($page) ? $page->slug : '' }}"></a></small> --}}
+                                placeholder="Page URL"
+                                value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="exclude_from_sitemap" name="exclude_from_sitemap">
+                            <label for="exclude_from_sitemap" class="form-check-label">Exclude from sitemap</label>
                         </div>
                     </div>
                 </div>
@@ -83,12 +92,14 @@
         }
     </style>
 
-    <div class="modal fade" id="widgetEditModal" tabindex="-1" role="dialog" aria-labelledby="widgetEditModalLabel" aria-hidden="true">
+    <div class="modal fade" id="widgetEditModal" tabindex="-1" role="dialog" aria-labelledby="widgetEditModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="widgetEditModalLabel">Fields</h5>
-                    <button type="button" class="close" id="edit-fieldValue-close-btn-x" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" id="edit-fieldValue-close-btn-x" data-dismiss="modal"
+                        aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -98,8 +109,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="edit-fieldValue-close-btn">Close</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="edit-fieldValue-save-btn">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        id="edit-fieldValue-close-btn">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="edit-fieldValue-save-btn">Save</button>
                 </div>
             </div>
         </div>
@@ -143,17 +156,17 @@
                 @endphp
                 @endforeach
 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmSelection">Add</button>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmSelection">Add</button>
-        </div>
-    </div>
     </div>
     </div>
 
     @if ($i > 1 && $i % $numberOfWidgetsInARow !== $numberOfWidgetsInARow - 1)
-    </div>
+        </div>
     @endif
 
 
@@ -204,7 +217,7 @@
         const createInformationInputs = (pageId, widgetPosition, widget) => {
             const divEl = document.createElement('div');
             divEl.classList.add('col-md-12');
-            
+
             const pageIdInputEl = document.createElement('input');
             pageIdInputEl.name = 'page-id';
             pageIdInputEl.type = 'hidden';
@@ -231,20 +244,21 @@
             widgetLockedInputEl.value = widget.locked_fields_value;
 
             const widgetLockedMessageEl = document.createElement('div');
-            widgetLockedMessageEl.innerHTML = '<div><small class="form-text mb-4 text-muted"><span style="color:red;">* </span>This widget is locked. if you change the values, everywhere else that you used this widget, the values will change.</small></div>';
+            widgetLockedMessageEl.innerHTML =
+                '<div><small class="form-text mb-4 text-muted"><span style="color:red;">* </span>This widget is locked. if you change the values, everywhere else that you used this widget, the values will change.</small></div>';
 
             divEl.appendChild(pageIdInputEl);
             divEl.appendChild(widgetPositionInputEl);
             divEl.appendChild(languageInputEl);
             divEl.appendChild(widgetInputEl);
             divEl.appendChild(widgetLockedInputEl);
-            if(widget.locked_fields_value) {
+            if (widget.locked_fields_value) {
                 divEl.appendChild(widgetLockedMessageEl);
             }
 
             document.getElementById('field-edit-container').appendChild(divEl);
         };
-        
+
         const createInputTextInput = (item) => {
             const divEl = document.createElement('div');
             divEl.classList.add('col-md-12');
@@ -252,7 +266,7 @@
             const labelEl = document.createElement('label');
             labelEl.textContent = item.key + ':';
             labelEl.classList.add('form-label');
-            
+
             const inputEl = document.createElement('input');
             inputEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
             inputEl.classList.add('form-control');
@@ -277,7 +291,7 @@
             const labelEl = document.createElement('label');
             labelEl.textContent = item.key + ':';
             labelEl.classList.add('form-label');
-            
+
             const textareaEl = document.createElement('textarea');
             textareaEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
             textareaEl.classList.add('form-control');
@@ -319,7 +333,7 @@
 
             const iconSpan = document.createElement('span');
             iconSpan.classList.add('input-group-text');
-            
+
             const icon = document.createElement('i');
             icon.classList.add('fas', 'fa-square');
             icon.style.color = item?.vf?.value || 'rgb(119, 27, 27)'; // Set the color if provided
@@ -329,7 +343,7 @@
             inputGroup.appendChild(addonDiv);
             divGroup.appendChild(inputGroup);
             document.getElementById('field-edit-container').appendChild(divGroup);
-            
+
             if (typeof $(inputGroup).colorpicker === 'function') {
                 $(inputGroup).colorpicker();
             }
@@ -358,7 +372,7 @@
             selectEl.id = 'alignmentSelect';
             selectEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
 
-            
+
             // Add options for alignment: left, center, right
             // ['left', 'center', 'right']
             optionsArray.forEach(optionValue => {
@@ -395,7 +409,7 @@
             const labelEl = document.createElement('label');
             labelEl.textContent = item.key + ':';
             labelEl.classList.add('form-label');
-            
+
             const textareaEl = document.createElement('textarea');
             textareaEl.name = 'field_id-' + item.id + '-field_value_id-' + item?.vf?.id;
             textareaEl.classList.add('form-control');
@@ -412,7 +426,7 @@
 
             // Initialize TinyMCE for the new textarea
             let tinyConfig = {};
-            if(size === 'text') {
+            if (size === 'text') {
                 tinyConfig = {
                     selector: `#textarea-` + item.id, // Replace with the ID or class of your target element
                     menubar: false,
@@ -431,7 +445,7 @@
                     }
                 }
             }
-            if(size === 'small') {
+            if (size === 'small') {
                 tinyConfig = {
                     selector: `#textarea-` + item.id, // Replace with the ID or class of your target element
                     menubar: false,
@@ -444,7 +458,7 @@
                     newline_behavior: 'linebreak',
                 }
             }
-            if(size === 'large') {
+            if (size === 'large') {
                 tinyConfig = {
                     selector: `#textarea-` + item.id,
                     plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
@@ -480,7 +494,7 @@
 
             const infoEl = document.createElement('div');
             infoEl.classList.add('mt-2');
-            
+
             divEl.appendChild(labelEl);
             divEl.appendChild(inputEl);
             divEl.appendChild(inputEl);
@@ -546,7 +560,7 @@
 
             // Create the img element for the widget image
             const imgEl = document.createElement('img');
-            if(widget.image) {
+            if (widget.image) {
                 imgEl.src = widget.image; // Use the widget's image URL
             }
             imgEl.alt = 'Option 12345';
@@ -579,7 +593,7 @@
             cardBody.appendChild(deleteBtn);
 
             // Create a div to hold the card body and the image (keep the layout tidy)
-            if(widget.image ) {
+            if (widget.image) {
                 widgetOption.appendChild(imgEl);
             }
             widgetOption.appendChild(cardBody);
@@ -595,13 +609,15 @@
                 const pageId = '{!! $page->id !!}';
 
                 // Add edit functionality here
-                let allFieldsWithValues = await fetch(`/api/page/${pageId}/widget/${widget.id}/widget-position/${widgetPosition}/fields-with-values/${currentLanguage}`)
+                let allFieldsWithValues = await fetch(
+                        `/api/page/${pageId}/widget/${widget.id}/widget-position/${widgetPosition}/fields-with-values/${currentLanguage}`
+                        )
                     .then(res => res.json())
                     .then(data => data);
 
                 createInformationInputs(pageId, widgetPosition, allFieldsWithValues.widget);
                 allFieldsWithValues.field_with_value.forEach((item, index) => {
-                    switch(item.type){
+                    switch (item.type) {
                         case 'color':
                             createColorPickerInput(item);
                             break;
@@ -639,21 +655,21 @@
             deleteBtn.addEventListener('click', () => {
                 console.log('Delete button clicked for widget ID:', widget.pivot.position);
                 fetch('/api/widgets/detach', {
-                    method: "PATCH",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        positionId: widget.pivot.position,
-                        pageId: '{{ $page->id }}'
+                        method: "PATCH",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            positionId: widget.pivot.position,
+                            pageId: '{{ $page->id }}'
+                        })
                     })
-                })
-                .then(response => response.json)
-                .then(data => {
-                    console.log('widget deleted', data);
-                    refreshWidgetList();
-                })
+                    .then(response => response.json)
+                    .then(data => {
+                        console.log('widget deleted', data);
+                        refreshWidgetList();
+                    })
                 // Add your delete functionality here
             });
         }
@@ -679,7 +695,8 @@
 
                         createWidget(item);
                     })
-                    const buttons = document.querySelectorAll('button.btn.btn-primary[data-toggle="modal"][data-target="#widgetModal"]');
+                    const buttons = document.querySelectorAll(
+                        'button.btn.btn-primary[data-toggle="modal"][data-target="#widgetModal"]');
                     buttons.forEach((button, index) => {
                         button.setAttribute('data-position', index);
 
@@ -731,16 +748,17 @@
             });
 
             // Wait for all file inputs to finish reading
-            await new Promise(resolve => setTimeout(resolve, 100)); // Ensure files are read (adjust time as necessary)
+            await new Promise(resolve => setTimeout(resolve,
+            100)); // Ensure files are read (adjust time as necessary)
 
             // Send the data to the backend
             fetch("/api/pages/widget-position/update-field-value", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            })
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData)
+                })
                 .then(res => res.json())
                 .then(data => {
                     console.log('form saved !!!!!!!!', data);
@@ -749,8 +767,6 @@
 
             console.log('save clicked', formData);
         });
-
-
     </script>
 
     <script>
@@ -808,7 +824,7 @@
                 })
                 .then(data => {
                     console.log('page updated!', data)
-                    
+
                     document.getElementById('page_title').value = data.page.title[currentLanguage];
                     document.getElementById('page_slug').value = data.page.slug[currentLanguage];
                 });
@@ -818,13 +834,11 @@
     </script>
 
     @push('scripts')
-        
-    <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-    <script>
-        $('.my-colorpicker2').colorpicker()
-    </script>
+        <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+        <script>
+            $('.my-colorpicker2').colorpicker()
+        </script>
 
-    <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-
+        <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
     @endpush
 @endsection

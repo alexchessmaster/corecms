@@ -95,6 +95,7 @@ class PageController extends Controller
     {
         $page->setTranslation('title', app()->getLocale(), request()->input('title'));
         $page->setTranslation('slug', app()->getLocale(), request()->input('slug'));
+        $page->exclude_from_sitemap = request()->input('exclude_from_sitemap');
         $page->save();
 
         return response()->json([

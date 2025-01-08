@@ -12,7 +12,7 @@ class Article extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['image', 'title', 'slug', 'content', 'category_id', 'description'];
+    protected $fillable = ['image', 'title', 'slug', 'content', 'category_id', 'description', 'exclude_from_sitemap'];
     public $translatable = ['title', 'slug','content', 'description'];
 
     public function category()

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Http\Requests\StorecategoryRequest;
-use App\Http\Requests\UpdatecategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -28,12 +26,14 @@ class CategoryController extends Controller
             'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
+            'exclude_from_sitemap' => 'nullable|boolean',
         ]);
 
         $category = new Category;
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
+        $category->exclude_from_sitemap = $request->input('exclude_from_sitemap');
         $category->save();
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
@@ -51,12 +51,13 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            // 'slug' => 'required|string|max:255',
+            'exclude_from_sitemap' => 'nullable|boolean',
         ]);
 
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
+        $category->exclude_from_sitemap = $request->input('exclude_from_sitemap');
         $category->save();
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');

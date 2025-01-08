@@ -51,15 +51,17 @@ class ArticleObserver
     public function updated(Article $article)
     {
         if ($article->isDirty('slug')) {
-            RedirectSlugChange::create([
-                'old_slug' => $article->getOriginal('slug')[app()->getLocale()],
-                'new_slug' => $article->slug,
-                'type' => 'article_updated',
-                'user_id' => Auth::id() ?? null,
-                'language' => app()->getLocale(),
-            ]);
+            if(array_key_exists(app()->getLocale(), $article->getOriginal('slug'))) {
+                RedirectSlugChange::create([
+                    'old_slug' => $article->getOriginal('slug')[app()->getLocale()],
+                    'new_slug' => $article->slug,
+                    'type' => 'article_updated',
+                    'user_id' => Auth::id() ?? null,
+                    'language' => app()->getLocale(),
+                ]);
 
-            event(new SlugChangedEvent());
+                event(new SlugChangedEvent());
+            }
         }
     }
 

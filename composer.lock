@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "99f1655f02298d5b9bf38f0a476193d5",
+    "content-hash": "94aa21df131a5353fa3f68406f643612",
     "packages": [
         {
             "name": "brick/math",
@@ -3293,6 +3293,81 @@
                 }
             ],
             "time": "2024-08-27T18:56:10+00:00"
+        },
+        {
+            "name": "spatie/laravel-sitemap",
+            "version": "7.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-sitemap.git",
+                "reference": "7ee63b6f57029691d88ded10c9a5ec25747bec18"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/7ee63b6f57029691d88ded10c9a5ec25747bec18",
+                "reference": "7ee63b6f57029691d88ded10c9a5ec25747bec18",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "illuminate/support": "^10.0|^11.0",
+                "nesbot/carbon": "^2.71|^3.0",
+                "php": "^8.2||^8.3||^8.4",
+                "spatie/laravel-package-tools": "^1.16.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6.6",
+                "orchestra/testbench": "^8.14|^9.0",
+                "pestphp/pest": "^2.24",
+                "spatie/crawler": "^8.4",
+                "spatie/pest-plugin-snapshots": "^2.1",
+                "spatie/phpunit-snapshot-assertions": "^5.1.2",
+                "spatie/temporary-directory": "^2.2"
+            },
+            "suggest": {
+                "spatie/crawler": "Required to use the crawler feature"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Sitemap\\SitemapServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Sitemap\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Create and generate sitemaps with ease",
+            "homepage": "https://github.com/spatie/laravel-sitemap",
+            "keywords": [
+                "laravel-sitemap",
+                "spatie"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/laravel-sitemap/tree/7.3.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-01-06T09:46:59+00:00"
         },
         {
             "name": "spatie/laravel-translatable",

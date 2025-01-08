@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('template_page_id')->nullable();
+            $table->boolean('exclude_from_sitemap')->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->json('slug');//->index();
             $table->json('title');
             $table->enum('type', ['page', 'template'])->default('page');
+            $table->boolean('exclude_from_sitemap')->nullable();
             $table->timestamps();
         });
     }

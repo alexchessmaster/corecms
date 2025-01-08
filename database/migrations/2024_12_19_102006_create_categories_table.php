@@ -18,6 +18,7 @@ return new class extends Migration
             $table->json('description')->nullable(); // Translatable field
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->unsignedBigInteger('template_page_id')->nullable();
+            $table->boolean('exclude_from_sitemap')->nullable();
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');

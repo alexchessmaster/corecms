@@ -31,5 +31,11 @@
         {{ isset($category) ? $category->getTranslation('description', app()->getLocale(), false) : '' }}
     </textarea>
 </div>
+<div class="mb-3">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exclude_from_sitemap" name="exclude_from_sitemap">
+        <label for="exclude_from_sitemap" class="form-check-label">Exclude from sitemap</label>
+    </div>
+</div>
 
 @include('admin.partials.tinymce-full')

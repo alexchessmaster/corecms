@@ -71,6 +71,7 @@ class ArticleController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'template_page_id' => 'required|exists:pages,id',
+            'exclude_from_sitemap' => 'nullable|boolean',
         ]);
 
         $article = new Article;
@@ -91,6 +92,7 @@ class ArticleController extends Controller
         $article->setTranslation('content', app()->getLocale(), $request->input('content'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
+        $article->exclude_from_sitemap = $request->input('exclude_from_sitemap');
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 
@@ -118,6 +120,7 @@ class ArticleController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'template_page_id' => 'required|exists:pages,id',
+            'exclude_from_sitemap' => 'nullable|boolean',
         ]);
 
         if ($request->hasFile('image')) {
@@ -137,6 +140,7 @@ class ArticleController extends Controller
         $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
+        $article->exclude_from_sitemap = $request->input('exclude_from_sitemap');
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 

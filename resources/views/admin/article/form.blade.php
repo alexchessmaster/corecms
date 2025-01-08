@@ -75,6 +75,12 @@
     </select>
     <small id="name" class="form-text text-muted">Do not change it if you don't know what is this.</small>
 </div>
+<div class="mb-3">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="exclude_from_sitemap" id="exclude_from_sitemap">
+        <label for="exclude_from_sitemap" class="form-check-label">Exclude from sitemap</label>
+    </div>
+</div>
 
 @include('admin.partials.tinymce-full')
 

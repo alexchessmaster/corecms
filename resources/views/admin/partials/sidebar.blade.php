@@ -141,7 +141,7 @@
                 <a href="/admin/url-logs/statistics" class="nav-link">
                     <i class="nav-icon fas fa-chart-pie"></i>
                     <p>
-                        Visit statistics
+                        URL logs statistics
                     </p>
                 </a>
             </li>
