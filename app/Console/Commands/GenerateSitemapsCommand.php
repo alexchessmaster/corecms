@@ -59,13 +59,6 @@ class GenerateSitemapsCommand extends Command
 
     private function getPagesForLanguage($lang)
     {
-    //     var_dump(
-    //         Article::whereNull('exclude_from_sitemap')
-    // ->orWhereIn('exclude_from_sitemap', [false])
-    // ->toSql()
-    //         // \DB::table('articles')->
-    //         // where('exclude_from_sitemap', '!=', true)->get()
-    //     );die;
         // Fetch articles with available slugs for the given language
         return \DB::table('articles')
             ->whereNull('exclude_from_sitemap')
