@@ -17,26 +17,26 @@ class FieldValueSeeder extends Seeder
         $fieldValue->page_widget_id = 1;
         $fieldValue->field_id = 1;
         $fieldValue->setTranslations('value',[
-            'da' => 'danish field value 1',
-            'en' => 'english field value 1'
+            'en' => 'ACCELERATED GROWTH',
+            'da' => 'ACCELERERET VÆKST',
         ]);
         $fieldValue->save();
 
         $fieldValue = new FieldValue;
-        $fieldValue->page_widget_id = 2;
-        $fieldValue->field_id = 1;
-        $fieldValue->setTranslations('value',[
-            'da' => 'danish field value 2',
-            'en' => 'english field value 2'
-        ]);
-        $fieldValue->save();
-
-        $fieldValue = new FieldValue;
-        $fieldValue->page_widget_id = 3;
+        $fieldValue->page_widget_id = 1;
         $fieldValue->field_id = 2;
         $fieldValue->setTranslations('value',[
-            'da' => 'danish first field value two columns widget in page 1',
-            'en' => 'english first field value two columns widget in page 1'
+            'en' => 'Empowering business with modern web tools and technologies',
+            'da' => 'Styrkelse af virksomheden med moderne webværktøjer og -teknologier',
+        ]);
+        $fieldValue->save();
+
+        $fieldValue = new FieldValue;
+        $fieldValue->page_widget_id = 1;
+        $fieldValue->field_id = 3;
+        $fieldValue->setTranslations('value',[
+            'en' => 'Welcome to Nordicstandard web consulting and solutions.',
+            'da' => 'Velkommen til Nordicstandard webrådgivning og løsninger.',
         ]);
         $fieldValue->save();
 
@@ -44,8 +44,8 @@ class FieldValueSeeder extends Seeder
         // $fieldValue->page_widget_id = 3;
         // $fieldValue->field_id = 3;
         // $fieldValue->setTranslations('value',[
+            //     'en' => 'english second field value two columns widget in page 1',
         //     'da' => 'danish second field value two columns widget in page 1',
-        //     'en' => 'english second field value two columns widget in page 1'
         // ]);
         // $fieldValue->save();
     }

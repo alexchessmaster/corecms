@@ -23,7 +23,7 @@ class ArticleResource extends JsonResource
             "slug" => $this->slug,
             "description" => $this->description,
             "content" => $this->content,
-            "image" => $this->image,
+            "image" => str_starts_with($this->image, 'http') ? $this->image : config('app.url') . $this->image,
             "category_id" => $this->category_id,
             "category" => $this->relationLoaded('category') ? new CategoryResource($this->category) : null,
             "tags" => $this->relationLoaded('tags') ? TagResource::collection($this->tags) : null,

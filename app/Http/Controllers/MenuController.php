@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FileHelper;
 use App\Models\Menu;
 use Illuminate\Support\Facades\View;
 use App\Http\Requests\StoreMenuRequest;
@@ -16,12 +17,6 @@ class MenuController extends Controller
     public function index()
     {
         $menus = Menu::get();
-        // $languages = Language::all();
-        // foreach($languages as $language){
-        //     if($language->default){
-        //         \App::setLocale($language->code);
-        //     }
-        // }
 
         return view('admin.menu.index', compact('menus'));
     }
@@ -41,11 +36,6 @@ class MenuController extends Controller
      */
     public function store(StoreMenuRequest $request)
     {
-        // if($request->input('lang')){
-        //     \App::setLocale($request->input('lang'));
-        // }
-        // dd($request->input('lang'));
-        // dd($request->all());
         $order = $request->input('order');
         if(!is_null($order)){
             $order += 0.5;
@@ -85,6 +75,9 @@ class MenuController extends Controller
                     Menu::create([
                         'name' => $request->input('name'),
                         'link' => \Str::slug($request->input('link')),
+                        'image' => FileHelper::upload($request, 'image'),
+                        'image_alt' => $request->input('image_alt'),
+                        'description' => $request->input('description'),
                         'parent_id' => $request->input('parent_id'),
                         'order' => $value
                     ]);
@@ -164,6 +157,9 @@ class MenuController extends Controller
         $menu->name = $request->input('name');
         $menu->link = $request->input('link');
         $menu->parent_id = $request->input('parent_id');
+        $menu->image = FileHelper::upload($request, 'image');
+        $menu->image_alt = $request->input('image_alt');
+        $menu->description = $request->input('description');
         $menu->save();
         
         return redirect()->back()->with('success', 'Menu updated successfully.');

@@ -2,7 +2,7 @@
 @section('content-card-title', 'Menu')
 @section('content-card-body')
 
-    <form action="{{ route('admin.menus.store') }}" method="POST">
+    <form action="{{ route('admin.menus.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         @include('admin.menu.form')

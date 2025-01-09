@@ -38,93 +38,115 @@ class WidgetSeeder extends Seeder
 
         Widget::insert([
             [//4
-                'name' => 'Header Big',
-                'key' => Str::slug('Header Big'),
-                'image' => '/uploads/header_big_widget.jpeg',
+                'name' => 'Header large',
+                'key' => Str::slug('Header large'),
+                'image' => '/uploads/widgets/header-large-widget.png',
             ],
             [//5
                 'name' => 'Header Small',
                 'key' => Str::slug('Header Small'),
                 'image' => '/uploads/header_small_widget.jpeg',
             ],
-            [//6
-                'name' => 'Footer',
-                'key' => Str::slug('Footer'),
-                'image' => '/uploads/footer_widget.png',
-            ],
+            // [//6 // put it the settings
+            //     'name' => 'Footer',
+            //     'key' => Str::slug('Footer'),
+            //     'image' => '/uploads/widgets/footer-widget.png',
+            // ],
         ]);
-
-        $page = Page::find(1);
-        $page->widgets()->attach([4 => ['position' => 0]]);
-        $page->widgets()->attach([1 => ['position' => 1]]);
-        $page->widgets()->attach([6 => ['position' => 2]]);
         
         Widget::insert([
-            [//7
+            [//6
                 'name' => 'Code',
                 'key' => Str::slug('Code'),
                 'image' => '/uploads/code.png',
             ],
-            [//8
+            [//7
                 'name' => 'Space',
                 'key' => Str::slug('Space'),
                 'image' => '/uploads/space.png',
             ],
-            [//9
+            [//8
                 'name' => 'Block Starts',
                 'key' => Str::slug('Block Start'),
                 'image' => '/uploads/block-starts.png',
             ],
-            [//10
+            [//9
                 'name' => 'Block Ends',
                 'key' => Str::slug('Block End'),
                 'image' => '/uploads/block-ends.png',
             ],
-            [//11
+            [//10
                 'name' => 'Text One Column',
                 'key' => Str::slug('Text One Column'),
                 'image' => '/uploads/one-column-text.png',
             ],
-            [//12
+            [//11
                 'name' => 'Text Two Columns',
                 'key' => Str::slug('Text Two Columns'),
                 'image' => '/uploads/two-columns-text.png',
             ],
-            [//13
+            [//12
                 'name' => 'Text Three Columns',
                 'key' => Str::slug('Text Three Columns'),
                 'image' => '/uploads/three-columns-text.png',
             ],
-            [//14
+            [//13
                 'name' => 'Image One Column',
                 'key' => Str::slug('Image One Column'),
                 'image' => '/uploads/one-column-image.png',
             ],
-            [//15
+            [//14
                 'name' => 'Image Two Columns',
                 'key' => Str::slug('Image Two Columns'),
                 'image' => '/uploads/two-columns-image.png',
             ],
-            [//16
+            [//15
                 'name' => 'Image Three Columns',
                 'key' => Str::slug('Image Three Columns'),
                 'image' => '/uploads/three-columns-image.png',
             ],
         ]);
 
-        $page = Page::find(4);
-        $page->widgets()->attach([11 => ['position' => 0]]);
-        $page->widgets()->attach([11 => ['position' => 1]]);
-        $page->widgets()->attach([12 => ['position' => 2]]);
-        $page->widgets()->attach([14 => ['position' => 3]]);
-
         Widget::insert([
-            [//17
+            [//16
                 'name' => 'article_list',
                 'key' => Str::slug('article_list'),
                 'image' => '/uploads/article_list_widget.jpeg',
                 'type' => 'page',
             ],
         ]);
+
+        Widget::insert([
+            [//17
+                'name' => 'Contact form',
+                'key' => Str::slug('Contact-form'),
+                'image' => '/uploads/widgets/contact-form-widget.png',
+                'type' => 'page',
+            ],
+            [//18
+                'name' => 'Our service',
+                'key' => Str::slug('Our service'),
+                'image' => '/uploads/widgets/our-service-widget.png',
+                'type' => 'page',
+            ],
+            [//19
+                'name' => 'Specialization',
+                'key' => Str::slug('Specialization'),
+                'image' => '/uploads/widgets/specialization-widget.png',
+                'type' => 'page',
+            ],
+        ]);
+
+        $page = Page::find(4);
+        $page->widgets()->attach([4 => ['position' => 0]]);
+        $page->widgets()->attach([17 => ['position' => 1]]);
+        $page->widgets()->attach([18 => ['position' => 2]]);
+        $page->widgets()->attach([19 => ['position' => 3]]);
+        
+        // $page = Page::find(4);
+        // $page->widgets()->attach([11 => ['position' => 0]]);
+        // $page->widgets()->attach([11 => ['position' => 1]]);
+        // $page->widgets()->attach([12 => ['position' => 2]]);
+        // $page->widgets()->attach([14 => ['position' => 3]]);
     }
 }

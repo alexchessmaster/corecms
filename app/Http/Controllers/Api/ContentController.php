@@ -10,7 +10,6 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
 use Illuminate\Http\Request;
-use function Pest\Laravel\json;
 use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuResource;
@@ -78,17 +77,18 @@ class ContentController extends Controller
         $languages = Language::all();
         $menus = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
         $responseData = [
-            
             'page' => collect(),
             'article' => collect(),
             'category' => collect(),
             'tag' => collect(),
             'auth' => collect(),
             'redirect' => collect(),
-
+            'notfound' => false,
             'settings' => SettingResource::collection($settings),
             'languages' => LanguageResource::collection($languages),
             'menus' => MenuResource::collection($menus),
+            'path' => $path,
+            'lang' => $lang,
         ];
 
         if (auth()->check()) {
@@ -154,6 +154,7 @@ class ContentController extends Controller
 
         // Is 404
         $responseCode = 404;
+        $responseData["notfound"] = true;
 
         // $responseData["debuger"] = debugbar()->getData();
         return response()->json(['data' => $responseData], $responseCode);

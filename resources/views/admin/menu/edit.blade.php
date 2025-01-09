@@ -2,7 +2,7 @@
 @section('content-card-title', 'Menu')
 @section('content-card-body')
 
-    <form action="{{ route('admin.menus.update', $menu->id) }}" method="POST">
+    <form action="{{ route('admin.menus.update', $menu->id) }}" method="POST" enctype="multipart/form-data">
         @method('patch')
         @csrf
         

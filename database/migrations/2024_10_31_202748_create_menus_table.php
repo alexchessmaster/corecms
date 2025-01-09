@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->json('name');
             $table->json('link');
+            $table->string('image')->nullable();
+            $table->string('image_alt')->nullable();
+            $table->string('description')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('order')->default(10);
             $table->boolean('is_active')->default(true);

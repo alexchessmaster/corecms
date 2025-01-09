@@ -18,11 +18,11 @@ class WidgetResource extends JsonResource
         // return parent::toArray($request);
         return [
             "id" => $this->id,
-            "page_id" => $this->page_id,
+            // "page_id" => $this->page_id,
             "key" => $this->key,
             "name" => $this->name,
             "user_note" => $this->user_note,
-            "image" => $this->image,
+            "image" => str_starts_with($this->image, 'http') ? $this->image : config('app.url') . $this->image,
             "locked_fields_value" => $this->locked_fields_value,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,

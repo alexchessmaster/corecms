@@ -5,11 +5,39 @@
     <small id="name" class="form-text text-muted">Name of the menu</small>
 </div>
 
-<div class="group">
+<div class="form-group">
     <label for="exampleInputEmail1 required">Link</label>
     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter link"
         name="link" value="{{ isset($menu) ? $menu->link : '' }}">
     <small id="link" class="form-text text-muted">Link of the menu</small>
+</div>
+
+<div class="form-group">
+    <label for="image" class="form-label">Image</label>
+    @if (isset($menu) && $menu->image)
+        <div class="mb-2">
+            <img src="{{ $menu->image }}" alt="Current Image" 
+                 style="max-width: 150px; height: auto;">
+        </div>
+    @endif
+    <div class="mb-2" id="preview-container" style="display: none;">
+        <img id="image-preview" style="max-width: 150px; height: auto;" />
+    </div>
+    <input type="file" class="form-control" id="image" name="image">
+</div>
+
+<div class="form-group">
+    <label for="exampleInputEmail1 required">Image alt</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter image_alt"
+        name="image_alt" value="{{ isset($menu) ? $menu->image_alt : '' }}">
+    <small id="image_alt" class="form-text text-muted">image_alt for link</small>
+</div>
+
+<div class="form-group">
+    <label for="exampleInputEmail1 required">Description</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter description"
+        name="description" value="{{ isset($menu) ? $menu->description : '' }}">
+    <small id="description" class="form-text text-muted">description of the menu</small>
 </div>
 
 <div class="form-group">

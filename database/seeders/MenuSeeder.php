@@ -16,12 +16,12 @@ class MenuSeeder extends Seeder
     {
         $menu = new Menu;
         $menu->setTranslations('name', [
-            'da' => 'Services', 
-            'en' => 'services'
+            'en' => 'Home',
+            'da' => 'Hjem', 
         ]);
         $menu->setTranslations('link', [
-            'da' => '/page/' . Str::slug('Services-da'), 
-            'en' => '/page/' . Str::slug('Services')
+            'en' => '/en',
+            'da' => '/da',
         ]);
         $menu->parent_id = null;
         $menu->order = 1;
@@ -29,12 +29,12 @@ class MenuSeeder extends Seeder
 
         $menu = new Menu;
         $menu->setTranslations('name', [
-            'da' => 'Risikostyring', 
-            'en' => 'Risk management'
+            'en' => 'Services',
+            'da' => 'Services', 
         ]);
         $menu->setTranslations('link', [
-            'da' => '/page/' . Str::slug('Risikostyring'), 
-            'en' => '/page/' . Str::slug('Risk management')
+            'en' => '/en/' . Str::slug('Services'), 
+            'da' => '/da/' . Str::slug('Services')
         ]);
         $menu->parent_id = null;
         $menu->order = 2;
@@ -42,15 +42,31 @@ class MenuSeeder extends Seeder
 
         $menu = new Menu;
         $menu->setTranslations('name', [
-            'da' => 'Forretningsrådgivning', 
-            'en' => 'Business consulting'
+            'en' => 'Web development', 
+            'da' => 'Webudvikling'
         ]);
         $menu->setTranslations('link', [
-            'da' => '/page/' . Str::slug('Forretningsrådgivning'), 
-            'en' => '/page/' . Str::slug('Business consulting')
+            'en' => '/en/services/' . Str::slug('Web development'), 
+            'da' => '/da/services/' . Str::slug('Webudvikling')
+        ]);
+        $menu->parent_id = 2;
+        $menu->image = "/uploads/1736360925965757service-01.png";
+        $menu->image_alt = "web development service";
+        $menu->description = "Creating dynamic websites to bring your vision alive.";
+        $menu->order = 3;
+        $menu->save();
+
+        $menu = new Menu;
+        $menu->setTranslations('name', [
+            'en' => 'Contact us',
+            'da' => 'Kontakt os', 
+        ]);
+        $menu->setTranslations('link', [
+            'en' => '/en/' . Str::slug('Contact'),
+            'da' => '/da/' . Str::slug('Kontakt'), 
         ]);
         $menu->parent_id = null;
-        $menu->order = 3;
+        $menu->order = 4;
         $menu->save();
     }
 }

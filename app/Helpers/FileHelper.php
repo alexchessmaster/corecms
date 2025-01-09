@@ -16,11 +16,14 @@ class FileHelper
     public static function upload($request, $fileInputName = 'file')
     {
         if (! $request->hasFile($fileInputName)) {
-            throw new InvalidArgumentException;
+            return null;
+            // throw new InvalidArgumentException;
         }
+
         request()->validate([
-            $fileInputName => 'mimes:png,jpg,jpeg,mp3,mp4,avi,mkv,txt,pdf,doc,docx,webp,webm|max:100123'
+            $fileInputName => 'mimes:png,jpg,jpeg,mp3,mp4,avi,mkv,txt,pdf,doc,docx,webp,webm,svg|max:100123'
         ]);
+        
         $f = $request->file($fileInputName);
         $n = time() . rand(100000, 999999) . $f->getClientOriginalName();
         $f->move(public_path() . '/uploads', $n);

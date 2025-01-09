@@ -16,90 +16,34 @@ class PageSeeder extends Seeder
     {
         $page = new Page;
         $page->setTranslations('title', [
+            'en' => 'Front Page',
             'da' => 'Forside',
-            'en' => 'Front Page'
         ]);
         $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('/'),
             'da' => '/' . Str::slug('/'),
-            'en' => '/' . Str::slug('/')
         ]);
         $page->save();
 
         $page = new Page;
         $page->setTranslations('title', [
-            'da' => 'Tjenester',
-            'en' => 'Services'
+            'en' => 'Web development',
+            'da' => 'Webudvikling',
         ]);
         $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Tjenester'),
-            'en' => '/' . Str::slug('Services')
-        ]);
-        $page->save();
-
-        $page = new Page;
-        // $page->setTranslation('title', )
-        $page->setTranslations('title', [
-            'da' => 'Risikostyring',
-            'en' => 'Risk management'
-        ]);
-        $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Risikostyring'),
-            'en' => '/' . Str::slug('Risk management')
+            'en' => '/services/' . Str::slug('Web development'),
+            'da' => '/services/' . Str::slug('Webudvikling'),
         ]);
         $page->save();
 
         $page = new Page;
         $page->setTranslations('title', [
-            'da' => 'Forretningsrådgivning',
-            'en' => 'Business consulting'
+            'en' => 'Contact',
+            'da' => 'Kontact',
         ]);
         $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Forretningsrådgivning'),
-            'en' => '/' . Str::slug('Business consulting')
-        ]);
-        $page->save();
-
-        $page = new Page;
-        $page->setTranslations('title', [
-            'da' => 'Agile projekt- og programledelse',
-            'en' => 'Agile project and program management'
-        ]);
-        $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Agile projekt- og programledelse'),
-            'en' => '/' . Str::slug('Agile project and program management')
-        ]);
-        $page->save();
-
-        $page = new Page;
-        $page->setTranslations('title', [
-            'da' => 'Near shore udvikling',
-            'en' => 'Nearshore development'
-        ]);
-        $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Near shore udvikling'),
-            'en' => '/' . Str::slug('Nearshore development')
-        ]);
-        $page->save();
-
-        $page = new Page;
-        $page->setTranslations('title', [
-            'da' => 'Ledige stillinger',
-            'en' => 'Vacancies'
-        ]);
-        $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Ledige stillinger'),
-            'en' => '/' . Str::slug('Vacancies')
-        ]);
-        $page->save();
-
-        $page = new Page;
-        $page->setTranslations('title', [
-            'da' => 'Om os',
-            'en' => 'About us'
-        ]);
-        $page->setTranslations('slug', [
-            'da' => '/' . Str::slug('Om os'),
-            'en' => '/' . Str::slug('About us')
+            'en' => '/' . Str::slug('Contact'),
+            'da' => '/' . Str::slug('Kontact'),
         ]);
         $page->save();
     }

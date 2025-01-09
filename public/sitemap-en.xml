@@ -2,19 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
         <loc>https://nordicstandard.net/en/uncategorized/why-sky-is-blue</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/uncategorized/hvofor-hemlen-er-bla" />
         <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/uncategorized/why-sky-is-blue" />
-    
-            </url>
-    <url>
-        <loc>https://nordicstandard.net/en/car/dfdsfdsf</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/car/fdsgfdsg-fdsg-fsdg-fds-da" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/car/dfdsfdsf" />
-    
-            </url>
-    <url>
-        <loc>https://nordicstandard.net/en/nature/en3</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/nature/en3" />
     
             </url>
 </urlset>
