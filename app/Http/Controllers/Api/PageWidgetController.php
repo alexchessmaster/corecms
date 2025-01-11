@@ -19,7 +19,7 @@ class PageWidgetController extends Controller
 {
     public function fieldValue($pageId, $position, $lang = 'en')
     {
-        if(!empty($lang)){
+        if (!empty($lang)) {
             app()->setLocale($lang);
         }
         $pageWidget = PageWidget::with('fieldValues.field')->where('page_id', $pageId)->where('position', $position)->first();
@@ -54,78 +54,50 @@ class PageWidgetController extends Controller
         unset($inputs['widget-id']);
         unset($inputs['widget-locked']);
 
-        foreach($inputs as $inputKey => $inputValue){
-
+        foreach ($inputs as $inputKey => $inputValue) {
             $inputKeyArr = explode('-', $inputKey);
-            $fieldValueId = null;
-            foreach($inputKeyArr as $key => $value){
-                $fieldId = $inputKeyArr[1];
-                if(array_key_exists(3, $inputKeyArr)){
-                    $fieldValueId = $inputKeyArr[3];
-                }
-            }
+            $fieldValueId = $inputKeyArr[3] ?? null;
+            $fieldId = $inputKeyArr[1] ?? null;
 
-            
-            if (Str::startsWith($inputValue, 'data:') && Str::contains($inputValue, ';base64,')) {
-                // File widget
-                // Split the base64 string into MIME type and file content
-                $fileParts = explode(';base64,', $inputValue);
-                $mimeType = str_replace('data:', '', $fileParts[0]); // Extract MIME type
-                $base64Content = $fileParts[1]; // Extract base64 content
-            
-                // Decode the base64 content
-                $decodedFile = base64_decode($base64Content, true);
-            
-                if ($decodedFile === false) {
-                    return response()->json(['error' => 'Invalid base64 content'], 400);
-                }
-            
-                // Generate a unique file name based on the MIME type
-                $extension = Str::after($mimeType, '/'); // e.g., "svg+xml"
-                $extension = Str::before($extension, '+'); // Remove anything after "+"
-                $fileName = uniqid() . '.' . $extension;
-            
-                // Define the file path
-                $filePath = public_path('uploads/' . $fileName);
-            
-                // Ensure the uploads directory exists
-                if (!file_exists(public_path('uploads'))) {
-                    mkdir(public_path('uploads'), 0755, true);
-                }
-            
-                // Save the decoded file to the uploads directory
-                file_put_contents($filePath, $decodedFile);
-            
-                $inputValue = '/uploads/' . $fileName;
-            }
-            
+            if ($fieldValueId && $fieldValueId !== 'undefined') {
+                $fieldValueTmp = FieldValue::find($fieldValueId);
 
-            if(!empty($fieldValueId) && $fieldValueId !== 'undefined') {
-                if(!empty($fieldId)) {
-                    $fieldValueTmp = FieldValue::find($fieldValueId);
-                    $fieldValueTmp->setTranslation('value', $language, $inputValue);
-                    $fieldValueTmp->save();
-                } else {
-                    error('dsfkjdsjfjsdkf ' . json_encode(request()));
+                if (!$fieldValueTmp) {
+                    continue;
                 }
+
+                // Check if the input is a file and no new value is provided
+                if (Str::startsWith($fieldValueTmp->value, '/uploads/') && empty($inputValue)) {
+                    $inputValue = $fieldValueTmp->getTranslation('value', $language); // Retain old value
+                } elseif (Str::startsWith($inputValue, 'data:') && Str::contains($inputValue, ';base64,')) {
+                    // Handle new file input
+                    $inputValue = $this->handleBase64File($inputValue);
+                }
+
+                $fieldValueTmp->setTranslation('value', $language, $inputValue);
+                $fieldValueTmp->save();
             } else {
+                // Handle new entries or missing fieldValueId
                 $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $widgetPosition)->first();
-                if(!empty($pageWidget) && !empty($fieldId)){
+                if ($pageWidget && $fieldId) {
                     $fieldValueTmp = new FieldValue;
                     $fieldValueTmp->field_id = $fieldId;
                     $fieldValueTmp->page_widget_id = $pageWidget->id;
+
+                    if (Str::startsWith($inputValue, 'data:') && Str::contains($inputValue, ';base64,')) {
+                        $inputValue = $this->handleBase64File($inputValue);
+                    }
+
                     $fieldValueTmp->setTranslation('value', $language, $inputValue);
                     $fieldValueTmp->save();
-                } else {
-                    error('dsfkjdsjdsfsdfsdfsfjsdkf ' . json_encode(request()));
                 }
             }
 
-            if($widgetLocked === '1') {
-                // update FieldValue everywhere else
+            if ($widgetLocked === '1') {
+                // Update FieldValue everywhere else
                 $pageWidgetIds = PageWidget::where('widget_id', $widgetId)->pluck('id');
                 $fieldValues = FieldValue::whereIn('page_widget_id', $pageWidgetIds)->where('field_id', $fieldId)->get();
-                foreach($fieldValues as $fieldValueTmp){
+                foreach ($fieldValues as $fieldValueTmp) {
                     $fieldValueTmp->setTranslation('value', $language, $inputValue);
                     $fieldValueTmp->save();
                 }
@@ -135,5 +107,36 @@ class PageWidgetController extends Controller
         return response()->json([
             'message' => 'saved'
         ]);
+    }
+
+    private function handleBase64File($base64Data)
+    {
+        $fileParts = explode(';base64,', $base64Data);
+        $mimeType = str_replace('data:', '', $fileParts[0]); // Extract MIME type
+        $base64Content = $fileParts[1]; // Extract base64 content
+
+        // Decode the base64 content
+        $decodedFile = base64_decode($base64Content, true);
+        if ($decodedFile === false) {
+            throw new \Exception('Invalid base64 content');
+        }
+
+        // Generate a unique file name
+        $extension = Str::after($mimeType, '/');
+        $extension = Str::before($extension, '+'); // Remove anything after "+"
+        $fileName = uniqid() . '.' . $extension;
+
+        // Define the file path
+        $filePath = public_path('uploads/' . $fileName);
+
+        // Ensure the uploads directory exists
+        if (!file_exists(public_path('uploads'))) {
+            mkdir(public_path('uploads'), 0755, true);
+        }
+
+        // Save the file
+        file_put_contents($filePath, $decodedFile);
+
+        return '/uploads/' . $fileName;
     }
 }
