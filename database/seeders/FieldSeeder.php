@@ -21,6 +21,8 @@ class FieldSeeder extends Seeder
         $this->create(4, 'blue'); //
         $this->create(4, 'header');
         $this->create(4, 'description');
+        $this->create(4, 'image_1');
+        $this->create(4, 'image_2');
         $this->create(6, 'tel'); //
         $this->create(6, 'email');
         $this->create(6, 'text_left_1');

@@ -15,12 +15,16 @@ class ArticleSeeder extends Seeder
     {
         $article = new Article();
         $article->setTranslations('title', [
-            'en' => 'Why sky is blue',
+            'en' => 'Why the sky is blue',
             'da' => 'Hvofor hemlen er blå'
         ]);
+        $article->setTranslations('description', [
+            'en' => 'Why the sky is blue description',
+            'da' => 'Hvofor hemlen er blå description'
+        ]);
         $article->setTranslations('content', [
-            'en' => 'Why sky is blue long content',
-            'da' => 'Hvofor hemlen er blå langt inhold'
+            'en' => '<p>Why the sky is blue long content</p>',
+            'da' => '<p>Hvofor hemlen er blå langt inhold</p>'
         ]);
         $article->category_id = 1;
         $article->template_page_id = 1;

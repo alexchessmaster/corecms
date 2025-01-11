@@ -573,7 +573,7 @@
             // Create the title (h5 element)
             const cardTitle = document.createElement('h5');
             cardTitle.classList.add('card-title');
-            cardTitle.textContent = widget.name; // Use the widget's name
+            cardTitle.innerHTML = `<strong>${widget.name}</strong> ( key: ${widget.key})`; // Use the widget's name
 
             // Create the Edit button with an icon
             const editBtn = document.createElement('button');

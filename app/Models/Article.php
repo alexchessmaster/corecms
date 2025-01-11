@@ -29,4 +29,29 @@ class Article extends Model
     {
         return $this->belongsTo(Page::class, 'template_page_id', 'id');
     }
+
+    public function getFullUrlAttribute()
+    {
+        $fullUrl = $this->slug;
+    
+        $articlePrefix = cache()->remember('article-prefix', 3600, function () {
+            return Setting::where('key', 'article-prefix')->value('value');
+        });
+    
+        if (!empty($articlePrefix)) {
+            $articlePrefix = '/' . trim($articlePrefix, '/');
+            $fullUrl = $articlePrefix . $fullUrl;
+        }
+    
+        $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () {
+            return Language::count() > 1;
+        });
+    
+        if ($multipleLanguages) {
+            $lang = app()->getLocale();
+            $fullUrl = '/' . $lang . $fullUrl;
+        }
+    
+        return $fullUrl;
+    }
 }

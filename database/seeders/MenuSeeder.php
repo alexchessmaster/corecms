@@ -68,5 +68,18 @@ class MenuSeeder extends Seeder
         $menu->parent_id = null;
         $menu->order = 4;
         $menu->save();
+
+        $menu = new Menu;
+        $menu->setTranslations('name', [
+            'en' => 'Articles',
+            'da' => 'Artikler', 
+        ]);
+        $menu->setTranslations('link', [
+            'en' => '/en/' . Str::slug('Articles'),
+            'da' => '/da/' . Str::slug('Artikler'), 
+        ]);
+        $menu->parent_id = null;
+        $menu->order = 4;
+        $menu->save();
     }
 }

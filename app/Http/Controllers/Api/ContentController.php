@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
+use App\Models\Redirect;
 use Illuminate\Http\Request;
 use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
@@ -18,12 +19,12 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\SettingResource;
-use Barryvdh\Debugbar\Facades\Debugbar;
 
+use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
-use App\Models\Redirect;
+use Yajra\DataTables\Facades\DataTables;
 use DebugBar\DebugBar as DebugBarDebugBar;
 
 class ContentController extends Controller
@@ -89,14 +90,15 @@ class ContentController extends Controller
             'menus' => MenuResource::collection($menus),
             'path' => $path,
             'lang' => $lang,
+            'article_prefix' => '',
         ];
 
         if (auth()->check()) {
             $responseData["auth"] = UserResource::make(auth()->user());
         }
-        
+
         $responseCode = 200;
-        
+
         // Is Page
         $page = Page::with([
             'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
@@ -110,35 +112,41 @@ class ContentController extends Controller
         }
 
         // Is Category
-        $category = Category::with(['children', 'parent'])->where('slug->' . app()->getLocale(), $path)->first();//with(['articles' => fn($query) => $query->limit(10)])->
-        if($category) {
+        $category = Category::with(['children', 'parent'])->where('slug->' . app()->getLocale(), $path)->first(); //with(['articles' => fn($query) => $query->limit(10)])->
+        if ($category) {
             $responseData["category"] = CategoryResource::make($category);
 
-            return response()->json(['data' => $responseData], $responseCode); 
+            return response()->json(['data' => $responseData], $responseCode);
         }
 
         // Is Tag
-        $tag = Tag::where('name->' . app()->getLocale(), $path)->first();// with(['articles' => fn($query) => $query->limit(10)])->
-        if($tag) {
+        $tag = Tag::where('name->' . app()->getLocale(), $path)->first(); // with(['articles' => fn($query) => $query->limit(10)])->
+        if ($tag) {
             $responseData["tag"] = TagResource::make($tag);
 
-            return response()->json(['data' => $responseData], $responseCode); 
+            return response()->json(['data' => $responseData], $responseCode);
+        }
+
+        //TODO: can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
+        $articlePrefixSetting = $settings->where('key', 'article-prefix')->first();
+        $articlePath = $path;
+        if (!empty($articlePrefixSetting) && !empty($articlePrefixSetting->value)) {
+            $articlePrefix = '/' . trim($articlePrefixSetting->value, '/');
+            $articlePath = substr($path, strlen($articlePrefix));
         }
 
         // Is Article
-        $article = Article::with(['category', 'tags', 
+        $article = Article::with([
+            'category',
+            'tags',
             'page.pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
             'page.pageWidgets.widget',
             'page.pageWidgets.fieldValues.field',
-        ])->where('slug->' . app()->getLocale(), $path)->first();
-        if($article) {
-            //make a front-end for this backend and check if we have everything we need
-            // TODO: redirect table
-            // TODO: not-found table
-            // TODO: db-back-up script
-            // TODO: visitors and statistic
-
+        ])->where('slug->' . app()->getLocale(), $articlePath)->first();
+        // return response()->json($article);
+        if ($article) {
             // here check if category is correct do it, otherwise return 404
+            $responseData["article_prefix"] = $articlePrefix;
             $responseData["article"] = ArticleResource::make($article);
 
             return response()->json(['data' => $responseData], $responseCode);
@@ -146,7 +154,7 @@ class ContentController extends Controller
 
         // Is Redirect
         $redirect = Redirect::where('from', $path)->where('language', $lang)->orderBy('id', 'desc')->first();
-        if($redirect) {
+        if ($redirect) {
             $responseData["redirect"] = RedirectResource::make($redirect);
 
             return response()->json(['data' => $responseData], $responseCode);
@@ -162,35 +170,95 @@ class ContentController extends Controller
 
     public function fetchArticles()
     {
-        // $category = "category slug"
-        // $sort = "newest", "most_views", "oldest", ...
-        // $limit = 10;
-        // $tag = "Tag Name";
-        $page = request()->page ?? 1;
-        $perPage = request()->per_page ?? 10;
-        $sort = request()->sort ?? "newest";
         $category = request()->category ?? "";
-        $tag = request()->tag ?? ""; // tag is common, not tags
+        $tag = request()->tag ?? "";
 
         $query = Article::query();
-        if(!empty($category)) {
-            $category = Category::where('slug', $category)->first();
-            $query = $category->articles()->query(); // TODO check later if it's working
-        }
-        if(!empty($tag)) {
-            $tag = Tag::where('name', $tag)->first();
-            $query = $tag->articles()->query(); // TODO check later if it's working
-        }
-        if($sort === 'newest') {
-            $query->orderBy('created_at', 'desc');
-        } else if ($sort === "most_view") {
-            // count views on articles
-        }
-        $offset = $perPage * ($page - 1);
-        $query->offset($offset);
-        $query->limit($perPage);
-        $articles = $query->get();
 
-        return ArticleResource::collection($articles);
+        // Filter by category if provided
+        if (!empty($category)) {
+            $category = Category::where('slug', $category)->first();
+            if ($category) {
+                $query = $category->articles()->query();
+            }
+        }
+
+        // Filter by tag if provided
+        if (!empty($tag)) {
+            $tag = Tag::where('name', $tag)->first();
+            if ($tag) {
+                $query = $tag->articles()->query();
+            }
+        }
+
+        // Use Yajra DataTables to return the query as a DataTable response
+        return DataTables::of($query)
+            ->editColumn('title', function ($article) {
+                // Fetch translated string for 'title'
+                return $article->getTranslation('title', app()->getLocale());
+            })
+            ->editColumn('slug', function ($article) {
+                // Fetch translated string for 'slug'
+                return $article->getTranslation('slug', app()->getLocale());
+            })
+            ->editColumn('description', function ($article) {
+                // Fetch translated string for 'description' or return null
+                return $article->getTranslation('description', app()->getLocale());
+            })
+            ->editColumn('content', function ($article) {
+                // Fetch translated string for 'content'
+                return $article->getTranslation('content', app()->getLocale());
+            })
+            ->editColumn('image', function ($article) {
+                // Fetch translated string for 'content'
+                return str_starts_with($article->image, 'http') ? $article->image : config('app.url') . '/' . ltrim($article->image, '/');
+            })
+            ->editColumn('full_url', function ($article) {
+                // Fetch translated string for 'content'
+                return $article->full_url;
+            })
+            ->filter(function ($query) {
+                if (request()->has('search') && !empty(request()->search['value'])) {
+                    $searchValue = request()->search['value'];
+                    $query->where('title', 'like', "%{$searchValue}%")
+                        ->orWhere('content', 'like', "%{$searchValue}%");
+                }
+            })
+            ->make(true);
     }
+
+    // public function fetchArticles()
+    // {
+    //     // $category = "category slug"
+    //     // $sort = "newest", "most_views", "oldest", ...
+    //     // $limit = 10;
+    //     // $tag = "Tag Name";
+    //     $page = request()->page ?? 1;
+    //     $perPage = request()->per_page ?? 10;
+    //     $sort = request()->sort ?? "newest";
+    //     $category = request()->category ?? "";
+    //     $tag = request()->tag ?? ""; // tag is common, not tags
+
+    //     $query = Article::query();
+    //     if(!empty($category)) {
+    //         $category = Category::where('slug', $category)->first();
+    //         $query = $category->articles()->query(); // TODO check later if it's working
+    //     }
+    //     if(!empty($tag)) {
+    //         $tag = Tag::where('name', $tag)->first();
+    //         $query = $tag->articles()->query(); // TODO check later if it's working
+    //     }
+    //     if($sort === 'newest') {
+    //         $query->orderBy('created_at', 'desc');
+    //     } else if ($sort === "most_view") {
+    //         // count views on articles
+    //     }
+    //     $offset = $perPage * ($page - 1);
+    //     $query->offset($offset);
+    //     $query->limit($perPage);
+    //     $articles = $query->get();
+
+    //     return ArticleResource::collection($articles);
+    // }
+
 }

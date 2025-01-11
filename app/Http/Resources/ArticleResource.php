@@ -21,6 +21,7 @@ class ArticleResource extends JsonResource
             "id" => $this->id,
             "title" => $this->title,
             "slug" => $this->slug,
+            "full_url" => $this->full_url,
             "description" => $this->description,
             "content" => $this->content,
             "image" => str_starts_with($this->image, 'http') ? $this->image : config('app.url') . $this->image,

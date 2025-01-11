@@ -72,7 +72,7 @@ class PageWidgetController extends Controller
                 $fileParts = explode(';base64,', $inputValue);
                 $mimeType = str_replace('data:', '', $fileParts[0]); // Extract MIME type
                 $base64Content = $fileParts[1]; // Extract base64 content
-
+            
                 // Decode the base64 content
                 $decodedFile = base64_decode($base64Content, true);
             
@@ -81,7 +81,8 @@ class PageWidgetController extends Controller
                 }
             
                 // Generate a unique file name based on the MIME type
-                $extension = Str::after($mimeType, '/'); // e.g., "jpeg"
+                $extension = Str::after($mimeType, '/'); // e.g., "svg+xml"
+                $extension = Str::before($extension, '+'); // Remove anything after "+"
                 $fileName = uniqid() . '.' . $extension;
             
                 // Define the file path
@@ -94,9 +95,10 @@ class PageWidgetController extends Controller
             
                 // Save the decoded file to the uploads directory
                 file_put_contents($filePath, $decodedFile);
-
+            
                 $inputValue = '/uploads/' . $fileName;
             }
+            
 
             if(!empty($fieldValueId) && $fieldValueId !== 'undefined') {
                 if(!empty($fieldId)) {

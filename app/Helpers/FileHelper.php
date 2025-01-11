@@ -31,4 +31,21 @@ class FileHelper
         
         return $filepath;
     }
+
+    public static function addDomainPrefixIfValueIsAFile($value)
+    {
+        if(str_starts_with($value, 'http')){
+            return $value;
+        }
+
+        $imageExtensions = ['gif', 'jpg', 'jpeg', 'png', 'svg', 'bmp', 'tiff', 'webp'];
+    
+        $fileExtension = pathinfo($value, PATHINFO_EXTENSION);
+    
+        if (in_array(strtolower($fileExtension), $imageExtensions)) {
+            return config('app.url') . '/' . ltrim($value, '/');
+        }
+    
+        return $value;
+    }
 }

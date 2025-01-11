@@ -19,7 +19,7 @@ class FieldController extends Controller
 
         $field = new Field;
         $field->widget_id = $widgetId;
-        $field->key = $key;
+        $field->key = \Str::slug($key, '_');
         $field->type = $type;
         // save default value for each language?
         $field->save();

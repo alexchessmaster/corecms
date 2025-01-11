@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ContentController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\PageWidgetController;
+use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,3 +27,6 @@ Route::patch('/widgets/detach', [WidgetController::class, 'detach']);
 Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
 Route::get('/widgets/{id}', [WidgetController::class, 'show']);
 Route::apiResource('/fields', FieldController::class);
+
+// NordicStandard.net custom routes:
+Route::post('contact-us', [ContactController::class, 'submitContactForm']);

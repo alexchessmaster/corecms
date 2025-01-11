@@ -14,6 +14,8 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         Setting::insert([
+            ['key' => 'article-prefix', 'value' => 'articles', 'description' => "Can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article"],
+
             ['key' => 'title_of_the_website', 'value' => 'CMS'],
             ['key' => 'tel_formatted', 'value' => '+45-71585844'],
             ['key' => 'tel', 'value' => '+4571585844'],
