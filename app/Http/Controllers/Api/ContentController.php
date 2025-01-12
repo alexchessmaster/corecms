@@ -170,9 +170,14 @@ class ContentController extends Controller
 
     public function fetchArticles()
     {
+        $language = request()->language;
+        if($language) {
+            app()->setLocale($language);
+        }
         $category = request()->category ?? "";
         $tag = request()->tag ?? "";
-
+        $sort = request()->sort;
+        
         $query = Article::query();
 
         // Filter by category if provided
@@ -191,41 +196,52 @@ class ContentController extends Controller
             }
         }
 
-        // Use Yajra DataTables to return the query as a DataTable response
+        if($sort === 'newest') {
+            $query = $query->orderBy('created_at', 'asc');
+        }else {
+            $query = $query->orderBy('created_at', 'desc');
+        }
+
         return DataTables::of($query)
             ->editColumn('title', function ($article) {
-                // Fetch translated string for 'title'
                 return $article->getTranslation('title', app()->getLocale());
             })
             ->editColumn('slug', function ($article) {
-                // Fetch translated string for 'slug'
                 return $article->getTranslation('slug', app()->getLocale());
             })
             ->editColumn('description', function ($article) {
-                // Fetch translated string for 'description' or return null
                 return $article->getTranslation('description', app()->getLocale());
             })
             ->editColumn('content', function ($article) {
-                // Fetch translated string for 'content'
                 return $article->getTranslation('content', app()->getLocale());
             })
             ->editColumn('image', function ($article) {
-                // Fetch translated string for 'content'
-                return str_starts_with($article->image, 'http') ? $article->image : config('app.url') . '/' . ltrim($article->image, '/');
+                return str_starts_with($article->image, 'http')
+                    ? $article->image
+                    : config('app.url') . '/' . ltrim($article->image, '/');
             })
             ->editColumn('full_url', function ($article) {
-                // Fetch translated string for 'content'
                 return $article->full_url;
             })
             ->filter(function ($query) {
                 if (request()->has('search') && !empty(request()->search['value'])) {
                     $searchValue = request()->search['value'];
-                    $query->where('title', 'like', "%{$searchValue}%")
-                        ->orWhere('content', 'like', "%{$searchValue}%");
+                    $query->where(function ($query) use ($searchValue) {
+                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?',['"%' . strtolower($searchValue) . '%"'])
+                            ->orWhereRaw('LOWER(JSON_EXTRACT(content, "$.' . app()->getLocale() . '")) like ?',['"%' . strtolower($searchValue) . '%"']);
+                    });
+                }
+            })
+            ->order(function ($query) {
+                if (request()->has('order')) {
+                    $orderColumn = request()->columns[request()->order[0]['column']]['data'];
+                    $orderDirection = request()->order[0]['dir'];
+                    $query->orderBy($orderColumn, $orderDirection);
                 }
             })
             ->make(true);
     }
+
 
     // public function fetchArticles()
     // {
