@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\Article;
+use App\Models\Setting;
 use App\Models\Language;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
+use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 
 class GenerateSitemapsCommand extends Command
@@ -31,18 +33,49 @@ class GenerateSitemapsCommand extends Command
     {
         $languages = Language::pluck('code')->all(); // Add more languages as needed
         $frontendBaseUrl = config('app.frontend_url'); // Your site's base URL
+
+        $articlePrefix = Setting::where('key', 'article-prefix')->value('value');
+
+        $defaultFrequentlyChangePages = Setting::where('key', 'default-sitemap-change-frequently-pages')->value('value');
+        $defaultFrequentlyChangeArticles = Setting::where('key', 'default-sitemap-change-frequently-articles')->value('value');
+        $defaultPriorityPages = Setting::where('key', 'default-sitemap-priority-pages')->value('value');
+        $defaultPriorityArticles = Setting::where('key', 'default-sitemap-priority-articles')->value('value');
+
+        // 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequently'
+        // dd($defaultFrequentlyChangePages);
         foreach ($languages as $lang) {
             $sitemap = Sitemap::create();
-            $pages = $this->getPagesForLanguage($lang);
+            $table = 'pages';
+            $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
             // var_dump($pages);
             foreach ($pages as $page) {
-                if(array_key_exists('slug', $page)){
-
+                if (array_key_exists('slug', $page)) {
                     $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
                     // Add alternate links for all available translations
                     foreach ($page['alternates'] as $altLang => $altSlug) {
                         $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$altSlug}", $altLang);
                     }
+                    $item = $page['item'];
+                    $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
+                    $url->setChangeFrequency($item->sitemap_change_frequently ?? $defaultFrequentlyChangePages);
+                    $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
+                    $sitemap->add($url);
+                }
+            }
+            $table = 'articles';
+            $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
+            // var_dump($pages);
+            foreach ($pages as $page) {
+                if (array_key_exists('slug', $page)) {
+                    $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
+                    // Add alternate links for all available translations
+                    foreach ($page['alternates'] as $altLang => $altSlug) {
+                        $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$altSlug}", $altLang);
+                    }
+                    $item = $page['item'];
+                    $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
+                    $url->setChangeFrequency($item->sitemap_change_frequently ?? $defaultFrequentlyChangePages);
+                    $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
                     $sitemap->add($url);
                 }
             }
@@ -57,21 +90,21 @@ class GenerateSitemapsCommand extends Command
         return 0;
     }
 
-    private function getPagesForLanguage($lang)
+    private function getPagesOrArticlesForLanguage($table, $lang)
     {
         // Fetch articles with available slugs for the given language
-        return \DB::table('articles')
-            ->whereNull('exclude_from_sitemap')
-            ->orWhere('exclude_from_sitemap', false)
+        return \DB::table($table)
+            ->whereNull('sitemap_exclude')
+            ->orWhere('sitemap_exclude', false)
             ->get()
             ->map(function ($article) use ($lang) {
                 // Decode the slug JSON safely
                 $slugs = json_decode($article->slug, true);
-                // var_dump($article);die;
-                if(array_key_exists($lang, $slugs)){
+                if (array_key_exists($lang, $slugs)) {
                     return [
                         'slug' => $slugs[$lang], // Get the slug for the current language
-                        'alternates' => collect($slugs)->filter() // Remove null or empty slugs
+                        'alternates' => collect($slugs)->filter(), // Remove null or empty slugs
+                        'item' => $article,
                     ];
                 } else {
                     return [];

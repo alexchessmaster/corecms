@@ -11,7 +11,7 @@ class Category extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['name', 'slug', 'description', 'parent_id', 'exclude_from_sitemap'];
+    protected $fillable = ['name', 'slug', 'description', 'parent_id', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequently'];
     public $translatable = ['name', 'slug', 'description'];
 
 // protected static function boot()

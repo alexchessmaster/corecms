@@ -19,6 +19,30 @@ class SettingSeeder extends Seeder
         $setting->description = "Can be empty or articles can be change depends on your need some websites like to have /articles before the slug of each article";
         $setting->save();
 
+        $setting = new Setting;
+        $setting->key = 'default-sitemap-change-frequently-pages';
+        $setting->value = 'monthly';
+        $setting->description = "Default sitemap change frequently pages";
+        $setting->save();
+
+        $setting = new Setting;
+        $setting->key = 'default-sitemap-change-frequently-articles';
+        $setting->value = 'yearly';
+        $setting->description = "Default sitemap change frequently articles";
+        $setting->save();
+
+        $setting = new Setting;
+        $setting->key = 'default-sitemap-priority-pages';
+        $setting->value = '0.8';
+        $setting->description = "Default sitemap priority for pages";
+        $setting->save();
+
+        $setting = new Setting;
+        $setting->key = 'default-sitemap-priority-articles';
+        $setting->value = '0.6';
+        $setting->description = "Default sitemap priority for articles";
+        $setting->save();
+
         Setting::insert([        
             ['key' => 'text_title_of_the_website', 'value' => 'CMS'],
             ['key' => 'text_tel_formatted', 'value' => '+45-71585844'],
