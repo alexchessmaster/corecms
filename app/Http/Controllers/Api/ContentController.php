@@ -24,6 +24,8 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
+use App\Http\Resources\TranslationTextResource;
+use App\Models\TranslationText;
 use Yajra\DataTables\Facades\DataTables;
 use DebugBar\DebugBar as DebugBarDebugBar;
 
@@ -75,7 +77,7 @@ class ContentController extends Controller
         }
 
         $settings = Setting::all();
-        $languages = Language::all();
+        $translationTexts = TranslationText::all();
         $menus = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
         $responseData = [
             'page' => collect(),
@@ -91,6 +93,7 @@ class ContentController extends Controller
             'path' => $path,
             'lang' => $lang,
             'article_prefix' => '',
+            'translation_texts' => TranslationTextResource::collection($translationTexts),
         ];
 
         if (auth()->check()) {
@@ -127,7 +130,7 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
-        //TODO: can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
+        //can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
         $articlePrefixSetting = $settings->where('key', 'article-prefix')->first();
         $articlePath = $path;
         if (!empty($articlePrefixSetting) && !empty($articlePrefixSetting->value)) {
@@ -241,40 +244,4 @@ class ContentController extends Controller
             })
             ->make(true);
     }
-
-
-    // public function fetchArticles()
-    // {
-    //     // $category = "category slug"
-    //     // $sort = "newest", "most_views", "oldest", ...
-    //     // $limit = 10;
-    //     // $tag = "Tag Name";
-    //     $page = request()->page ?? 1;
-    //     $perPage = request()->per_page ?? 10;
-    //     $sort = request()->sort ?? "newest";
-    //     $category = request()->category ?? "";
-    //     $tag = request()->tag ?? ""; // tag is common, not tags
-
-    //     $query = Article::query();
-    //     if(!empty($category)) {
-    //         $category = Category::where('slug', $category)->first();
-    //         $query = $category->articles()->query(); // TODO check later if it's working
-    //     }
-    //     if(!empty($tag)) {
-    //         $tag = Tag::where('name', $tag)->first();
-    //         $query = $tag->articles()->query(); // TODO check later if it's working
-    //     }
-    //     if($sort === 'newest') {
-    //         $query->orderBy('created_at', 'desc');
-    //     } else if ($sort === "most_view") {
-    //         // count views on articles
-    //     }
-    //     $offset = $perPage * ($page - 1);
-    //     $query->offset($offset);
-    //     $query->limit($perPage);
-    //     $articles = $query->get();
-
-    //     return ArticleResource::collection($articles);
-    // }
-
 }

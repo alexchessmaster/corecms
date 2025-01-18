@@ -1,6 +1,5 @@
-{{-- admin.categories.edit --}}
 @extends('admin.partials.app')
-@section('content-card-title', 'Tags')
+@section('content-card-title', 'Translation Texts')
 @section('content-body')
 
     <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -10,17 +9,18 @@
 
     <div class="container">
         <div class="d-flex justify-content-between mb-3">
-            <h2 class="text-primary">Manage Tags</h2>
-            <a href="{{ route('admin.tags.create') }}" class="btn btn-success">
-                <i class="fas fa-plus"></i> Create Tag
+            <h2 class="text-primary">Manage Translation Texts</h2>
+            <a href="{{ route('admin.translation-texts.create') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Create
             </a>
         </div>
 
         <div class="table-responsive">
-            <table id="articles-table" class="table table-striped table-hover">
+            <table id="table" class="table table-striped table-hover">
                 <thead class="">
                     <tr>
-                        <th>Name</th>
+                        <th>Key</th>
+                        <th>Text</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -35,16 +35,28 @@
         {{-- <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> --}}
         <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
         <script>
-            $(document).ready(function () {
-                $('#articles-table').DataTable({
+            $(document).ready(function() {
+                $('#table').DataTable({
                     processing: true,
                     serverSide: true,
                     responsive: true, // Enables responsiveness for the table
                     autoWidth: false, // Prevents DataTable from calculating column width
-                    ajax: "{{ route('admin.tags.index') }}", // Ajax route to fetch data
-                    columns: [
-                        { data: 'name', name: 'name' },
-                        { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
+                    ajax: "{{ route('admin.translation-texts.index') }}", // Ajax route to fetch data
+                    columns: [{
+                            data: 'key',
+                            name: 'key'
+                        },
+                        {
+                            data: 'text',
+                            name: 'text'
+                        },
+                        {
+                            data: 'actions',
+                            name: 'actions',
+                            orderable: false,
+                            searchable: false,
+                            className: 'text-center'
+                        }
                     ],
                     language: {
                         search: "Filter records:",
@@ -56,7 +68,7 @@
                         }
                     },
                     pagingType: "full_numbers",
-                    lengthMenu: [25, 50, 100, 200, 1000],
+                    lengthMenu: [10, 25, 50, 100, 200, 1000],
                     pageLength: 25,
                 });
             });

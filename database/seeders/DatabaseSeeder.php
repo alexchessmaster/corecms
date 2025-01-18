@@ -11,6 +11,7 @@ use App\Models\Language;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Database\Seeders\TranslationTextSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,5 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(TagSeeder::class);
         $this->call(ArticleSeeder::class);
+        $this->call(TranslationTextSeeder::class);
     }
 }

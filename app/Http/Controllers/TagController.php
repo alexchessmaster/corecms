@@ -8,10 +8,32 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tags = Tag::all();
-        return view('admin.tag.index', compact('tags'));
+        if ($request->ajax()) {
+            $data = Tag::select(['id', 'name']);
+            return datatables()
+                ->of($data)
+                ->editColumn('name', function ($item) {
+                    $text = $item->getTranslation('name', app()->getLocale(), false);
+                    return $text ?: '-Not translated-';
+                })
+                ->addColumn('actions', function ($row) {
+                    $editUrl = route('admin.tags.edit', $row->id);
+                    $deleteUrl = route('admin.tags.destroy', $row->id);
+                    return '
+                    <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                    </form>
+                ';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+
+        return view('admin.tag.index');
     }
 
     public function create()

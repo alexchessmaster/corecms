@@ -47,60 +47,60 @@ class WidgetSeeder extends Seeder
                 'key' => Str::slug('Header Small'),
                 'image' => '/uploads/header_small_widget.jpeg',
             ],
-            // [//6 // put it the settings
-            //     'name' => 'Footer',
-            //     'key' => Str::slug('Footer'),
-            //     'image' => '/uploads/widgets/footer-widget.png',
-            // ],
+            [//6 // put it the settings
+                'name' => 'Footer',
+                'key' => Str::slug('Footer'),
+                'image' => '/uploads/widgets/footer-widget.png',
+            ],
         ]);
         
         Widget::insert([
-            [//6
+            [//7
                 'name' => 'Code',
                 'key' => Str::slug('Code'),
                 'image' => '/uploads/code.png',
             ],
-            [//7
+            [//8
                 'name' => 'Space',
                 'key' => Str::slug('Space'),
                 'image' => '/uploads/space.png',
             ],
-            [//8
+            [//9
                 'name' => 'Block Starts',
                 'key' => Str::slug('Block Start'),
                 'image' => '/uploads/block-starts.png',
             ],
-            [//9
+            [//10
                 'name' => 'Block Ends',
                 'key' => Str::slug('Block End'),
                 'image' => '/uploads/block-ends.png',
             ],
-            [//10
+            [//11
                 'name' => 'Text One Column',
                 'key' => Str::slug('Text One Column'),
                 'image' => '/uploads/one-column-text.png',
             ],
-            [//11
+            [//12
                 'name' => 'Text Two Columns',
                 'key' => Str::slug('Text Two Columns'),
                 'image' => '/uploads/two-columns-text.png',
             ],
-            [//12
+            [//13
                 'name' => 'Text Three Columns',
                 'key' => Str::slug('Text Three Columns'),
                 'image' => '/uploads/three-columns-text.png',
             ],
-            [//13
+            [//14
                 'name' => 'Image One Column',
                 'key' => Str::slug('Image One Column'),
                 'image' => '/uploads/one-column-image.png',
             ],
-            [//14
+            [//15
                 'name' => 'Image Two Columns',
                 'key' => Str::slug('Image Two Columns'),
                 'image' => '/uploads/two-columns-image.png',
             ],
-            [//15
+            [//16
                 'name' => 'Image Three Columns',
                 'key' => Str::slug('Image Three Columns'),
                 'image' => '/uploads/three-columns-image.png',
@@ -108,7 +108,7 @@ class WidgetSeeder extends Seeder
         ]);
 
         Widget::insert([
-            [//16
+            [//17
                 'name' => 'article_list',
                 'key' => Str::slug('article_list'),
                 'image' => '/uploads/article_list_widget.jpeg',
@@ -117,19 +117,19 @@ class WidgetSeeder extends Seeder
         ]);
 
         Widget::insert([
-            [//17
+            [//18
                 'name' => 'Contact form',
                 'key' => Str::slug('Contact-form'),
                 'image' => '/uploads/widgets/contact-form-widget.png',
                 'type' => 'page',
             ],
-            [//18
+            [//19
                 'name' => 'Our service',
                 'key' => Str::slug('Our service'),
                 'image' => '/uploads/widgets/our-service-widget.png',
                 'type' => 'page',
             ],
-            [//19
+            [//20
                 'name' => 'Specialization',
                 'key' => Str::slug('Specialization'),
                 'image' => '/uploads/widgets/specialization-widget.png',
@@ -139,9 +139,10 @@ class WidgetSeeder extends Seeder
 
         $page = Page::find(4);
         $page->widgets()->attach([4 => ['position' => 0]]);
-        $page->widgets()->attach([17 => ['position' => 1]]);
-        $page->widgets()->attach([18 => ['position' => 2]]);
-        $page->widgets()->attach([19 => ['position' => 3]]);
+        $page->widgets()->attach([18 => ['position' => 1]]);
+        $page->widgets()->attach([19 => ['position' => 2]]);
+        $page->widgets()->attach([20 => ['position' => 3]]);
+        $page->widgets()->attach([6 => ['position' => 4]]);
         
         // $page = Page::find(4);
         // $page->widgets()->attach([11 => ['position' => 0]]);

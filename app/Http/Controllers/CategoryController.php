@@ -7,10 +7,35 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::with('children')->get();
-        return view('admin.category.index', compact('categories'));
+        if ($request->ajax()) {
+            $data = Category::with('children')->select(['id', 'name', 'parent_id']);
+            return datatables()
+                ->of($data)
+                ->editColumn('name', function ($item) {
+                    $text = $item->getTranslation('name', app()->getLocale(), false);
+                    return $text ?: '-Not translated-';
+                })
+                ->addColumn('parent', function($item){
+                    return $item->parent?->name;
+                })
+                ->addColumn('actions', function ($row) {
+                    $editUrl = route('admin.categories.edit', $row->id);
+                    $deleteUrl = route('admin.categories.destroy', $row->id);
+                    return '
+                    <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                    </form>
+                ';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+
+        return view('admin.category.index');
     }
 
     public function create()
