@@ -36,13 +36,13 @@ class GenerateSitemapsCommand extends Command
 
         $articlePrefix = Setting::where('key', 'article-prefix')->value('value');
 
-        $defaultFrequentlyChangePages = Setting::where('key', 'default-sitemap-change-frequently-pages')->value('value');
-        $defaultFrequentlyChangeArticles = Setting::where('key', 'default-sitemap-change-frequently-articles')->value('value');
+        $defaultFrequencyChangePages = Setting::where('key', 'default-sitemap-change-frequency-pages')->value('value');
+        $defaultFrequencyChangeArticles = Setting::where('key', 'default-sitemap-change-frequency-articles')->value('value');
         $defaultPriorityPages = Setting::where('key', 'default-sitemap-priority-pages')->value('value');
         $defaultPriorityArticles = Setting::where('key', 'default-sitemap-priority-articles')->value('value');
 
-        // 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequently'
-        // dd($defaultFrequentlyChangePages);
+        // 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency'
+        // dd($defaultFrequencyChangePages);
         foreach ($languages as $lang) {
             $sitemap = Sitemap::create();
             $table = 'pages';
@@ -57,7 +57,7 @@ class GenerateSitemapsCommand extends Command
                     }
                     $item = $page['item'];
                     $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
-                    $url->setChangeFrequency($item->sitemap_change_frequently ?? $defaultFrequentlyChangePages);
+                    $url->setChangeFrequency($item->sitemap_change_frequency ?? $defaultFrequencyChangePages);
                     $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
                     $sitemap->add($url);
                 }
@@ -74,7 +74,7 @@ class GenerateSitemapsCommand extends Command
                     }
                     $item = $page['item'];
                     $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
-                    $url->setChangeFrequency($item->sitemap_change_frequently ?? $defaultFrequentlyChangePages);
+                    $url->setChangeFrequency($item->sitemap_change_frequency ?? $defaultFrequencyChangePages);
                     $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
                     $sitemap->add($url);
                 }

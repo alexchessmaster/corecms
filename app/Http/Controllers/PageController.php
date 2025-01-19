@@ -93,15 +93,25 @@ class PageController extends Controller
      */
     public function update(UpdatePageRequest $request, Page $page)
     {
-        $page->setTranslation('title', app()->getLocale(), request()->input('title'));
-        $page->setTranslation('slug', app()->getLocale(), request()->input('slug'));
-        $page->exclude_from_sitemap = request()->input('exclude_from_sitemap');
-        $page->save();
+        // $page->setTranslation('title', app()->getLocale(), request()->input('title'));
+        // $page->setTranslation('slug', app()->getLocale(), request()->input('slug'));
+        // if(!empty($request->input('sitemap_exclude'))){
+        //     $page->sitemap_exclude = true;
+        // } else {
+        //     $page->sitemap_exclude = null;
+        // }
+        // if(!empty($request->input('sitemap_priority'))){
+        //     $page->sitemap_priority = $request->input('sitemap_priority');
+        // }
+        // if(!empty($request->input('sitemap_change_frequency'))){
+        //     $page->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        // }
+        // $page->save();
 
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'Page updated successfully.'
-        ]);
+        // return response()->json([
+        //     'status' => 'ok',
+        //     'message' => 'Page updated successfully.'
+        // ]);
     }
 
     /**

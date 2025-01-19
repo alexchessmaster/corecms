@@ -57,11 +57,97 @@
                                 value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="exclude_from_sitemap" name="exclude_from_sitemap">
-                            <label for="exclude_from_sitemap" class="form-check-label">Exclude from sitemap</label>
+                    <div class="col-sm-12">
+                        <div style="background: rgb(202, 202, 202);padding:5px">
+                            <h5>Sitemap</h5>
+                            <div class="row">
+                                <div class="col-sm-4 col-xs-12">
+                                    <label for="sitemap_priority" class="form-label">Sitemap priority</label>
+                                    <select class="form-control" id="sitemap_priority" name="sitemap_priority">
+                                        <option value="">Default</option>
+                                        <option value="0.1"
+                                            {{ isset($page) && $page->sitemap_priority == '0.1' ? 'selected' : '' }}>
+                                            0.1</option>
+                                        <option value="0.2"
+                                            {{ isset($page) && $page->sitemap_priority == '0.2' ? 'selected' : '' }}>
+                                            0.2</option>
+                                        <option value="0.3"
+                                            {{ isset($page) && $page->sitemap_priority == '0.3' ? 'selected' : '' }}>
+                                            0.3</option>
+                                        <option value="0.4"
+                                            {{ isset($page) && $page->sitemap_priority == '0.4' ? 'selected' : '' }}>
+                                            0.4</option>
+                                        <option value="0.5"
+                                            {{ isset($page) && $page->sitemap_priority == '0.5' ? 'selected' : '' }}>
+                                            0.5</option>
+                                        <option value="0.6"
+                                            {{ isset($page) && $page->sitemap_priority == '0.6' ? 'selected' : '' }}>
+                                            0.6</option>
+                                        <option value="0.7"
+                                            {{ isset($page) && $page->sitemap_priority == '0.7' ? 'selected' : '' }}>
+                                            0.7</option>
+                                        <option value="0.8"
+                                            {{ isset($page) && $page->sitemap_priority == '0.8' ? 'selected' : '' }}>
+                                            0.8</option>
+                                        <option value="0.9"
+                                            {{ isset($page) && $page->sitemap_priority == '0.9' ? 'selected' : '' }}>
+                                            0.9</option>
+                                        <option value="1.0"
+                                            {{ isset($page) && $page->sitemap_priority == '1.0' ? 'selected' : '' }}>
+                                            1.0</option>
+                                    </select>
+                                    <small id="name" class="form-text text-muted">Do not change it if you don't know
+                                        what is this.</small>
+                                </div>
+                                <div class="col-sm-4 col-xs-12">
+                                    <label for="sitemap_change_frequency" class="form-label">Sitemap change
+                                        frequency</label>
+                                    <select class="form-control" id="sitemap_change_frequency"
+                                        name="sitemap_change_frequency">
+                                        <option value="">Default</option>
+                                        <option value="always"
+                                            {{ isset($page) && $page->sitemap_change_frequency == 'always' ? 'selected' : '' }}>
+                                            always
+                                        </option>
+                                        <option value="hourly"
+                                            {{ isset($page) && $page->sitemap_change_frequency == 'hourly' ? 'selected' : '' }}>
+                                            hourly
+                                        </option>
+                                        <option value="daily"
+                                            {{ isset($page) && $page->sitemap_change_frequency == 'daily' ? 'selected' : '' }}>
+                                            daily
+                                        </option>
+                                        <option value="weekly"
+                                            {{ isset($page) && $page->sitemap_change_frequency == 'weekly' ? 'selected' : '' }}>
+                                            weekly
+                                        </option>
+                                        <option value="monthly"
+                                            {{ isset($page) && $page->sitemap_change_frequency == 'monthly' ? 'selected' : '' }}>
+                                            monthly
+                                        </option>
+                                        <option value="yearly"
+                                            {{ isset($page) && $page->sitemap_change_frequency == 'yearly' ? 'selected' : '' }}>
+                                            yearly
+                                        </option>
+                                    </select>
+                                    <small id="name" class="form-text text-muted">Do not change it if you don't know
+                                        what is
+                                        this.</small>
+                                </div>
+                                <div class="col-sm-4 col-xs-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" name="sitemap_exclude"
+                                            id="sitemap_exclude"
+                                            {{ isset($page) && !empty($page->sitemap_exclude) ? 'checked' : '' }}>
+                                        <label for="sitemap_exclude" class="form-check-label">Exclude from sitemap</label>
+                                    </div>
+                                    <small id="name" class="form-text text-muted">Do not change it if you don't know
+                                        what is
+                                        this.</small>
+                                </div>
+                            </div>
                         </div>
+                        <br>
                     </div>
                 </div>
             </form>
@@ -611,7 +697,7 @@
                 // Add edit functionality here
                 let allFieldsWithValues = await fetch(
                         `/api/page/${pageId}/widget/${widget.id}/widget-position/${widgetPosition}/fields-with-values/${currentLanguage}`
-                        )
+                    )
                     .then(res => res.json())
                     .then(data => data);
 
@@ -749,7 +835,7 @@
 
             // Wait for all file inputs to finish reading
             await new Promise(resolve => setTimeout(resolve,
-            100)); // Ensure files are read (adjust time as necessary)
+                100)); // Ensure files are read (adjust time as necessary)
 
             // Send the data to the backend
             fetch("/api/pages/widget-position/update-field-value", {
@@ -796,13 +882,21 @@
 
         const titleInput = document.getElementById('page_title');
         const slugInput = document.getElementById('page_slug');
+        const sitemapPriorityInput = document.getElementById('sitemap_priority');
+        const sitemapChangeFrequencyInput = document.getElementById('sitemap_change_frequency');
+        const sitemapExcludeInput = document.getElementById('sitemap_exclude');
         const currentLanguage = '{!! App::currentLocale() !!}';
 
         const updatePostUrlOrSlug = () => {
-            console.log('hererererer 1111111')
+            console.log('changed 12111111');
+
             const title = document.getElementById('page_title');
             const slug = document.getElementById('page_slug');
-            console.log(title, slug)
+            const sitemapPriority = document.getElementById('sitemap_priority');
+            const sitemapChangeFrequency = document.getElementById('sitemap_change_frequency');
+            const sitemapExclude = document.getElementById('sitemap_exclude');
+            const sitemapExcludeValue = sitemapExclude.checked ? true : false;
+
             fetch('/api/pages/{!! $page->id !!}', {
                     method: 'PATCH',
                     headers: {
@@ -813,6 +907,9 @@
                         title: title.value,
                         slug: slug.value,
                         lang: currentLanguage,
+                        sitemap_priority: sitemapPriority.value,
+                        sitemap_change_frequency: sitemapChangeFrequency.value,
+                        sitemap_exclude: sitemapExcludeValue,
                     })
                 })
                 .then(response => {
@@ -823,14 +920,17 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('page updated!', data)
-
+                    console.log('page updated!', data);
                     document.getElementById('page_title').value = data.page.title[currentLanguage];
                     document.getElementById('page_slug').value = data.page.slug[currentLanguage];
                 });
-        }
+        };
+
         titleInput.addEventListener('focusout', updatePostUrlOrSlug);
         slugInput.addEventListener('focusout', updatePostUrlOrSlug);
+        sitemapPriorityInput.addEventListener('change', updatePostUrlOrSlug);
+        sitemapChangeFrequencyInput.addEventListener('change', updatePostUrlOrSlug);
+        sitemapExcludeInput.addEventListener('change', updatePostUrlOrSlug);
     </script>
 
     @push('scripts')

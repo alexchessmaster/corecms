@@ -20,15 +20,15 @@ class SettingSeeder extends Seeder
         $setting->save();
 
         $setting = new Setting;
-        $setting->key = 'default-sitemap-change-frequently-pages';
+        $setting->key = 'default-sitemap-change-frequency-pages';
         $setting->value = 'monthly';
-        $setting->description = "Default sitemap change frequently pages";
+        $setting->description = "Default sitemap change frequency pages";
         $setting->save();
 
         $setting = new Setting;
-        $setting->key = 'default-sitemap-change-frequently-articles';
+        $setting->key = 'default-sitemap-change-frequency-articles';
         $setting->value = 'yearly';
-        $setting->description = "Default sitemap change frequently articles";
+        $setting->description = "Default sitemap change frequency articles";
         $setting->save();
 
         $setting = new Setting;

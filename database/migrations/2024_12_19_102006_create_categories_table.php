@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('hide_from_frontend')->nullable();
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
-            $table->enum('sitemap_change_frequently', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
+            $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');

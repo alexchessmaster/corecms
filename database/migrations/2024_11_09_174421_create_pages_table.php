@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('type', ['page', 'template'])->default('page');
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
-            $table->enum('sitemap_change_frequently', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
+            $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
             $table->timestamps();
         });
     }

@@ -21,6 +21,9 @@ class CategoryController extends Controller
                     return $item->parent?->name;
                 })
                 ->addColumn('actions', function ($row) {
+                    if(str_contains($row->name, 'uncategorized')){
+                        return '';
+                    }
                     $editUrl = route('admin.categories.edit', $row->id);
                     $deleteUrl = route('admin.categories.destroy', $row->id);
                     return '
@@ -51,14 +54,26 @@ class CategoryController extends Controller
             'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'exclude_from_sitemap' => 'nullable|boolean',
+            'sitemap_exclude' => 'nullable',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
         ]);
 
         $category = new Category;
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
-        $category->exclude_from_sitemap = $request->input('exclude_from_sitemap');
+        if(!empty($request->input('sitemap_exclude'))){
+            $category->sitemap_exclude = true;
+        } else {
+            $category->sitemap_exclude = null;
+        }
+        if(!empty($request->input('sitemap_priority'))){
+            $category->sitemap_priority = $request->input('sitemap_priority');
+        }
+        if(!empty($request->input('sitemap_change_frequency'))){
+            $category->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
         $category->save();
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
@@ -76,13 +91,25 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'exclude_from_sitemap' => 'nullable|boolean',
+            'sitemap_exclude' => 'nullable',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
         ]);
 
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
-        $category->exclude_from_sitemap = $request->input('exclude_from_sitemap');
+        if(!empty($request->input('sitemap_exclude'))){
+            $category->sitemap_exclude = true;
+        } else {
+            $category->sitemap_exclude = null;
+        }
+        if(!empty($request->input('sitemap_priority'))){
+            $category->sitemap_priority = $request->input('sitemap_priority');
+        }
+        if(!empty($request->input('sitemap_change_frequency'))){
+            $category->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
         $category->save();
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');

@@ -71,7 +71,9 @@ class ArticleController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'template_page_id' => 'required|exists:pages,id',
-            'exclude_from_sitemap' => 'nullable|boolean',
+            'sitemap_exclude' => 'nullable',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
         ]);
 
         $article = new Article;
@@ -92,7 +94,17 @@ class ArticleController extends Controller
         $article->setTranslation('content', app()->getLocale(), $request->input('content'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
-        $article->exclude_from_sitemap = $request->input('exclude_from_sitemap');
+        if(!empty($request->input('sitemap_exclude'))){
+            $article->sitemap_exclude = true;
+        } else {
+            $article->sitemap_exclude = null;
+        }
+        if(!empty($request->input('sitemap_priority'))){
+            $article->sitemap_priority = $request->input('sitemap_priority');
+        }
+        if(!empty($request->input('sitemap_change_frequency'))){
+            $article->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 
@@ -120,7 +132,9 @@ class ArticleController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'template_page_id' => 'required|exists:pages,id',
-            'exclude_from_sitemap' => 'nullable|boolean',
+            'sitemap_exclude' => 'nullable',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
         ]);
 
         if ($request->hasFile('image')) {
@@ -140,7 +154,17 @@ class ArticleController extends Controller
         $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
-        $article->exclude_from_sitemap = $request->input('exclude_from_sitemap');
+        if(!empty($request->input('sitemap_exclude'))){
+            $article->sitemap_exclude = true;
+        } else {
+            $article->sitemap_exclude = null;
+        }
+        if(!empty($request->input('sitemap_priority'))){
+            $article->sitemap_priority = $request->input('sitemap_priority');
+        }
+        if(!empty($request->input('sitemap_change_frequency'))){
+            $article->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 

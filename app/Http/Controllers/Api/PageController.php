@@ -58,6 +58,19 @@ class PageController extends Controller
         $lang = request()->lang ?: app()->getLocale();
         $page->setTranslation('title', $lang, request()->title);
         $page->setTranslation('slug', $lang, '/' . Str::slug(request()->slug));
+        info("request()->input('sitemap_exclude')");
+        info(request()->input('sitemap_exclude'));
+        if(!empty(request()->input('sitemap_exclude'))){
+            $page->sitemap_exclude = true;
+        } else {
+            $page->sitemap_exclude = null;
+        }
+        if(!empty(request()->input('sitemap_priority'))){
+            $page->sitemap_priority = request()->input('sitemap_priority');
+        }
+        if(!empty(request()->input('sitemap_change_frequency'))){
+            $page->sitemap_change_frequency = request()->input('sitemap_change_frequency');
+        }
         $page->save();
 
         return response()->json([

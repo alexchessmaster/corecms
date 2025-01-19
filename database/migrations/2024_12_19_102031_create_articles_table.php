@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('template_page_id')->nullable();
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
-            $table->enum('sitemap_change_frequently', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
+            $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
