@@ -1,1 +1,2 @@
-{!! print_r($widget) !!}
+{{-- {!! print_r($widget) !!} --}}
+Here is welcome.blade.php

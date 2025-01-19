@@ -23,7 +23,7 @@ use App\Http\Controllers\TranslationTextController;
 use App\Http\Controllers\UrlLogController;
 
 Route::get('/', function () {
-    return view('editorial.index');
+    return view('welcome');
 });
 
 Route::get('admin', function () {

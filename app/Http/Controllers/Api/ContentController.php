@@ -174,34 +174,34 @@ class ContentController extends Controller
     public function fetchArticles()
     {
         $language = request()->language;
-        if($language) {
+        if ($language) {
             app()->setLocale($language);
         }
         $category = request()->category ?? "";
         $tag = request()->tag ?? "";
         $sort = request()->sort;
-        
+
         $query = Article::query();
 
         // Filter by category if provided
         if (!empty($category)) {
-            $category = Category::where('slug', $category)->first();
+            $category = Category::where('slug->' . app()->getLocale(), '/' . $category)->first();
             if ($category) {
-                $query = $category->articles()->query();
+                $query = $category->articles();
             }
         }
 
         // Filter by tag if provided
         if (!empty($tag)) {
-            $tag = Tag::where('name', $tag)->first();
+            $tag = Tag::where('name->' . app()->getLocale(), $tag)->first();
             if ($tag) {
-                $query = $tag->articles()->query();
+                $query = $tag->articles();
             }
         }
 
-        if($sort === 'newest') {
+        if ($sort === 'newest') {
             $query = $query->orderBy('created_at', 'asc');
-        }else {
+        } else {
             $query = $query->orderBy('created_at', 'desc');
         }
 
@@ -230,8 +230,8 @@ class ContentController extends Controller
                 if (request()->has('search') && !empty(request()->search['value'])) {
                     $searchValue = request()->search['value'];
                     $query->where(function ($query) use ($searchValue) {
-                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?',['"%' . strtolower($searchValue) . '%"'])
-                            ->orWhereRaw('LOWER(JSON_EXTRACT(content, "$.' . app()->getLocale() . '")) like ?',['"%' . strtolower($searchValue) . '%"']);
+                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
+                            ->orWhereRaw('LOWER(JSON_EXTRACT(content, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
                     });
                 }
             })
@@ -241,6 +241,20 @@ class ContentController extends Controller
                     $orderDirection = request()->order[0]['dir'];
                     $query->orderBy($orderColumn, $orderDirection);
                 }
+            })
+            ->make(true);
+    }
+
+    public function fetchCategories()
+    {
+        $categoriesQuery = Category::query();
+
+        return DataTables::of($categoriesQuery)
+            ->editColumn('name', function ($category) {
+                return $category->name;
+            })
+            ->editColumn('slug', function ($category) {
+                return $category->slug;
             })
             ->make(true);
     }

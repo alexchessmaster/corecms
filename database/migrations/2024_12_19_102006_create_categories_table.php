@@ -18,6 +18,7 @@ return new class extends Migration
             $table->json('description')->nullable(); // Translatable field
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->unsignedBigInteger('template_page_id')->nullable();
+            $table->boolean('hide_from_frontend')->nullable();
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequently', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();

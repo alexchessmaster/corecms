@@ -17,6 +17,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/content', [ContentController::class, 'fetchContent'])->middleware(LogVisitedUrlMiddleware::class);
 Route::get('/articles', [ContentController::class, 'fetchArticles']);
+Route::get('/categories', [ContentController::class, 'fetchCategories']);
 // Route::get('/common-data', [CommonDataController::class, 'index']);
 
 Route::apiResource('/pages', PageController::class);
