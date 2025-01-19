@@ -14,6 +14,7 @@ class TemplateSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1
         $page = new Page;
         $page->setTranslations('title', [
             'da' => 'article',
@@ -26,6 +27,7 @@ class TemplateSeeder extends Seeder
         $page->type = 'template';
         $page->save();
 
+        // 2
         $page = new Page;
         $page->setTranslations('title', [
             'da' => 'category',
@@ -38,6 +40,7 @@ class TemplateSeeder extends Seeder
         $page->type = 'template';
         $page->save();
 
+        // 4
         $page = new Page;
         $page->setTranslations('title', [
             'da' => 'tag',

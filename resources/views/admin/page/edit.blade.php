@@ -292,6 +292,8 @@
                         console.log('updated', data)
 
                         refreshWidgetList();
+
+                        toastr.success('Widget added successfully.');
                     })
 
 
@@ -755,6 +757,8 @@
                     .then(data => {
                         console.log('widget deleted', data);
                         refreshWidgetList();
+
+                        toastr.success('Widget removed successfully.');
                     })
                 // Add your delete functionality here
             });
@@ -849,6 +853,8 @@
                 .then(data => {
                     console.log('form saved !!!!!!!!', data);
                     // emptyFieldEditContainer();
+
+                    toastr.success('Widget inputs updated successfully.');
                 });
 
             console.log('save clicked', formData);
@@ -923,6 +929,8 @@
                     console.log('page updated!', data);
                     document.getElementById('page_title').value = data.page.title[currentLanguage];
                     document.getElementById('page_slug').value = data.page.slug[currentLanguage];
+
+                    toastr.success('Your change successfully saved!', 'Success');
                 });
         };
 

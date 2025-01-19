@@ -14,6 +14,8 @@ class PageSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1, 2, 3 in TemplateSeeder
+        // 4
         $page = new Page;
         $page->setTranslations('title', [
             'en' => 'Front Page',
@@ -25,6 +27,7 @@ class PageSeeder extends Seeder
         ]);
         $page->save();
 
+        // 5
         $page = new Page;
         $page->setTranslations('title', [
             'en' => 'Web development',
@@ -36,6 +39,7 @@ class PageSeeder extends Seeder
         ]);
         $page->save();
 
+        // 6
         $page = new Page;
         $page->setTranslations('title', [
             'en' => 'Contact',
@@ -44,6 +48,18 @@ class PageSeeder extends Seeder
         $page->setTranslations('slug', [
             'en' => '/' . Str::slug('Contact'),
             'da' => '/' . Str::slug('Kontact'),
+        ]);
+        $page->save();
+
+        // 7
+        $page = new Page;
+        $page->setTranslations('title', [
+            'en' => 'Articles',
+            'da' => 'Artikler',
+        ]);
+        $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('Articles'),
+            'da' => '/' . Str::slug('Artikler'),
         ]);
         $page->save();
     }
