@@ -43,8 +43,8 @@
     <div class="mb-3">
         <label for="locked_fields_value" class="form-label">The field values are always locked in different places</label>
         <select name="locked_fields_value" id="locked_fields_value" class="form-control" required>
-            <option value="0" {{ old('locked_fields_value', $widget->locked_fields_value ?? true) ? 'selected' : '' }}>Normal</option>
-            <option value="1" {{ !old('locked_fields_value', $widget->locked_fields_value ?? true) ? 'selected' : '' }}>Locked</option>
+            <option value="0" {{ isset($widget) && $widget->locked_fields_value == false ? 'selected' : '' }}>Normal</option>
+            <option value="1" {{ isset($widget) && $widget->locked_fields_value == true ? 'selected' : '' }}>Locked</option>
         </select>
         <small id="" class="form-text text-muted">For example for the "Footer widget" or "Big Header widget" we always need same values in every page.</small>
     </div>

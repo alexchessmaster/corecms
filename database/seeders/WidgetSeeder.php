@@ -122,6 +122,7 @@ class WidgetSeeder extends Seeder
                 'key' => Str::slug('Contact-form'),
                 'image' => '/uploads/nordicstandard/widgets/contact-form-widget.png',
                 'type' => 'page',
+                // 'locked_fields_value' => 1,
             ],
             [//18
                 'name' => 'Our service',
@@ -149,6 +150,13 @@ class WidgetSeeder extends Seeder
             ],
         ]);
 
+        $deActiveWidgets = [6, 8, 9];
+        foreach($deActiveWidgets as $id){
+            $widget = Widget::find($id);
+            $widget->active = false;
+            $widget->save();
+        }
+
         // PageSeeder and FieldSeeder and WidgetSeeder 
         $page = Page::find(4);
         $page->widgets()->attach([4 => ['position' => 0]]); // 1
@@ -163,6 +171,11 @@ class WidgetSeeder extends Seeder
         $page->widgets()->attach([5 => ['position' => 0]]); // 6
         $page->widgets()->attach([20 => ['position' => 1]]); // 7
         $page->widgets()->attach([21 => ['position' => 2]]); // 8
+        
+        $page = Page::find(6);
+        $page->widgets()->attach([5 => ['position' => 0]]); // 9
+        $page->widgets()->attach([7 => ['position' => 1]]); // 10
+        $page->widgets()->attach([17 => ['position' => 2]]); // 11
 
     }
 }
