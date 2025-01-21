@@ -80,9 +80,9 @@ class PageController extends Controller
         $pageWidgets = $page->widgets;
         $pageType = $page->type;
         if($pageType === 'template') {
-            $allWidgets = Widget::all();
+            $allWidgets = Widget::where('active', true)->get();
         } else {
-            $allWidgets = Widget::where('type', 'page')->get();
+            $allWidgets = Widget::where('type', 'page')->where('active', true)->get();
         }
 
         return view('admin.page.edit', compact('page', 'allWidgets', 'pageWidgets', 'pageType'));

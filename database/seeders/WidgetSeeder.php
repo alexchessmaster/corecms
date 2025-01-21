@@ -150,7 +150,7 @@ class WidgetSeeder extends Seeder
             ],
         ]);
 
-        $deActiveWidgets = [6, 8, 9];
+        $deActiveWidgets = [6, 8, 9, 11, 12, 13, 14, 15];
         foreach($deActiveWidgets as $id){
             $widget = Widget::find($id);
             $widget->active = false;

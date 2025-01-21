@@ -18,6 +18,7 @@ class WidgetController extends Controller
     public function index()
     {
         $widgets = Widget::all();
+
         return view('admin.widgets.index', compact('widgets'));
     }
 
