@@ -148,6 +148,24 @@ class WidgetSeeder extends Seeder
                 'image' => '/uploads/nordicstandard/widgets/service-area-widget.png',
                 'type' => 'page',
             ],
+            [//22
+                'name' => 'Header Small Black',
+                'key' => Str::slug('Header Small Black'),
+                'image' => '/uploads/nordicstandard/widgets/header-small-black-widget.png',
+                'type' => 'page',
+            ],
+            [//23
+                'name' => 'Image Text Black',
+                'key' => Str::slug('Image Text Black'),
+                'image' => '/uploads/nordicstandard/widgets/header-small-black-widget.png',
+                'type' => 'page',
+            ],
+            [//24
+                'name' => 'Image Text',
+                'key' => Str::slug('Image Text'),
+                'image' => '/uploads/nordicstandard/widgets/header-small-black-widget.png',
+                'type' => 'page',
+            ],
         ]);
 
         $deActiveWidgets = [6, 8, 9, 11, 12, 13, 14, 15];
@@ -156,6 +174,10 @@ class WidgetSeeder extends Seeder
             $widget->active = false;
             $widget->save();
         }
+
+        $widget = Widget::find(17);
+        $widget->locked_fields_value = true;
+        $widget->save();
 
         // PageSeeder and FieldSeeder and WidgetSeeder 
         $page = Page::find(4);

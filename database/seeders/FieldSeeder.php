@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Page;
 use App\Models\Field;
 use App\Models\Widget;
 use App\Models\Language;
 use App\Models\FieldValue;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -63,10 +65,6 @@ class FieldSeeder extends Seeder
         $this->create(2, 17, 'checkbox_message_text', ['en' => 'terms and conditions.', 'da' => 'vilkår og betingelser.']);
         $this->create(2, 17, 'checkbox_message_link', ['en' => '/en/terms', 'da' => '/en/terms']);
         $this->create(2, 17, 'send', ['en' => 'send', 'da' => 'send']);        
-
-        $widget = Widget::find(17);
-        $widget->locked_fields_value = true;
-        $widget->save();
 
         $this->create(3, 18, 'subtitle', ['en' => 'OUR SERVICES', 'da' => 'VORES TJENESTER']);
         $this->create(3, 18, 'title', ['en' => 'We provide best services', 'da' => 'Vi leverer de bedste tjenester']);
@@ -133,7 +131,7 @@ class FieldSeeder extends Seeder
         $this->create(4, 19, 'item_5_icon', ['en' => '/uploads/nordicstandard/hwd-icon-3.svg', 'da' => '/uploads/nordicstandard/hwd-icon-3.svg'], 'file');
         $this->create(4, 19, 'item_5_title', ['en' => "Privacy and Security on Every Device: Our Cross-Platform VPN Solution", 'da' => "Privatliv og sikkerhed på alle enheder: Vores VPN-løsning på tværs af platforme"]);
         $this->create(4, 19, 'item_5_description', ['en' => "In the diverse ecosystem of digital devices, our Secure VPN service stands out by offering full-scale protection across all major operating systems, including Android, iOS, Windows, Linux, and Mac. This unparalleled compatibility ensures that no matter what device you use to connect to the internet, your online activities remain private and secure. Our VPN service is designed with versatility in mind, allowing seamless integration and consistent user experience on smartphones, tablets, laptops, and desktops alike. With just one subscription, protect every device you own from cyber threats, enjoy unrestricted internet access, and maintain your anonymity across all platforms. Embrace a worry-free digital life with our comprehensive, cross-platform VPN service.", 'da' => "I det mangfoldige økosystem af digitale enheder skiller vores sikre VPN-tjeneste sig ud ved at tilbyde fuldskala beskyttelse på tværs af alle større operativsystemer, herunder Android, iOS, Windows, Linux og Mac. Denne enestående kompatibilitet sikrer, at uanset hvilken enhed du bruger til at forbinde til internettet, forbliver dine online aktiviteter private og sikre. Vores VPN-tjeneste er designet med alsidighed for øje og tillader problemfri integration og ensartet brugeroplevelse på både smartphones, tablets, laptops og desktops. Med kun ét abonnement kan du beskytte alle dine enheder mod cybertrusler, nyde ubegrænset internetadgang og opretholde anonymitet på tværs af alle platforme. Lev et bekymringsfrit digitalt liv med vores omfattende VPN-løsning på tværs af platforme."]);
-        $this->create(4, 19, 'item_5_link', ['en' => "#", 'da' => "#"]);
+        $this->create(4, 19, 'item_5_link', ['en' => "/en/web-development", 'da' => '/' . Str::slug('Webudvikling')]);
 
         $this->create(5, 16, 'articles_callback_url', ['en' => env('APP_URL') . '/api/articles']);
         $this->create(5, 16, 'categories_callback_url', ['en' => env('APP_URL') . '/api/categories']);

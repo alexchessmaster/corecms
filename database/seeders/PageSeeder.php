@@ -34,8 +34,8 @@ class PageSeeder extends Seeder
             'da' => 'Webudvikling',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/services/' . Str::slug('Web development'),
-            'da' => '/services/' . Str::slug('Webudvikling'),
+            'en' => '/' . Str::slug('Web development'),
+            'da' => '/' . Str::slug('Webudvikling'),
         ]);
         $page->save();
 
@@ -60,6 +60,54 @@ class PageSeeder extends Seeder
         $page->setTranslations('slug', [
             'en' => '/' . Str::slug('Articles'),
             'da' => '/' . Str::slug('Artikler'),
+        ]);
+        $page->save();
+
+        // 8
+        $page = new Page;
+        $page->setTranslations('title', [
+            'en' => 'App development',
+            'da' => 'App udvikling',
+        ]);
+        $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('App development'),
+            'da' => '/' . Str::slug('App udvikling'),
+        ]);
+        $page->save();
+
+        // 9
+        $page = new Page;
+        $page->setTranslations('title', [
+            'en' => 'Hosting',
+            'da' => 'Hosting',
+        ]);
+        $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('Hosting'),
+            'da' => '/' . Str::slug('Hosting'),
+        ]);
+        $page->save();
+
+        // 9
+        $page = new Page;
+        $page->setTranslations('title', [
+            'en' => 'IT consultancy',
+            'da' => 'IT rådgivning',
+        ]);
+        $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('IT consultancy'),
+            'da' => '/' . Str::slug('IT rådgivning'),
+        ]);
+        $page->save();
+
+        // 9
+        $page = new Page;
+        $page->setTranslations('title', [
+            'en' => 'Secure VPN',
+            'da' => 'Sikker VPN',
+        ]);
+        $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('Secure VPN'),
+            'da' => '/' . Str::slug('Sikker VPN'),
         ]);
         $page->save();
     }
