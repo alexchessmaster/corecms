@@ -110,5 +110,17 @@ class PageSeeder extends Seeder
             'da' => '/' . Str::slug('Sikker VPN'),
         ]);
         $page->save();
+
+        // 12
+        $page = new Page;
+        $page->setTranslations('title', [
+            'en' => 'AI',
+            'da' => 'AI',
+        ]);
+        $page->setTranslations('slug', [
+            'en' => '/' . Str::slug('AI'),
+            'da' => '/' . Str::slug('AI'),
+        ]);
+        $page->save();
     }
 }

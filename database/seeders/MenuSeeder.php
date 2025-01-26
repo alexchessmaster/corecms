@@ -138,6 +138,25 @@ class MenuSeeder extends Seeder
 
         $menu = new Menu;
         $menu->setTranslations('name', [
+            'en' => 'AI', 
+            'da' => 'AI'
+        ]);
+        $menu->setTranslations('link', [
+            'en' => '/en/' . Str::slug('AI'), 
+            'da' => '/da/' . Str::slug('AI')
+        ]);
+        $menu->parent_id = $servicesMenu->id;
+        $menu->image = "/uploads/nordicstandard/service-06.png";
+        $menu->image_alt = "AI service";
+        $menu->setTranslations('description', [
+            "en"=>"We harness the power of Artificial Intelligence to help your business innovate, automate, and grow.",
+            "da"=>"Vi udnytter kraften i kunstig intelligens til at hjælpe din virksomhed med at innovere, automatisere og vokse.",
+        ]);
+        $menu->order = $i++;
+        $menu->save();
+
+        $menu = new Menu;
+        $menu->setTranslations('name', [
             'en' => 'Contact us',
             'da' => 'Kontakt os', 
         ]);

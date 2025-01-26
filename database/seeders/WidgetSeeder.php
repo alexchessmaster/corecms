@@ -217,6 +217,34 @@ class WidgetSeeder extends Seeder
         $page->widgets()->attach([25 => ['position' => 2]]); // 14
         $page->widgets()->attach([24 => ['position' => 3]]); // 15
         $page->widgets()->attach([23 => ['position' => 4]]); // 16
+        
+        $page = Page::find(9);
+        $page->widgets()->attach([22 => ['position' => 0]]); // 17
+        $page->widgets()->attach([26 => ['position' => 1]]); // 18
+        $page->widgets()->attach([25 => ['position' => 2]]); // 19
+        $page->widgets()->attach([24 => ['position' => 3]]); // 20
+        $page->widgets()->attach([23 => ['position' => 4]]); // 21
+        
+        $page = Page::find(10);
+        $page->widgets()->attach([22 => ['position' => 0]]); // 22
+        $page->widgets()->attach([26 => ['position' => 1]]); // 23
+        $page->widgets()->attach([25 => ['position' => 2]]); // 24
+        $page->widgets()->attach([24 => ['position' => 3]]); // 25
+        $page->widgets()->attach([23 => ['position' => 4]]); // 26
+
+        $page = Page::find(11);
+        $page->widgets()->attach([22 => ['position' => 0]]); // 27
+        $page->widgets()->attach([26 => ['position' => 1]]); // 28
+        $page->widgets()->attach([25 => ['position' => 2]]); // 29
+        $page->widgets()->attach([24 => ['position' => 3]]); // 30
+        $page->widgets()->attach([23 => ['position' => 4]]); // 31
+
+        $page = Page::find(12);
+        $page->widgets()->attach([22 => ['position' => 0]]); // 32
+        $page->widgets()->attach([26 => ['position' => 1]]); // 33
+        $page->widgets()->attach([25 => ['position' => 2]]); // 34
+        $page->widgets()->attach([24 => ['position' => 3]]); // 35
+        $page->widgets()->attach([23 => ['position' => 4]]); // 36
 
     }
 }
