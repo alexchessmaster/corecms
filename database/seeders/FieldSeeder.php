@@ -64,7 +64,7 @@ class FieldSeeder extends Seeder
         $this->create(2, 17, 'checkbox_message', ['en' => 'Click the box and agree to our', 'da' => 'Klik på boksen og accepter vores']);
         $this->create(2, 17, 'checkbox_message_text', ['en' => 'terms and conditions.', 'da' => 'vilkår og betingelser.']);
         $this->create(2, 17, 'checkbox_message_link', ['en' => '/en/terms', 'da' => '/en/terms']);
-        $this->create(2, 17, 'send', ['en' => 'send', 'da' => 'send']);        
+        $this->create(2, 17, 'send', ['en' => 'send', 'da' => 'send']);
 
         $this->create(3, 18, 'subtitle', ['en' => 'OUR SERVICES', 'da' => 'VORES TJENESTER']);
         $this->create(3, 18, 'title', ['en' => 'We provide best services', 'da' => 'Vi leverer de bedste tjenester']);
@@ -206,9 +206,67 @@ class FieldSeeder extends Seeder
         $this->create(9, 5, 'right_text_3', ['en' => 'Innovative', 'da' => 'Innovativ']);
         $this->create(9, 5, 'image_main', ['en' => '/uploads/nordicstandard/bg1-1.png', 'da' => '/uploads/nordicstandard/bg1-1.png'], 'file');
         $this->create(9, 5, 'image_icon', ['en' => '/uploads/nordicstandard/icon1.svg', 'da' => '/uploads/nordicstandard/icon1.svg'], 'file');
-        $this->create(9, 5, 'image_main_mobile', ['en' => '/uploads/nordicstandard/bg1.png', 'da' => '/uploads/nordicstandard/bg1.png'], 'file');        
+        $this->create(9, 5, 'image_main_mobile', ['en' => '/uploads/nordicstandard/bg1.png', 'da' => '/uploads/nordicstandard/bg1.png'], 'file');
 
         $this->create(10, 7, 'space', ['en' => '4']);
+
+        $this->create(12, 22, 'subtitle', ['en' => 'INNOVATION', 'da' => 'INNOVATION']);
+        $this->create(12, 22, 'title', ['en' => 'Top-tier Mobile App Development', 'da' => 'Førende Mobil App Udvikling']);
+        $this->create(12, 22, 'description', ['en' => 'We create apps that are simple, powerful, and tailored to your needs, making your ideas come to life.', 'da' => 'Vi skaber apps, der er enkle, kraftfulde og skræddersyet til dine behov, og som får dine ideer til at leve op.']);
+
+        $this->create(13, 26, 'subtitle', ['en' => 'MOBILE APPS MADE EASY', 'da' => 'MOBILE APPS GJORT ENKLE']);
+        $this->create(13, 26, 'title', ['en' => 'Custom Mobile App Solutions', 'da' => 'Skræddersyede Mobil App Løsninger']);
+        $this->create(13, 26, 'description', ['en' => 'Our team builds user-friendly mobile apps that help bring your ideas to life and grow your business.', 'da' => 'Vores team bygger brugervenlige mobilapps, der hjælper med at føre dine ideer ud i livet og vækste din forretning.']);
+        $this->create(13, 26, 'image', ['en' => '/uploads/nordicstandard/app-development-image.jpeg'], 'file');
+        $this->create(13, 26, 'image_alt', ['en' => 'Mobile app development', 'da' => 'Mobil app udvikling']);
+        $this->create(13, 26, 'content', ['en' => 'We specialize in creating mobile apps that work seamlessly on all devices. Whether you need an app for iOS, Android, or both, we ensure the best experience for your users. Let us make your vision a reality.', 'da' => 'Vi specialiserer os i at skabe mobilapps, der fungerer problemfrit på alle enheder. Uanset om du har brug for en app til iOS, Android eller begge, sikrer vi den bedste oplevelse for dine brugere. Lad os gøre din vision til virkelighed.'], 'textarea_large');
+
+        $this->create(15, 24, 'image', ['en' => '/uploads/nordicstandard/app-development-image.jpeg'], 'file');
+        $this->create(15, 24, 'image_alt', ['en' => 'Mobile app development', 'da' => 'Mobil app udvikling']);
+        $this->create(15, 24, 'title', ['en' => 'Why Choose Our Mobile App Development Services?', 'da' => 'Hvorfor Vælge Vores Mobile App Udviklingstjenester?']);
+        $this->create(15, 24, 'content', ['en' => "<p>We don't offer one-size-fits-all solutions. Each mobile app we develop is tailored specifically to your business needs and goals. Whether you're looking for an app that is simple and efficient, or one with advanced features, we've got you covered.</p><p>Our mobile app development services are designed to be flexible and scalable, ensuring that your app grows with your business. We focus on creating apps that are not only user-friendly but also optimized for performance and security, so you can trust that your app will serve you and your customers well for years to come.</p>", 'da' => "<p>Vi tilbyder ikke universelle løsninger. Hver mobilapp, vi udvikler, er skræddersyet specifikt til dine forretningsbehov og mål. Uanset om du søger en app, der er enkel og effektiv, eller en med avancerede funktioner, har vi løsningen.</p><p>Vores mobile app-udviklingstjenester er designet til at være fleksible og skalerbare, hvilket sikrer, at din app vokser med din forretning. Vi fokuserer på at skabe apps, der ikke blot er brugervenlige, men også optimeret for ydeevne og sikkerhed, så du kan stole på, at din app vil tjene dig og dine kunder godt i mange år fremover.</p>"], 'textarea_large');
+
+        $this->create(14, 25, 'subtitle', ['en' => "Affordable Plans", 'da' => "Overkommelige Planer"]);
+        $this->create(14, 25, 'title', ['en' => "Choose the Right Plan for Your App", 'da' => "Vælg Den Rette Plan Til Din App"]);
+        $this->create(14, 25, 'description', ['en' => "We offer flexible pricing to help you build your mobile app without breaking the bank. Pick the plan that works best for you.", 'da' => "Vi tilbyder fleksible priser, der hjælper dig med at bygge din mobilapp uden at sprænge budgettet. Vælg den plan, der passer bedst til dig."]);
+        $this->create(14, 25, 'plan_1_price', ['en' => "$10", 'da' => "$10"]);
+        $this->create(14, 25, 'plan_1_duration', ['en' => "per month", 'da' => "pr. måned"]);
+        $this->create(14, 25, 'plan_1_title', ['en' => "Starter Package", 'da' => "Startpakke"]);
+        $this->create(14, 25, 'plan_1_description', ['en' => "Perfect for small projects", 'da' => "Perfekt til små projekter"]);
+        $this->create(14, 25, 'plan_1_item_1', ['en' => "30 Days Free Trial", 'da' => "30 Dages Gratis Prøveperiode"]);
+        $this->create(14, 25, 'plan_1_item_2', ['en' => "Basic App Features", 'da' => "Grundlæggende App-funktioner"]);
+        $this->create(14, 25, 'plan_1_item_3', ['en' => "Secure Data Backup", 'da' => "Sikker Datasikkerhedskopiering"]);
+        $this->create(14, 25, 'plan_1_item_4', ['en' => "Cloud Sync", 'da' => "Cloud Synkronisering"]);
+        $this->create(14, 25, 'plan_1_item_5', ['en' => "App Updates", 'da' => "App-opdateringer"]);
+        $this->create(14, 25, 'plan_1_link', ['en' => "/contact", 'da' => "/kontakt"]);
+        $this->create(14, 25, 'plan_1_link_text', ['en' => "Contact Us", 'da' => "Kontakt Os"]);
+        $this->create(14, 25, 'plan_2_price', ['en' => "$20", 'da' => "$20"]);
+        $this->create(14, 25, 'plan_2_duration', ['en' => "per month", 'da' => "pr. måned"]);
+        $this->create(14, 25, 'plan_2_title', ['en' => "Standard Package", 'da' => "Standard Pakke"]);
+        $this->create(14, 25, 'plan_2_description', ['en' => "For growing businesses", 'da' => "Til voksende virksomheder"]);
+        $this->create(14, 25, 'plan_2_item_1', ['en' => "30 Days Free Trial", 'da' => "30 Dages Gratis Prøveperiode"]);
+        $this->create(14, 25, 'plan_2_item_2', ['en' => "Advanced App Features", 'da' => "Avancerede App-funktioner"]);
+        $this->create(14, 25, 'plan_2_item_3', ['en' => "Priority Support", 'da' => "Prioriteret Support"]);
+        $this->create(14, 25, 'plan_2_item_4', ['en' => "Secure Data Backup", 'da' => "Sikker Datasikkerhedskopiering"]);
+        $this->create(14, 25, 'plan_2_item_5', ['en' => "Cloud Sync & Updates", 'da' => "Cloud Synkronisering & Opdateringer"]);
+        $this->create(14, 25, 'plan_2_link', ['en' => "/contact", 'da' => "/kontakt"]);
+        $this->create(14, 25, 'plan_2_link_text', ['en' => "Contact Us", 'da' => "Kontakt Os"]);
+        $this->create(14, 25, 'plan_3_price', ['en' => "$30", 'da' => "$30"]);
+        $this->create(14, 25, 'plan_3_duration', ['en' => "per month", 'da' => "pr. måned"]);
+        $this->create(14, 25, 'plan_3_title', ['en' => "Premium Package", 'da' => "Premium Pakke"]);
+        $this->create(14, 25, 'plan_3_description', ['en' => "For full-scale app development", 'da' => "Til fuld skala app-udvikling"]);
+        $this->create(14, 25, 'plan_3_item_1', ['en' => "30 Days Free Trial", 'da' => "30 Dages Gratis Prøveperiode"]);
+        $this->create(14, 25, 'plan_3_item_2', ['en' => "All Premium Features", 'da' => "Alle Premium Funktioner"]);
+        $this->create(14, 25, 'plan_3_item_3', ['en' => "Custom App Design", 'da' => "Skræddersyet App Design"]);
+        $this->create(14, 25, 'plan_3_item_4', ['en' => "Dedicated Support", 'da' => "Dedikeret Support"]);
+        $this->create(14, 25, 'plan_3_item_5', ['en' => "Frequent App Updates", 'da' => "Hyppige App-opdateringer"]);
+        $this->create(14, 25, 'plan_3_link', ['en' => "/contact", 'da' => "/kontakt"]);
+        $this->create(14, 25, 'plan_3_link_text', ['en' => "Contact Us", 'da' => "Kontakt Os"]);
+
+        $this->create(16, 23, 'image', ['en' => '/uploads/nordicstandard/app-development-image.jpeg'], 'file');
+        $this->create(16, 23, 'image_alt', ['en' => 'Mobile app development', 'da' => 'Mobil app udvikling']);
+        $this->create(16, 23, 'title', ['en' => 'Build Your Mobile App with Confidence', 'da' => 'Byg Din Mobilapp Med Selvtillid']);
+        $this->create(16, 23, 'content', ['en' => "<p>We specialize in creating mobile apps that are designed with your business in mind. Whether you're launching a new app or improving an existing one, we work closely with you to bring your vision to life.</p><p>Our team focuses on making sure your app is not only functional but also easy to use. From smooth navigation to secure data handling, we ensure that your app provides a seamless experience for your users. Trust us to deliver an app that will help you grow and connect with your audience.</p>", 'da' => "<p>Vi specialiserer os i at skabe mobilapps, der er designet med din forretning for øje. Uanset om du lancerer en ny app eller forbedrer en eksisterende, arbejder vi tæt sammen med dig for at bringe din vision til live.</p><p>Vores team fokuserer på at sikre, at din app ikke blot er funktionel, men også let at bruge. Fra smidig navigation til sikker datahåndtering garanterer vi, at din app giver en problemfri oplevelse for dine brugere. Stol på os med at levere en app, der vil hjælpe dig med at vokse og forbinde med din målgruppe.</p>"], 'textarea_large');
     }
 
     private function create($page_widget_id, $widget_id, $key, $values = [], $type = 'input')

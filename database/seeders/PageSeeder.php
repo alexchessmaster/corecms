@@ -87,7 +87,7 @@ class PageSeeder extends Seeder
         ]);
         $page->save();
 
-        // 9
+        // 10
         $page = new Page;
         $page->setTranslations('title', [
             'en' => 'IT consultancy',
@@ -99,7 +99,7 @@ class PageSeeder extends Seeder
         ]);
         $page->save();
 
-        // 9
+        // 11
         $page = new Page;
         $page->setTranslations('title', [
             'en' => 'Secure VPN',
