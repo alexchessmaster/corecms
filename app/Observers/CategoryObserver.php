@@ -88,15 +88,19 @@ class CategoryObserver
     public function updated(Category $category)
     {
         if ($category->isDirty('slug')) {
-            RedirectSlugChange::create([
-                'old_slug' => $category->getOriginal('slug')[app()->getLocale()],
-                'new_slug' => $category->slug,
-                'type' => 'category_updated',
-                'user_id' => Auth::id() ?? null,
-                'language' => app()->getLocale(),
-            ]);
+            if (array_key_exists(app()->getLocale(), $category->getOriginal('slug'))) {
 
-            event(new SlugChangedEvent());
+
+                RedirectSlugChange::create([
+                    'old_slug' => $category->getOriginal('slug')[app()->getLocale()],
+                    'new_slug' => $category->slug,
+                    'type' => 'category_updated',
+                    'user_id' => Auth::id() ?? null,
+                    'language' => app()->getLocale(),
+                ]);
+
+                event(new SlugChangedEvent());
+            }
         }
     }
 

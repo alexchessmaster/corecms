@@ -71,7 +71,9 @@ class ContentController extends Controller
                 }
             }
             if (!$langIsValid) {
-                return response()->json(["status" => "error", "message" => "Can not detect the language"], 400);
+                $path = request()->path;
+                $lang = Language::where('default', true)->pluck('code')->first();
+                // return response()->json(["status" => "error", "message" => "Can not detect the language. " . $lang], 400);
             }
             app()->setLocale($lang);
         }

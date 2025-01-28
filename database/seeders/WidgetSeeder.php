@@ -45,7 +45,7 @@ class WidgetSeeder extends Seeder
             [ //5
                 'name' => 'Header Small',
                 'key' => Str::slug('Header Small'),
-                'image' => '/uploads/nordicstandard/header-small-widget.png',
+                'image' => '/uploads/nordicstandard/widgets/header-small-widget.png',
             ],
             // [//6 // put it the TranslationText because we need it everywhere we don't need to add it everywhere like menu
             //     'name' => 'Footer',

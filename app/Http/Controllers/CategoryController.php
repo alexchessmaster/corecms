@@ -117,7 +117,11 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        $newCategory = $category->parent ?? Category::where("slug->" . app()->getLocale(), '/uncategorized')->firstOrFail();
+        // uncategorized in en and other languages are the same
+        $newCategory = $category->parent ?? Category::where("slug->" . "en", '/uncategorized')->first();
+        if (!$newCategory) {
+            abort(404, 'The "uncategorized" category does not exist. Please create it before deleting categories.');
+        }
         $category->articles()->update(['category_id' => $newCategory->id]);
         $category->delete();
         return redirect()
