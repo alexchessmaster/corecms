@@ -48,7 +48,7 @@ Route::group([
     Route::resource('articles', ArticleController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);
-    Route::get('url-logs-statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
+    Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
     Route::resource('url-logs', UrlLogController::class);
     Route::resource('translation-texts', TranslationTextController::class);
 
