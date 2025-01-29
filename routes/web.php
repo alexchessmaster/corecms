@@ -31,8 +31,8 @@ Route::get('admin', function () {
 })->middleware(['auth', 'verified']);
 
 Route::group([
-    'prefix' => 'admin', 
-    'as' => 'admin.', 
+    'prefix' => 'admin',
+    'as' => 'admin.',
     'middleware' => [AdminMiddleware::class, LanguageAdminMiddleware::class]
 ], function () {
     Route::resource('menus', MenuController::class);
@@ -48,7 +48,7 @@ Route::group([
     Route::resource('articles', ArticleController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);
-    Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
+    Route::get('url-logs-statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
     Route::resource('url-logs', UrlLogController::class);
     Route::resource('translation-texts', TranslationTextController::class);
 
@@ -72,51 +72,8 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('test', function () {
-    // $page = Page::find(1);
 
-    $pageId = 1;
-    // $widgetId = 5;
-    $position = 1;
-
-    $page = Page::find($pageId);
-    dd($page->pageWidgets[0]->fieldValues);
-    $widget = $page->widgets[0];//Widget::find(5); //
-    dd($widget->fieldValues);
-
-    // $pageWidget = PageWidget::where('page_id', $pageId)->where('widget_id', $widgetId)->where('position', $position)->first();
-    // $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $position)->first();
-
-    // // dd($pageWidget);
-    // dd($pageWidget->fieldValues);
-
-    $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $position)->first();
-
-    $fieldValues = $pageWidget->fieldValues;
-
-    dd($fieldValues);
-
-    $widgetId = $pageWidget->widget_id;
-
-    // $widget = Widget::find($widgetId);
-
-
-    // $pageWidget = PageWidget::where('page_id', $pageId)->where('position', $position)->first();
-
-    // $fieldValues = $pageWidget->fieldValues;
-
-    // $widgetId = $pageWidget->widget_id;
-
-    $widget = Widget::with('fields.values')->find($widgetId);
-
-    // dd($widget->fields[0]);
-    // $widget = Widget::find($widgetId);
-
-    // dd(new WidgetResource($widget));
-    // $field = $widget->fields[0];
-
-    $widget = new WidgetResource($widget);
-
-    return view('welcome', compact('widget'));
+    return view('welcome');
 });
 
 require __DIR__ . '/auth.php';
