@@ -37,12 +37,12 @@ class MenuController extends Controller
     public function store(StoreMenuRequest $request)
     {
         $order = $request->input('order');
-        if(!is_null($order)){
+        if (!is_null($order)) {
             $order += 0.5;
             // dd($order);
             $menus = Menu::orderBy('order')->get();
             $tmpMenus = ['new' => $order];
-            foreach($menus as $item){
+            foreach ($menus as $item) {
                 // if($item->id === $menu->id){
                 //     $item->order = $order;
                 // }
@@ -51,27 +51,24 @@ class MenuController extends Controller
             asort($tmpMenus);
             // dd($tmpMenus);
             $tmpMenus2 = [];
-            foreach($tmpMenus as $key => $value){
-                if($value > $order){
+            foreach ($tmpMenus as $key => $value) {
+                if ($value > $order) {
                     $value++;
                 }
-                if( $value === $order){
+                if ($value === $order) {
                     $tmpMenus2[$key] = (int) ($value + 0.5);
-                }else{
+                } else {
                     $tmpMenus2[$key] = $value;
                 }
             }
             // dd($tmpMenus2);
             $tmpMenus = [];
             $i = 1;
-            foreach($tmpMenus2 as $key => $value){
+            foreach ($tmpMenus2 as $key => $value) {
                 $tmpMenus[$key] = $i++;
             }
-            foreach($tmpMenus as $key => $value){
-                if($key === 'new'){
-                    // $menu ?= new Menu;
-                    // $menu->name = $request->input('name');
-                    // $menu-
+            foreach ($tmpMenus as $key => $value) {
+                if ($key === 'new') {
                     Menu::create([
                         'name' => $request->input('name'),
                         'link' => \Str::slug($request->input('link')),
@@ -81,14 +78,14 @@ class MenuController extends Controller
                         'parent_id' => $request->input('parent_id'),
                         'order' => $value
                     ]);
-                }else{
+                } else {
                     $tmpMenu = Menu::find($key);
                     $tmpMenu->order = $value;
                     $tmpMenu->save();
                 }
             }
         }
-        
+
         return redirect()->route('admin.menus.index')->with('success', 'Menu created successfully.');
     }
 
@@ -120,35 +117,35 @@ class MenuController extends Controller
         // }
         // dd($request->all());
         $order = $request->input('order');
-        if(!is_null($order)){
+        if (!is_null($order)) {
             $order += 0.5;
             // dd($order);
             $menus = Menu::orderBy('order')->get();
             $tmpMenus = [];
-            foreach($menus as $item){
-                if($item->id === $menu->id){
+            foreach ($menus as $item) {
+                if ($item->id === $menu->id) {
                     $item->order = $order;
                 }
                 $tmpMenus[$item->id] = $item->order;
             }
             asort($tmpMenus);
             $tmpMenus2 = [];
-            foreach($tmpMenus as $key => $value){
-                if($value > $order){
+            foreach ($tmpMenus as $key => $value) {
+                if ($value > $order) {
                     $value++;
                 }
-                if( $value === $order){
+                if ($value === $order) {
                     $tmpMenus2[$key] = (int) ($value + 0.5);
-                }else{
+                } else {
                     $tmpMenus2[$key] = $value;
                 }
             }
             $tmpMenus = [];
             $i = 1;
-            foreach($tmpMenus2 as $key => $value){
+            foreach ($tmpMenus2 as $key => $value) {
                 $tmpMenus[$key] = $i++;
             }
-            foreach($tmpMenus as $key => $value){
+            foreach ($tmpMenus as $key => $value) {
                 $tmpMenu = Menu::find($key);
                 $tmpMenu->order = $value;
                 $tmpMenu->save();
@@ -157,11 +154,13 @@ class MenuController extends Controller
         $menu->name = $request->input('name');
         $menu->link = $request->input('link');
         $menu->parent_id = $request->input('parent_id');
-        $menu->image = FileHelper::upload($request, 'image');
+        if ($request->hasFile('image')) {
+            $menu->image = FileHelper::upload($request, 'image');
+        }
         $menu->image_alt = $request->input('image_alt');
         $menu->description = $request->input('description');
         $menu->save();
-        
+
         return redirect()->back()->with('success', 'Menu updated successfully.');
     }
 
