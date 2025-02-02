@@ -140,8 +140,6 @@ class ContentController extends Controller
             $articlePath = substr($path, strlen($articlePrefix));
         }
 
-        info(app()->getLocale());
-        info($articlePath);
         // Is Article
         $article = Article::with([
             'category',
@@ -205,10 +203,10 @@ class ContentController extends Controller
             }
         }
 
-        if ($sort === 'newest') {
-            $query = $query->orderBy('created_at', 'asc');
-        } else {
+        if ($sort === 'oldest') {
             $query = $query->orderBy('created_at', 'desc');
+        } else {
+            $query = $query->orderBy('created_at', 'asc');
         }
 
         return DataTables::of($query)

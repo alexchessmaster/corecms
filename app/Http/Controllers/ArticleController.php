@@ -16,7 +16,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $articles = Article::with(['category', 'tags']);
+            $articles = Article::select(['id', 'title', 'slug', 'category_id'])->with(['category', 'tags']);
 
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {
@@ -44,7 +44,7 @@ class ArticleController extends Controller
                     </form>
                 ';
                 })
-                ->rawColumns(['tags', 'actions', 'title'])
+                ->rawColumns(['categories', 'tags', 'actions', 'title'])
                 ->make(true);
         }
 
@@ -108,7 +108,7 @@ class ArticleController extends Controller
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 
-        return redirect()->back()->with('success', 'Article created successfully.');
+        return redirect()->route('admin.articles.edit', [$article->id])->with('success', 'Article created successfully.');
     }
 
     public function edit(Article $article)

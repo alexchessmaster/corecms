@@ -1,8 +1,9 @@
 @extends('admin.partials.app')
 @section('content-card-title', 'Edit Article')
-@section('content-card-body')
+@section('content-body')
 
 <div class="container">
+    <a href="{{ route('admin.articles.create') }}" class="btn btn-success"><strong style="">+ </strong>Create</a>
     <form action="{{ route('admin.articles.update', $article) }}" method="POST" enctype='multipart/form-data'>
         @csrf
         @method('PUT')

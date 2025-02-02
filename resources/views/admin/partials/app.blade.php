@@ -104,6 +104,9 @@
                     @yield('content-body')
 
 
+                    @include('admin.partials.message')
+
+
                     @hasSection('content-card-body')
                         <!-- Main row -->
                         <div class="row">
@@ -124,8 +127,6 @@
                                     <div class="card-body">
                                         <div class="tab-content p-0">
                                             <!-- Morris chart - Sales -->
-
-                                            @include('admin.partials.message')
 
 
                                             @yield('content-card-body')

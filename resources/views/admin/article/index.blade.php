@@ -19,6 +19,7 @@
             <table id="articles-table" class="table table-striped table-hover">
                 <thead class="">
                     <tr>
+                        <th>Id</th>
                         <th>Title</th>
                         <th>Category</th>
                         <th>Tags</th>
@@ -44,6 +45,7 @@
                     autoWidth: false, // Prevents DataTable from calculating column width
                     ajax: "{{ route('admin.articles.index') }}", // Ajax route to fetch data
                     columns: [
+                        { data: 'id', name: 'id' },
                         { data: 'title', name: 'title' },
                         { data: 'category', name: 'category' },
                         { data: 'tags', name: 'tags', orderable: false, searchable: false },
@@ -51,10 +53,11 @@
                     ],
                     columnDefs: [
                         { targets: "_all", defaultContent: "" }, // Prevents undefined cells
-                        { targets: [0], width: "25%" }, // Set widths of the columns
-                        { targets: [1], width: "25%" },
-                        { targets: [2], width: "30%" },
-                        { targets: [3], width: "20%" }
+                        { targets: [0], width: "5%" },
+                        { targets: [1], width: "30%" }, // Set widths of the columns
+                        { targets: [2], width: "20%" },
+                        { targets: [3], width: "25%" },
+                        { targets: [4], width: "20%" }
                     ],
                     language: {
                         search: "Filter records:",
@@ -68,6 +71,7 @@
                     pagingType: "full_numbers",
                     lengthMenu: [10, 25, 50, 100, 200, 1000],
                     pageLength: 25,
+                    order: [[0, 'desc']]
                 });
             });
         </script>
