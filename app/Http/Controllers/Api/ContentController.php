@@ -10,7 +10,9 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Redirect;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\TranslationText;
 use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuResource;
@@ -23,10 +25,9 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
-use App\Http\Resources\TranslationTextResource;
-use App\Models\TranslationText;
 use Yajra\DataTables\Facades\DataTables;
 use DebugBar\DebugBar as DebugBarDebugBar;
+use App\Http\Resources\TranslationTextResource;
 
 class ContentController extends Controller
 {
@@ -139,6 +140,8 @@ class ContentController extends Controller
             $articlePath = substr($path, strlen($articlePrefix));
         }
 
+        info(app()->getLocale());
+        info($articlePath);
         // Is Article
         $article = Article::with([
             'category',
@@ -185,10 +188,12 @@ class ContentController extends Controller
         $query = Article::query();
 
         // Filter by category if provided
-        if (!empty($category)) {
-            $category = Category::where('slug->' . app()->getLocale(), '/' . $category)->first();
+        if (!empty($category) && $category !== 'null') {
+            $category = Category::where('slug->' . app()->getLocale(), '/' . Str::slug($category))->first();
             if ($category) {
                 $query = $category->articles();
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Category does not exist: ' . request()->category], 404);
             }
         }
 

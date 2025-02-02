@@ -31,6 +31,8 @@
             'link image media | code removeformat ' + 
             'searchreplace table | hr subscript superscript | charmap emoticons | codesample',
         image_advtab: true,
-        imagetools_cors_hosts: ['picsum.photos']
+        imagetools_cors_hosts: ['picsum.photos'],
+        // forced_root_block: 'p',
+        // force_p_newlines: true,
     });
 </script>

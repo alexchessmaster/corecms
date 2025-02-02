@@ -108,7 +108,7 @@ class ArticleController extends Controller
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 
-        return redirect()->route('admin.articles.index')->with('success', 'Article created successfully.');
+        return redirect()->back()->with('success', 'Article created successfully.');
     }
 
     public function edit(Article $article)
@@ -168,7 +168,7 @@ class ArticleController extends Controller
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 
-        return redirect()->route('admin.articles.index')->with('success', 'Article updated successfully.');
+        return redirect()->back()->with('success', 'Article updated successfully.');
     }
 
     public function destroy(Article $article)
