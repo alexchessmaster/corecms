@@ -6,7 +6,7 @@
                 alt="User Image">
         </div>
         <div class="info">
-            <a href="/AdminLTE-3.2.0/#" class="d-block">{{ Auth::check() ? Auth::user()->email : '' }}</a>
+            <a href="/" class="d-block">{{ Auth::check() ? Auth::user()->email : '' }}</a>
         </div>
     </div>
 
@@ -30,6 +30,14 @@
             data-accordion="false">
             
             <!-- Dashboard and Analytics -->
+            <li class="nav-item">
+                <a href="{{ env('FRONTEND_APP_URL') }}" class="nav-link" target="_blank">
+                    <i class="nav-icon fas fa-desktop"></i>
+                    <p>
+                        Website
+                    </p>
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="/admin" class="nav-link">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
