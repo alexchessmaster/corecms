@@ -10,12 +10,13 @@ use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\PageWidgetController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
+use App\Http\Middleware\CacheControlHeaderMiddleware;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/content', [ContentController::class, 'fetchContent'])->middleware(LogVisitedUrlMiddleware::class);
+Route::get('/content', [ContentController::class, 'fetchContent'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
 Route::get('/articles', [ContentController::class, 'fetchArticles']);
 Route::get('/categories', [ContentController::class, 'fetchCategories']);
 // Route::get('/common-data', [CommonDataController::class, 'index']);

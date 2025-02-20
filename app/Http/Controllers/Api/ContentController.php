@@ -34,7 +34,8 @@ class ContentController extends Controller
     public function fetchContent()
     {
         // TODO: move this to the languageapimiddleware
-        $path = request()->path;
+        $path = request()->query('path');
+
         if (empty($path)) {
             return response()->json(["status" => "error", "message" => "Missing \"path\" arguments"], 400);
         }
