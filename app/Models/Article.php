@@ -42,14 +42,17 @@ class Article extends Model
             $articlePrefix = '/' . trim($articlePrefix, '/');
             $fullUrl = $articlePrefix . $fullUrl;
         }
-    
-        $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () {
-            return Language::count() > 1;
+        
+        $languages = Language::all();
+        $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () use ($languages) {
+            return count($languages) > 1;
         });
     
         if ($multipleLanguages) {
             $lang = app()->getLocale();
-            $fullUrl = '/' . $lang . $fullUrl;
+            if(! $languages->value('use_separate_domain')){
+                $fullUrl = '/' . $lang . $fullUrl;
+            }
         }
     
         return $fullUrl;

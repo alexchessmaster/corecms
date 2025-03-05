@@ -16,7 +16,7 @@ class TagController extends Controller
                 ->of($data)
                 ->editColumn('name', function ($item) {
                     $text = $item->getTranslation('name', app()->getLocale(), false);
-                    return $text ?: '-Not translated-';
+                    return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), false);
                 })
                 ->addColumn('actions', function ($row) {
                     $editUrl = route('admin.tags.edit', $row->id);

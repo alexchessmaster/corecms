@@ -11,13 +11,17 @@ class Language extends Model
     protected $rows = [
         [
             'name' => 'English', 
-            'code' => 'en', 
-            'default' => true
+            'code' => 'en',
+            'default' => false,
+            'use_separate_domain' => true,
+            'domain' => 'https://nordicstandard.net'
         ],
         [
             'name' => 'Danish',
             'code' => 'da',
-            'default' => false
+            'default' => true,
+            'use_separate_domain' => true,
+            'domain' => 'https://nordicstandard.dk'
         ],
     ];
 }

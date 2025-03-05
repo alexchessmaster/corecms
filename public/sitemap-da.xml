@@ -1,66 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
-        <loc>https://nordicstandard.net/da/</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/" />
+        <loc>https://nordicstandard.dk/</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/webudvikling</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/webudvikling" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/web-development" />
+        <loc>https://nordicstandard.dk/webudvikling</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/webudvikling" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/web-development" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/kontact</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/kontact" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/contact" />
+        <loc>https://nordicstandard.dk/kontakt</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/kontakt" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/contact" />
+        <lastmod>2025-02-15T12:51:19+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/artikler</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/artikler" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/articles" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/artikler</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/artikler" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/articles" />
+        <loc>https://nordicstandard.dk/app-udvikling</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/app-udvikling" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/app-development" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/app-udvikling</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/app-udvikling" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/app-development" />
+        <loc>https://nordicstandard.dk/hosting</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/hosting" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/hosting" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/hosting</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/hosting" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/hosting" />
+        <loc>https://nordicstandard.dk/it-radgivning</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/it-radgivning" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/it-consultancy" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/it-radgivning</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/it-radgivning" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/it-consultancy" />
+        <loc>https://nordicstandard.dk/sikker-vpn</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/sikker-vpn" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/secure-vpn" />
         <lastmod>2025-01-26T22:00:21+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/sikker-vpn</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/sikker-vpn" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/secure-vpn" />
-        <lastmod>2025-01-26T22:00:21+01:00</lastmod>
+        <loc>https://nordicstandard.dk/a-i</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/a-i" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/a-i" />
+        <lastmod>2025-03-04T18:03:30+01:00</lastmod>
 
             </url>
     <url>
-        <loc>https://nordicstandard.net/da/ai</loc>
-        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.net/da/ai" />
-        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/en/ai" />
-        <lastmod>2025-01-26T22:00:21+01:00</lastmod>
+        <loc>https://nordicstandard.dk/tjen-med-os</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/tjen-med-os" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/earn-with-us" />
+        <lastmod>2025-02-15T12:49:42+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/e-commerce-website</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/e-commerce-website" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/e-commerce-website" />
+        <lastmod>2025-02-15T12:32:05+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/tutorials-e-laeringswebsted</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/tutorials-e-laeringswebsted" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/tutorials-e-learning-website" />
+        <lastmod>2025-02-15T12:43:06+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/antivirus-tutorials-hjemmeside</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/antivirus-tutorials-hjemmeside" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/antivirus-tutorials-website" />
+        <lastmod>2025-02-15T13:25:23+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/orphanage-website</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/orphanage-website" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/orphanage-website" />
+        <lastmod>2025-02-15T13:32:48+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/advokat-hjemmeside</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/advokat-hjemmeside" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/advocate-website" />
+        <lastmod>2025-02-15T13:34:09+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/tekstnoter-hjemmeside</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/tekstnoter-hjemmeside" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/text-notes-website" />
+        <lastmod>2025-02-15T13:35:13+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.dk/portefolje/moderne-cms</loc>
+        <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/portefolje/moderne-cms" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/portfolio/modern-cms" />
+        <lastmod>2025-02-15T13:36:41+01:00</lastmod>
 
             </url>
 </urlset>

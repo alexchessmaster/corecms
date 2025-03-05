@@ -19,12 +19,12 @@ class TranslationTextController extends Controller
                 ->of($data)
                 ->editColumn('text', function ($article) {
                     $text = $article->getTranslation('text', app()->getLocale(), false);
-                    return $text ?: '<em class="text-danger">-Not translated-</em>';
+                    return $text ?: '--Not translated-- ' . $article->getTranslation('text', app()->getLocale(), true);
                 })
                 ->addColumn('actions', function ($row) {
                     $editUrl = route('admin.translation-texts.edit', $row->id);
                     $deleteUrl = route('admin.translation-texts.destroy', $row->id);
-                    return 'dd
+                    return '
                     <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
                     <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;">
                         ' . csrf_field() . method_field('DELETE') . '

@@ -21,7 +21,7 @@ class ArticleController extends Controller
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {
                     $title = $article->getTranslation('title', app()->getLocale(), false);
-                    return $title ?: '<em class="text-danger">-Not translated-</em>';
+                    return $title ?: '-Not translated-' . $article->getTranslation('title', app()->getLocale(), true);
                 })
                 ->addColumn('category', function ($article) {
                     return $article->category->getTranslation('name', app()->getLocale());

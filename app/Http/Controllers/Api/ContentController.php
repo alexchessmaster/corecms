@@ -34,15 +34,14 @@ class ContentController extends Controller
     public function fetchContent()
     {
         // TODO: move this to the languageapimiddleware
-        $path = request()->query('path');
-
+        $path = urldecode(request()->query('path'));
         if (empty($path)) {
             return response()->json(["status" => "error", "message" => "Missing \"path\" arguments"], 400);
         }
         if (!str_starts_with($path, '/')) {
             return response()->json(["status" => "error", "message" => "\"path\" should start with '/'"], 400);
         }
-        $lang = request()->lang;
+        $lang = request()->query('lang');
         $languages = Language::all();
         if ($languages->count() < 2) {
             // site is not multilingual
@@ -78,7 +77,9 @@ class ContentController extends Controller
             }
             app()->setLocale($lang);
         }
-
+        if($path !== '/'){
+            $path = rtrim($path, '/');
+        }
         $settings = Setting::all();
         $translationTexts = TranslationText::all();
         $menus = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
@@ -176,13 +177,14 @@ class ContentController extends Controller
 
     public function fetchArticles()
     {
-        $language = request()->language;
+        $language = request()->query('language');
+        // info($language);
         if ($language) {
             app()->setLocale($language);
         }
-        $category = request()->category ?? "";
-        $tag = request()->tag ?? "";
-        $sort = request()->sort;
+        $category = request()->query('category') ?? "";
+        $tag = request()->query('tag') ?? "";
+        $sort = request()->query('sort');
 
         $query = Article::query();
 
@@ -192,7 +194,7 @@ class ContentController extends Controller
             if ($category) {
                 $query = $category->articles();
             } else {
-                return response()->json(['status' => 'error', 'message' => 'Category does not exist: ' . request()->category], 404);
+                return response()->json(['status' => 'error', 'message' => 'Category does not exist: '], 404);
             }
         }
 
