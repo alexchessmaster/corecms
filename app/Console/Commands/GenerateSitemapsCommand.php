@@ -83,13 +83,21 @@ class GenerateSitemapsCommand extends Command
                         // Add alternate links for all available translations
                         foreach ($page['alternates'] as $altLang => $altSlug) {
                             $langTmp = $languages->where('code', $altLang)->first();
-                            $url->addAlternate("{$langTmp->domain}{$altSlug}", $altLang);
+                            $urlTmp = $langTmp->domain . $altSlug;
+                            if(!empty($articlePrefix)){
+                                $urlTmp = $langTmp->domain . '/' . $articlePrefix . $altSlug;
+                            }
+                            $url->addAlternate($urlTmp, $altLang);
                         }
                     } else {
                         $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
                         // Add alternate links for all available translations
                         foreach ($page['alternates'] as $altLang => $altSlug) {
-                            $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$altSlug}", $altLang);
+                            $urlTmp = "{$frontendBaseUrl}/{$altLang}{$altSlug}";
+                            if(!empty($articlePrefix)){
+                                $urlTmp = "{$frontendBaseUrl}/{$altLang}/{$articlePrefix}{$altSlug}";
+                            }
+                            $url->addAlternate($urlTmp, $altLang);
                         }
                     }
                     $item = $page['item'];
