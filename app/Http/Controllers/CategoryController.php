@@ -57,6 +57,7 @@ class CategoryController extends Controller
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
+            'primary_language' => 'nullable|string',
         ]);
 
         $category = new Category;
@@ -73,6 +74,12 @@ class CategoryController extends Controller
         }
         if(!empty($request->input('sitemap_change_frequency'))){
             $category->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
+        if (!empty($request->input('primary_language'))) {
+            $category->primary_language = $request->input('primary_language');
+            if ($request->input('primary_language') === 'default') {
+                $category->primary_language = null;
+            }
         }
         $category->save();
 
@@ -94,6 +101,7 @@ class CategoryController extends Controller
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
+            'primary_language' => 'nullable|string',
         ]);
 
         $category->setTranslation('name', app()->getLocale(), $request->name);
@@ -109,6 +117,12 @@ class CategoryController extends Controller
         }
         if(!empty($request->input('sitemap_change_frequency'))){
             $category->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
+        if (!empty($request->input('primary_language'))) {
+            $category->primary_language = $request->input('primary_language');
+            if ($request->input('primary_language') === 'default') {
+                $category->primary_language = null;
+            }
         }
         $category->save();
 

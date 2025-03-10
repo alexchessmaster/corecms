@@ -30,6 +30,7 @@ class ArticleResource extends JsonResource
             "tags" => $this->relationLoaded('tags') ? TagResource::collection($this->tags) : null,
             "template_page_id" => $this->template_page_id,
             "template_page" => $this->relationLoaded('page') ? new PageResource($this->page) : null,
+            "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
         ];

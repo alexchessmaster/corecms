@@ -135,6 +135,17 @@
                                         this.</small>
                                 </div>
                                 <div class="col-sm-4 col-xs-12">
+                                    <label for="primary_language" class="form-label">Primary Language</label>
+                                    <select class="form-control" id="primary_language" name="primary_language">
+                                        <option value="default">Default</option>
+                                        @foreach ($languages as $language)
+                                            <option value="{{ $language->code }}" {{ $page->primary_language === $language->code ?  'selected' : '' }}>{{ $language->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small id="name" class="form-text text-muted">If it's default, the default website language is the
+                                        value.</small>
+                                </div>
+                                <div class="col-sm-4 col-xs-12">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="sitemap_exclude"
                                             id="sitemap_exclude"
@@ -890,6 +901,7 @@
         const slugInput = document.getElementById('page_slug');
         const sitemapPriorityInput = document.getElementById('sitemap_priority');
         const sitemapChangeFrequencyInput = document.getElementById('sitemap_change_frequency');
+        const primaryLanguageInput = document.getElementById('primary_language');
         const sitemapExcludeInput = document.getElementById('sitemap_exclude');
         const currentLanguage = '{!! App::currentLocale() !!}';
 
@@ -900,6 +912,7 @@
             const slug = document.getElementById('page_slug');
             const sitemapPriority = document.getElementById('sitemap_priority');
             const sitemapChangeFrequency = document.getElementById('sitemap_change_frequency');
+            const primaryLanguage = document.getElementById('primary_language');
             const sitemapExclude = document.getElementById('sitemap_exclude');
             const sitemapExcludeValue = sitemapExclude.checked ? true : false;
 
@@ -915,6 +928,7 @@
                         lang: currentLanguage,
                         sitemap_priority: sitemapPriority.value,
                         sitemap_change_frequency: sitemapChangeFrequency.value,
+                        primary_language: primaryLanguage.value,
                         sitemap_exclude: sitemapExcludeValue,
                     })
                 })
@@ -938,6 +952,7 @@
         slugInput.addEventListener('focusout', updatePostUrlOrSlug);
         sitemapPriorityInput.addEventListener('change', updatePostUrlOrSlug);
         sitemapChangeFrequencyInput.addEventListener('change', updatePostUrlOrSlug);
+        primaryLanguageInput.addEventListener('change', updatePostUrlOrSlug);
         sitemapExcludeInput.addEventListener('change', updatePostUrlOrSlug);
     </script>
 

@@ -74,6 +74,7 @@ class ArticleController extends Controller
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
+            'primary_language' => 'nullable|string',
         ]);
 
         $article = new Article;
@@ -94,16 +95,22 @@ class ArticleController extends Controller
         $article->setTranslation('content', app()->getLocale(), $request->input('content'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
-        if(!empty($request->input('sitemap_exclude'))){
+        if (!empty($request->input('sitemap_exclude'))) {
             $article->sitemap_exclude = true;
         } else {
             $article->sitemap_exclude = null;
         }
-        if(!empty($request->input('sitemap_priority'))){
+        if (!empty($request->input('sitemap_priority'))) {
             $article->sitemap_priority = $request->input('sitemap_priority');
         }
-        if(!empty($request->input('sitemap_change_frequency'))){
+        if (!empty($request->input('sitemap_change_frequency'))) {
             $article->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
+        if (!empty($request->input('primary_language'))) {
+            $article->primary_language = $request->input('primary_language');
+            if ($request->input('primary_language') === 'default') {
+                $article->primary_language = null;
+            }
         }
         $article->save();
         $article->tags()->sync($request->input('tags', []));
@@ -135,6 +142,7 @@ class ArticleController extends Controller
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
+            'primary_language' => 'nullable|string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -154,16 +162,22 @@ class ArticleController extends Controller
         $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->category_id = $request->input('category_id');
         $article->template_page_id = $request->input('template_page_id');
-        if(!empty($request->input('sitemap_exclude'))){
+        if (!empty($request->input('sitemap_exclude'))) {
             $article->sitemap_exclude = true;
         } else {
             $article->sitemap_exclude = null;
         }
-        if(!empty($request->input('sitemap_priority'))){
+        if (!empty($request->input('sitemap_priority'))) {
             $article->sitemap_priority = $request->input('sitemap_priority');
         }
-        if(!empty($request->input('sitemap_change_frequency'))){
+        if (!empty($request->input('sitemap_change_frequency'))) {
             $article->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        }
+        if (!empty($request->input('primary_language'))) {
+            $article->primary_language = $request->input('primary_language');
+            if ($request->input('primary_language') === 'default') {
+                $article->primary_language = null;
+            }
         }
         $article->save();
         $article->tags()->sync($request->input('tags', []));

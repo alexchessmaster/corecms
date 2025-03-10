@@ -58,8 +58,6 @@ class PageController extends Controller
         $lang = request()->lang ?: app()->getLocale();
         $page->setTranslation('title', $lang, request()->title);
         $page->setTranslation('slug', $lang, '/' . Str::slug(request()->slug));
-        info("request()->input('sitemap_exclude')");
-        info(request()->input('sitemap_exclude'));
         if(!empty(request()->input('sitemap_exclude'))){
             $page->sitemap_exclude = true;
         } else {
@@ -70,6 +68,12 @@ class PageController extends Controller
         }
         if(!empty(request()->input('sitemap_change_frequency'))){
             $page->sitemap_change_frequency = request()->input('sitemap_change_frequency');
+        }
+        if (!empty(request()->input('primary_language'))) {
+            $page->primary_language = request()->input('primary_language');
+            if (request()->input('primary_language') === 'default') {
+                $page->primary_language = null;
+            }
         }
         $page->save();
 

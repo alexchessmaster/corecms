@@ -71,6 +71,12 @@
 
             </url>
     <url>
+        <loc>https://nordicstandard.net/my-test-title</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/my-test-title" />
+        <lastmod>2025-03-09T23:15:33+01:00</lastmod>
+
+            </url>
+    <url>
         <loc>https://nordicstandard.net/portfolio/e-commerce-website</loc>
         <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/articles/portefolje/e-commerce-website" />
         <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/articles/portfolio/e-commerce-website" />
@@ -117,6 +123,12 @@
         <xhtml:link rel="alternate" hreflang="da" href="https://nordicstandard.dk/articles/portefolje/moderne-cms" />
         <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/articles/portfolio/modern-cms" />
         <lastmod>2025-02-15T13:36:41+01:00</lastmod>
+
+            </url>
+    <url>
+        <loc>https://nordicstandard.net/uncategorized/test-article</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://nordicstandard.net/articles/uncategorized/test-article" />
+        <lastmod>2025-03-09T23:22:55+01:00</lastmod>
 
             </url>
 </urlset>

@@ -127,6 +127,17 @@
                 this.</small>
         </div>
         <div class="col-sm-4 col-xs-12">
+            <label for="primary_language" class="form-label">Primary Language</label>
+            <select class="form-control" id="primary_language" name="primary_language">
+                <option value="default">Default</option>
+                @foreach ($languages as $language)
+                    <option value="{{ $language->code }}" {{ isset($article) && $language->code === $article->primary_language ? 'selected' : '' }}>{{ $language->name }}</option>
+                @endforeach
+            </select>
+            <small id="name" class="form-text text-muted">If it's default, the default website language is the
+                value.</small>
+        </div>
+        <div class="col-sm-4 col-xs-12 col-span-3">
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" name="sitemap_exclude" id="sitemap_exclude"
                     {{ isset($article) && !empty($article->sitemap_exclude) ? 'checked' : '' }}>
