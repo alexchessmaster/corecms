@@ -726,7 +726,7 @@
                         case 'select_option_on_off':
                             createSelectInput(item, ['on', 'off']);
                             break;
-                        case 'text':
+                        case 'textarea_one_line':
                             createTextareaInput(item, 'text');
                             break;
                         case 'textarea_small':

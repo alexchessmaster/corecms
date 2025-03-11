@@ -154,7 +154,9 @@ class ContentController extends Controller
         if ($article) {
             // here check if category is correct do it, otherwise return 404
             $responseData["article_prefix"] = $articlePrefix;
-            $responseData["article"] = ArticleResource::make($article);
+            $responseData["article"] = ArticleResource::make($article)->additional([
+                'article_prefix' => $articlePrefix
+            ]);
 
             return response()->json(['data' => $responseData], $responseCode);
         }

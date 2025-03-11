@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\WidgetResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\PageWidgetResource;
+use App\Models\Field;
 
 use function Laravel\Prompts\error;
 
@@ -39,7 +40,7 @@ class PageWidgetController extends Controller
      */
     public function updateFieldValue(Request $request)
     {
-        // Log::info(json_encode($request->all()));
+        Log::info(json_encode('$request->all()'));
         $inputs = $request->all();
 
         $language = $inputs['language'];
@@ -59,9 +60,14 @@ class PageWidgetController extends Controller
             $fieldValueId = $inputKeyArr[3] ?? null;
             $fieldId = $inputKeyArr[1] ?? null;
 
+            // strip tags from textarea_one_line
+            $field = Field::find($fieldId);
+            if($field->type === 'textarea_one_line'){
+                $inputValue = substr($inputValue, 3, strlen($inputValue) - 7);
+            }
+
             if ($fieldValueId && $fieldValueId !== 'undefined') {
                 $fieldValueTmp = FieldValue::find($fieldValueId);
-
                 if (!$fieldValueTmp) {
                     continue;
                 }
