@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\PageWidgetController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
+use Illuminate\Support\Facades\Http;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -32,3 +33,51 @@ Route::apiResource('/fields', FieldController::class);
 
 // NordicStandard.net custom routes:
 Route::post('contact-us', [ContactController::class, 'submitContactForm']);
+
+Route::get('widgets', function(){
+    return view('text');
+});
+Route::get('match-pare', function(){
+    return view('matchPare');
+});
+Route::get('fill-in-the-blank', function(){
+    return view('fillInTheBlank');
+});
+Route::get('true-or-false', function(){
+    return view('trueOrFalse');
+});
+Route::get('crossword', function(){
+    return view('crossword');
+});
+Route::get('sorting', function(){
+    return view('sorting');
+});
+Route::get('word-swipe', function(){
+    return view('wordSwipe');
+});
+
+Route::post('ai', function(){
+    // Http::post('http://poolai-backend.nordicstandard.net')
+    $url = request()->url;
+    $btn = request()->btn;
+    if (empty($url) || empty($btn)) {
+        return response()->json([
+            'status' => 'error',
+            'data' => 'Invalid params Btn: ' . $btn . ' or Url: ' . $url,
+        ]);
+    }
+    $res = Http::post('http://poolai-backend.nordicstandard.net/api/handle-widget-ai', [
+        'url' => $url,
+        'btn' => $btn,
+    ]);
+    $bodyStr = $res->body();
+    info('url: btn: '. $url . $btn);
+    // info('hiiii res '. json_encode($bodyStr));
+    
+    $body = json_decode($bodyStr);
+    info('hiiii res '. json_encode('bodyyyyyyy=' . json_encode($body)));
+    return response()->json([
+        'status' => 'success',
+        'data' => $body->response->choices[0]->message->content,
+    ]);
+});
