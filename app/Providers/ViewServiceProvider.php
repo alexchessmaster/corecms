@@ -23,8 +23,8 @@ class ViewServiceProvider extends ServiceProvider
         if(app()->runningInConsole()) {
             return;
         }
-        $languages = Language::all();
 
+        $languages = Language::all();
         // Share the $languages variable with all views
         \View::share('languages', $languages);
     }
