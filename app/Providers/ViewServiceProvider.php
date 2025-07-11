@@ -20,6 +20,9 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if(app()->runningInConsole()) {
+            return;
+        }
         $languages = Language::all();
 
         // Share the $languages variable with all views

@@ -31,6 +31,12 @@ class UploadController extends Controller
     public function store(StoreUploadRequest $request)
     {
         $path = FileHelper::upload($request);
+        $parsedUrl = parse_url($path);
+        $pathParts = explode('/', $parsedUrl['path']);
+        $filename = array_pop($pathParts);
+        $encodedFilename = rawurlencode($filename);
+        $basePath = implode('/', $pathParts);
+        $path = $basePath . '/' . $encodedFilename;
 
         return view('admin.upload.index', compact('path'));
     }
