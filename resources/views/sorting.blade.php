@@ -77,20 +77,20 @@
 
     <script>
         const messagePromise = new Promise((resolve) => {
-            window.addEventListener("message", (event) => {
-                console.log('Message received:', event.data);
-                resolve(event.data);
-            });
+            //window.addEventListener("message", (event) => {
+            //    console.log('Message received:', event.data);
+            //    resolve(event.data);
+            //});
         });
         async function startGame() {
-            const parentUrl = await messagePromise;
-            console.log('window', parentUrl)
-            if (!parentUrl) {
-                console.log('iframe script not loaded!')
-                const fullUrl = window?.parent[0]?.location?.href;
-                const urlObj = new URL(fullUrl);
-                parentUrl = urlObj.searchParams.get("url");
-            }
+            // const parentUrl = await messagePromise;
+            // console.log('window', parentUrl)
+            // if (!parentUrl) {
+            //     console.log('iframe script not loaded!')
+            //     const fullUrl = window?.parent[0]?.location?.href;
+            //     const urlObj = new URL(fullUrl);
+            //     parentUrl = urlObj.searchParams.get("url");
+            // }
             const data = await fetch('/api/ai', {
                 method: 'POST',
                 headers: {
@@ -98,7 +98,7 @@
                 },
                 body: JSON.stringify({
                     btn: 'sorting',
-                    url: parentUrl,
+                    url: "{{ request()->url }}",
                 })
             }).then(res => {
                 return res.json();

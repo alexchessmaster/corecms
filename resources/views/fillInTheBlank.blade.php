@@ -122,9 +122,9 @@
     </div>
 
     <script>
-        window.addEventListener("message", (event) => {
-            window.parentUrl = event.data;
-        });
+        //window.addEventListener("message", (event) => {
+        ////    window.parentUrl = event.data;
+        //});
         let sentencesWithKeywords = [];
 
 
@@ -149,13 +149,14 @@
 
         const renderGame = async () => {
 
-            let parentUrl = window.parentUrl;
-            if (!parentUrl) {
-                console.log('iframe script not loaded!')
-                const fullUrl = window?.parent[0]?.location?.href;
-                const urlObj = new URL(fullUrl);
-                parentUrl = urlObj.searchParams.get("url");
-            }
+            // let parentUrl = window.parentUrl;
+            // if (!parentUrl) {
+            //     console.log('iframe script not loaded!')
+            //     const fullUrl = window?.parent[0]?.location?.href;
+            //     const urlObj = new URL(fullUrl);
+            //     parentUrl = urlObj.searchParams.get("url");
+            // }
+            
             sentencesWithKeywords = await fetch('/api/ai', {
                 method: 'POST',
                 headers: {
@@ -163,7 +164,7 @@
                 },
                 body: JSON.stringify({
                     btn: 'fill_in_the_blank',
-                    url: parentUrl,
+                    url: "{{ request()->url }}",
                 })
             }).then(res => {
                 return res.json();

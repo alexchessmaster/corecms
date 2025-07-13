@@ -105,9 +105,9 @@
     <button id="children" class="angel">👶 Children</button>
     <div id="main-content"></div>
     <script>
-        window.addEventListener("message", (event) => {
-            window.parentUrl = event.data;
-        });
+        //window.addEventListener("message", (event) => {
+        //    window.parentUrl = event.data;
+        //});
 
         const handleClick = (btn) => {
             // console.log('btn', btn)
@@ -121,18 +121,19 @@
 </div>
 `;
 
-            let parentUrl = window.parentUrl;
-            if(!parentUrl) {
-                console.log('iframe script not loaded!')
-                const fullUrl = window?.parent[0]?.location?.href;
-                const urlObj = new URL(fullUrl);
-                parentUrl = urlObj.searchParams.get("url");
-            }
+            // let parentUrl = window.parentUrl;
+            // if(!parentUrl) {
+            //     console.log('iframe script not loaded!')
+            //     const fullUrl = window?.parent[0]?.location?.href;
+            //     const urlObj = new URL(fullUrl);
+            //     parentUrl = urlObj.searchParams.get("url");
+            // }
 
             // console.log('parentUrl', parentUrl)
             // console.log('windowwww', window)
 
             // send btn and parentUrl to poolai and get the response
+            console.log('11111111111111111111 url', "{{ request()->url }}")
             fetch('/api/ai', {
                 method: 'POST',
                 headers: {
@@ -140,7 +141,7 @@
                 },
                 body: JSON.stringify({
                     btn: btn,
-                    url: parentUrl,
+                    url: "{{ request()->url }}",
                 })
             }).then(res => {
                 console.log('res 1', res);

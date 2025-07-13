@@ -95,19 +95,19 @@
 <body>
 
     <script>
-        window.addEventListener("message", (event) => {
-            window.parentUrl = event.data;
-        });
+        //window.addEventListener("message", (event) => {
+          //  window.parentUrl = event.data;
+        //});
 
         const setupGame = async () => {
 
-            let parentUrl = window.parentUrl;
-            if (!parentUrl) {
-                console.log('iframe script not loaded!')
-                const fullUrl = window?.parent[0]?.location?.href;
-                const urlObj = new URL(fullUrl);
-                parentUrl = urlObj.searchParams.get("url");
-            }
+            // let parentUrl = window.parentUrl;
+            // if (!parentUrl) {
+            //     console.log('iframe script not loaded!')
+            //     const fullUrl = window?.parent[0]?.location?.href;
+            //     const urlObj = new URL(fullUrl);
+            //     parentUrl = urlObj.searchParams.get("url");
+            // }
             const words = await fetch('/api/ai', {
                 method: 'POST',
                 headers: {
@@ -115,7 +115,7 @@
                 },
                 body: JSON.stringify({
                     btn: 'match_pare',
-                    url: parentUrl,
+                    url: "{{ request()->url }}",
                 })
             }).then(res => {
                 return res.json();
