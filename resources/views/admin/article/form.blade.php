@@ -12,7 +12,7 @@
         @if (!(isset($article) && $article->image)) required @endif>
 </div>
 <div class="mb-3">
-    <label for="title" class="form-label">Title</label>
+    <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
         value="{{ isset($article) ? $article->getTranslation('title', app()->getLocale(), false) : '' }}" required>
 </div>
@@ -23,13 +23,13 @@
 </div>
 @if (isset($article))
     <div class="mb-3">
-        <label for="slug" class="form-label">Slug</label>
+        <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
             value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
     </div>
 @endif
 <div class="mb-3">
-    <label for="description" class="form-label">Description</label>
+    <label for="description" class="form-label required">Description</label>
     <textarea class="form-control" id="description" name="description" rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
@@ -41,7 +41,7 @@
     <textarea class="form-control tinymce" id="content" name="content" rows="5">{{ isset($article) ? $article->getTranslation('content', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
-    <label for="category_id" class="form-label">Category</label>
+    <label for="category_id" class="form-label required">Category</label>
     <select class="form-control" id="category_id" name="category_id" required>
         @foreach ($categories as $category)
             @if (!empty($category->getTranslation('name', app()->getLocale(), false)))
