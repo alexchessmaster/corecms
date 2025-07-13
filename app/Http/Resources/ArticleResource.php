@@ -36,10 +36,12 @@ class ArticleResource extends JsonResource
         return [
             "id" => $this->id,
             "title" => $this->title,
+            "title_seo" => $this->title_seo,
             "slug" => $this->slug,
             "all_urls" => $allUrls,
             "full_url" => $this->full_url,
             "description" => $this->description,
+            "description_seo" => $this->description_seo,
             "content" => $this->content,
             "image" => str_starts_with($this->image, 'http') ? $this->image : config('app.url') . $this->image,
             "category_id" => $this->category_id,

@@ -12,8 +12,8 @@ class Article extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['image', 'title', 'slug', 'content', 'category_id', 'description', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
-    public $translatable = ['title', 'slug','content', 'description'];
+    protected $fillable = ['image', 'title', 'title_seo', 'slug', 'content', 'category_id', 'description', 'description_seo', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
+    public $translatable = ['title', 'title_seo', 'slug','content', 'description', 'description_seo'];
 
     public function category()
     {

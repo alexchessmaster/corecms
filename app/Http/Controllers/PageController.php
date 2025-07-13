@@ -16,7 +16,7 @@ class PageController extends Controller
      */
     public function index()
     {
-        if(str_contains(request()->path(), 'admin/templates')) {
+        if (str_contains(request()->path(), 'admin/templates')) {
             $pages = Page::where('type', 'template')->get();
             $pageType = 'template';
         } else {
@@ -33,7 +33,7 @@ class PageController extends Controller
     public function create()
     {
         $pageType = 'page';
-        if(str_contains(request()->path(), 'admin/templates')) {
+        if (str_contains(request()->path(), 'admin/templates')) {
             $pageType = 'template';
         }
 
@@ -50,13 +50,13 @@ class PageController extends Controller
         $slug = '/' . Str::slug($request->slug);
         $page->setTranslation('slug', app()->getLocale(), $slug);
         $pageType = 'page';
-        if(str_contains(request()->path(), 'admin/templates')) {
+        if (str_contains(request()->path(), 'admin/templates')) {
             $pageType = 'template';
         }
         $page->type = $pageType;
         $page->save();
 
-        if($pageType === 'template') {
+        if ($pageType === 'template') {
             return redirect()->route('admin.templates.edit', $page->id);
         }
 
@@ -79,7 +79,7 @@ class PageController extends Controller
         $page = Page::findOrFail($pageId);
         $pageWidgets = $page->widgets;
         $pageType = $page->type;
-        if($pageType === 'template') {
+        if ($pageType === 'template') {
             $allWidgets = Widget::where('active', true)->get();
         } else {
             $allWidgets = Widget::where('type', 'page')->where('active', true)->get();
@@ -93,25 +93,7 @@ class PageController extends Controller
      */
     public function update(UpdatePageRequest $request, Page $page)
     {
-        // $page->setTranslation('title', app()->getLocale(), request()->input('title'));
-        // $page->setTranslation('slug', app()->getLocale(), request()->input('slug'));
-        // if(!empty($request->input('sitemap_exclude'))){
-        //     $page->sitemap_exclude = true;
-        // } else {
-        //     $page->sitemap_exclude = null;
-        // }
-        // if(!empty($request->input('sitemap_priority'))){
-        //     $page->sitemap_priority = $request->input('sitemap_priority');
-        // }
-        // if(!empty($request->input('sitemap_change_frequency'))){
-        //     $page->sitemap_change_frequency = $request->input('sitemap_change_frequency');
-        // }
-        // $page->save();
 
-        // return response()->json([
-        //     'status' => 'ok',
-        //     'message' => 'Page updated successfully.'
-        // ]);
     }
 
     /**

@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->json('title');
+            $table->json('title_seo')->nullable();
             $table->json('slug');
             $table->json('description')->nullable();
+            $table->json('description_seo')->nullable();
             $table->json('content');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();

@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="page_title">{{ ucfirst($pageType) }} title</label>
+                            <label for="page_title">{{ ucfirst($pageType) }} Title</label>
                             <input type="text" name="title" class="form-control" id="page_title" aria-describedby=""
                                 placeholder="Page title" value="">
                             <small id="" class="form-text text-muted">The title of the {{ $pageType }}.</small>
@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="page_slug">{{ ucfirst($pageType) }} slug</label>
+                            <label for="page_slug">{{ ucfirst($pageType) }} Slug</label>
                             <input type="text" name="slug" class="form-control" id="page_slug" aria-describedby=""
                                 placeholder="Page URL" value="">
                             {{-- <small class="form-text text-muted"><a id="visit-page" target="_blank"
