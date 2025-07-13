@@ -19,7 +19,7 @@
 <div class="mb-3">
     <label for="title_seo" class="form-label">Title SEO</label>
     <input type="text" class="form-control" id="title_seo" name="title_seo"
-        value="{{ isset($article) ? $article->getTranslation('title_seo', app()->getLocale(), false) : '' }}" required>
+        value="{{ isset($article) ? $article->getTranslation('title_seo', app()->getLocale(), false) : '' }}">
 </div>
 @if (isset($article))
     <div class="mb-3">
