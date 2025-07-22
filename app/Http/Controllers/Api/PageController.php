@@ -36,7 +36,6 @@ class PageController extends Controller
     {
         $page = Page::withAllWidgetData()->find($pageId);
 
-        // dd($page);
         return response()->json(PageResource::make($page));
     }
 

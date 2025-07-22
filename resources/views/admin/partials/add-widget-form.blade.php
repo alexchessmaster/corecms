@@ -1,15 +1,31 @@
 @php
     if (isset($page) && !empty($page)) {
+        $model = $page;
         $widgetableId = $page->id;
         $widgetableType = substr(get_class($page), 11);
     } elseif (isset($article) && !empty($article)) {
+        $model = $article;
         $widgetableId = $article->id;
         $widgetableType = substr(get_class($article), 11);
     } else {
+        $model = $category;
         $widgetableId = $category->id;
         $widgetableType = substr(get_class($category), 11);
     }
 @endphp
+
+
+@push('scripts')
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+    <script>
+        $('.my-colorpicker2').colorpicker()
+    </script>
+
+    <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+@endpush
+
+
 <div id="widgets-container"></div>
 
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#widgetModal">
@@ -266,7 +282,7 @@
         const languageInputEl = document.createElement('input');
         languageInputEl.name = 'language';
         languageInputEl.type = 'hidden';
-        languageInputEl.value = currentLanguage;
+        languageInputEl.value = '{!! App::currentLocale() !!}';
 
         const widgetInputEl = document.createElement('input');
         widgetInputEl.name = 'widget-id';
@@ -297,6 +313,7 @@
 
     const createInputTextInput = (widget, item) => {
         const divEl = document.createElement('div');
+        divEl.id = `position-${widget.position}`;
         divEl.classList.add('col-md-12');
 
         const labelEl = document.createElement('label');
@@ -627,18 +644,6 @@
     const createWidget = async widget => {
 
         const widgetPosition = widget.position;
-        @php
-            if (isset($page)) {
-                $widgetableId = $page->id;
-                $widgetableType = 'page';
-            } elseif (isset($article)) {
-                $widgetableId = $article->id;
-                $widgetableType = 'article';
-            } else {
-                $widgetableId = $category->id;
-                $widgetableType = 'category';
-            }
-        @endphp
         const widgetableId = '{!! $widgetableId !!}';
         const widgetableType = '{!! $widgetableType !!}';
 
@@ -680,7 +685,7 @@
     let addWidgetButtonPosition = null;
     const refreshWidgetList = () => {
         widgetContainer.innerHTML = null;
-        fetch('/api/pages/{!! $page->id !!}')
+        fetch("/api/{!! strtolower($widgetableType) !!}s/{!! $widgetableId !!}")
             .then(response => {
                 return response.json()
             })

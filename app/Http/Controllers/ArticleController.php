@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Models\Page;
+use App\Models\Widget;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -55,9 +56,9 @@ class ArticleController extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
-        $pages = Page::where('type', 'template')->get();
+        $allWidgets = Widget::where('active', true)->get();
 
-        return view('admin.article.create', compact('categories', 'tags', 'pages'));
+        return view('admin.article.create', compact('categories', 'tags', 'allWidgets'));
     }
 
     public function store(Request $request)
@@ -122,13 +123,14 @@ class ArticleController extends Controller
         return redirect()->route('admin.articles.edit', [$article->id])->with('success', 'Article created successfully.');
     }
 
-    public function edit(Article $article)
+    public function edit($articleId)
     {
+        $article = Article::withAllWidgetData()->findOrFail($articleId);
         $categories = Category::all();
         $tags = Tag::all();
-        $pages = Page::where('type', 'template')->get();
+        $allWidgets = Widget::where('active', true)->get();
 
-        return view('admin.article.edit', compact('article', 'categories', 'tags', 'pages'));
+        return view('admin.article.edit', compact('article', 'categories', 'tags', 'allWidgets'));
     }
 
     public function update(Request $request, Article $article)

@@ -6,13 +6,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
 use App\Http\Controllers\PageWidgetController;
+use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
 use App\Http\Controllers\Api\FieldWidgetController;
-use App\Http\Controllers\Api\WidgetFieldValuesController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
+use App\Http\Controllers\Api\WidgetFieldValuesController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
@@ -25,6 +26,7 @@ Route::get('/categories', [ContentController::class, 'fetchCategories']);
 // Route::get('/common-data', [CommonDataController::class, 'index']);
 
 Route::apiResource('/pages', PageController::class); // new
+Route::apiResource('/articles', ArticleController::class); // new
 Route::get('/pages/{page}/widget-position/{widgets_position}/field-values/{lang?}', [PageWidgetController::class, 'fieldValue']);
 // Route::get('/page/{pageId}/widget/{widgetId}/widget-position/{position}/fields-with-values/{lang?}', [WidgetController::class, 'getWidgetFieldsWithValues']); // I don't know where I used
 // Route::patch('/pages/widget-position/update-field-value', [PageWidgetController::class, 'updateFieldValue']);

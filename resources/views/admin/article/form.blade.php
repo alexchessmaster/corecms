@@ -36,10 +36,10 @@
     <label for="description_seo" class="form-label">Description SEO</label>
     <textarea class="form-control" id="description_seo" name="description_seo" rows="2">{{ isset($article) ? $article->getTranslation('description_seo', app()->getLocale(), false) : '' }}</textarea>
 </div>
-<div class="mb-3">
+{{-- <div class="mb-3">
     <label for="content" class="form-label required">Content</label>
     <textarea class="form-control tinymce" id="content" name="content" rows="5">{{ isset($article) ? $article->getTranslation('content', app()->getLocale(), false) : '' }}</textarea>
-</div>
+</div> --}}
 <div class="mb-3">
     <label for="category_id" class="form-label required">Category</label>
     <select class="form-control" id="category_id" name="category_id" required>
@@ -66,7 +66,7 @@
         @endforeach
     </select>
 </div>
-<div class="mb-3">
+{{-- <div class="mb-3">
     <label for="template_page_id" class="form-label">Template page</label>
     <select class="form-control" id="template_page_id" name="template_page_id" required>
         @foreach ($pages as $page)
@@ -78,14 +78,11 @@
         @endforeach
     </select>
     <small id="name" class="form-text text-muted">Do not change it if you don't know what is this.</small>
-</div>
+</div> --}}
 
 @include('admin.partials.sitemap-form')
 
 <br>
-
-
-@include('admin.partials.tinymce-full')
 
 
 <script>

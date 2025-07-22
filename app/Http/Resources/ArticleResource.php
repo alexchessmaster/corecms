@@ -6,6 +6,7 @@ use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\WidgetableResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
@@ -52,6 +53,7 @@ class ArticleResource extends JsonResource
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+            'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
         ];
     }
 }

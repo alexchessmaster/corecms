@@ -92,16 +92,6 @@
     <hr>
 
 
-    @push('scripts')
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-        <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-        <script>
-            $('.my-colorpicker2').colorpicker()
-        </script>
-
-        <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-    @endpush
-
     @include('admin.partials.add-widget-form')
 
 

@@ -15,11 +15,13 @@ class Article extends Model
     use HasTranslations;
 
     protected $fillable = ['image', 'title', 'title_seo', 'slug', 'content', 'category_id', 'description', 'description_seo', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
-    public $translatable = ['title', 'title_seo', 'slug','content', 'description', 'description_seo'];
+    public $translatable = ['title', 'title_seo', 'slug', 'content', 'description', 'description_seo'];
     protected $casts = [
         'scheduled_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-    
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -30,41 +32,61 @@ class Article extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-    public function page()
-    {
-        return $this->belongsTo(Page::class, 'template_page_id', 'id');
-    }
-
     public function getFullUrlAttribute()
     {
         $fullUrl = $this->slug;
-    
+
         $articlePrefix = cache()->remember('article-prefix', 3600, function () {
             return Setting::where('key', 'article-prefix')->value('value');
         });
-    
+
         if (!empty($articlePrefix)) {
             $articlePrefix = '/' . trim($articlePrefix, '/');
             $fullUrl = $articlePrefix . $fullUrl;
         }
-        
+
         $languages = Language::all();
         $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () use ($languages) {
             return count($languages) > 1;
         });
-    
+
         if ($multipleLanguages) {
             $lang = app()->getLocale();
-            if(! $languages->value('use_separate_domain')){
+            if (! $languages->value('use_separate_domain')) {
                 $fullUrl = '/' . $lang . $fullUrl;
             }
         }
-    
+
         return $fullUrl;
+    }
+
+    // public function widgetables(): MorphMany
+    // {
+    //     return $this->morphMany(Widgetable::class, 'content');
+    // }
+
+    public function scopeWithAllWidgetData($query)
+    {
+        return $this->with([
+            'widgetables.widget.fieldWidgets.field',
+            'widgetables.widgetFieldValues.fieldWidget.field',
+        ]);
     }
 
     public function widgetables(): MorphMany
     {
-        return $this->morphMany(Widgetable::class, 'content');
+        return $this->morphMany(Widgetable::class, 'widgetable')->orderBy('position');
+    }
+
+    public function widgets()
+    {
+        return $this->hasManyThrough(
+            Widget::class,
+            Widgetable::class,
+            'widgetable_id',
+            'id',
+            'id',
+            'widget_id'
+        )->where('widgetables.widgetable_type', self::class);
     }
 }

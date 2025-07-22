@@ -54,6 +54,5 @@ class Page extends Model
             'id',
             'widget_id'
         )->where('widgetables.widgetable_type', self::class);
-        // ? should it be?->sortBy('position');
     }
 }
