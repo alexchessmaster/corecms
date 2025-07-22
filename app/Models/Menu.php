@@ -11,6 +11,7 @@ class Menu extends Model
 
     protected $translatable = ['name', 'link', 'description'];
     protected $fillable = ['name', 'link', 'parent_id', 'order', 'image', 'image_alt', 'description'];
+    protected $with = ['parent'];
 
     public function parent()
     {

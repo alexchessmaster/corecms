@@ -85,34 +85,18 @@ class WidgetController extends Controller
     public function attach()
     {
         $widgetId = request()->input('widgetId');
-        $pageId = request()->input('pageId');
-        $articleId = request()->input('articleId');
-        $categoryId = request()->input('categoryId');
+        $widgetableId = request()->input('widgetableId');
+        $widgetableType = request()->input('widgetableType');
         $addWidgetPosition = request()->input('addWidgetPosition');
 
         // Find the widget
-        $widget = Widget::find($widgetId);
+        $widget = Widget::findOrFail($widgetId);
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
 
-        // Find the model (Page, Article, or Category)
-        $model = Page::find($pageId);
-        $modelType = 'Page';
-        if (! $model) {
-            $modelType = 'Article';
-            $model = Article::find($articleId);
-            if (! $model) {
-                $modelType = 'Category';
-                $model = Category::find($categoryId);
-            }
-        }
-        if (! $model) {
-            return response()->json(['status' => 'error', 'message' => 'Page or article not found', 'request' => request()->all()]);
-        }
-
-        $widgetables = Widgetable::where('widgetable_id', $model->id)
-            ->where('widgetable_type', 'App\Models\\' . $modelType)
+        $widgetables = Widgetable::where('widgetable_id', $widgetableId)
+            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
             ->where('position', '>=', $addWidgetPosition)
             ->orderBy('position')
             ->get();
@@ -122,8 +106,8 @@ class WidgetController extends Controller
 
         $created = Widgetable::create([
             'widget_id' => $widgetId,
-            'widgetable_id' => $model->id,
-            'widgetable_type' => 'App\Models\\' . $modelType,
+            'widgetable_id' => $widgetableId,
+            'widgetable_type' => 'App\Models\\' . $widgetableType,
             'position' => $addWidgetPosition,
         ]);
 
@@ -131,8 +115,8 @@ class WidgetController extends Controller
         // Update positions for all widgetables if the db has wrong positions
         // Just in case the positions are not correct. (if server got restarted during the previous loop)
         $i = 0;
-        $widgetables = Widgetable::where('widgetable_id', $model->id)
-            ->where('widgetable_type', 'App\Models\\' . $modelType)
+        $widgetables = Widgetable::where('widgetable_id', $widgetableId)
+            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
             ->orderBy('position')
             ->get();
         foreach ($widgetables as $widgetable) {
@@ -179,28 +163,14 @@ class WidgetController extends Controller
 
     public function detach()
     {
-        $pageId = request()->input('pageId');
-        $articleId = request()->input('articleId');
-        $categoryId = request()->input('categoryId');
+        $widgetableId = request()->input('widgetableId');
+        $widgetableType = request()->input('widgetableType');
         $position = request()->input('positionId');
 
         // Find the model (Page, Article, or Category)
-        $model = Page::find($pageId);
-        $modelType = 'Page';
-        if (! $model) {
-            $modelType = 'Article';
-            $model = Article::find($articleId);
-            if (! $model) {
-                $modelType = 'Category';
-                $model = Category::find($categoryId);
-            }
-        }
-        if (! $model) {
-            return response()->json(['status' => 'error', 'message' => 'Page or article or category not found', 'request' => request()->all()]);
-        }
 
-        $deleted = Widgetable::where('widgetable_id', $model->id)
-            ->where('widgetable_type', 'App\Models\\' . $modelType)
+        $deleted = Widgetable::where('widgetable_id', $widgetableId)
+            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
             ->where('position', $position)
             ->delete();
 
@@ -209,8 +179,8 @@ class WidgetController extends Controller
         }
 
         // Update positions for all remaining widgets
-        $widgetables = Widgetable::where('widgetable_id', $model->id)
-            ->where('widgetable_type', 'App\Models\\' . $modelType)
+        $widgetables = Widgetable::where('widgetable_id', $widgetableId)
+            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
             ->where('position', '>=', $position)
             ->orderBy('position')
             ->get();

@@ -1,3 +1,15 @@
+@php
+    if (isset($page) && !empty($page)) {
+        $widgetableId = $page->id;
+        $widgetableType = substr(get_class($page), 11);
+    } elseif (isset($article) && !empty($article)) {
+        $widgetableId = $article->id;
+        $widgetableType = substr(get_class($article), 11);
+    } else {
+        $widgetableId = $category->id;
+        $widgetableType = substr(get_class($category), 11);
+    }
+@endphp
 <div id="widgets-container"></div>
 
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#widgetModal">
@@ -192,7 +204,8 @@
                     },
                     body: JSON.stringify({
                         positionId: widget.position,
-                        pageId: '{{ $page->id }}'
+                        widgetableId: '{{ $widgetableId }}',
+                        widgetableType: '{{ $widgetableType }}',
                     })
                 })
                 .then(response => response.json)
@@ -440,7 +453,7 @@
         textareaEl.classList.add('form-control');
         textareaEl.value = item?.value || '';
         textareaEl.id = 'textarea-' + widget.id + '-' + item
-        .field_widget; // Add a unique ID for TinyMCE initialization
+            .field_widget; // Add a unique ID for TinyMCE initialization
 
         divEl.appendChild(labelEl);
         divEl.appendChild(textareaEl);
@@ -448,14 +461,14 @@
         document.getElementById('card-body-position-' + widget.position).appendChild(divEl);
 
         // Destroy existing TinyMCE instances if any
-        tinymce.remove(`#textarea-${widget.id}-${item.id}`);
+        tinymce.remove(`#textarea-` + widget.id + '-' + item.field_widget);
 
         // Initialize TinyMCE for the new textarea
         let tinyConfig = {};
         if (size === 'text') {
             tinyConfig = {
                 selector: `#textarea-` + widget.id + '-' + item
-                .field_widget, // Replace with the ID or class of your target element
+                    .field_widget, // Replace with the ID or class of your target element
                 menubar: false,
                 toolbar: 'bold italic underline | forecolor backcolor', // Added color options to toolbar
                 height: 110,
@@ -475,7 +488,7 @@
         if (size === 'small') {
             tinyConfig = {
                 selector: `#textarea-` + widget.id + '-' + item
-                .field_widget, // Replace with the ID or class of your target element
+                    .field_widget, // Replace with the ID or class of your target element
                 menubar: false,
                 toolbar: 'bold italic underline | forecolor backcolor', // Added color options to toolbar
                 height: 230,
@@ -587,7 +600,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        pageId: '{{ $page->id }}',
+                        widgetableId: '{{ $widgetableId }}',
+                        widgetableType: '{{ $widgetableType }}',
                         widgetId: value,
                         addWidgetPosition: addWidgetButtonPosition,
                     })
