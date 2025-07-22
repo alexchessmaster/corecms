@@ -15,6 +15,7 @@ class Category extends Model
 
     protected $fillable = ['name', 'slug', 'description', 'parent_id', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
     public $translatable = ['name', 'slug', 'description'];
+    protected $with = ['parent'];
 
     // protected static function boot()
     // {
@@ -42,8 +43,28 @@ class Category extends Model
         return $this->hasMany(Article::class);
     }
 
+    public function scopeWithAllWidgetData($query)
+    {
+        return $this->with([
+            'widgetables.widget.fieldWidgets.field',
+            'widgetables.widgetFieldValues.fieldWidget.field',
+        ]);
+    }
+
     public function widgetables(): MorphMany
     {
-        return $this->morphMany(Widgetable::class, 'content');
+        return $this->morphMany(Widgetable::class, 'widgetable')->orderBy('position');
+    }
+
+    public function widgets()
+    {
+        return $this->hasManyThrough(
+            Widget::class,
+            Widgetable::class,
+            'widgetable_id',
+            'id',
+            'id',
+            'widget_id'
+        )->where('widgetables.widgetable_type', self::class);
     }
 }

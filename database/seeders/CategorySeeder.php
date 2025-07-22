@@ -17,11 +17,17 @@ class CategorySeeder extends Seeder
         $category->setTranslations('name', [
             'fa' => 'uncategorized',
         ]);
+        $category->setTranslations('slug', [
+            'fa' => '/uncategorized',
+        ]);
         $category->save();
 
         $category = new Category();
         $category->setTranslations('name', [
             'fa' => 'car',
+        ]);
+        $category->setTranslations('slug', [
+            'fa' => '/car',
         ]);
         $category->save();
 
@@ -29,10 +35,16 @@ class CategorySeeder extends Seeder
         $category->setTranslations('name', [
             'fa' => 'building',
         ]);
+        $category->setTranslations('slug', [
+            'fa' => '/building',
+        ]);
         $category->save();
 
         $category = new Category();
         $category->setTranslations('name', [
+            'fa' => 'nature',
+        ]);
+        $category->setTranslations('slug', [
             'fa' => 'nature',
         ]);
         $category->save();

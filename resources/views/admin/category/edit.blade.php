@@ -10,5 +10,8 @@
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>
+<br><br>
+
+@include('admin.partials.add-widget-form')
 
 @endsection

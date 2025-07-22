@@ -14,7 +14,24 @@
     }
 @endphp
 
+@push('styles')
+    <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <style>
+        .tox-promotion {
+            visibility: hidden;
+        }
 
+        .tox .tox-editor-container {
+            border: 1px solid #d2d2d2 !important;
+            /* Set your desired color */
+        }
+
+        .tox .tox-edit-area iframe {
+            border: 1px solid #e7e7e7 !important;
+            /* Set your desired color */
+        }
+    </style>
+@endpush
 @push('scripts')
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
@@ -128,6 +145,7 @@
         const imgEl = document.createElement('img');
         imgEl.src = widget.image;
         imgEl.style.height = 'auto';
+        imgEl.style.maxHeight = '400px';
         imgEl.style.width = '100%';
         imgEl.style.objectFit = 'contain';
         imgEl.classList.add('col-md-5', 'card-img-left', 'img-fluid', 'd-md-block');
@@ -685,7 +703,7 @@
     let addWidgetButtonPosition = null;
     const refreshWidgetList = () => {
         widgetContainer.innerHTML = null;
-        fetch("/api/{!! strtolower($widgetableType) !!}s/{!! $widgetableId !!}")
+        fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}")
             .then(response => {
                 return response.json()
             })

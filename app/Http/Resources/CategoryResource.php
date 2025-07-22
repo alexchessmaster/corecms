@@ -29,6 +29,7 @@ class CategoryResource extends JsonResource
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+            'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
         ];
     }
 }

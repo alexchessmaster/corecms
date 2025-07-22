@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Widget;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -44,6 +45,7 @@ class CategoryController extends Controller
     public function create()
     {
         $categories = Category::whereNull('parent_id')->get();
+
         return view('admin.category.create', compact('categories'));
     }
 
@@ -86,10 +88,13 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
 
-    public function edit(Category $category)
+    public function edit($categoryId)
     {
+        $category = Category::withAllWidgetData()->findOrFail($categoryId);
         $categories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
-        return view('admin.category.edit', compact('category', 'categories'));
+        $allWidgets = Widget::where('active', true)->get();
+        
+        return view('admin.category.edit', compact('category', 'categories', 'allWidgets'));
     }
 
     public function update(Request $request, Category $category)

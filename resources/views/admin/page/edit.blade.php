@@ -2,26 +2,6 @@
 @section('content-card-title', 'pages')
 @section('content-card-body')
 
-    @push('styles')
-        <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
-        <style>
-            .tox-promotion {
-                visibility: hidden;
-            }
-
-            .tox .tox-editor-container {
-                border: 1px solid #d2d2d2 !important;
-                /* Set your desired color */
-            }
-
-            .tox .tox-edit-area iframe {
-                border: 1px solid #e7e7e7 !important;
-                /* Set your desired color */
-            }
-        </style>
-    @endpush
-
-
     {{-- <div class="form-group">
         <label>Color picker with addon:</label>
 
