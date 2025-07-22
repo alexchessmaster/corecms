@@ -108,14 +108,14 @@
         const cardBody = document.createElement('div');
         cardBody.classList.add('col-md-6', 'card-body', 'text-center', 'flex-fill');
 
-        const cardTitle = document.createElement('h5');
+        const cardTitle = document.createElement('h2');
         cardTitle.classList.add('card-title');
-        cardTitle.textContent = widget.name;
+        cardTitle.innerHTML = `<h4>${widget.name}</h4>`;
 
         const form = document.createElement('form');
         form.id = 'card-body-position-' + widget.position
         const saveBtn = document.createElement('button');
-        saveBtn.style.display = 'none';
+        saveBtn.style.display = 'none'; // save-all button will press all the save buttons
         saveBtn.classList.add('btn', 'btn-success', 'save-button'); // Styling button
         saveBtn.innerHTML = '<i class="fas fa-check"></i> save'; // FontAwesome save icon
         saveBtn.addEventListener('click', async (e) => {
@@ -288,7 +288,8 @@
 
         const labelEl = document.createElement('label');
         labelEl.textContent = item.key + ':';
-        labelEl.classList.add('float-left', 'mt-2', 'form-label');
+        labelEl.style.textAlign = 'start';
+        labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
 
         const inputEl = document.createElement('input');
         inputEl.name = 'widgetable_id-' + widget.id + '-field_widget_id-' + item?.field_widget +
@@ -314,7 +315,8 @@
 
         const labelEl = document.createElement('label');
         labelEl.textContent = item.key + ':';
-        labelEl.classList.add('float-left', 'mt-2', 'form-label');
+        labelEl.style.textAlign = 'start';
+        labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
 
         const textareaEl = document.createElement('textarea');
         textareaEl.name = 'widgetable_id-' + widget.id + '-field_widget_id-' + item?.field_widget +
@@ -340,6 +342,8 @@
 
         const labelEl = document.createElement('label');
         labelEl.textContent = item.key + ':' || 'Color picker with addon:';
+        labelEl.style.textAlign = 'start';
+        labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
         divGroup.appendChild(labelEl);
 
         const inputGroup = document.createElement('div');
@@ -380,6 +384,8 @@
         divEl.classList.add('form-group', 'col-md-12');
 
         const labelEl = document.createElement('label');
+        labelEl.style.textAlign = 'start';
+        labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
         labelEl.setAttribute('for', 'alignmentSelect');
         labelEl.textContent = 'Select';
 
@@ -425,8 +431,8 @@
 
         const labelEl = document.createElement('label');
         labelEl.textContent = item.key + ':';
-        labelEl.classList.add('float-left', 'mt-2', 'col-md-12', 'form-label');
         labelEl.style.textAlign = 'start';
+        labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
 
         const textareaEl = document.createElement('textarea');
         textareaEl.name = 'widgetable_id-' + widget.id + '-field_widget_id-' + item?.field_widget +
@@ -496,9 +502,9 @@
         divEl.classList.add('mb-3');
 
         const labelEl = document.createElement('label');
-        labelEl.setAttribute('for', 'file-input');
-        labelEl.textContent = 'File';
-        labelEl.classList.add('form-label');
+        labelEl.textContent = `${item.key}:`;
+        labelEl.style.textAlign = 'start';
+        labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
 
         const inputEl = document.createElement('input');
         inputEl.type = 'file';
