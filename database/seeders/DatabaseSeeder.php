@@ -25,10 +25,16 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingSeeder::class);
         $this->call(MenuSeeder::class);
         $this->call(TemplateSeeder::class);
-        $this->call(PageSeeder::class);
+
         $this->call(WidgetSeeder::class);
         $this->call(FieldSeeder::class);
-        $this->call(FieldValueSeeder::class);
+        $this->call(FieldWidgetSeeder::class);
+        
+        $this->call(PageSeeder::class);
+        $this->call(WidgetableSeeder::class);
+        
+        $this->call(WidgetFieldValuesSeeder::class);
+        
         $this->call(CategorySeeder::class);
         $this->call(TagSeeder::class);
         $this->call(ArticleSeeder::class);

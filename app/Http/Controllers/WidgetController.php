@@ -57,7 +57,7 @@ class WidgetController extends Controller
     public function edit($id)
     {
         $widget = Widget::findOrFail($id);
-        $fieldTypes = Field::getTypes();
+        $fieldTypes = Field::get();
 
         return view('admin.widgets.edit', compact('widget', 'fieldTypes'));
     }

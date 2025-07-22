@@ -14,17 +14,13 @@ class FieldResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // return parent::toArray($request);
+        // dd($this);
         return [
             "id" => $this->id,
-            "widget_id" => $this->widget_id,
-            // "key" => $this->key,
-            // "value" => FieldValueResource::collection($this->values),
+            // "field" => FieldResource::make($this->field),
             "type" => $this->type,
-            // "order" => $this->order,
-            "key" => $this->key,
-            "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at,
+            // "value" => $this->value?->value,
+
         ];
     }
 }

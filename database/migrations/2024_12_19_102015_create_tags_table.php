@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->json('name'); // Translatable field
-            $table->unsignedBigInteger('template_page_id')->nullable();
+            // $table->unsignedBigInteger('template_page_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
+            
+            // $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
         });
     }
 

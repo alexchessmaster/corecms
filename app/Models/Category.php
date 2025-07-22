@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Models\Article;
+use App\Models\Widgetable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Category extends Model
 {
@@ -14,16 +16,16 @@ class Category extends Model
     protected $fillable = ['name', 'slug', 'description', 'parent_id', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
     public $translatable = ['name', 'slug', 'description'];
 
-// protected static function boot()
-// {
-//     parent::boot();
-//     static::creating(function($category){
-//         if(empty($category->slug)){
-//             // TODO: we need slug-2 slug-3 and ... if duplicated
-//             $category->setTranslation('slug', app()->getLocale(), Str::slug($category->name));
-//         }
-//     });
-// }
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     static::creating(function($category){
+    //         if(empty($category->slug)){
+    //             // TODO: we need slug-2 slug-3 and ... if duplicated
+    //             $category->setTranslation('slug', app()->getLocale(), Str::slug($category->name));
+    //         }
+    //     });
+    // }
 
     public function parent()
     {
@@ -38,5 +40,10 @@ class Category extends Model
     public function articles()
     {
         return $this->hasMany(Article::class);
+    }
+
+    public function widgetables(): MorphMany
+    {
+        return $this->morphMany(Widgetable::class, 'content');
     }
 }

@@ -1,36 +1,56 @@
 @extends('admin.partials.app')
 
-@if(isset($pageType) && $pageType === 'template')
-@section('content-card-title', 'Templates')
-@else
 @section('content-card-title', 'Pages')
-@endif
 
 @section('content-card-body')
 
     <div class="row">
         <div class="col-sm-12">
-            <form id="page_form" action="{{ $pageType === 'page' ? route('admin.pages.store') : route('admin.templates.store') }}" method="POST" >
+            <form id="page_form" action="{{ route('admin.pages.store') }}" method="POST">
                 @csrf
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="page_title">{{ ucfirst($pageType) }} Title</label>
+                            <label for="page_title">Page Title</label>
                             <input type="text" name="title" class="form-control" id="page_title" aria-describedby=""
                                 placeholder="Page title" value="">
-                            <small id="" class="form-text text-muted">The title of the {{ $pageType }}.</small>
+                            <small id="" class="form-text text-muted">The title of the page.</small>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="page_slug">{{ ucfirst($pageType) }} Slug</label>
+                            <label for="page_slug">Page Slug</label>
                             <input type="text" name="slug" class="form-control" id="page_slug" aria-describedby=""
                                 placeholder="Page URL" value="">
                             {{-- <small class="form-text text-muted"><a id="visit-page" target="_blank"
                                     href="{{ !empty($page) ? $page->slug : '' }}">{{ !empty($page) ? $page->slug : '' }}</a></small> --}}
                         </div>
                     </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status" name="status" class="form-control">
+                                <option value="draft"
+                                    {{ old('status', $page->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                </option>
+                                <option value="published"
+                                    {{ old('status', $page->status ?? '') == 'published' ? 'selected' : '' }}>Published
+                                </option>
+                                <option value="scheduled"
+                                    {{ old('status', $page->status ?? '') == 'scheduled' ? 'selected' : '' }}>Scheduled
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
+                            <label for="scheduled_at">Scheduled At</label>
+                            <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
+                                value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
+                        </div>
+                    </div>
                 </div>
+
+
 
                 <button type="submit" class="btn btn-primary">
                     Create
@@ -39,6 +59,25 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusSelect = document.getElementById('status');
+            const scheduledGroup = document.getElementById('scheduled_at_group');
+
+            function toggleScheduledInput() {
+                if (statusSelect.value === 'scheduled') {
+                    scheduledGroup.style.display = 'block';
+                } else {
+                    scheduledGroup.style.display = 'none';
+                }
+            }
+
+            statusSelect.addEventListener('change', toggleScheduledInput);
+
+            // Run on load to handle edit forms and validation error repopulation
+            toggleScheduledInput();
+        });
+    </script>
     <script>
         const slugify = str => {
             console.log('slugify function', str)
@@ -57,12 +96,12 @@
 
         // Listen for input changes in the title field
         titleInput.addEventListener('focusout', (event) => {
-            if(event.target.value !== ''){
+            if (event.target.value !== '') {
                 let slug = '';
                 if (slugInput.value.trim() === '') {
                     slug = slugify(titleInput.value);
                     slugInput.value = slug;
-                }  
+                }
                 // fetch('/api/pages', {
                 //     method: 'POST',
                 //     headers: {
@@ -90,8 +129,6 @@
                 // });
             }
         });
-
-    
     </script>
 
 @endsection

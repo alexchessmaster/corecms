@@ -11,13 +11,14 @@ use App\Http\Resources\WidgetResource;
 use App\Http\Resources\FieldWithValueResource;
 use App\Http\Resources\PageWidgetResource;
 use App\Models\FieldValue;
+use App\Models\Widgetable;
 use stdClass;
 
 class WidgetController extends Controller
 {
     public function show($id)
     {
-        $widget = Widget::with('fields')->find($id);
+        $widget = Widget::with('fieldWidgets.field')->find($id);
 
         return response()->json(new WidgetResource($widget));
     }
@@ -35,17 +36,24 @@ class WidgetController extends Controller
             return response()->json(['error' => 'Widget not found'], 404);
         }
         
-        $pageWidget = PageWidget::with('fieldValues.field')
-            ->where('page_id', $pageId)
+        // $pageWidget = PageWidget::with('fieldValues.field')
+        //     ->where('page_id', $pageId)
+        //     ->where('position', $position)
+        //     ->first();
+
+        $widgetable = Widgetable::where('content_id', $pageId)
+            ->where('content_type', 'App\Models\Page')
             ->where('position', $position)
             ->first();
 
-        if (!$pageWidget) {
+        // dd($pageWidget);
+
+        if (!$widgetable) {
             return response()->json(['error' => 'Page widget not found'], 404);
         }
 
         $fields = $widget->fields;
-        $fieldValues = $pageWidget->fieldValues;
+        $fieldValues = $widgetable->fieldValues;
 
         $allFieldsWithValues = $fields->map(function ($field) use ($fieldValues) {
             $matchingFieldValue = $fieldValues->firstWhere('field_id', $field->id);
@@ -78,75 +86,138 @@ class WidgetController extends Controller
     {
         $widgetId = request()->input('widgetId');
         $pageId = request()->input('pageId');
+        $articleId = request()->input('articleId');
+        $categoryId = request()->input('categoryId');
         $addWidgetPosition = request()->input('addWidgetPosition');
 
-        // Find the widget and page
+        // Find the widget
         $widget = Widget::find($widgetId);
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
 
-        $page = Page::find($pageId);
-        if (! $page) {
-            return response()->json(['status' => 'error', 'message' => 'Page not found', 'request' => request()->all()]);
-        }
-
-        // Get the current widgets attached to the page
-        $pageWidgets = PageWidget::where('page_id', $page->id)->where('position', '>=', $addWidgetPosition)->get();
-        foreach($pageWidgets as $pageWidget) {
-            $pageWidget->increment('position');
-        }
-        $page->widgets()->attach($widgetId, ['position' => $addWidgetPosition]);
-
-        if($widget->locked_fields_value) {
-            // if locked_fields_value is true, we need some null values for each field
-            $fields = $widget->fields;
-            $pageWidgetLast = PageWidget::where('widget_id', $widget->id)->orderBy('id', 'desc')->first();
-            foreach($fields as $field) {
-                $fieldValueTmp = new FieldValue;
-                $fieldValueTmp->field_id = $field->id;
-                $fieldValueTmp->page_widget_id = $pageWidgetLast->id;
-                $fieldValueTmp->value = null;
-                $fieldValueTmp->save();
-            }
-            
-            // initialize with the same values in another place when we add a new widget
-            // if there is another value for this widget, we should copy the old data and create new filed_values
-            $pageWidget = PageWidget::where('widget_id', $widget->id)->first();
-            $fieldValues = FieldValue::where('page_widget_id', $pageWidget->id)->get();
-            foreach($fieldValues as $fieldValue) {
-                $fieldValueTmp = FieldValue::where('field_id', $fieldValue->field_id)->where('page_widget_id', $pageWidgetLast->id)->first();
-                $fieldValueTmp->value = $fieldValue->value;
-                $fieldValueTmp->save();
+        // Find the model (Page, Article, or Category)
+        $model = Page::find($pageId);
+        $modelType = 'Page';
+        if (! $model) {
+            $modelType = 'Article';
+            $model = Article::find($articleId);
+            if (! $model) {
+                $modelType = 'Category';
+                $model = Category::find($categoryId);
             }
         }
-        
-        return response()->json(['status' => 'success', 'pageWidgets' => $page->widgets]);
+        if (! $model) {
+            return response()->json(['status' => 'error', 'message' => 'Page or article not found', 'request' => request()->all()]);
+        }
+
+        $widgetables = Widgetable::where('widgetable_id', $model->id)
+            ->where('widgetable_type', 'App\Models\\' . $modelType)
+            ->where('position', '>=', $addWidgetPosition)
+            ->orderBy('position')
+            ->get();
+        foreach ($widgetables as $widgetable) {
+            $widgetable->increment('position');
+        }
+
+        $created = Widgetable::create([
+            'widget_id' => $widgetId,
+            'widgetable_id' => $model->id,
+            'widgetable_type' => 'App\Models\\' . $modelType,
+            'position' => $addWidgetPosition,
+        ]);
+
+        // This function part is not necessary
+        // Update positions for all widgetables if the db has wrong positions
+        // Just in case the positions are not correct. (if server got restarted during the previous loop)
+        $i = 0;
+        $widgetables = Widgetable::where('widgetable_id', $model->id)
+            ->where('widgetable_type', 'App\Models\\' . $modelType)
+            ->orderBy('position')
+            ->get();
+        foreach ($widgetables as $widgetable) {
+            $widgetable->position = $i;
+            $widgetable->save();
+            $i++;
+        }
+
+
+        if ($widget->locked_fields_value) {
+            // TODO: fix this later
+            // // if locked_fields_value is true, we need some null values for each field
+            // $fields = $widget->fields;
+            // $pageWidgetLast = PageWidget::where('widget_id', $widget->id)->orderBy('id', 'desc')->first();
+            // foreach($fields as $field) {
+            //     $fieldValueTmp = new FieldValue;
+            //     $fieldValueTmp->field_id = $field->id;
+            //     $fieldValueTmp->page_widget_id = $pageWidgetLast->id;
+            //     $fieldValueTmp->value = null;
+            //     $fieldValueTmp->save();
+            // }
+
+            // // initialize with the same values in another place when we add a new widget
+            // // if there is another value for this widget, we should copy the old data and create new filed_values
+            // $pageWidget = PageWidget::where('widget_id', $widget->id)->first();
+            // $fieldValues = FieldValue::where('page_widget_id', $pageWidget->id)->get();
+            // foreach($fieldValues as $fieldValue) {
+            //     $fieldValueTmp = FieldValue::where('field_id', $fieldValue->field_id)->where('page_widget_id', $pageWidgetLast->id)->first();
+            //     $fieldValueTmp->value = $fieldValue->value;
+            //     $fieldValueTmp->save();
+            // }
+        }
+
+        if (!$created) {
+            return response()->json(['status' => 'error', 'message' => 'Widget could not be attached']);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Widget attached successfully',
+            'widget' => $widget,
+        ]);
     }
 
     public function detach()
     {
-        $pageId = request()->pageId;
-        $positionId = request()->positionId;
+        $pageId = request()->input('pageId');
+        $articleId = request()->input('articleId');
+        $categoryId = request()->input('categoryId');
+        $position = request()->input('positionId');
 
-        // Find the page
-        $page = Page::find($pageId);
-        if (! $page) {
-            return response()->json(['status' => 'error', 'message' => 'Page not found']);
+        // Find the model (Page, Article, or Category)
+        $model = Page::find($pageId);
+        $modelType = 'Page';
+        if (! $model) {
+            $modelType = 'Article';
+            $model = Article::find($articleId);
+            if (! $model) {
+                $modelType = 'Category';
+                $model = Category::find($categoryId);
+            }
+        }
+        if (! $model) {
+            return response()->json(['status' => 'error', 'message' => 'Page or article or category not found', 'request' => request()->all()]);
         }
 
-        // Detach the widget from the page
-        $widget = $page->widgets()->wherePivot('position', $positionId)->detach();
+        $deleted = Widgetable::where('widgetable_id', $model->id)
+            ->where('widgetable_type', 'App\Models\\' . $modelType)
+            ->where('position', $position)
+            ->delete();
 
-        // After detaching, reorganize the positions of the remaining widgets
-        $pageWidgets = $page->pageWidgets()->orderBy('position', 'asc')->get();
+        if (!$deleted) {
+            return response()->json(['status' => 'error', 'message' => 'Widget could not be detached']);
+        }
 
         // Update positions for all remaining widgets
-        foreach ($pageWidgets as $index => $pageWidget) {
-            $pageWidget->position = $index;
-            $pageWidget->save();
+        $widgetables = Widgetable::where('widgetable_id', $model->id)
+            ->where('widgetable_type', 'App\Models\\' . $modelType)
+            ->where('position', '>=', $position)
+            ->orderBy('position')
+            ->get();
+        foreach ($widgetables as $widgetable) {
+            $widgetable->decrement('position');
         }
 
-        return response()->json(['status' => 'success', 'message' => 'Widget detached successfully', 'pageWidgets' => $page->widgets]);
+        return response()->json(['status' => 'success', 'message' => 'Widget detached successfully']);
     }
 }

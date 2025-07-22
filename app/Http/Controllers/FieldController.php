@@ -2,73 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFieldRequest;
-use App\Http\Requests\UpdateFieldRequest;
+use App\Http\Controllers\Controller;
 use App\Models\Field;
+use Illuminate\Http\Request;
 
 class FieldController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $data = Field::select(['id', 'type']);
+            return datatables()
+                ->of($data)
+                ->editColumn('type', function ($item) {
+                    return $item->type;
+                })
+                ->addColumn('actions', function ($row) {
+                    $editUrl = route('admin.fields.edit', $row->id);
+                    $deleteUrl = route('admin.fields.destroy', $row->id);
+                    return '
+                    <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                    </form>
+                ';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        }
+
+        return view('admin.field.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.field.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreFieldRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $field = new Field;
+        $field->name = $request->input('name');
+        $field->save();
+
+        return redirect()->route('admin.fields.index')->with('success', 'Field created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Field $field)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Field $field)
     {
-        //
+        return view('admin.field.edit', compact('field'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFieldRequest $request, Field $field)
+    public function update(Request $request, Field $field)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($field)
-    {
-        $field = Field::find($field);
-        $field->value = null;
-        $field->save();
-        
-        return response()->json([
-            'status' => 'ok',
-            'message' => 'Field value has be removed successfully.',
-            'data' => $field
+        $request->validate([
+            'name' => 'required|string|max:255',
         ]);
+
+        $field->name = $request->input('name');
+        $field->save();
+
+        return redirect()->route('admin.fields.index')->with('success', 'Field updated successfully.');
+    }
+
+    public function destroy(Field $field)
+    {
+        $field->delete();
+        return redirect()->route('admin.fields.index')->with('success', 'Field deleted successfully.');
     }
 }

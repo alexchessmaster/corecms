@@ -1,17 +1,19 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PageController;
-use App\Http\Controllers\Api\FieldController;
 use App\Http\Controllers\Api\WidgetController;
+use App\Http\Controllers\PageWidgetController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\CommonDataController;
-use App\Http\Controllers\Api\PageWidgetController;
-use App\Http\Controllers\NordicStandard\Api\ContactController;
+use App\Http\Controllers\Api\WidgetableController;
+use App\Http\Controllers\Api\FieldWidgetController;
+use App\Http\Controllers\Api\WidgetFieldValuesController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
-use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -22,14 +24,16 @@ Route::get('/articles', [ContentController::class, 'fetchArticles']);
 Route::get('/categories', [ContentController::class, 'fetchCategories']);
 // Route::get('/common-data', [CommonDataController::class, 'index']);
 
-Route::apiResource('/pages', PageController::class);
+Route::apiResource('/pages', PageController::class); // new
 Route::get('/pages/{page}/widget-position/{widgets_position}/field-values/{lang?}', [PageWidgetController::class, 'fieldValue']);
-Route::get('/page/{pageId}/widget/{widgetId}/widget-position/{position}/fields-with-values/{lang?}', [WidgetController::class, 'getWidgetFieldsWithValues']);
-Route::patch('/pages/widget-position/update-field-value', [PageWidgetController::class, 'updateFieldValue']);
-Route::patch('/widgets/detach', [WidgetController::class, 'detach']);
-Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
+// Route::get('/page/{pageId}/widget/{widgetId}/widget-position/{position}/fields-with-values/{lang?}', [WidgetController::class, 'getWidgetFieldsWithValues']); // I don't know where I used
+// Route::patch('/pages/widget-position/update-field-value', [PageWidgetController::class, 'updateFieldValue']);
+Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']); // new
+Route::patch('/widgets/attach', [WidgetController::class, 'attach']); // new
+Route::patch('/widgets/detach', [WidgetController::class, 'detach']); // new
 Route::get('/widgets/{id}', [WidgetController::class, 'show']);
-Route::apiResource('/fields', FieldController::class);
+// Route::apiResource('/fields', FieldController::class); // should be deleted
+Route::apiResource('/widgets/{widget_id}/fields', FieldWidgetController::class);
 
 // NordicStandard.net custom routes:
 Route::post('contact-us', [ContactController::class, 'submitContactForm']);

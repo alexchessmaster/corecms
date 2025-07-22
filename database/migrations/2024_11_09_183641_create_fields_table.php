@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('widget_id');
-            $table->string('key')->nullable();
+            // $table->unsignedBigInteger('widget_id');
+            // $table->string('name');
+            $table->string('type');
             // $table->json('value')->nullable();
-            $table->enum('type', ['input', 'textarea_one_line', 'textarea_small', 'textarea_large', 'file', 'color', 'code', 'select_option_left_center_right', 'select_option_on_off'])->default('input');// file, text, textarea, color
+            // $table->enum('type', ['input', 'textarea_one_line', 'textarea_small', 'textarea_large', 'file', 'color', 'code', 'select_option_left_center_right', 'select_option_on_off'])->default('input');// file, text, textarea, color
             // $table->integer('order')->default(0);
             $table->timestamps();
 
-            $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

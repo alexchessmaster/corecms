@@ -15,18 +15,19 @@ return new class extends Migration
             $table->id();
             $table->json('name'); // Translatable field
             $table->json('slug'); // Translatable field
-            $table->json('description')->nullable(); // Translatable field
+            $table->json('teaser_description')->nullable();
+            $table->json('teaser_image')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->unsignedBigInteger('template_page_id')->nullable();
             $table->boolean('hide_from_frontend')->nullable();
+            $table->string('primary_language', 2)->nullable();
+
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
-            $table->string('primary_language', 2)->nullable();
+
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
         });
     }
 

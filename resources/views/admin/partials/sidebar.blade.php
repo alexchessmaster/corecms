@@ -115,10 +115,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/admin/templates" class="nav-link">
+                <a href="/admin/fields" class="nav-link">
                     <i class="nav-icon fas fa-layer-group"></i>
                     <p>
-                        Templates
+                        Fields
                     </p>
                 </a>
             </li>

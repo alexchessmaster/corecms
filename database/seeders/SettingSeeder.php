@@ -43,11 +43,5 @@ class SettingSeeder extends Seeder
         $setting->description = "Default sitemap priority for articles";
         $setting->save();
 
-        Setting::insert([        
-            ['key' => 'text_title_of_the_website', 'value' => 'CMS'],
-            ['key' => 'text_tel_formatted', 'value' => '+45-71585844'],
-            ['key' => 'tel', 'value' => '+4571585844'],
-            ['key' => 'email', 'value' => 'sales@nordicstandard.net'],
-        ]);
     }
 }

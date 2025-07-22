@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Models\Tag;
 use App\Models\Category;
+use App\Models\Widgetable;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Article extends Model
 {
@@ -14,7 +16,10 @@ class Article extends Model
 
     protected $fillable = ['image', 'title', 'title_seo', 'slug', 'content', 'category_id', 'description', 'description_seo', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
     public $translatable = ['title', 'title_seo', 'slug','content', 'description', 'description_seo'];
-
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+    ];
+    
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -56,5 +61,10 @@ class Article extends Model
         }
     
         return $fullUrl;
+    }
+
+    public function widgetables(): MorphMany
+    {
+        return $this->morphMany(Widgetable::class, 'content');
     }
 }

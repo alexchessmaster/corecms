@@ -15,34 +15,26 @@ class CategorySeeder extends Seeder
     {
         $category = new Category();
         $category->setTranslations('name', [
-            'en' => 'uncategorized',
-            'da' => 'uncategorized'
+            'fa' => 'uncategorized',
         ]);
-        $category->template_page_id = 2;
         $category->save();
 
         $category = new Category();
         $category->setTranslations('name', [
-            'en' => 'car',
-            'da' => 'bil'
+            'fa' => 'car',
         ]);
-        $category->template_page_id = 2;
         $category->save();
 
         $category = new Category();
         $category->setTranslations('name', [
-            'en' => 'building',
-            'da' => 'bolig'
+            'fa' => 'building',
         ]);
-        $category->template_page_id = 2;
         $category->save();
 
         $category = new Category();
         $category->setTranslations('name', [
-            'en' => 'nature',
-            'da' => 'natur'
+            'fa' => 'nature',
         ]);
-        $category->template_page_id = 2;
         $category->save();
     }
 }

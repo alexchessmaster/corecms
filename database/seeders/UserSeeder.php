@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Alex',
             'email' => 'alex@alex.com',
-            'password' => "$2y$12$7CIDGYAbk3RRAzbYb2AusuNNf3yGH6ia091iRmR3.8BI5WibYGFV.", //Hash::make('Kasper99Kasper'),
+            'password' => bcrypt('alex@alex.com@keys294'),
             'is_admin' => true,
             'show_edit_button_on_texts' => false,
         ]);

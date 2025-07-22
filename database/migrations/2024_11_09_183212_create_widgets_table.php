@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('widgets', function (Blueprint $table) {
             $table->id();
             // $table->foreignId('page_id')->constrained();
-            $table->string('key');
             $table->string('name');
+            $table->string('key');
             $table->string('user_note')->nullable();
             $table->string('image')->nullable();
-            $table->enum('type', ['page', 'template'])->default('page');
+            // $table->enum('type', ['page', 'template'])->default('page');
             $table->boolean('active')->default(true);
             $table->boolean('locked_fields_value')->default(false);
             $table->timestamps();

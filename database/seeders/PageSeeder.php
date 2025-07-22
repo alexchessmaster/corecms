@@ -18,108 +18,90 @@ class PageSeeder extends Seeder
         // 4
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'Front Page',
-            'da' => 'Forside',
+            'fa' => 'Front Page',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('/'),
-            'da' => '/' . Str::slug('/'),
+            'fa' => '/' . Str::slug('/'),
         ]);
         $page->save();
 
         // 5
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'Web development',
-            'da' => 'Webudvikling',
+            'fa' => 'Web development',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('Web development'),
-            'da' => '/' . Str::slug('Webudvikling'),
+            'fa' => '/' . Str::slug('Web development'),
         ]);
         $page->save();
 
         // 6
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'Contact',
-            'da' => 'Kontact',
+            'fa' => 'Contact',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('Contact'),
-            'da' => '/' . Str::slug('Kontact'),
+            'fa' => '/' . Str::slug('Contact'),
         ]);
         $page->save();
 
         // 7
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'Articles',
-            'da' => 'Artikler',
+            'fa' => 'Articles',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('Articles'),
-            'da' => '/' . Str::slug('Artikler'),
+            'fa' => '/' . Str::slug('Articles'),
         ]);
         $page->save();
 
         // 8
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'App development',
-            'da' => 'App udvikling',
+            'fa' => 'App development',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('App development'),
-            'da' => '/' . Str::slug('App udvikling'),
+            'fa' => '/' . Str::slug('App development'),
         ]);
         $page->save();
 
         // 9
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'Hosting',
-            'da' => 'Hosting',
+            'fa' => 'Hosting',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('Hosting'),
-            'da' => '/' . Str::slug('Hosting'),
+            'fa' => '/' . Str::slug('Hosting'),
         ]);
         $page->save();
 
         // 10
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'IT consultancy',
-            'da' => 'IT rådgivning',
+            'fa' => 'IT consultancy',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('IT consultancy'),
-            'da' => '/' . Str::slug('IT rådgivning'),
+            'fa' => '/' . Str::slug('IT consultancy'),
         ]);
         $page->save();
 
         // 11
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'Secure VPN',
-            'da' => 'Sikker VPN',
+            'fa' => 'Secure VPN',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('Secure VPN'),
-            'da' => '/' . Str::slug('Sikker VPN'),
+            'fa' => '/' . Str::slug('Secure VPN'),
         ]);
         $page->save();
 
         // 12
         $page = new Page;
         $page->setTranslations('title', [
-            'en' => 'AI',
-            'da' => 'AI',
+            'fa' => 'AI',
         ]);
         $page->setTranslations('slug', [
-            'en' => '/' . Str::slug('AI'),
-            'da' => '/' . Str::slug('AI'),
+            'fa' => '/' . Str::slug('AI'),
         ]);
         $page->save();
     }

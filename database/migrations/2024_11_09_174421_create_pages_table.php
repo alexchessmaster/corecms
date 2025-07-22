@@ -15,11 +15,19 @@ return new class extends Migration
             $table->id();
             $table->json('slug');//->index();
             $table->json('title');
-            $table->enum('type', ['page', 'template'])->default('page');
+            $table->json('description')->nullable();
+            $table->json('image')->nullable();
+            $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
+
+            $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
+            $table->dateTime('published_at')->nullable();
+            $table->dateTime('scheduled_at')->nullable();
+            $table->string('primary_language', 2)->nullable();
+
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
-            $table->string('primary_language', 2)->nullable();
+
             $table->timestamps();
         });
     }

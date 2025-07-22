@@ -7,6 +7,7 @@ use App\Models\PageWidget;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PageResource;
 
 class PageController extends Controller
 {
@@ -33,22 +34,16 @@ class PageController extends Controller
 
     public function show($pageId)
     {
-        // $page = Page::with(['pageWidgets' => function($query){
-        //     $query->orderBy('position', 'asc');
-        // }])->find($pageId);
-        $page = Page::with(['widgets' => function($query){
-            $query->orderBy('position');
-        }])->find($pageId);
-        // $page = Page::with('widgets')->find($pageId);
+        $page = Page::withAllWidgetData()->find($pageId);
 
-        return response()->json([
-            'page' => $page
-        ]);
+        // dd($page);
+        return response()->json(PageResource::make($page));
     }
 
-    public function update($pageId) {
+    public function update($pageId)
+    {
         $page = Page::where('slug', request()->slug)->first();
-        if($page) {
+        if ($page) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'There is another page with this slug. choose another slug.'
@@ -58,15 +53,18 @@ class PageController extends Controller
         $lang = request()->lang ?: app()->getLocale();
         $page->setTranslation('title', $lang, request()->title);
         $page->setTranslation('slug', $lang, '/' . Str::slug(request()->slug));
-        if(!empty(request()->input('sitemap_exclude'))){
+        $page->status = request()->status;
+        $page->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+        // $pageType = 'page';
+        if (!empty(request()->input('sitemap_exclude'))) {
             $page->sitemap_exclude = true;
         } else {
             $page->sitemap_exclude = null;
         }
-        if(!empty(request()->input('sitemap_priority'))){
+        if (!empty(request()->input('sitemap_priority'))) {
             $page->sitemap_priority = request()->input('sitemap_priority');
         }
-        if(!empty(request()->input('sitemap_change_frequency'))){
+        if (!empty(request()->input('sitemap_change_frequency'))) {
             $page->sitemap_change_frequency = request()->input('sitemap_change_frequency');
         }
         if (!empty(request()->input('primary_language'))) {
@@ -82,11 +80,11 @@ class PageController extends Controller
             'page' => $page
         ]);
     }
-    
-    public function delete(Page $page) {
+
+    public function delete(Page $page)
+    {
         return response()->json([
             'request' => request()->all()
         ]);
-
     }
 }

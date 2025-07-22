@@ -13,23 +13,21 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->json('title');
-            $table->json('title_seo')->nullable();
             $table->json('slug');
+            $table->json('title');
             $table->json('description')->nullable();
-            $table->json('description_seo')->nullable();
-            $table->json('content');
-            $table->string('image')->nullable();
+            $table->json('image')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->unsignedBigInteger('template_page_id')->nullable();
+            $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
+            $table->string('primary_language', 2)->nullable();
+
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();
-            $table->string('primary_language', 2)->nullable();
+
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
-            $table->foreign('template_page_id')->references('id')->on('pages')->onDelete('set null');
         });
     }
 

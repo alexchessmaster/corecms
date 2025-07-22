@@ -15,26 +15,20 @@ class TagSeeder extends Seeder
     {
         $tag = new Tag();
         $tag->setTranslations('name', [
-            'da' => 'tre',
-            'en' => 'tree'
+            'fa' => 'tree'
         ]);
-        $tag->template_page_id = 3;
         $tag->save();
         
         $tag = new Tag();
         $tag->setTranslations('name', [
-            'da' => 'blomst',
-            'en' => 'flower'
+            'fa' => 'flower'
         ]);
-        $tag->template_page_id = 3;
         $tag->save();
         
         $tag = new Tag();
         $tag->setTranslations('name', [
-            'da' => 'bog',
-            'en' => 'book'
+            'fa' => 'book'
         ]);
-        $tag->template_page_id = 3;
         $tag->save();
     }
 }

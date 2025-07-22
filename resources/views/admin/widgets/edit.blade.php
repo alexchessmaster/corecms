@@ -75,9 +75,9 @@
                             @endif
 
                                 <div class="col-md-4">
-                                    <div class="field-type-option card" data-value="{{ $fieldType }}">
+                                    <div class="field-type-option card" data-value="{{ $fieldType->id }}">
                                         <div class="card-body text-center">
-                                            <h5 class="card-title">{{ $fieldType }}</h5>
+                                            <h5 class="card-title">{{ $fieldType->type }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -121,16 +121,16 @@
             const selectedOption = document.querySelector('.field-type-option.selected');
             if (selectedOption) {
                 const key = document.getElementById('field_key');
-                const fieldType = selectedOption.getAttribute('data-value');
+                const fieldId = selectedOption.getAttribute('data-value');
                 if(key.value !== ""){
-                    fetch('/api/fields ', {
+                    const widgetId = '{{ $widget->id }}';
+                    fetch(`/api/widgets/${widgetId}/fields`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            widget_id: '{{ $widget->id }}',
-                            type: fieldType,
+                            id: fieldId,
                             key: key.value,
                         })
                     }).then(response => {
@@ -149,6 +149,7 @@
 
         const widgetContainer = document.getElementById('fields-container');
         const createField = field => {
+            console.log('field', field);
             // Create the outer div (col-md-4)
             const divEl = document.createElement('div');
             divEl.classList.add('col-md-6');
@@ -164,7 +165,7 @@
             // Create the title (h5 element)
             const cardTitle = document.createElement('h5');
             cardTitle.classList.add('card-title');
-            cardTitle.innerHTML = '<strong>' + field.key + '</strong>' + ' type: <strong>' + field.type + '</strong>'; // Use the widget's name
+            cardTitle.innerHTML = '<strong>Type:</strong> ' + field.field_type + ' <strong>Key:</strong> ' + field.key; // Use the widget's name
 
             // Create the Delete button with an icon
             const deleteBtn = document.createElement('button');
@@ -185,13 +186,14 @@
 
             deleteBtn.addEventListener('click', () => {
                 // console.log('Delete button clicked for widget ID:', widget.pivot.position);
-                fetch('/api/fields/' + field.id, {
+                fetch('/api/widgets/{{ $widget->id }}/fields/' + field.id, {
                         method: "DELETE",
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
                         },
                         body: JSON.stringify({
+                            field_key : field.key,
                         })
                     })
                     .then(response => response.json)

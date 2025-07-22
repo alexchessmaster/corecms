@@ -4,7 +4,8 @@ namespace App\Models;
 
 use App\Models\Page;
 use App\Models\Field;
-use App\Models\FieldValue;
+use App\Models\Widgetable;
+use App\Models\FieldWidget;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,18 +25,29 @@ class Widget extends Model
         });
     }
 
-    public function fields()
+    // public function fields()
+    // {
+    //     return $this->belongsToMany(Field::class)->withPivot('key');
+    // }
+
+    // public function fieldsWithValues()
+    // {
+    //     return $this->belongsToMany(FieldValue::class, 'widget_field_value')
+    //         ->withPivot('key');
+    // }
+
+    // public function pages()
+    // {
+    //     return $this->belongsToMany(Page::class);
+    // }
+
+    public function widgetables()
     {
-        return $this->hasMany(Field::class);//??? // TODO: belongsToMany ?
+        return $this->hasMany(Widgetable::class);
     }
 
-    public function fieldValues()
+    public function fieldWidgets()
     {
-        return $this->hasMany(FieldValue::class, 'page_widget_id');
-    }
-
-    public function pages()
-    {
-        return $this->belongsToMany(Page::class);
+        return $this->hasMany(FieldWidget::class);
     }
 }
