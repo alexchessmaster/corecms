@@ -91,12 +91,6 @@ class FieldWidgetController extends Controller
         Widget::findOrFail($widgetId);
         $deleted = FieldWidget::findOrFail($widgetFieldId)->delete();
 
-        // $fieldKey = $request->field_key;
-        // $deleted = FieldWidget::where('widget_id', $widgetId)
-        //     ->where('field_id', $fieldId)
-        //     ->where('key', $fieldKey)
-        //     ->delete();
-
         if (!$deleted) {
             return response()->json([
                 'status' => 'error',
