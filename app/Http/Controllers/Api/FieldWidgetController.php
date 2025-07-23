@@ -19,13 +19,6 @@ class FieldWidgetController extends Controller
      */
     public function index(Request $request)
     {
-        // $widgetId = $request->widget_id;
-
-        // $widget = Widget::with(['fields' => function ($query) {
-        //     $query->select('fields.*', 'field_widget.key');
-        // }])->findOrFail($widgetId);
-
-        // return FieldWidgetResource::collection($widget->fields);
     }
 
     /**
@@ -39,7 +32,6 @@ class FieldWidgetController extends Controller
 
         $field = Field::findOrFail($id);
         $widget = Widget::findOrFail($widgetId);
-        // $widget->fields()->attach($field->id, ['key' => $key]);
         FieldWidget::updateOrCreate([
             'widget_id' => $widgetId, 'field_id' => $id, 'key' => $key
         ]);
@@ -56,11 +48,6 @@ class FieldWidgetController extends Controller
      */
     public function show(Widget $widget)
     {
-        // $widget->load(['fields' => function ($query) {
-        //     $query->select('fields.*', 'field_widget.key');
-        // }]);
-
-        // return FieldWidgetResource::collection($widget->fields);
     }
 
 
@@ -69,19 +56,6 @@ class FieldWidgetController extends Controller
      */
     public function update(Request $request, $widgetId, $fieldId)
     {
-        // $pivot = FieldWidget::where('widget_id', $widgetId)
-        //     ->where('field_id', $fieldId)
-        //     ->firstOrFail();
-
-        // $pivot->update([
-        //     'key' => $request->key
-        // ]);
-
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'FieldWidget updated',
-        //     'field' => new FieldWidgetResource($pivot)
-        // ]);
     }
     /**
      * Remove the specified resource from storage.
