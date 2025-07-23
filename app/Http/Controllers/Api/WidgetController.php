@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use stdClass;
 use App\Models\Page;
 use App\Models\Widget;
+use App\Models\FieldValue;
 use App\Models\PageWidget;
+use App\Models\Widgetable;
+use App\Models\FieldWidget;
 use Illuminate\Http\Request;
+use App\Models\WidgetFieldValues;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WidgetResource;
-use App\Http\Resources\FieldWithValueResource;
 use App\Http\Resources\PageWidgetResource;
-use App\Models\FieldValue;
-use App\Models\Widgetable;
-use stdClass;
+use App\Http\Resources\FieldWithValueResource;
 
 class WidgetController extends Controller
 {
@@ -31,11 +33,11 @@ class WidgetController extends Controller
         }
 
         $widget = Widget::with('fields')->find($widgetId);
-        
+
         if (!$widget) {
             return response()->json(['error' => 'Widget not found'], 404);
         }
-        
+
         // $pageWidget = PageWidget::with('fieldValues.field')
         //     ->where('page_id', $pageId)
         //     ->where('position', $position)
@@ -127,27 +129,32 @@ class WidgetController extends Controller
 
 
         if ($widget->locked_fields_value) {
-            // TODO: fix this later
-            // // if locked_fields_value is true, we need some null values for each field
-            // $fields = $widget->fields;
-            // $pageWidgetLast = PageWidget::where('widget_id', $widget->id)->orderBy('id', 'desc')->first();
-            // foreach($fields as $field) {
-            //     $fieldValueTmp = new FieldValue;
-            //     $fieldValueTmp->field_id = $field->id;
-            //     $fieldValueTmp->page_widget_id = $pageWidgetLast->id;
-            //     $fieldValueTmp->value = null;
-            //     $fieldValueTmp->save();
-            // }
+            // Find all FieldWidgets (fields attached to this widget)
+            $fieldWidgets = FieldWidget::where('widget_id', $widget->id)->get();
 
-            // // initialize with the same values in another place when we add a new widget
-            // // if there is another value for this widget, we should copy the old data and create new filed_values
-            // $pageWidget = PageWidget::where('widget_id', $widget->id)->first();
-            // $fieldValues = FieldValue::where('page_widget_id', $pageWidget->id)->get();
-            // foreach($fieldValues as $fieldValue) {
-            //     $fieldValueTmp = FieldValue::where('field_id', $fieldValue->field_id)->where('page_widget_id', $pageWidgetLast->id)->first();
-            //     $fieldValueTmp->value = $fieldValue->value;
-            //     $fieldValueTmp->save();
-            // }
+            foreach ($fieldWidgets as $fieldWidget) {
+                $widgetFieldValue = new WidgetFieldValues;
+                $widgetFieldValue->widgetable_id = $created->id; // the new Widgetable we just attached
+                $widgetFieldValue->field_widget_id = $fieldWidget->id;
+
+                // Attempt to copy from another instance if it exists
+                $existingWidgetFieldValue = WidgetFieldValues::whereIn(
+                    'widgetable_id',
+                    Widgetable::where('widget_id', $widget->id)
+                        ->where('id', '<>', $created->id) // exclude current
+                        ->pluck('id')
+                )
+                    ->where('field_widget_id', $fieldWidget->id)
+                    ->first();
+
+                if ($existingWidgetFieldValue) {
+                    $widgetFieldValue->value = $existingWidgetFieldValue->value;
+                } else {
+                    $widgetFieldValue->value = null; // no previous value, initialize as null
+                }
+
+                $widgetFieldValue->save();
+            }
         }
 
         if (!$created) {

@@ -111,13 +111,33 @@ class WidgetFieldValuesController extends Controller
             }
 
             if ($widgetLocked === '1') {
-                // TODO: fix it
-                // Update FieldValue everywhere else
-                $pageWidgetIds = PageWidget::where('widget_id', $widgetId)->pluck('id');
-                $fieldValues = FieldValue::whereIn('page_widget_id', $pageWidgetIds)->where('field_id', $fieldId)->get();
-                foreach ($fieldValues as $fieldValueTmp) {
-                    $fieldValueTmp->setTranslation('value', $language, $inputValue);
-                    $fieldValueTmp->save();
+                // Find all widgetables using the same widget_id across all pages/articles/categories
+                $widgetables = Widgetable::where('widget_id', $fieldWidget->widget_id)->get();
+
+                foreach ($widgetables as $otherWidgetable) {
+                    $fieldWidgetForOther = FieldWidget::where('widget_id', $fieldWidget->widget_id)
+                        ->where('field_id', $fieldWidget->field_id)
+                        ->first();
+
+                    if (!$fieldWidgetForOther) {
+                        continue;
+                    }
+
+                    $widgetFieldValueForOther = WidgetFieldValues::where('widgetable_id', $otherWidgetable->id)
+                        ->where('field_widget_id', $fieldWidgetForOther->id)
+                        ->first();
+
+                    if ($widgetFieldValueForOther) {
+                        $widgetFieldValueForOther->setTranslation('value', $language, $inputValue);
+                        $widgetFieldValueForOther->save();
+                    } else {
+                        // Create if not exists (optional)
+                        $newFieldValue = new WidgetFieldValues;
+                        $newFieldValue->widgetable_id = $otherWidgetable->id;
+                        $newFieldValue->field_widget_id = $fieldWidgetForOther->id;
+                        $newFieldValue->setTranslation('value', $language, $inputValue);
+                        $newFieldValue->save();
+                    }
                 }
             }
         }

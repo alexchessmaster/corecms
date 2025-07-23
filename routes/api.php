@@ -29,7 +29,7 @@ Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']);
 Route::apiResource('/pages', PageController::class); // new
 Route::apiResource('/articles', ArticleController::class); // new
 Route::apiResource('/categories', CategoryController::class); // new
-Route::get('/pages/{page}/widget-position/{widgets_position}/field-values/{lang?}', [PageWidgetController::class, 'fieldValue']);
+// Route::get('/pages/{page}/widget-position/{widgets_position}/field-values/{lang?}', [PageWidgetController::class, 'fieldValue']); // maybe old maybe new
 // Route::get('/page/{pageId}/widget/{widgetId}/widget-position/{position}/fields-with-values/{lang?}', [WidgetController::class, 'getWidgetFieldsWithValues']); // I don't know where I used
 // Route::patch('/pages/widget-position/update-field-value', [PageWidgetController::class, 'updateFieldValue']);
 Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']); // new

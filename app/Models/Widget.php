@@ -12,15 +12,22 @@ use Illuminate\Database\Eloquent\Model;
 class Widget extends Model
 {
     protected $guarded = [];
-    
+
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function($widget){
-            if(empty($widget->key)){
-                // TODO: we need slug-2 slug-3 and ... if duplicated
-                $widget->key = Str::slug($widget->name);
+        static::creating(function ($widget) {
+            // todo: check if it's working
+            if (empty($widget->key)) {
+                $baseSlug = Str::slug($widget->name);
+                $slug = $baseSlug;
+                $counter = 2;
+                while (Widget::where('key', $slug)->exists()) {
+                    $slug = $baseSlug . '-' . $counter;
+                    $counter++;
+                }
+                $widget->key = $slug;
             }
         });
     }
