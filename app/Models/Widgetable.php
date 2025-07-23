@@ -19,21 +19,6 @@ class Widgetable extends Model
     public $timestamps = false;
     protected $fillable = ["id", "widgetable_type", "widgetable_id", "widget_id", "position"];
 
-    // public function content(): MorphTo
-    // {
-    //     return $this->morphTo();
-    // }
-
-    // public function widget(): BelongsTo
-    // {
-    //     return $this->belongsTo(Widget::class);
-    // }
-
-    // public function fieldValues(): HasMany
-    // {
-    //     return $this->hasMany(FieldValue::class);
-    // }
-
     public function widget()
     {
         return $this->belongsTo(Widget::class);

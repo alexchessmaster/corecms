@@ -32,22 +32,6 @@ class Widget extends Model
         });
     }
 
-    // public function fields()
-    // {
-    //     return $this->belongsToMany(Field::class)->withPivot('key');
-    // }
-
-    // public function fieldsWithValues()
-    // {
-    //     return $this->belongsToMany(FieldValue::class, 'widget_field_value')
-    //         ->withPivot('key');
-    // }
-
-    // public function pages()
-    // {
-    //     return $this->belongsToMany(Page::class);
-    // }
-
     public function widgetables()
     {
         return $this->hasMany(Widgetable::class);

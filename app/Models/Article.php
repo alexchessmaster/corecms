@@ -60,11 +60,6 @@ class Article extends Model
         return $fullUrl;
     }
 
-    // public function widgetables(): MorphMany
-    // {
-    //     return $this->morphMany(Widgetable::class, 'content');
-    // }
-
     public function scopeWithAllWidgetData($query)
     {
         return $this->with([

@@ -21,16 +21,6 @@ class Page extends Model
         'updated_at' => 'datetime',
     ];
 
-    // public function widgets(): MorphMany
-    // {
-    //     return $this->morphMany(Widgetable::class, 'widgetable');
-    // }
-
-    // public function widgets(): MorphToMany
-    // {
-    //     return $this->morphToMany(Widget::class, 'widgetable')->withPivot('position');
-    // }
-
     public function scopeWithAllWidgetData($query)
     {
         return $this->with([

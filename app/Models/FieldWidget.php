@@ -15,11 +15,6 @@ class FieldWidget extends Model
     protected $guarded = [];
     public $timestamps = false;
 
-    // public function values()
-    // {
-    //     return $this->hasMany(FieldValue::class, 'field_widget_id');
-    // }
-
     public function field()
     {
         return $this->belongsTo(Field::class);

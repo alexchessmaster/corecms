@@ -11,27 +11,6 @@ use App\Http\Resources\PageResource;
 
 class PageController extends Controller
 {
-    // public function store()
-    // {
-    //     // $title = request()->input('title');
-    //     // $slug = request()->input('slug');
-    //     // $oldPage = Page::where('slug', $slug)->first();
-    //     // if($oldPage){
-    //     //     $slug = $slug . '-' . rand(1, 100000);
-    //     // }
-    //     // $page = Page::create([
-    //     //     'title' => $title,
-    //     //     'slug' => $slug,
-    //     // ]);
-
-    //     // return response()->json([
-    //     //     'status' => 'success',
-    //     //     'message' => 'Page created successfully',
-
-    //     //     'page' => $page
-    //     // ]);
-    // }
-
     public function show($pageId)
     {
         $page = Page::withAllWidgetData()->find($pageId);
