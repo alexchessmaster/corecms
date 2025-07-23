@@ -25,65 +25,6 @@ class WidgetController extends Controller
         return response()->json(new WidgetResource($widget));
     }
 
-    // In your controller
-    // public function getWidgetFieldsWithValues($pageId, $widgetId, $position, $lang = 'en')
-    // {
-    //     if (!empty($lang)) {
-    //         app()->setLocale($lang);
-    //     }
-
-    //     $widget = Widget::with('fields')->find($widgetId);
-
-    //     if (!$widget) {
-    //         return response()->json(['error' => 'Widget not found'], 404);
-    //     }
-
-    //     // $pageWidget = PageWidget::with('fieldValues.field')
-    //     //     ->where('page_id', $pageId)
-    //     //     ->where('position', $position)
-    //     //     ->first();
-
-    //     $widgetable = Widgetable::where('content_id', $pageId)
-    //         ->where('content_type', 'App\Models\Page')
-    //         ->where('position', $position)
-    //         ->first();
-
-    //     // dd($pageWidget);
-
-    //     if (!$widgetable) {
-    //         return response()->json(['error' => 'Page widget not found'], 404);
-    //     }
-
-    //     $fields = $widget->fields;
-    //     $fieldValues = $widgetable->fieldValues;
-
-    //     $allFieldsWithValues = $fields->map(function ($field) use ($fieldValues) {
-    //         $matchingFieldValue = $fieldValues->firstWhere('field_id', $field->id);
-    //         if ($matchingFieldValue) {
-    //             $field->vf = new \stdClass;
-    //             $field->vf->id = $matchingFieldValue->id;
-    //             $field->vf->value = $matchingFieldValue->getTranslation('value', app()->getLocale());
-    //             $field->vf->page_widget_id = $matchingFieldValue->page_widget_id;
-    //             $field->vf->field_id = $matchingFieldValue->field_id;
-
-    //             $tmpField = new \stdClass;
-    //             $tmpField->id = $matchingFieldValue->field->id;
-    //             $tmpField->page_widget_id = $matchingFieldValue->field->page_widget_id;
-    //             $tmpField->key = $matchingFieldValue->field->key;
-    //             $tmpField->type = $matchingFieldValue->field->type;
-
-    //             $field->vf->field = $tmpField;
-    //         }
-
-    //         return $field;
-    //     });
-
-    //     return response()->json([
-    //         'widget' => new WidgetResource($widget),
-    //         'field_with_value' => FieldWithValueResource::collection($allFieldsWithValues)
-    //     ]);
-    // }
-
     public function attach()
     {
         $widgetId = request()->input('widgetId');
