@@ -16,7 +16,7 @@ class CacheControlHeaderMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-        $response->headers->set('Cache-Control', 'public, max-age=10, stale-while-revalidate=20');
+        $response->headers->set('Cache-Control', 'public, max-age=100, stale-while-revalidate=1000');
 
         return $response;
     }
