@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('teaser_image')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->boolean('hide_from_frontend')->nullable();
+            $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
             $table->string('primary_language', 2)->nullable();
 
             $table->boolean('sitemap_exclude')->nullable();

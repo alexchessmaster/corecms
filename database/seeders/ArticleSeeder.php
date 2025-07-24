@@ -17,6 +17,9 @@ class ArticleSeeder extends Seeder
         $article->setTranslations('title', [
             'fa' => 'Why the sky is blue',
         ]);
+        $article->setTranslations('slug', [
+            'fa' => 'why-the-sky-is-blue',
+        ]);
         $article->setTranslations('description', [
             'fa' => 'Why the sky is blue description',
         ]);

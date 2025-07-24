@@ -21,19 +21,6 @@ class LanguageApiMiddleware
         }
 
         $response = $next($request);
-        
-        // $languages = Language::all();
-        // if ($response->headers->get('Content-Type') === 'application/json') {
-        //     // Get the original response data
-        //     $data = $response->getData(true);
-
-        //     // Append the 'languages' data to the response
-        //     $data['languages'] = $languages;
-
-        //     // Set the updated data back to the response
-        //     $response->setData($data);
-        // }
-
 
         return $response;
     }

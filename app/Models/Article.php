@@ -14,7 +14,7 @@ class Article extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['image', 'title', 'title_seo', 'slug', 'content', 'category_id', 'description', 'description_seo', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
+    protected $guarded = [];
     public $translatable = ['title', 'title_seo', 'slug', 'content', 'description', 'description_seo'];
     protected $casts = [
         'scheduled_at' => 'datetime',
