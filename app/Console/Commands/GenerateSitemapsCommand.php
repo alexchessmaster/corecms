@@ -39,72 +39,39 @@ class GenerateSitemapsCommand extends Command
         $defaultPriorityPages = Setting::where('key', 'default-sitemap-priority-pages')->value('value');
         $defaultPriorityArticles = Setting::where('key', 'default-sitemap-priority-articles')->value('value');
 
-        // 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency'
-        // dd($defaultFrequencyChangePages);
+        $frontendBaseUrl = '';
+        $tables = ['pages', 'articles'];
         foreach ($languages as $language) {
             $lang = $language->code;
             // dd($lang);
             $sitemap = Sitemap::create();
-            $table = 'pages';
-            $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
-            $frontendBaseUrl = $language->domain;
-            // var_dump($pages);
-            foreach ($pages as $page) {
-                if (array_key_exists('slug', $page)) {
-                    if ($language->use_separate_domain) {
-                        $url = Url::create("{$frontendBaseUrl}{$page['slug']}");
-                        // Add alternate links for all available translations
-                        foreach ($page['alternates'] as $altLang => $altSlug) {
-                            $langTmp = $languages->where('code', $altLang)->first();
-                            $url->addAlternate("{$langTmp->domain}{$altSlug}", $altLang);
+            foreach ($tables as $table) {
+                $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
+                $frontendBaseUrl = $language->domain;
+                // var_dump($pages);
+                foreach ($pages as $page) {
+                    if (array_key_exists('slug', $page)) {
+                        if ($language->use_separate_domain) {
+                            $url = Url::create("{$frontendBaseUrl}{$page['slug']}");
+                            // Add alternate links for all available translations
+                            foreach ($page['alternates'] as $altLang => $altSlug) {
+                                $langTmp = $languages->where('code', $altLang)->first();
+                                $url->addAlternate("{$langTmp->domain}{$altSlug}", $altLang);
+                            }
+                        } else {
+                            $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
+                            // Add alternate links for all available translations
+                            foreach ($page['alternates'] as $altLang => $altSlug) {
+                                $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$altSlug}", $altLang);
+                            }
                         }
-                    } else {
-                        $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
-                        // Add alternate links for all available translations
-                        foreach ($page['alternates'] as $altLang => $altSlug) {
-                            $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$altSlug}", $altLang);
-                        }
-                    }
 
-                    $item = $page['item'];
-                    $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
-                    $url->setChangeFrequency($item->sitemap_change_frequency ?? $defaultFrequencyChangePages);
-                    $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
-                    $sitemap->add($url);
-                }
-            }
-            $table = 'articles';
-            $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
-            // var_dump($pages);
-            foreach ($pages as $page) {
-                if (array_key_exists('slug', $page)) {
-                    if ($language->use_separate_domain) {
-                        $url = Url::create("{$frontendBaseUrl}{$page['slug']}");
-                        // Add alternate links for all available translations
-                        foreach ($page['alternates'] as $altLang => $altSlug) {
-                            $langTmp = $languages->where('code', $altLang)->first();
-                            $urlTmp = $langTmp->domain . $altSlug;
-                            if(!empty($articlePrefix)){
-                                $urlTmp = $langTmp->domain . '/' . $articlePrefix . $altSlug;
-                            }
-                            $url->addAlternate($urlTmp, $altLang);
-                        }
-                    } else {
-                        $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
-                        // Add alternate links for all available translations
-                        foreach ($page['alternates'] as $altLang => $altSlug) {
-                            $urlTmp = "{$frontendBaseUrl}/{$altLang}{$altSlug}";
-                            if(!empty($articlePrefix)){
-                                $urlTmp = "{$frontendBaseUrl}/{$altLang}/{$articlePrefix}{$altSlug}";
-                            }
-                            $url->addAlternate($urlTmp, $altLang);
-                        }
+                        $item = $page['item'];
+                        $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
+                        $url->setChangeFrequency($item->sitemap_change_frequency ?? $defaultFrequencyChangePages);
+                        $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
+                        $sitemap->add($url);
                     }
-                    $item = $page['item'];
-                    $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
-                    $url->setChangeFrequency($item->sitemap_change_frequency ?? $defaultFrequencyChangePages);
-                    $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
-                    $sitemap->add($url);
                 }
             }
             $sitemapPath = public_path("sitemap-{$lang}.xml");
@@ -122,17 +89,18 @@ class GenerateSitemapsCommand extends Command
     {
         // Fetch articles with available slugs for the given language
         return \DB::table($table)
+            ->where('status', 'published')
             ->whereNull('sitemap_exclude')
             ->orWhere('sitemap_exclude', false)
             ->get()
-            ->map(function ($article) use ($lang) {
+            ->map(function ($pageOrArticle) use ($lang) {
                 // Decode the slug JSON safely
-                $slugs = json_decode($article->slug, true);
+                $slugs = json_decode($pageOrArticle->slug, true);
                 if (array_key_exists($lang, $slugs)) {
                     return [
                         'slug' => $slugs[$lang], // Get the slug for the current language
                         'alternates' => collect($slugs)->filter(), // Remove null or empty slugs
-                        'item' => $article,
+                        'item' => $pageOrArticle,
                     ];
                 } else {
                     return [];
