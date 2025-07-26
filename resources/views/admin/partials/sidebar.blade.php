@@ -31,7 +31,7 @@
             
             <!-- Dashboard and Analytics -->
             <li class="nav-item">
-                <a href="{{ env('FRONTEND_APP_URL') }}" class="nav-link" target="_blank">
+                <a href="{{ env('APP_URL') }}" class="nav-link" target="_blank">
                     <i class="nav-icon fas fa-desktop"></i>
                     <p>
                         Website

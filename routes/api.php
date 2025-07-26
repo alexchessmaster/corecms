@@ -20,8 +20,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/fetch-content', [ContentController::class, 'fetchContent'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
-Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']);
-Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']);
+// Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
+// Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
 
 Route::apiResource('/pages', PageController::class);
 Route::apiResource('/articles', ArticleController::class);

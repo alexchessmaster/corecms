@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(MenuSeeder::class);
-        $this->call(TemplateSeeder::class);
 
         $this->call(WidgetSeeder::class);
         $this->call(FieldSeeder::class);

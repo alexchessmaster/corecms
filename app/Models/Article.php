@@ -15,7 +15,7 @@ class Article extends Model
     use HasTranslations;
 
     protected $guarded = [];
-    public $translatable = ['title', 'title_seo', 'slug', 'content', 'description', 'description_seo'];
+    public $translatable = ['title', 'title_seo', 'slug', 'content', 'description', 'description_seo', 'image'];
     protected $casts = [
         'scheduled_at' => 'datetime',
         'created_at' => 'datetime',
@@ -62,7 +62,7 @@ class Article extends Model
 
     public function scopeWithAllWidgetData($query)
     {
-        return $this->with([
+        return $query->with([
             'widgetables.widget.fieldWidgets.field',
             'widgetables.widgetFieldValues.fieldWidget.field',
         ]);

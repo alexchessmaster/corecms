@@ -16,11 +16,6 @@
     <input type="text" class="form-control" id="title" name="title"
         value="{{ isset($article) ? $article->getTranslation('title', app()->getLocale(), false) : '' }}" required>
 </div>
-<div class="mb-3">
-    <label for="title_seo" class="form-label">Title SEO</label>
-    <input type="text" class="form-control" id="title_seo" name="title_seo"
-        value="{{ isset($article) ? $article->getTranslation('title_seo', app()->getLocale(), false) : '' }}">
-</div>
 @if (isset($article))
     <div class="mb-3">
         <label for="slug" class="form-label required">Slug</label>
@@ -32,14 +27,6 @@
     <label for="description" class="form-label required">Description</label>
     <textarea class="form-control" id="description" name="description" rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
-<div class="mb-3">
-    <label for="description_seo" class="form-label">Description SEO</label>
-    <textarea class="form-control" id="description_seo" name="description_seo" rows="2">{{ isset($article) ? $article->getTranslation('description_seo', app()->getLocale(), false) : '' }}</textarea>
-</div>
-{{-- <div class="mb-3">
-    <label for="content" class="form-label required">Content</label>
-    <textarea class="form-control tinymce" id="content" name="content" rows="5">{{ isset($article) ? $article->getTranslation('content', app()->getLocale(), false) : '' }}</textarea>
-</div> --}}
 <div class="mb-3">
     <label for="category_id" class="form-label required">Category</label>
     <select class="form-control" id="category_id" name="category_id" required>

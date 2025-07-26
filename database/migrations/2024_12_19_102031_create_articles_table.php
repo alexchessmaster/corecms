@@ -18,7 +18,6 @@ return new class extends Migration
             $table->json('description')->nullable();
             $table->json('image')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
             $table->string('primary_language', 2)->nullable();
 

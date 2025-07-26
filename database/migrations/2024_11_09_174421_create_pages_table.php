@@ -17,7 +17,6 @@ return new class extends Migration
             $table->json('title');
             $table->json('description')->nullable();
             $table->json('image')->nullable();
-            $table->foreignId('template_id')->nullable()->constrained('templates')->nullOnDelete();
 
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
             $table->dateTime('published_at')->nullable();

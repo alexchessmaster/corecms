@@ -2,19 +2,6 @@
 @section('content-card-title', 'pages')
 @section('content-card-body')
 
-    {{-- <div class="form-group">
-        <label>Color picker with addon:</label>
-
-        <div class="input-group my-colorpicker2d colorpicker-element" data-colorpicker-id="2">
-            <input type="text" class="form-control" data-original-title="" title="">
-            <div class="input-group-append">
-                <span class="input-group-text">
-                    <i class="fas fa-square" style="color: rgb(119, 27, 27);"></i>
-                </span>
-            </div>
-        </div>
-    </div> --}}
-
     <div class="row">
         <div class="col-sm-12">
             <form id="page_form">

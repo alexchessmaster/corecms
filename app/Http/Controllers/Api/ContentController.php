@@ -77,7 +77,7 @@ class ContentController extends Controller
             }
             app()->setLocale($lang);
         }
-        if($path !== '/'){
+        if ($path !== '/') {
             $path = rtrim($path, '/');
         }
         $settings = Setting::all();
@@ -107,11 +107,7 @@ class ContentController extends Controller
         $responseCode = 200;
 
         // Is Page
-        $page = Page::with([
-            'pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
-            'pageWidgets.widget',
-            'pageWidgets.fieldValues.field',
-        ])->where('slug->' . app()->getLocale(), $path)->first();
+        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $path)->first();
         if ($page) {
             $responseData["page"] = PageResource::make($page);
 
@@ -143,14 +139,11 @@ class ContentController extends Controller
         }
 
         // Is Article
-        $article = Article::with([
-            'category',
-            'tags',
-            'page.pageWidgets' => fn($query) => $query->orderBy('page_widget.position'),
-            'page.pageWidgets.widget',
-            'page.pageWidgets.fieldValues.field',
-        ])->where('slug->' . app()->getLocale(), $articlePath)->first();
-        // return response()->json($article);
+        $article = Article::withAllWidgetData()
+            ->with(['category', 'tags'])
+            ->where('slug->' . app()->getLocale(), $articlePath)
+            ->first();
+
         if ($article) {
             // here check if category is correct do it, otherwise return 404
             $responseData["article_prefix"] = $articlePrefix;

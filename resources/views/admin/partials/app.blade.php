@@ -101,12 +101,12 @@
                 <div class="container-fluid">
 
 
-                    @yield('content-body')
-
-
                     @include('admin.partials.message')
 
 
+                    @yield('content-body')
+
+                    
                     @hasSection('content-card-body')
                         <!-- Main row -->
                         <div class="row">

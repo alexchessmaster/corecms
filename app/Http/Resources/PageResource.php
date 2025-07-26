@@ -38,7 +38,6 @@ class PageResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             "sitemap_exclude" => $this->sitemap_exclude,
-            "template" => $this->relationLoaded('template') ? $this->template : null,
             // "template" => $this->blog,
             "primary_language" => $this->primary_language,
             // "widgets" => $this->relationLoaded('widgets') ? WidgetResource::collection($this->widgets) : null,
