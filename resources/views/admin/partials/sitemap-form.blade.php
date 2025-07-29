@@ -3,7 +3,11 @@
         $model = $page;
     } elseif (isset($article)) {
         $model = $article;
-    } else {
+    } elseif (isset($article)) {
+        $model = $article;
+    } elseif (isset($bookGenre)) {
+        $model = $bookGenre;
+    } elseif (isset($category)) {
         $model = $category;
     }
 @endphp
@@ -79,7 +83,7 @@
                 <option value="default">Default</option>
                 @foreach ($languages as $language)
                     <option value="{{ $language->code }}"
-                        {{ $model->primary_language === $language->code ? 'selected' : '' }}>
+                        {{ isset($model) && $model->primary_language === $language->code ? 'selected' : '' }}>
                         {{ $language->name }}</option>
                 @endforeach
             </select>

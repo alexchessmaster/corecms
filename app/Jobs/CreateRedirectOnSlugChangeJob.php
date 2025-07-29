@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Article;
+use App\Models\Book;
+use App\Models\BookGenre;
 use App\Models\Redirect;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +45,18 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
                 } elseif ($change->type === 'article_deleted') {
                     // Handle article deletion
                     $this->handleArticleDeletion($change);
+                } elseif ($change->type === 'book_genre_updated') {
+                    // Handle book genre slug update
+                    $this->handleBookGenreSlugUpdate($change);
+                } elseif ($change->type === 'book_genre_deleted') {
+                    // Handle book genre deletion
+                    $this->handleBookGenreDeletion($change);
+                } elseif ($change->type === 'book_updated') {
+                    // Handle book slug update
+                    $this->handleBookSlugUpdate($change);
+                } elseif ($change->type === 'book_deleted') {
+                    // Handle book deletion
+                    $this->handleBookDeletion($change);
                 }
 
                 // Mark as checked
@@ -142,6 +156,104 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
     private function handleArticleDeletion(RedirectSlugChange $change)
     {
         // Create a redirect for the deleted article
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => '/410', // Redirect to a custom 404 page or another fallback
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle book genre slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleBookGenreSlugUpdate(RedirectSlugChange $change)
+    {
+        $books = Book::where('slug->' . $change->language, 'LIKE', $change->old_slug . '%')->get();
+        foreach ($books as $book) {
+            $oldBookSlug = $book->slug;
+            $newBookSlug = str_replace($change->old_slug, $change->new_slug, $book->slug);
+
+            // Update book slug
+            $book->setTranslation('slug', $change->language, $newBookSlug);
+            $book->save();
+
+            // Create redirect for the book
+            Redirect::create([
+                'from' => $oldBookSlug,
+                'to' => $newBookSlug,
+                'language' => $change->language,
+            ]);
+        }
+
+        // Create redirect for the book genre
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle book genre deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleBookGenreDeletion(RedirectSlugChange $change)
+    {
+        $books = Book::where('slug->' . $change->language, 'LIKE', $change->old_slug . '%')->get();
+        foreach ($books as $book) {
+            $oldBookSlug = $book->slug;
+
+            if ($change->new_slug === '/') {
+                $newBookSlug = str_replace($change->old_slug, '/uncategorized', $oldBookSlug);
+            } else {
+                $newBookSlug = str_replace($change->old_slug, $change->new_slug, $oldBookSlug);
+            }
+
+            // Update book slug
+            $book->setTranslation('slug', $change->language, $newBookSlug);
+            $book->save();
+
+            Redirect::create([
+                'from' => $oldBookSlug,
+                'to' => $newBookSlug,
+                'language' => $change->language,
+            ]);
+        }
+
+        // Create a redirect for the book genre itself to a placeholder or 404 page
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug, // Same as above
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle book slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleBookSlugUpdate(RedirectSlugChange $change)
+    {
+        // Directly create a redirect for the book
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle book deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleBookDeletion(RedirectSlugChange $change)
+    {
+        // Create a redirect for the deleted book
         Redirect::create([
             'from' => $change->old_slug,
             'to' => '/410', // Redirect to a custom 404 page or another fallback

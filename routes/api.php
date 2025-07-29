@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
 use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\BookGenreController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
@@ -26,6 +28,8 @@ Route::get('/fetch-content', [ContentController::class, 'fetchContent'])->middle
 Route::apiResource('/pages', PageController::class);
 Route::apiResource('/articles', ArticleController::class);
 Route::apiResource('/categories', CategoryController::class);
+Route::apiResource('/books', BookController::class);
+Route::apiResource('/book-genre', BookGenreController::class);
 Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']);
 Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
 Route::patch('/widgets/detach', [WidgetController::class, 'detach']);

@@ -15,10 +15,10 @@ class CategorySeeder extends Seeder
     {
         $category = new Category();
         $category->setTranslations('name', [
-            'fa' => 'uncategorized',
+            'en' => 'uncategorized',
         ]);
         $category->setTranslations('slug', [
-            'fa' => '/uncategorized',
+            'en' => '/uncategorized',
         ]);
         $category->save();
 

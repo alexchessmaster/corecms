@@ -65,6 +65,22 @@
             <div style="border: 1px gray solid"></div>
             <!-- Content Management -->
             <li class="nav-item">
+                <a href="/admin/books" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Books
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/book_genres" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Books Genres
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="/admin/articles" class="nav-link">
                     <i class="nav-icon fas fa-file-alt"></i>
                     <p>
@@ -76,7 +92,7 @@
                 <a href="/admin/categories" class="nav-link">
                     <i class="nav-icon fas fa-folder"></i>
                     <p>
-                        Categories
+                        Articles Categories
                     </p>
                 </a>
             </li>
@@ -84,7 +100,7 @@
                 <a href="/admin/tags" class="nav-link">
                     <i class="nav-icon fas fa-tag"></i>
                     <p>
-                        Tags
+                       Articles Tags
                     </p>
                 </a>
             </li>

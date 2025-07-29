@@ -5,9 +5,13 @@ namespace App\Providers;
 use App\Events\SlugChangedEvent;
 use App\Listeners\HandleSlugChangeListener;
 use App\Models\Article;
+use App\Models\Book;
+use App\Models\BookGenre;
 use App\Models\Category;
 use App\Models\Language;
 use App\Observers\ArticleObserver;
+use App\Observers\BookObserver;
+use App\Observers\BookGenreObserver;
 use App\Observers\CategoryObserver;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Event;
@@ -35,17 +39,16 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading();
 
         Article::observe(ArticleObserver::class);
+        Book::observe(BookObserver::class);
+        BookGenre::observe(BookGenreObserver::class);
         Category::observe(CategoryObserver::class);
 
         Event::listen(SlugChangedEvent::class, HandleSlugChangeListener::class);
 
-        if (! app()->runningInConsole()) {
-            // initial the default locale can be changed later in the controllers
-            Language::all()->each(function ($language) {
-                if ($language->default) {
-                    app()->setLocale($language->code);
-                }
-            });
-        }
+        Language::all()->each(function ($language) {
+            if ($language->default) {
+                app()->setLocale($language->code);
+            }
+        });
     }
 }

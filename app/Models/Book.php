@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-use App\Models\Tag;
+use App\Models\Widget;
+use App\Models\Setting;
 use App\Models\Category;
+use App\Models\Language;
 use App\Models\Widgetable;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Article extends Model
+class Book extends Model
 {
+    /** @use HasFactory<\Database\Factories\BookFactory> */
+    use HasFactory;
     use HasTranslations;
 
     protected $guarded = [];
@@ -22,27 +26,22 @@ class Article extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function category()
+    public function bookGenre()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsTo(BookGenre::class);
     }
 
     public function getFullUrlAttribute()
     {
         $fullUrl = $this->slug;
 
-        $articlePrefix = cache()->remember('article-prefix', 3600, function () {
-            return Setting::where('key', 'article-prefix')->value('value');
+        $bookPrefix = cache()->remember('book-prefix', 3600, function () {
+            return Setting::where('key', 'book-prefix')->value('value');
         });
 
-        if (!empty($articlePrefix)) {
-            $articlePrefix = '/' . trim($articlePrefix, '/');
-            $fullUrl = $articlePrefix . $fullUrl;
+        if (!empty($bookPrefix)) {
+            $bookPrefix = '/' . trim($bookPrefix, '/');
+            $fullUrl = $bookPrefix . $fullUrl;
         }
 
         $languages = Language::all();

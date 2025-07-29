@@ -20,6 +20,12 @@ class SettingSeeder extends Seeder
         $setting->save();
 
         $setting = new Setting;
+        $setting->key = 'book-prefix';
+        $setting->value = 'books';
+        $setting->description = "Can be empty or books can be change depends on your need some websites like to have /books before the slug of each book";
+        $setting->save();
+
+        $setting = new Setting;
         $setting->key = 'default-sitemap-change-frequency-pages';
         $setting->value = 'monthly';
         $setting->description = "Default sitemap change frequency pages";
