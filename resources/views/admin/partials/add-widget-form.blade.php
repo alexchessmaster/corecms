@@ -7,14 +7,18 @@
         $model = $article;
         $widgetableId = $article->id;
         $widgetableType = substr(get_class($article), 11);
-    } elseif(isset($book) && !empty($book)) {
-        $model = $book;
-        $widgetableId = $book->id;
-        $widgetableType = substr(get_class($book), 11);
-    } elseif(isset($category) && !empty($category)) {
+    } elseif (isset($category) && !empty($category)) {
         $model = $category;
         $widgetableId = $category->id;
         $widgetableType = substr(get_class($category), 11);
+    } elseif (isset($book) && !empty($book)) {
+        $model = $book;
+        $widgetableId = $book->id;
+        $widgetableType = substr(get_class($book), 11);
+    } elseif (isset($bookGenre) && !empty($bookGenre)) {
+        $model = $bookGenre;
+        $widgetableId = $bookGenre->id;
+        $widgetableType = substr(get_class($bookGenre), 11);
     } else {
         dd('model not found');
     }

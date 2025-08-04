@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Language;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CategorySeeder extends Seeder
 {
@@ -13,13 +14,16 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
+        $languageCodes = Language::get()->map(function ($language) {
+            return $language['code'];
+        });
+        $allTranslations = [];
+        foreach ($languageCodes as $code) {
+            $allTranslations[$code] = 'uncategorized';
+        }
         $category = new Category();
-        $category->setTranslations('name', [
-            'en' => 'uncategorized',
-        ]);
-        $category->setTranslations('slug', [
-            'en' => '/uncategorized',
-        ]);
+        $category->setTranslations('name', $allTranslations);
+        $category->setTranslations('slug', $allTranslations);
         $category->save();
 
         $category = new Category();

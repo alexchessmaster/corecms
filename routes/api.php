@@ -29,7 +29,7 @@ Route::apiResource('/pages', PageController::class);
 Route::apiResource('/articles', ArticleController::class);
 Route::apiResource('/categories', CategoryController::class);
 Route::apiResource('/books', BookController::class);
-Route::apiResource('/book-genre', BookGenreController::class);
+Route::apiResource('/bookgenres', BookGenreController::class);
 Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']);
 Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
 Route::patch('/widgets/detach', [WidgetController::class, 'detach']);

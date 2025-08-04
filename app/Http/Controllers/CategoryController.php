@@ -4,12 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Widget;
 use App\Models\Category;
+use App\Models\Language;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        // Ensure /uncategorized category exists for each language
+        $languages = Language::get();
+        $languageCodes = collect($languages)->pluck('code')->toArray();
+
+        // Create or update /uncategorized for each language using setTranslations()
+        $nameTranslations = [];
+        $slugTranslations = [];
+        foreach ($languages as $lang) {
+            $nameTranslations[$lang['code']] = 'Uncategorized';
+            $slugTranslations[$lang['code']] = '/uncategorized';
+        }
+        foreach ($languages as $lang) {
+            $category = \App\Models\Category::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
+                ->first();
+            if($category){
+                $category->setTranslations('name', $nameTranslations);
+                $category->setTranslations('slug', $slugTranslations);
+                $category->save();
+
+                break; // Only need to create one, since all translations are set at once
+            }
+        }
+
+
         if ($request->ajax()) {
             $data = Category::with('children')->select(['id', 'name', 'parent_id']);
             return datatables()

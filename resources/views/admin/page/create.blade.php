@@ -102,31 +102,6 @@
                     slug = slugify(titleInput.value);
                     slugInput.value = slug;
                 }
-                // fetch('/api/pages', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: JSON.stringify({
-                //         title: event.target.value,
-                //         slug: slug 
-                //     })
-                // })
-                // .then(response => {
-                //     if(!response.ok){
-                //         throw new Error('Network response was not ok');
-                //     }
-
-                //     return response.json();
-                // })
-                // .then(data => {
-                //     console.log('page created!', data)
-                //     console.log('data.page', data.page)
-                //     console.log('data.page.slug', data.page.slug)
-                //     console.log('data.page.id', data.page.id)
-
-                //     window.location.href('/admin/pages/' + data.page.id . '/edit');
-                // });
             }
         });
     </script>

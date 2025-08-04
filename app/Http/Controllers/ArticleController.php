@@ -74,6 +74,7 @@ class ArticleController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'scheduled_at' => 'nullable|date',
         ]);
 
         $article = new Article;
@@ -109,6 +110,7 @@ class ArticleController extends Controller
                 $article->primary_language = null;
             }
         }
+        $article->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
 
         $article->save();
         $article->tags()->sync($request->input('tags', []));
@@ -134,6 +136,7 @@ class ArticleController extends Controller
             'slug' => 'required|string|max:255',
             'description' => 'nullable|string|max:1500',
             'category_id' => 'required|exists:categories,id',
+            'scheduled_at' => 'nullable|date',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
             'sitemap_exclude' => 'nullable',
@@ -174,6 +177,8 @@ class ArticleController extends Controller
                 $article->primary_language = null;
             }
         }
+        $article->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+
         $article->save();
         $article->tags()->sync($request->input('tags', []));
 

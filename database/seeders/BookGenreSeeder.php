@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Language;
 use App\Models\BookGenre;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class BookGenreSeeder extends Seeder
 {
@@ -13,13 +14,16 @@ class BookGenreSeeder extends Seeder
      */
     public function run(): void
     {
+        $languageCodes = Language::get()->map(function ($language) {
+            return $language['code'];
+        });
+        $allTranslations = [];
+        foreach ($languageCodes as $code) {
+            $allTranslations[$code] = 'uncategorized';
+        }
         $bookGenre = new BookGenre();
-        $bookGenre->setTranslations('name', [
-            'en' => 'uncategorized',
-        ]);
-        $bookGenre->setTranslations('slug', [
-            'en' => '/uncategorized',
-        ]);
+        $bookGenre->setTranslations('name', $allTranslations);
+        $bookGenre->setTranslations('slug', $allTranslations);
         $bookGenre->save();
     }
 }

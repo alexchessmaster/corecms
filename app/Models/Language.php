@@ -14,35 +14,42 @@ class Language extends Model
             'code' => 'en',
             'default' => true,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net'
+            'domain' => 'https://azadandish.net/en'
         ],
         [
             'name' => 'German', 
             'code' => 'de',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net'
+            'domain' => 'https://azadandish.net/de'
         ],
         [
             'name' => 'French', 
             'code' => 'fr',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net'
+            'domain' => 'https://azadandish.net/fr'
         ],
         [
             'name' => 'Danish', 
             'code' => 'da',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net'
+            'domain' => 'https://azadandish.net/da'
         ],
         [
-            'name' => 'Farsi', 
+            'name' => 'Swedish', 
+            'code' => 'sv',
+            'default' => false,
+            'use_separate_domain' => false,
+            'domain' => 'https://azadandish.net/sv'
+        ],
+        [
+            'name' => 'Persian', 
             'code' => 'fa',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net'
+            'domain' => 'https://azadandish.net/fa'
         ],
     ];
 }

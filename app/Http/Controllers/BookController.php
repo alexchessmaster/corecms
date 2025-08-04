@@ -65,6 +65,11 @@ class BookController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'scheduled_at' => 'nullable|date',
+            'published_year' => 'nullable|integer|min:-6000|max:2500',
+            'author' => 'nullable|string|max:255',
+            'views' => 'nullable|integer|min:0',
+            'total_pages' => 'nullable|integer|min:0',
         ]);
 
         $book = new Book;
@@ -100,6 +105,11 @@ class BookController extends Controller
                 $book->primary_language = null;
             }
         }
+        $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+        $book->published_year = $request->input('published_year');
+        $book->author = $request->input('author');
+        $book->views = $request->input('views') || 0;
+        $book->total_pages = $request->input('total_pages');
 
         $book->save();
 
@@ -127,6 +137,11 @@ class BookController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'scheduled_at' => 'nullable|date',
+            'published_year' => 'nullable|integer|min:-6000|max:2500',
+            'author' => 'nullable|string|max:255',
+            'views' => 'nullable|integer|min:0',
+            'total_pages' => 'nullable|integer|min:0',
         ]);
 
         if ($request->hasFile('image')) {
@@ -161,6 +176,12 @@ class BookController extends Controller
                 $book->primary_language = null;
             }
         }
+        $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+        $book->published_year = $request->input('published_year');
+        $book->author = $request->input('author');
+        $book->views = $request->input('views') || 0;
+        $book->total_pages = $request->input('total_pages');
+
         $book->save();
 
         return redirect()->back()->with('success', 'Book updated successfully.');
@@ -169,7 +190,7 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         $book->delete();
-        
+
         return redirect()->route('admin.books.index')->with('success', 'Book deleted successfully.');
     }
 }

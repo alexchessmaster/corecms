@@ -24,6 +24,28 @@
     </div>
 @endif
 <div class="mb-3">
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status" class="form-control">
+            <option value="draft"
+                {{ old('status', $page->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
+            </option>
+            <option value="published"
+                {{ old('status', $page->status ?? '') == 'published' ? 'selected' : '' }}>Published
+            </option>
+            <option value="scheduled"
+                {{ old('status', $page->status ?? '') == 'scheduled' ? 'selected' : '' }}>Scheduled
+            </option>
+        </select>
+    </div>
+
+    <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
+        <label for="scheduled_at">Scheduled At</label>
+        <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
+            value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
+    </div>
+</div>
+<div class="mb-3">
     <label for="description" class="form-label required">Description</label>
     <textarea class="form-control" id="description" name="description" rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
@@ -53,25 +75,30 @@
         @endforeach
     </select>
 </div>
-{{-- <div class="mb-3">
-    <label for="template_page_id" class="form-label">Template page</label>
-    <select class="form-control" id="template_page_id" name="template_page_id" required>
-        @foreach ($pages as $page)
-            <option value="{{ $page->id }}"
-                {{ isset($article) && $article->template_page_id == $page->id ? 'selected' : '' }}
-                {{ !isset($article) && $page->getTranslation('title', app()->getLocale()) === 'article' ? 'selected' : '' }}>
-                {{ $page->getTranslation('title', app()->getLocale()) }}
-            </option>
-        @endforeach
-    </select>
-    <small id="name" class="form-text text-muted">Do not change it if you don't know what is this.</small>
-</div> --}}
 
 @include('admin.partials.sitemap-form')
 
 <br>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('status');
+        const scheduledGroup = document.getElementById('scheduled_at_group');
 
+        function toggleScheduledInput() {
+            if (statusSelect.value === 'scheduled') {
+                scheduledGroup.style.display = 'block';
+            } else {
+                scheduledGroup.style.display = 'none';
+            }
+        }
+
+        statusSelect.addEventListener('change', toggleScheduledInput);
+
+        // Run on load to handle edit forms and validation error repopulation
+        toggleScheduledInput();
+    });
+</script>
 <script>
     // Get references to the DOM elements
     const imageInput = document.getElementById('image');

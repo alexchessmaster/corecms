@@ -19,6 +19,13 @@ class BookGenreController extends Controller
 {
     public function show($bookGenreId)
     {
+        // to do : whey
+        /*
+        https://backend.azadandish.net/admin/book_genres/2/edit
+        does not show the values of the fields
+
+        FIXED: Now I don't know why it was not working before, but now it works.
+        */
         $bookGenre = BookGenre::withAllWidgetData()->find($bookGenreId);
 
         return response()->json(BookGenreResource::make($bookGenre));

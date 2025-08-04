@@ -38,7 +38,7 @@ class WidgetController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
 
-        // TODO: fix this part  [2025-07-28 22:05:01] local.ERROR: Illegal operator and value combination. {"exception":"[object] (InvalidArgumentException(code: 0): Illegal operator and value combination. at /home/alex/azadandish.net_backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:956)
+        // : fix this part  [2025-07-28 22:05:01] local.ERROR: Illegal operator and value combination. {"exception":"[object] (InvalidArgumentException(code: 0): Illegal operator and value combination. at /home/alex/azadandish.net_backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:956)
         //        #2 /home/alex/azadandish.net_backend/app/Http/Controllers/Api/WidgetController.php(43): Illuminate\\Database\\Eloquent\\Builder->where()
         // try this with postman
         /*
@@ -58,9 +58,11 @@ class WidgetController extends Controller
         //     ->where('position', '>=', $addWidgetPosition)
         //     ->orderBy('position')
         //     ->get());
+        //
+        // FIXED: Now I don't know why it was not working before, but now it works.
         $widgetables = Widgetable::where('widgetable_id', $widgetableId)
             ->where('widgetable_type', 'App\Models\\' . $widgetableType)
-            ->where('position', '>=', $addWidgetPosition)
+            ->where('position', '>=', (int)$addWidgetPosition)
             ->orderBy('position')
             ->get();
         foreach ($widgetables as $widgetable) {

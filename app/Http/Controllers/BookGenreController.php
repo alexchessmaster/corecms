@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Widget;
+use App\Models\Language;
 use App\Models\BookGenre;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreBookGenreRequest;
@@ -11,6 +13,31 @@ class BookGenreController extends Controller
 {
     public function index(Request $request)
     {
+
+        // Ensure /uncategorized book-genre exists for each language
+        $languages = Language::get();
+        $languageCodes = collect($languages)->pluck('code')->toArray();
+
+        // Create or update /uncategorized for each language using setTranslations()
+        $nameTranslations = [];
+        $slugTranslations = [];
+        foreach ($languages as $lang) {
+            $nameTranslations[$lang['code']] = 'Uncategorized';
+            $slugTranslations[$lang['code']] = '/uncategorized';
+        }
+        foreach ($languages as $lang) {
+            $bookGenre = BookGenre::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
+                ->first();
+            if($bookGenre){
+                $bookGenre->setTranslations('name', $nameTranslations);
+                $bookGenre->setTranslations('slug', $slugTranslations);
+                $bookGenre->save();
+
+                break; // Only need to create one, since all translations are set at once
+            }
+        }
+
+
         if ($request->ajax()) {
             $data = BookGenre::with('children')->select(['id', 'name', 'parent_id']);
             return datatables()

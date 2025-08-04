@@ -20,7 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id')->nullable();
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
             $table->string('primary_language', 2)->nullable();
-
+            $table->dateTime('scheduled_at')->nullable();
+            
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();

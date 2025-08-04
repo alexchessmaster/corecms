@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Tag;
+use App\Models\Book;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Article;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\TranslationText;
 use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BookResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\UserResource;
@@ -83,10 +85,15 @@ class ContentController extends Controller
         $settings = Setting::all();
         $translationTexts = TranslationText::all();
         $menus = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
+        // TODO: add books and book genres to the response
         $responseData = [
             'page' => collect(),
             'article' => collect(),
             'category' => collect(),
+            'article_prefix' => '',
+            'book' => collect(),
+            'book_genre' => collect(),
+            'book_prefix' => '',
             'tag' => collect(),
             'auth' => collect(),
             'redirect' => collect(),
@@ -96,7 +103,6 @@ class ContentController extends Controller
             'menus' => MenuResource::collection($menus),
             'path' => $path,
             'lang' => $lang,
-            'article_prefix' => '',
             'translation_texts' => TranslationTextResource::collection($translationTexts),
         ];
 
@@ -133,6 +139,7 @@ class ContentController extends Controller
         //can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
         $articlePrefixSetting = $settings->where('key', 'article-prefix')->first();
         $articlePath = $path;
+        // $articlePrefixSetting->value is "articles" by default
         if (!empty($articlePrefixSetting) && !empty($articlePrefixSetting->value)) {
             $articlePrefix = '/' . trim($articlePrefixSetting->value, '/');
             $articlePath = substr($path, strlen($articlePrefix));
@@ -149,6 +156,30 @@ class ContentController extends Controller
             $responseData["article_prefix"] = $articlePrefix;
             $responseData["article"] = ArticleResource::make($article)->additional([
                 'article_prefix' => $articlePrefix
+            ]);
+
+            return response()->json(['data' => $responseData], $responseCode);
+        }
+
+        $bookPrefixSetting = $settings->where('key', 'book-prefix')->first();
+        $bookPath = $path;
+        // $bookPrefixSetting->value is "books" by default
+        if (!empty($bookPrefixSetting) && !empty($bookPrefixSetting->value)) {
+            $bookPrefix = '/' . trim($bookPrefixSetting->value, '/');
+            $bookPath = substr($path, strlen($bookPrefix));
+        }
+
+        // Is Book
+        $book = Book::withAllWidgetData()
+            ->with(['bookGenre'])
+            ->where('slug->' . app()->getLocale(), $bookPath)
+            ->first();
+
+        if ($book) {
+            // here check if bookGenre is correct do it, otherwise return 404
+            $responseData["book_prefix"] = $bookPrefix;
+            $responseData["book"] = BookResource::make($book)->additional([
+                'book_prefix' => $bookPrefix
             ]);
 
             return response()->json(['data' => $responseData], $responseCode);

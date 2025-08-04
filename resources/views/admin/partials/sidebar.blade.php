@@ -2,8 +2,7 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-            <img src="/AdminLTE-3.2.0/dist/img/user0-160x160.png" class="img-circle elevation-2"
-                alt="User Image">
+            <img src="/AdminLTE-3.2.0/dist/img/user0-160x160.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
             <a href="/" class="d-block">{{ Auth::check() ? Auth::user()->email : '' }}</a>
@@ -24,11 +23,10 @@
     </div> --}}
 
     <!-- Sidebar Menu -->
-    
+
     <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-            data-accordion="false">
-            
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
             <!-- Dashboard and Analytics -->
             <li class="nav-item">
                 <a href="{{ env('APP_URL') }}" class="nav-link" target="_blank">
@@ -65,14 +63,6 @@
             <div style="border: 1px gray solid"></div>
             <!-- Content Management -->
             <li class="nav-item">
-                <a href="/admin/books" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Books
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="/admin/book_genres" class="nav-link">
                     <i class="nav-icon fas fa-book"></i>
                     <p>
@@ -80,6 +70,15 @@
                     </p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="/admin/books" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Books
+                    </p>
+                </a>
+            </li>
+            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             <li class="nav-item">
                 <a href="/admin/articles" class="nav-link">
                     <i class="nav-icon fas fa-file-alt"></i>
@@ -100,23 +99,25 @@
                 <a href="/admin/tags" class="nav-link">
                     <i class="nav-icon fas fa-tag"></i>
                     <p>
-                       Articles Tags
+                        Articles Tags
                     </p>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="/admin/menus" class="nav-link">
-                    <i class="nav-icon fas fa-list-ul"></i>
-                    <p>
-                        Menus
-                    </p>
-                </a>
-            </li>
+            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             <li class="nav-item">
                 <a href="/admin/pages" class="nav-link">
                     <i class="nav-icon fas fa-file"></i>
                     <p>
                         Pages
+                    </p>
+                </a>
+            </li>
+            <div style="border: 1px rgb(55, 67, 71) solid"></div>
+            <li class="nav-item">
+                <a href="/admin/menus" class="nav-link">
+                    <i class="nav-icon fas fa-list-ul"></i>
+                    <p>
+                        Menus
                     </p>
                 </a>
             </li>
