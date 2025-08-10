@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->json('author')->nullable();
             $table->unsignedInteger('published_year')->nullable();
-            $table->integer('views')->default(0);
+            $table->unsignedBigInteger('views')->default(0);
             $table->integer('total_pages')->default(0);
             
             $table->boolean('sitemap_exclude')->nullable();

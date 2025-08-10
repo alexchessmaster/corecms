@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <sitemap>
-        <loc>https://azadandish.net/sitemap-en.xml</loc>
-            <lastmod>2025-08-04T00:00:03+02:00</lastmod>
+        <loc>https://azadandish.net/fa/sitemap-en.xml</loc>
+            <lastmod>2025-08-06T00:00:05+02:00</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://azadandish.net/sitemap-de.xml</loc>
-            <lastmod>2025-08-04T00:00:03+02:00</lastmod>
+        <loc>https://azadandish.net/fa/sitemap-de.xml</loc>
+            <lastmod>2025-08-06T00:00:05+02:00</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://azadandish.net/sitemap-fr.xml</loc>
-            <lastmod>2025-08-04T00:00:03+02:00</lastmod>
+        <loc>https://azadandish.net/fa/sitemap-fr.xml</loc>
+            <lastmod>2025-08-06T00:00:05+02:00</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://azadandish.net/sitemap-da.xml</loc>
-            <lastmod>2025-08-04T00:00:03+02:00</lastmod>
+        <loc>https://azadandish.net/fa/sitemap-da.xml</loc>
+            <lastmod>2025-08-06T00:00:05+02:00</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://azadandish.net/sitemap-sv.xml</loc>
-            <lastmod>2025-08-04T00:00:03+02:00</lastmod>
+        <loc>https://azadandish.net/fa/sitemap-sv.xml</loc>
+            <lastmod>2025-08-06T00:00:05+02:00</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://azadandish.net/sitemap-fa.xml</loc>
-            <lastmod>2025-08-04T00:00:03+02:00</lastmod>
+        <loc>https://azadandish.net/fa/sitemap-fa.xml</loc>
+            <lastmod>2025-08-06T00:00:05+02:00</lastmod>
     </sitemap>
 </sitemapindex>

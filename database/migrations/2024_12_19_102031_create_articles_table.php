@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('primary_language', 2)->nullable();
             $table->dateTime('scheduled_at')->nullable();
             
+            $table->json('author')->nullable();
+            $table->unsignedBigInteger('views')->default(0);
+
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();

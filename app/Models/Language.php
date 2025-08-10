@@ -14,42 +14,42 @@ class Language extends Model
             'code' => 'en',
             'default' => true,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net/en'
+            'domain' => 'https://atheistlibrary.net/en'
         ],
         [
             'name' => 'German', 
             'code' => 'de',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net/de'
+            'domain' => 'https://atheistlibrary.net/de'
         ],
         [
             'name' => 'French', 
             'code' => 'fr',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net/fr'
+            'domain' => 'https://atheistlibrary.net/fr'
         ],
         [
             'name' => 'Danish', 
             'code' => 'da',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net/da'
+            'domain' => 'https://atheistlibrary.net/da'
         ],
         [
             'name' => 'Swedish', 
             'code' => 'sv',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net/sv'
+            'domain' => 'https://atheistlibrary.net/sv'
         ],
         [
             'name' => 'Persian', 
             'code' => 'fa',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://azadandish.net/fa'
+            'domain' => 'https://atheistlibrary.net/fa'
         ],
     ];
 }

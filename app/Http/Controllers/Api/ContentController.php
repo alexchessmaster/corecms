@@ -104,6 +104,7 @@ class ContentController extends Controller
             'path' => $path,
             'lang' => $lang,
             'translation_texts' => TranslationTextResource::collection($translationTexts),
+            'content_type' => '',
         ];
 
         if (auth()->check()) {
@@ -113,18 +114,20 @@ class ContentController extends Controller
         $responseCode = 200;
 
         // Is Page
-        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $path)->first();
+        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $path)->where('status', 'published')->first();
         if ($page) {
             $responseData["page"] = PageResource::make($page);
+            $responseData['content_type'] = 'page';
 
             return response()->json(['data' => $responseData], $responseCode);
         }
 
         // Is Category
-        $category = Category::with(['children', 'parent'])->where('slug->' . app()->getLocale(), $path)->first(); //with(['articles' => fn($query) => $query->limit(10)])->
+        $category = Category::with(['children', 'parent'])->where('slug->' . app()->getLocale(), $path)->where('status', 'published')->first(); //with(['articles' => fn($query) => $query->limit(10)])->
         if ($category) {
             $responseData["category"] = CategoryResource::make($category);
-
+            $responseData['content_type'] = 'category';
+            
             return response()->json(['data' => $responseData], $responseCode);
         }
 
@@ -132,6 +135,7 @@ class ContentController extends Controller
         $tag = Tag::where('name->' . app()->getLocale(), $path)->first(); // with(['articles' => fn($query) => $query->limit(10)])->
         if ($tag) {
             $responseData["tag"] = TagResource::make($tag);
+            $responseData['content_type'] = 'tag';
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -149,6 +153,7 @@ class ContentController extends Controller
         $article = Article::withAllWidgetData()
             ->with(['category', 'tags'])
             ->where('slug->' . app()->getLocale(), $articlePath)
+            ->where('status', 'published')
             ->first();
 
         if ($article) {
@@ -157,6 +162,7 @@ class ContentController extends Controller
             $responseData["article"] = ArticleResource::make($article)->additional([
                 'article_prefix' => $articlePrefix
             ]);
+            $responseData['content_type'] = 'article';
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -173,14 +179,16 @@ class ContentController extends Controller
         $book = Book::withAllWidgetData()
             ->with(['bookGenre'])
             ->where('slug->' . app()->getLocale(), $bookPath)
+            ->where('status', 'published')
             ->first();
 
         if ($book) {
-            // here check if bookGenre is correct do it, otherwise return 404
+            // here check if bookGenre is correct do it
             $responseData["book_prefix"] = $bookPrefix;
             $responseData["book"] = BookResource::make($book)->additional([
                 'book_prefix' => $bookPrefix
             ]);
+            $responseData['content_type'] = 'book';
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -189,6 +197,7 @@ class ContentController extends Controller
         $redirect = Redirect::where('from', $path)->where('language', $lang)->orderBy('id', 'desc')->first();
         if ($redirect) {
             $responseData["redirect"] = RedirectResource::make($redirect);
+            $responseData['content_type'] = 'redirect';
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -196,6 +205,7 @@ class ContentController extends Controller
         // Is 404
         $responseCode = 404;
         $responseData["notfound"] = true;
+        $responseData['content_type'] = 'notfound';
 
         // $responseData["debuger"] = debugbar()->getData();
         return response()->json(['data' => $responseData], $responseCode);
