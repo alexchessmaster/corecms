@@ -3,7 +3,7 @@
 @section('content-card-body')
 
 <div class="container">
-    <form action="{{ route('admin.book_genres.update', $bookGenre) }}" method="POST">
+    <form action="{{ route('admin.book_genres.update', $bookGenre) }}" method="POST"  enctype='multipart/form-data'>
         @csrf
         @method('PUT')
         @include('admin.book_genre.form')

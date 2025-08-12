@@ -13,6 +13,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreWidgetFieldValuesRequest;
 use App\Http\Requests\UpdateWidgetFieldValuesRequest;
 
+use function Pest\Laravel\json;
+
 class WidgetFieldValuesController extends Controller
 {
     /**
@@ -110,11 +112,17 @@ class WidgetFieldValuesController extends Controller
                 $widgetFieldValue->save();
             }
 
+            // TODO: This part should be tested later 
             if ($widgetLocked === '1') {
                 // Find all widgetables using the same widget_id across all pages/articles/categories
                 $widgetables = Widgetable::where('widget_id', $fieldWidget->widget_id)->get();
 
                 foreach ($widgetables as $otherWidgetable) {
+                    // Skip the current widgetable to avoid overwriting its value
+                    if ($otherWidgetable->id == $widgetable->id) {
+                        continue;
+                    }
+
                     $fieldWidgetForOther = FieldWidget::where('widget_id', $fieldWidget->widget_id)
                         ->where('field_id', $fieldWidget->field_id)
                         ->first();
@@ -128,10 +136,14 @@ class WidgetFieldValuesController extends Controller
                         ->first();
 
                     if ($widgetFieldValueForOther) {
-                        $widgetFieldValueForOther->setTranslation('value', $language, $inputValue);
-                        $widgetFieldValueForOther->save();
+                        // Only update if the existing value is empty or null
+                        $existingValue = $widgetFieldValueForOther->getTranslation('value', $language);
+                        if (empty($existingValue)) {
+                            $widgetFieldValueForOther->setTranslation('value', $language, $inputValue);
+                            $widgetFieldValueForOther->save();
+                        }
                     } else {
-                        // Create if not exists (optional)
+                        // Create if not exists
                         $newFieldValue = new WidgetFieldValues;
                         $newFieldValue->widgetable_id = $otherWidgetable->id;
                         $newFieldValue->field_widget_id = $fieldWidgetForOther->id;

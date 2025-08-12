@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\WidgetableResource;
@@ -22,10 +23,11 @@ class BookGenreResource extends JsonResource
             "slug" => $this->slug,
             "description" => $this->description,
             "parent_id" => $this->parent_id,
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
             "parent" => $this->relationLoaded('parent') ? BookGenreResource::make($this->parent) : null,
             "children" => $this->relationLoaded('children') ? BookGenreResource::collection($this->children) : null,
             "books" => $this->relationLoaded('books') ? BookResource::collection($this->books) : null,
-            "template_page_id" => $this->template_page_id,
+            "books_count" => $this->books_count ?? null,
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,

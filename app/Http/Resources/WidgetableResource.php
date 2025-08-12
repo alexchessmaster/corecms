@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\WidgetResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -26,21 +27,21 @@ class WidgetableResource extends JsonResource
             'widgetable_type' => $this->widgetable_type, // page or other widgetable type
             'widget_id' => $this->widget_id,
             'position' => $this->position,
-            'image' => !empty($this->widget->image) ? (str_starts_with($this->widget->image, 'http') ? $this->widget->image : config('app.url') . $this->widget->image) : null,
+            'image' => FileHelper::addDomainPrefixIfValueIsAFile($this->widget?->image),
             'locked_fields_value' => $this->widget->locked_fields_value,
             'name' => $this->widget->name,
             'key' => $this->widget->key,
             'fields' => $widget->fieldWidgets->map(function ($fieldWidget) use ($fieldValues) {
                 $widgetFieldValue = $fieldValues->get($fieldWidget->id);
-                $value = $widgetFieldValue?->value;
-
+                $value = $widgetFieldValue?->getTranslation('value', app()->getLocale());
+                
                 return [
                     'id' => $fieldWidget->field->id,
                     'field_widget' => $fieldWidget->id,
                     'widget_field_value_id' => $widgetFieldValue?->id, // not used so far
                     'key' => $fieldWidget->key,
                     'type' => $fieldWidget->field->type,
-                    'value' => !empty($value) && $fieldWidget->field->type === 'file' ? (str_starts_with($value, 'http') ? $value : config('app.url') . $value) : $value,
+                    'value' => !empty($value) && $fieldWidget->field->type === 'file' ? FileHelper::addDomainPrefixIfValueIsAFile($value) : $value,
                 ];
             }),
             

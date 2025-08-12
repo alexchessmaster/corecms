@@ -101,19 +101,19 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             if (alert && alert.parentNode) {
                 // Use Bootstrap's alert dismiss method if available
-                if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                } else {
+                // if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                //     const bsAlert = new bootstrap.Alert(alert);
+                //     bsAlert.close();
+                // } else {
                     // Fallback manual removal
                     alert.style.transition = 'opacity 0.5s';
                     alert.style.opacity = '0';
                     setTimeout(function() {
                         if (alert.parentNode) {
-                            alert.parentNode.removeChild(alert);
+                            alert.style.visibility = 'hidden';
                         }
                     }, 500);
-                }
+                // }
             }
         }, 10000); // 10 seconds
     });

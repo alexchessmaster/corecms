@@ -71,7 +71,7 @@ class MenuController extends Controller
                 if ($key === 'new') {
                     Menu::create([
                         'name' => $request->input('name'),
-                        'link' => \Str::slug($request->input('link')),
+                        'link' => $request->input('link'),
                         'image' => FileHelper::upload($request, 'image'),
                         'image_alt' => $request->input('image_alt'),
                         'description' => $request->input('description'),

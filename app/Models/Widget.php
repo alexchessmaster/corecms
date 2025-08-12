@@ -30,6 +30,18 @@ class Widget extends Model
                 $widget->key = $slug;
             }
         });
+
+        static::updating(function ($widget) {
+            // todo: check if it's working
+            $baseSlug = Str::slug($widget->name);
+            $slug = $baseSlug;
+            $counter = 2;
+            while (Widget::where('key', $slug)->where('id', '!=', $widget->id)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+            $widget->key = $slug;
+        });
     }
 
     public function widgetables()

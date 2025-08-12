@@ -22,6 +22,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/fetch-content', [ContentController::class, 'fetchContent'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
+Route::get('/fetch-books', [ContentController::class, 'fetchBooks']);
+Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
 // Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
 // Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
 

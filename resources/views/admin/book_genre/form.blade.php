@@ -32,6 +32,20 @@
     </textarea>
 </div>
 
+<div class="mb-3">
+    <label for="image" class="form-label">Image</label>
+    @if (isset($bookGenre) && $bookGenre->image)
+        <div class="mb-2">
+            <img src="{{ $bookGenre->image }}" alt="Current Image" style="max-width: 150px; height: auto;">
+        </div>
+    @endif
+    <div class="mb-2" id="preview-container" style="display: none;">
+        <img id="image-preview" style="max-width: 150px; height: auto;" />
+    </div>
+    <input type="file" class="form-control" id="image" name="image"
+        @if (!(isset($bookGenre) && $bookGenre->image)) required @endif>
+</div>
+
 @include('admin.partials.sitemap-form')
 
 <br>

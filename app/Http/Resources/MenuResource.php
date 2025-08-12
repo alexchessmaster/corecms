@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,7 @@ class MenuResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "link" => $this->link,
-            "image" => config('app.url') . $this->image,
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
             "image_alt" => $this->image_alt,
             "description" => $this->description,
             "parent_id" => $this->parent_id,

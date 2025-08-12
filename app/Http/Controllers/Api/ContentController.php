@@ -11,6 +11,8 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Redirect;
+use App\Models\BookGenre;
+use App\Helpers\FileHelper;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TranslationText;
@@ -28,6 +30,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
 use Yajra\DataTables\Facades\DataTables;
+use App\Http\Resources\BookGenreResource;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use App\Http\Resources\TranslationTextResource;
 
@@ -127,7 +130,7 @@ class ContentController extends Controller
         if ($category) {
             $responseData["category"] = CategoryResource::make($category);
             $responseData['content_type'] = 'category';
-            
+
             return response()->json(['data' => $responseData], $responseCode);
         }
 
@@ -286,6 +289,84 @@ class ContentController extends Controller
                 }
             })
             ->make(true);
+    }
+
+    public function fetchBooks()
+    {
+        $language = request()->query('language');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        $bookGenre = request()->query('book_genre') ?? "";
+        $sort = request()->query('sort');
+
+        $query = Book::with('bookGenre')->where('status', 'published');
+
+        // Filter by book genre if provided
+        if (!empty($bookGenre) && $bookGenre !== 'null') {
+            $bookGenre = BookGenre::where('slug->' . app()->getLocale(), '/' . ltrim(Str::slug($bookGenre), '/'))->first();
+            if ($bookGenre) {
+                $query = Book::with('bookGenre')->where('status', 'published')
+                    ->where('book_genre_id', $bookGenre->id);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Book genre does not exist'], 404);
+            }
+        }
+
+        
+        if ($sort === 'oldest') {
+            $query = $query->orderBy('created_at', 'desc');
+        } else {
+            $query = $query->orderBy('created_at', 'asc');
+        }
+
+        return DataTables::of($query)
+            ->editColumn('title', function ($book) {
+                return $book->getTranslation('title', app()->getLocale());
+            })
+            ->editColumn('slug', function ($book) {
+                return $book->getTranslation('slug', app()->getLocale());
+            })
+            ->editColumn('description', function ($book) {
+                return $book->getTranslation('description', app()->getLocale());
+            })
+            ->editColumn('image', function ($book) {
+                return FileHelper::addDomainPrefixIfValueIsAFile($book->image);
+            })
+            ->editColumn('book_genre', function ($book) {
+                return $book?->bookGenre?->getTranslation('name', app()->getLocale()) ?? null;
+            })
+            ->addColumn('book_genre_slug', function ($book) {
+                return $book?->bookGenre?->getTranslation('slug', app()->getLocale()) ?? null;
+            })
+            ->editColumn('full_url', function ($book) {
+                return $book->full_url;
+            })
+            ->filter(function ($query) {
+                if (request()->has('search') && !empty(request()->search['value'])) {
+                    $searchValue = request()->search['value'];
+                    $query->where(function ($query) use ($searchValue) {
+                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
+                            ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
+                    });
+                }
+            })
+            ->order(function ($query) {
+                if (request()->has('order')) {
+                    $orderColumn = request()->columns[request()->order[0]['column']]['data'];
+                    $orderDirection = request()->order[0]['dir'];
+                    $query->orderBy($orderColumn, $orderDirection);
+                }
+            })
+            ->make(true);
+    }
+
+    public function fetchBookGenres()
+    {
+        $bookGenres = BookGenre::withCount('books')->get();
+        return response()->json([
+            'data' => BookGenreResource::collection($bookGenres)
+        ]);
     }
 
     public function fetchCategories()

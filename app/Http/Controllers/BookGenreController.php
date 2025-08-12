@@ -6,6 +6,7 @@ use App\Models\Widget;
 use App\Models\Language;
 use App\Models\BookGenre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreBookGenreRequest;
 use App\Http\Requests\UpdateBookGenreRequest;
 
@@ -28,7 +29,7 @@ class BookGenreController extends Controller
         foreach ($languages as $lang) {
             $bookGenre = BookGenre::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
                 ->first();
-            if($bookGenre){
+            if ($bookGenre) {
                 $bookGenre->setTranslations('name', $nameTranslations);
                 $bookGenre->setTranslations('slug', $slugTranslations);
                 $bookGenre->save();
@@ -46,11 +47,11 @@ class BookGenreController extends Controller
                     $text = $item->getTranslation('name', app()->getLocale(), false);
                     return $text ?: '-Not translated-';
                 })
-                ->addColumn('parent', function($item){
+                ->addColumn('parent', function ($item) {
                     return $item->parent?->name;
                 })
                 ->addColumn('actions', function ($row) {
-                    if(str_contains($row->name, 'uncategorized')){
+                    if (str_contains($row->name, 'uncategorized')) {
                         return '';
                     }
                     $editUrl = route('admin.book_genres.edit', $row->id);
@@ -84,6 +85,7 @@ class BookGenreController extends Controller
             'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
+            'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:2048',
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
@@ -91,18 +93,30 @@ class BookGenreController extends Controller
         ]);
 
         $bookGenre = new BookGenre;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $destinationPath = public_path('uploads/images');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0775, true);
+            }
+            $image->move($destinationPath, $filename);
+            $bookGenre->setTranslation('image', app()->getLocale(), '/uploads/images/' . $filename);
+        }
+
         $bookGenre->setTranslation('name', app()->getLocale(), $request->name);
         $bookGenre->parent_id = $request->input('parent_id');
         $bookGenre->setTranslation('description', app()->getLocale(), $request->input('description'));
-        if(!empty($request->input('sitemap_exclude'))){
+        if (!empty($request->input('sitemap_exclude'))) {
             $bookGenre->sitemap_exclude = true;
         } else {
             $bookGenre->sitemap_exclude = null;
         }
-        if(!empty($request->input('sitemap_priority'))){
+        if (!empty($request->input('sitemap_priority'))) {
             $bookGenre->sitemap_priority = $request->input('sitemap_priority');
         }
-        if(!empty($request->input('sitemap_change_frequency'))){
+        if (!empty($request->input('sitemap_change_frequency'))) {
             $bookGenre->sitemap_change_frequency = $request->input('sitemap_change_frequency');
         }
         if (!empty($request->input('primary_language'))) {
@@ -131,24 +145,36 @@ class BookGenreController extends Controller
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
+            'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:2048',
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
         ]);
 
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $destinationPath = public_path('uploads/images');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0775, true);
+            }
+            $image->move($destinationPath, $filename);
+            $bookGenre->setTranslation('image', app()->getLocale(), '/uploads/images/' . $filename);
+        }
+
         $bookGenre->setTranslation('name', app()->getLocale(), $request->name);
         $bookGenre->parent_id = $request->input('parent_id');
         $bookGenre->description = $request->input('description');
-        if(!empty($request->input('sitemap_exclude'))){
+        if (!empty($request->input('sitemap_exclude'))) {
             $bookGenre->sitemap_exclude = true;
         } else {
             $bookGenre->sitemap_exclude = null;
         }
-        if(!empty($request->input('sitemap_priority'))){
+        if (!empty($request->input('sitemap_priority'))) {
             $bookGenre->sitemap_priority = $request->input('sitemap_priority');
         }
-        if(!empty($request->input('sitemap_change_frequency'))){
+        if (!empty($request->input('sitemap_change_frequency'))) {
             $bookGenre->sitemap_change_frequency = $request->input('sitemap_change_frequency');
         }
         if (!empty($request->input('primary_language'))) {

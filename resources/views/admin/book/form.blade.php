@@ -28,13 +28,13 @@
         <label for="status">Status</label>
         <select id="status" name="status" class="form-control">
             <option value="draft"
-                {{ old('status', $page->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                {{ $book?->status === 'draft' ? 'selected' : '' }}>Draft
             </option>
             <option value="published"
-                {{ old('status', $page->status ?? '') == 'published' ? 'selected' : '' }}>Published
+                {{ $book?->status === 'published' ? 'selected' : '' }}>Published
             </option>
             <option value="scheduled"
-                {{ old('status', $page->status ?? '') == 'scheduled' ? 'selected' : '' }}>Scheduled
+                {{ $book?->status === 'scheduled' ? 'selected' : '' }}>Scheduled
             </option>
         </select>
     </div>

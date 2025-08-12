@@ -64,7 +64,7 @@ class BookController extends Controller
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
-            'primary_language' => 'nullable|string',
+            'status' => 'required|string',
             'scheduled_at' => 'nullable|date',
             'published_year' => 'nullable|integer|min:-6000|max:2500',
             'author' => 'nullable|string|max:255',
@@ -99,12 +99,14 @@ class BookController extends Controller
         if (!empty($request->input('sitemap_change_frequency'))) {
             $book->sitemap_change_frequency = $request->input('sitemap_change_frequency');
         }
-        if (!empty($request->input('primary_language'))) {
-            $book->primary_language = $request->input('primary_language');
-            if ($request->input('primary_language') === 'default') {
-                $book->primary_language = null;
-            }
-        }
+        // if (!empty($request->input('primary_language'))) {
+        //     $book->primary_language = $request->input('primary_language');
+        //     if ($request->input('primary_language') === 'default') {
+        //         $book->primary_language = null;
+        //     }
+        // }
+        $book->primary_language = app()->getLocale(); // Default to current locale
+        $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $book->published_year = $request->input('published_year');
         $book->author = $request->input('author');
@@ -136,7 +138,7 @@ class BookController extends Controller
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
-            'primary_language' => 'nullable|string',
+            'status' => 'required|string',
             'scheduled_at' => 'nullable|date',
             'published_year' => 'nullable|integer|min:-6000|max:2500',
             'author' => 'nullable|string|max:255',
@@ -170,12 +172,13 @@ class BookController extends Controller
         if (!empty($request->input('sitemap_change_frequency'))) {
             $book->sitemap_change_frequency = $request->input('sitemap_change_frequency');
         }
-        if (!empty($request->input('primary_language'))) {
-            $book->primary_language = $request->input('primary_language');
-            if ($request->input('primary_language') === 'default') {
-                $book->primary_language = null;
-            }
-        }
+        // if (!empty($request->input('primary_language'))) {
+        //     $book->primary_language = $request->input('primary_language');
+        //     if ($request->input('primary_language') === 'default') {
+        //         $book->primary_language = null;
+        //     }
+        // }
+        $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $book->published_year = $request->input('published_year');
         $book->author = $request->input('author');

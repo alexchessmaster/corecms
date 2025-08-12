@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\FileHelper;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
@@ -42,9 +43,9 @@ class BookResource extends JsonResource
             "full_url" => $this->full_url,
             "description" => $this->description,
             "content" => $this->content,
-            "image" => str_starts_with($this->image, 'http') ? $this->image : config('app.url') . $this->image,
-            "category_id" => $this->category_id,
-            "category" => $this->relationLoaded('category') ? new BookGenreResource($this->category) : null,
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
+            "book_genre_id" => $this->book_genre_id,
+            "bookGenre" => $this->relationLoaded('bookGenre') ? new BookGenreResource($this->bookGenre) : null,
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,

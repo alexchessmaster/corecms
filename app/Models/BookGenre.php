@@ -17,7 +17,7 @@ class BookGenre extends Model
     use HasTranslations;
     
     protected $guarded = [];
-    public $translatable = ['name', 'slug', 'description'];
+    public $translatable = ['name', 'slug', 'description', 'image'];
     protected $with = ['parent'];
 
     public function parent()
