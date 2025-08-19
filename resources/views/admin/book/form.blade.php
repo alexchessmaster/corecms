@@ -28,13 +28,13 @@
         <label for="status">Status</label>
         <select id="status" name="status" class="form-control">
             <option value="draft"
-                {{ $book?->status === 'draft' ? 'selected' : '' }}>Draft
+                {{ isset($book) && $book->status === 'draft' ? 'selected' : '' }}>Draft
             </option>
             <option value="published"
-                {{ $book?->status === 'published' ? 'selected' : '' }}>Published
+                {{ isset($book) && $book->status === 'published' ? 'selected' : '' }}>Published
             </option>
             <option value="scheduled"
-                {{ $book?->status === 'scheduled' ? 'selected' : '' }}>Scheduled
+                {{ isset($book) && $book->status === 'scheduled' ? 'selected' : '' }}>Scheduled
             </option>
         </select>
     </div>

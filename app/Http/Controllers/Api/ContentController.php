@@ -23,6 +23,7 @@ use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\SettingResource;
 use Barryvdh\Debugbar\Facades\Debugbar;
@@ -36,9 +37,37 @@ use App\Http\Resources\TranslationTextResource;
 
 class ContentController extends Controller
 {
+
+    public function fetchMenu()
+    {
+        $menu = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
+
+        return response()->json(['data' => MenuResource::collection($menu)]);
+    }
+
+    public function fetchLanguages()
+    {
+        $languages = Language::all();
+
+        return response()->json(['data' => LanguageResource::collection($languages)]);
+    }
+
+    public function fetchSettings()
+    {
+        $settings = Setting::all();
+
+        return response()->json(['data' => SettingResource::collection($settings)]);
+    }
+
+    public function fetchTranslations()
+    {
+        $translations = TranslationText::all();
+
+        return response()->json(['data' => TranslationTextResource::collection($translations)]);
+    }
+
     public function fetchContent()
     {
-        // TODO: move this to the languageapimiddleware
         $path = urldecode(request()->query('path'));
         if (empty($path)) {
             return response()->json(["status" => "error", "message" => "Missing \"path\" arguments"], 400);
@@ -49,9 +78,9 @@ class ContentController extends Controller
         $lang = request()->query('lang');
         $languages = Language::all();
         if ($languages->count() < 2) {
-            // site is not multilingual
-            // TODO: Page::where(") // do i need it???
-            // $lang = Language::pluck('code')->first();
+            // site is not multilingual (test it later)
+            $lang = Language::pluck('code')->first();
+            app()->setLocale($lang);
         } else {
             // site is multilingual
             if (empty($lang)) {
@@ -77,8 +106,9 @@ class ContentController extends Controller
             }
             if (!$langIsValid) {
                 $path = request()->path;
-                $lang = Language::where('default', true)->pluck('code')->first();
-                // return response()->json(["status" => "error", "message" => "Can not detect the language. " . $lang], 400);
+                // $lang = Language::where('default', true)->pluck('code')->first();
+
+                return response()->json(["status" => "error", "message" => "Can not detect the language. " . $lang], 400);
             }
             app()->setLocale($lang);
         }
@@ -101,12 +131,8 @@ class ContentController extends Controller
             'auth' => collect(),
             'redirect' => collect(),
             'notfound' => false,
-            'settings' => SettingResource::collection($settings),
-            'languages' => LanguageResource::collection($languages),
-            'menus' => MenuResource::collection($menus),
             'path' => $path,
             'lang' => $lang,
-            'translation_texts' => TranslationTextResource::collection($translationTexts),
             'content_type' => '',
         ];
 
@@ -298,26 +324,37 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
         $bookGenre = request()->query('book_genre') ?? "";
+        $author = request()->query('author');
         $sort = request()->query('sort');
 
         $query = Book::with('bookGenre')->where('status', 'published');
+
+        if (! empty($sort)) {
+            if ($sort === 'oldest') {
+                $query = $query->orderBy('created_at', 'desc');
+            } else if ($sort === 'views') {
+                $query = $query->orderBy('views', 'desc');
+            } else if ($sort === 'random') {
+                $query = $query->inRandomOrder();
+            } else if ($sort === 'title') {
+                $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
+            } else { // 'created_at'
+                $query = $query->orderBy('created_at', 'desc');
+            }
+        }
+
+        if (! empty($author)) {
+            $query = $query->where('author->' . app()->getLocale(), $author);
+        }
 
         // Filter by book genre if provided
         if (!empty($bookGenre) && $bookGenre !== 'null') {
             $bookGenre = BookGenre::where('slug->' . app()->getLocale(), '/' . ltrim(Str::slug($bookGenre), '/'))->first();
             if ($bookGenre) {
-                $query = Book::with('bookGenre')->where('status', 'published')
-                    ->where('book_genre_id', $bookGenre->id);
+                $query = $query->where('book_genre_id', $bookGenre->id);
             } else {
-                return response()->json(['status' => 'error', 'message' => 'Book genre does not exist'], 404);
+                $query = $query->whereRaw('1 = 0');
             }
-        }
-
-        
-        if ($sort === 'oldest') {
-            $query = $query->orderBy('created_at', 'desc');
-        } else {
-            $query = $query->orderBy('created_at', 'asc');
         }
 
         return DataTables::of($query)
@@ -361,6 +398,41 @@ class ContentController extends Controller
             ->make(true);
     }
 
+    public function fetchAuthors()
+    {
+        $language = request()->query('language');
+        if ($language) {
+            app()->setLocale($language);
+        }
+
+        $locale = app()->getLocale();
+
+        // Add caching for better performance
+        $authors = Cache::remember("authors_{$locale}", 3600, function () use ($locale) {
+            $authors = Book::where('status', 'published')
+                ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(author, "$.' . $locale . '")) as author_name, COUNT(*) as book_count')
+                ->whereNotNull('author->' . $locale)
+                ->where('author->' . $locale, '!=', '')
+                ->groupBy('author_name')
+                ->orderBy('book_count', 'desc')
+                ->limit(10)
+                ->get();
+
+            return $authors;
+        });
+
+        return response()->json([
+            'data' => [
+                'authors' => $authors->map(function ($author) {
+                    return [
+                        'name' => $author->author_name,
+                        'book_count' => $author->book_count
+                    ];
+                }),
+                'total_authors' => $authors->count()
+            ]
+        ]);
+    }
     public function fetchBookGenres()
     {
         $bookGenres = BookGenre::withCount('books')->get();

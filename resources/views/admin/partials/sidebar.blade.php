@@ -62,19 +62,21 @@
             </li>
             <div style="border: 1px gray solid"></div>
             <!-- Content Management -->
+
             <li class="nav-item">
-                <a href="/admin/book_genres" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
+                <a href="/admin/menus" class="nav-link">
+                    <i class="nav-icon fas fa-list-ul"></i>
                     <p>
-                        Books Genres
+                        Menus
                     </p>
                 </a>
             </li>
+            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             <li class="nav-item">
-                <a href="/admin/books" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
+                <a href="/admin/pages" class="nav-link">
+                    <i class="nav-icon fas fa-file"></i>
                     <p>
-                        Books
+                        Pages
                     </p>
                 </a>
             </li>
@@ -105,19 +107,18 @@
             </li>
             <div style="border: 1px rgb(55, 67, 71) solid"></div>
             <li class="nav-item">
-                <a href="/admin/pages" class="nav-link">
-                    <i class="nav-icon fas fa-file"></i>
+                <a href="/admin/book_genres" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
                     <p>
-                        Pages
+                        Books Genres
                     </p>
                 </a>
             </li>
-            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             <li class="nav-item">
-                <a href="/admin/menus" class="nav-link">
-                    <i class="nav-icon fas fa-list-ul"></i>
+                <a href="/admin/books" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
                     <p>
-                        Menus
+                        Books
                     </p>
                 </a>
             </li>
@@ -187,6 +188,6 @@
             </li>
         </ul>
     </nav>
-    
+
     <!-- /.sidebar-menu -->
 </div>
