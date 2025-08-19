@@ -25,6 +25,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\BookAuthorResource;
 use App\Http\Resources\SettingResource;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
@@ -34,6 +35,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Http\Resources\BookGenreResource;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use App\Http\Resources\TranslationTextResource;
+use App\Models\BookAuthor;
 
 class ContentController extends Controller
 {
@@ -324,7 +326,7 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
         $bookGenre = request()->query('book_genre') ?? "";
-        $author = request()->query('author');
+        $authorId = request()->query('author');
         $sort = request()->query('sort');
 
         $query = Book::with('bookGenre')->where('status', 'published');
@@ -343,8 +345,8 @@ class ContentController extends Controller
             }
         }
 
-        if (! empty($author)) {
-            $query = $query->where('author->' . app()->getLocale(), $author);
+        if (! empty($authorId)) {
+            $query = $query->where('author_id', $authorId);
         }
 
         // Filter by book genre if provided
@@ -405,34 +407,13 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
 
-        $locale = app()->getLocale();
-
-        // Add caching for better performance
-        $authors = Cache::remember("authors_{$locale}", 3600, function () use ($locale) {
-            $authors = Book::where('status', 'published')
-                ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(author, "$.' . $locale . '")) as author_name, COUNT(*) as book_count')
-                ->whereNotNull('author->' . $locale)
-                ->where('author->' . $locale, '!=', '')
-                ->groupBy('author_name')
-                ->orderBy('book_count', 'desc')
-                ->limit(10)
-                ->get();
-
-            return $authors;
-        });
+        $authors = BookAuthor::withCount('books')->get();
 
         return response()->json([
-            'data' => [
-                'authors' => $authors->map(function ($author) {
-                    return [
-                        'name' => $author->author_name,
-                        'book_count' => $author->book_count
-                    ];
-                }),
-                'total_authors' => $authors->count()
-            ]
+            'data' => BookAuthorResource::collection($authors)
         ]);
     }
+
     public function fetchBookGenres()
     {
         $bookGenres = BookGenre::withCount('books')->get();

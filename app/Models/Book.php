@@ -6,6 +6,7 @@ use App\Models\Widget;
 use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
+use App\Models\BookAuthor;
 use App\Models\Widgetable;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
@@ -19,7 +20,7 @@ class Book extends Model
     use HasTranslations;
 
     protected $guarded = [];
-    public $translatable = ['title', 'slug', 'description', 'image', 'author'];
+    public $translatable = ['title', 'slug', 'description', 'image'];
     protected $casts = [
         'scheduled_at' => 'datetime',
         'created_at' => 'datetime',
@@ -82,5 +83,10 @@ class Book extends Model
             'id',
             'widget_id'
         )->where('widgetables.widgetable_type', self::class);
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(BookAuthor::class, 'author_id');
     }
 }

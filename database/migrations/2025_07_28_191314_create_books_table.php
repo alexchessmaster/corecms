@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('primary_language', 2)->nullable();
             $table->dateTime('scheduled_at')->nullable();
 
-            $table->json('author')->nullable();
+            $table->unsignedBigInteger('author_id')->nullable();
+
             $table->unsignedInteger('published_year')->nullable();
             $table->unsignedBigInteger('views')->default(0);
             $table->integer('total_pages')->default(0);
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('book_genre_id')->references('id')->on('book_genres')->onDelete('set null');
+            $table->foreign('author_id')->references('id')->on('book_authors')->onDelete('set null');
         });
     }
 
