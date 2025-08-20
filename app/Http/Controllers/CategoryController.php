@@ -11,11 +11,9 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        // Ensure /uncategorized category exists for each language
         $languages = Language::get();
         $languageCodes = collect($languages)->pluck('code')->toArray();
 
-        // Create or update /uncategorized for each language using setTranslations()
         $nameTranslations = [];
         $slugTranslations = [];
         foreach ($languages as $lang) {
@@ -26,11 +24,17 @@ class CategoryController extends Controller
             $category = \App\Models\Category::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
                 ->first();
             if($category){
-                $category->setTranslations('name', $nameTranslations);
+                $currentName = $category->getTranslation('name', $lang['code'], false);
+                
+                // Only set translations if current name is Uncategorized, null, or empty
+                if (empty($currentName) || $currentName === 'Uncategorized') {
+                    $category->setTranslations('name', $nameTranslations);
+                }
+                
                 $category->setTranslations('slug', $slugTranslations);
                 $category->save();
 
-                break; // Only need to create one, since all translations are set at once
+                break;
             }
         }
 
@@ -41,7 +45,7 @@ class CategoryController extends Controller
                 ->of($data)
                 ->editColumn('name', function ($item) {
                     $text = $item->getTranslation('name', app()->getLocale(), false);
-                    return $text ?: '-Not translated-';
+                    return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), true);
                 })
                 ->addColumn('parent', function($item){
                     return $item->parent?->name;

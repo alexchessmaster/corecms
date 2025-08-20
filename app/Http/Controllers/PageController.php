@@ -77,16 +77,7 @@ class PageController extends Controller
         $page->setTranslation('slug', app()->getLocale(), $slug);
         $page->status = $request->status;
         $page->scheduled_at = $request->scheduled_at ? \Carbon\Carbon::parse($request->scheduled_at) : null;
-        // $pageType = 'page';
-        // if (str_contains(request()->path(), 'admin/templates')) {
-        //     $pageType = 'template';
-        // }
-        // $page->type = $pageType;
         $page->save();
-
-        // if ($pageType === 'template') {
-        //     return redirect()->route('admin.templates.edit', $page->id);
-        // }
 
         return redirect()->route('admin.pages.edit', $page->id);
     }
@@ -106,12 +97,7 @@ class PageController extends Controller
     {
         $page = Page::findOrFail($pageId);
         $pageWidgets = $page->widgets;
-        // $pageType = $page->type;
-        // if ($pageType === 'template') {
-        //     $allWidgets = Widget::where('active', true)->get();
-        // } else {
         $allWidgets = Widget::where('active', true)->get();
-        // }
 
         return view('admin.page.edit', compact('page', 'allWidgets', 'pageWidgets'));
     }

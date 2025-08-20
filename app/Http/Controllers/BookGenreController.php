@@ -30,7 +30,13 @@ class BookGenreController extends Controller
             $bookGenre = BookGenre::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
                 ->first();
             if ($bookGenre) {
-                $bookGenre->setTranslations('name', $nameTranslations);
+                $currentName = $bookGenre->getTranslation('name', $lang['code'], false);
+                
+                // Only set translations if current name is Uncategorized, null, or empty
+                if (empty($currentName) || $currentName === 'Uncategorized') {
+                    // $bookGenre->setTranslations('name', $nameTranslations);
+                }
+                
                 $bookGenre->setTranslations('slug', $slugTranslations);
                 $bookGenre->save();
 
@@ -45,7 +51,7 @@ class BookGenreController extends Controller
                 ->of($data)
                 ->editColumn('name', function ($item) {
                     $text = $item->getTranslation('name', app()->getLocale(), false);
-                    return $text ?: '-Not translated-';
+                    return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), true);
                 })
                 ->addColumn('parent', function ($item) {
                     return $item->parent?->name;

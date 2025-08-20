@@ -60,19 +60,19 @@ class FieldController extends Controller
 
     public function update(Request $request, Field $field)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        // ]);
 
-        $field->name = $request->input('name');
-        $field->save();
+        // $field->name = $request->input('name');
+        // $field->save();
 
-        return redirect()->route('admin.fields.index')->with('success', 'Field updated successfully.');
+        // return redirect()->route('admin.fields.index')->with('success', 'Field updated successfully.');
     }
 
     public function destroy(Field $field)
     {
-        $field->delete();
-        return redirect()->route('admin.fields.index')->with('success', 'Field deleted successfully.');
+        // $field->delete();
+        // return redirect()->route('admin.fields.index')->with('success', 'Field deleted successfully.');
     }
 }

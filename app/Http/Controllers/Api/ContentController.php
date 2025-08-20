@@ -42,6 +42,12 @@ class ContentController extends Controller
 
     public function fetchMenu()
     {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        info('Fetching menu for language: ' . app()->getLocale());
+
         $menu = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
 
         return response()->json(['data' => MenuResource::collection($menu)]);
@@ -49,6 +55,11 @@ class ContentController extends Controller
 
     public function fetchLanguages()
     {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        
         $languages = Language::all();
 
         return response()->json(['data' => LanguageResource::collection($languages)]);
@@ -63,6 +74,11 @@ class ContentController extends Controller
 
     public function fetchTranslations()
     {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+
         $translations = TranslationText::all();
 
         return response()->json(['data' => TranslationTextResource::collection($translations)]);
@@ -244,7 +260,7 @@ class ContentController extends Controller
 
     public function fetchArticles()
     {
-        $language = request()->query('language');
+        $language = request()->query('lang');
         // info($language);
         if ($language) {
             app()->setLocale($language);
@@ -321,7 +337,7 @@ class ContentController extends Controller
 
     public function fetchBooks()
     {
-        $language = request()->query('language');
+        $language = request()->query('lang');
         if ($language) {
             app()->setLocale($language);
         }
@@ -402,7 +418,7 @@ class ContentController extends Controller
 
     public function fetchAuthors()
     {
-        $language = request()->query('language');
+        $language = request()->query('lang');
         if ($language) {
             app()->setLocale($language);
         }
@@ -416,6 +432,11 @@ class ContentController extends Controller
 
     public function fetchBookGenres()
     {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+
         $bookGenres = BookGenre::withCount('books')->get();
         return response()->json([
             'data' => BookGenreResource::collection($bookGenres)
@@ -424,6 +445,11 @@ class ContentController extends Controller
 
     public function fetchCategories()
     {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+
         $categoriesQuery = Category::query();
 
         return DataTables::of($categoriesQuery)

@@ -112,10 +112,6 @@ class MenuController extends Controller
      */
     public function update(UpdateMenuRequest $request, Menu $menu)
     {
-        // if($request->input('lang')){
-        //     \App::setLocale($request->input('lang'));
-        // }
-        // dd($request->all());
         $order = $request->input('order');
         if (!is_null($order)) {
             $order += 0.5;
