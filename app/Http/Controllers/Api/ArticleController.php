@@ -15,6 +15,10 @@ class ArticleController extends Controller
 {
     public function show($articleId)
     {
+        if (!empty(request()->lang)) {
+            app()->setLocale(request()->lang);
+        }
+
         $article = Article::withAllWidgetData()->find($articleId);
 
         return response()->json(ArticleResource::make($article));

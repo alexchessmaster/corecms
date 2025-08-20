@@ -11,7 +11,7 @@
         <div class="d-flex justify-content-between mb-3">
             <h2 class="text-primary">Manage Books</h2>
             <a href="{{ route('admin.books.create') }}" class="btn btn-success">
-                <i class="fas fa-plus"></i> Create Book
+                <i class="fas fa-plus"></i> Add a new book
             </a>
         </div>
 

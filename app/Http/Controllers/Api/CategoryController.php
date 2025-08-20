@@ -17,6 +17,10 @@ class CategoryController extends Controller
 {
     public function show($categoryId)
     {
+        if (!empty(request()->lang)) {
+            app()->setLocale(request()->lang);
+        }
+
         $category = Category::withAllWidgetData()->find($categoryId);
 
         return response()->json(CategoryResource::make($category));

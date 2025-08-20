@@ -13,6 +13,10 @@ class PageController extends Controller
 {
     public function show($pageId)
     {
+        if (!empty(request()->lang)) {
+            app()->setLocale(request()->lang);
+        }
+
         $page = Page::withAllWidgetData()->find($pageId);
 
         return response()->json(PageResource::make($page));

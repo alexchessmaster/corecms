@@ -3,7 +3,7 @@
 @section('content-body')
 
     <div class="container">
-        <a href="{{ route('admin.books.create') }}" class="btn btn-success"><strong style="">+ </strong>Create</a>
+        <a href="{{ route('admin.books.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new book</a>
         <form action="{{ route('admin.books.update', $book) }}" method="POST" enctype='multipart/form-data'>
             @csrf
             @method('PUT')

@@ -713,7 +713,7 @@
     let addWidgetButtonPosition = null;
     const refreshWidgetList = () => {
         widgetContainer.innerHTML = null;
-        fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}")
+        fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}?lang={!! App::currentLocale() !!}")
             .then(response => {
                 return response.json()
             })

@@ -101,7 +101,7 @@
     jQuery(document).ready(function($) {
         $('#book_author_id').select2({
             ajax: {
-                url: '/api/book-authors',
+                url: '/api/book-authors?lang={!! App::currentLocale() !!}',
                 dataType: 'json',
                 delay: 300,
                 data: function (params) {

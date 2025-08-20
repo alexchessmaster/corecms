@@ -1,5 +1,5 @@
 @extends('admin.partials.app')
-@section('content-card-title', 'Create Book')
+@section('content-card-title', 'Add a Book')
 @section('content-card-body')
 
 <div class="container">

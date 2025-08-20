@@ -17,6 +17,10 @@ class BookController extends Controller
 {
     public function show($bookId)
     {
+        if(!empty(request()->lang)){
+            app()->setLocale(request()->lang);
+        }
+
         $book = Book::withAllWidgetData()->find($bookId);
 
         return response()->json(BookResource::make($book));
