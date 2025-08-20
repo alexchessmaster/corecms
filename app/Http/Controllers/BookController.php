@@ -67,7 +67,7 @@ class BookController extends Controller
             'status' => 'required|string',
             'scheduled_at' => 'nullable|date',
             'published_year' => 'nullable|integer|min:-6000|max:2500',
-            'author' => 'nullable|string|max:255',
+            'book_author_id' => 'nullable|integer|exists:book_authors,id',
             'views' => 'nullable|integer|min:0',
             'total_pages' => 'nullable|integer|min:0',
         ]);
@@ -109,7 +109,9 @@ class BookController extends Controller
         $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $book->published_year = $request->input('published_year');
-        $book->author = $request->input('author');
+        if (!empty($request->input('book_author_id'))) {
+            $book->author_id = $request->input('book_author_id');
+        }
         $book->views = $request->input('views') || 0;
         $book->total_pages = $request->input('total_pages');
 
@@ -141,7 +143,7 @@ class BookController extends Controller
             'status' => 'required|string',
             'scheduled_at' => 'nullable|date',
             'published_year' => 'nullable|integer|min:-6000|max:2500',
-            'author' => 'nullable|string|max:255',
+            'book_author_id' => 'nullable|integer|exists:book_authors,id',
             'views' => 'nullable|integer|min:0',
             'total_pages' => 'nullable|integer|min:0',
         ]);
@@ -181,7 +183,9 @@ class BookController extends Controller
         $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $book->published_year = $request->input('published_year');
-        $book->author = $request->input('author');
+        if (!empty($request->input('book_author_id'))) {
+            $book->author_id = $request->input('book_author_id');
+        }
         $book->views = $request->input('views') || 0;
         $book->total_pages = $request->input('total_pages');
 

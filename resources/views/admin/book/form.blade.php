@@ -27,14 +27,11 @@
     <div class="form-group">
         <label for="status">Status</label>
         <select id="status" name="status" class="form-control">
-            <option value="draft"
-                {{ isset($book) && $book->status === 'draft' ? 'selected' : '' }}>Draft
+            <option value="draft" {{ isset($book) && $book->status === 'draft' ? 'selected' : '' }}>Draft
             </option>
-            <option value="published"
-                {{ isset($book) && $book->status === 'published' ? 'selected' : '' }}>Published
+            <option value="published" {{ isset($book) && $book->status === 'published' ? 'selected' : '' }}>Published
             </option>
-            <option value="scheduled"
-                {{ isset($book) && $book->status === 'scheduled' ? 'selected' : '' }}>Scheduled
+            <option value="scheduled" {{ isset($book) && $book->status === 'scheduled' ? 'selected' : '' }}>Scheduled
             </option>
         </select>
     </div>
@@ -49,10 +46,20 @@
     <label for="description" class="form-label required">Description (Short)</label>
     <textarea class="form-control" id="description" name="description" rows="2">{{ isset($book) ? $book->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
-<div class="mb-3">
+{{-- <div class="mb-3">
     <label for="author" class="form-label">Author</label>
     <input type="text" class="form-control" id="author" name="author"
         value="{{ isset($book) ? $book->getTranslation('author', app()->getLocale(), false) : '' }}">
+</div> --}}
+<div class="mb-3">
+    <label for="book_author_id" class="form-label">Book Author</label>
+    <select class="form-control" id="book_author_id" name="book_author_id" style="width: 100%;">
+        @if (isset($book) && $book->author_id && $book->author)
+            <option value="{{ $book->author_id }}" selected>
+                {{ $book->author->getTranslation('name', app()->getLocale(), false) ?: $book->author->getTranslation('name', 'en', true) }}
+            </option>
+        @endif
+    </select>
 </div>
 <div class="mb-3">
     <label for="total_pages" class="form-label">Total Pages</label>
@@ -79,9 +86,56 @@
     </select>
 </div>
 
+
 @include('admin.partials.sitemap-form')
 
 <br>
+
+<!-- Include jQuery first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Then Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    jQuery(document).ready(function($) {
+        $('#book_author_id').select2({
+            ajax: {
+                url: '/api/book-authors',
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data) {
+                    const results = data.data.map(function(author) {
+                        return {
+                            id: author.id,
+                            text: author.name
+                        };
+                    });
+                    
+                    return {
+                        results: results
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Type to search for an author...',
+            minimumInputLength: 0,
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Trigger change event to ensure the pre-selected option is properly loaded
+        @if (isset($book) && $book->book_author_id && $book->bookAuthor)
+            $('#book_author_id').trigger('change');
+        @endif
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -97,37 +151,27 @@
         }
 
         statusSelect.addEventListener('change', toggleScheduledInput);
-
-        // Run on load to handle edit forms and validation error repopulation
         toggleScheduledInput();
     });
-</script>
 
-<script>
-    // Get references to the DOM elements
     const imageInput = document.getElementById('image');
     const previewContainer = document.getElementById('preview-container');
     const previewImage = document.getElementById('image-preview');
     const currentImageContainer = document.getElementById('current-image-container');
 
-    // Event listener for image input
     imageInput.addEventListener('change', function(event) {
-        const file = event.target.files[0]; // Get the selected file
+        const file = event.target.files[0];
 
         if (file) {
-            // Create a URL for the selected file
             const fileURL = URL.createObjectURL(file);
 
-            // Hide the current image container if it exists
             if (currentImageContainer) {
                 currentImageContainer.style.display = 'none';
             }
 
-            // Display the new image preview
             previewContainer.style.display = 'block';
             previewImage.src = fileURL;
         } else {
-            // If no file is selected, reset the preview and show the current image
             previewContainer.style.display = 'none';
             if (currentImageContainer) {
                 currentImageContainer.style.display = 'block';

@@ -63,6 +63,7 @@ class Book extends Model
     public function scopeWithAllWidgetData($query)
     {
         return $query->with([
+            'author',
             'widgetables.widget.fieldWidgets.field',
             'widgetables.widgetFieldValues.fieldWidget.field',
         ]);
@@ -87,6 +88,6 @@ class Book extends Model
 
     public function author()
     {
-        return $this->belongsTo(BookAuthor::class, 'author_id');
+        return $this->belongsTo(BookAuthor::class, 'author_id', 'id');
     }
 }

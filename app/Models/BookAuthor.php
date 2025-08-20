@@ -13,8 +13,8 @@ class BookAuthor extends Model
     use HasFactory;
     use HasTranslations;
 
-    public $translatable = ['name'];
-    protected $guarded = [];
+    public $translatable = ['name', 'nationality', 'biography'];
+    protected $fillable = ['name', 'date_of_birth', 'date_of_death', 'image', 'biography', 'nationality'];
 
     protected $casts = [
         'date_of_birth' => 'datetime',

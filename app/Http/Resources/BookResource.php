@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Helpers\FileHelper;
 use App\Models\Language;
+use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\BookGenreResource;
+use App\Http\Resources\BookAuthorResource;
 use App\Http\Resources\WidgetableResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -47,7 +48,8 @@ class BookResource extends JsonResource
             "book_genre_id" => $this->book_genre_id,
             "bookGenre" => $this->relationLoaded('bookGenre') ? new BookGenreResource($this->bookGenre) : null,
             "published_year" => $this->published_year,
-            "author" => $this->author,
+            "author_id" => $this->author_id,
+            "author" => $this->relationLoaded('author') ? new BookAuthorResource($this->author) : null,
             "views" => $this->views,
             "total_pages" => $this->total_pages,
             "primary_language" => $this->primary_language,

@@ -2,14 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
 use App\Http\Controllers\Api\ArticleController;
-use App\Http\Controllers\Api\BookController;
-use App\Http\Controllers\Api\BookGenreController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
+use App\Http\Controllers\Api\BookGenreController;
+use App\Http\Controllers\Api\BookAuthorController;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
 use App\Http\Controllers\Api\FieldWidgetController;
@@ -26,7 +27,7 @@ Route::get('/fetch-languages', [ContentController::class, 'fetchLanguages']);
 Route::get('/fetch-settings', [ContentController::class, 'fetchSettings']);
 Route::get('/fetch-translations', [ContentController::class, 'fetchTranslations']);
 Route::get('/fetch-content', [ContentController::class, 'fetchContent'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
-Route::get('/fetch-books', [ContentController::class, 'fetchBooks'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
+Route::get('/fetch-books', [ContentController::class, 'fetchBooks']);
 Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
 Route::get('/fetch-authors', [ContentController::class, 'fetchAuthors']);
 // Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
@@ -42,6 +43,7 @@ Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
 Route::patch('/widgets/detach', [WidgetController::class, 'detach']);
 Route::get('/widgets/{id}', [WidgetController::class, 'show']);
 Route::apiResource('/widgets/{widget_id}/fields', FieldWidgetController::class);
+Route::get('/book-authors', [BookAuthorController::class, 'index']);
 
 // custom routes:
 Route::post('contact-us', [ContactController::class, 'submitContactForm']);

@@ -3,26 +3,28 @@
 use App\Models\Page;
 use App\Models\Widget;
 use App\Models\PageWidget;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\WidgetResource;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\UrlLogController;
 use App\Http\Controllers\WidgetController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TagController;
-use App\Http\Middleware\LanguageAdminMiddleware;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\BookGenreController;
+use App\Http\Controllers\BookAuthorController;
+use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\TranslationTextController;
-use App\Http\Controllers\UrlLogController;
 
 Route::get('/', function () {
     abort(403);
@@ -49,6 +51,7 @@ Route::group([
     Route::resource('categories', CategoryController::class);
     Route::resource('articles', ArticleController::class);
     Route::resource('book_genres', BookGenreController::class);
+    Route::resource('book-authors', BookAuthorController::class);
     Route::resource('books', BookController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);

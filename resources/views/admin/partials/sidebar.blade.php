@@ -122,6 +122,14 @@
                     </p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="/admin/book-authors" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>
+                        Writers
+                    </p>
+                </a>
+            </li>
             <div style="border: 1px gray solid"></div>
             <!-- Design and Customization -->
             <li class="nav-item">

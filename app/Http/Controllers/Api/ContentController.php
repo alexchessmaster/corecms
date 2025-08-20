@@ -46,7 +46,6 @@ class ContentController extends Controller
         if ($language) {
             app()->setLocale($language);
         }
-        info('Fetching menu for language: ' . app()->getLocale());
 
         $menu = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
 
@@ -59,7 +58,7 @@ class ContentController extends Controller
         if ($language) {
             app()->setLocale($language);
         }
-        
+
         $languages = Language::all();
 
         return response()->json(['data' => LanguageResource::collection($languages)]);
@@ -345,7 +344,7 @@ class ContentController extends Controller
         $authorId = request()->query('author');
         $sort = request()->query('sort');
 
-        $query = Book::with('bookGenre')->where('status', 'published');
+        $query = Book::with(['author', 'bookGenre'])->where('status', 'published')->whereNotNull('title->' . app()->getLocale());
 
         if (! empty($sort)) {
             if ($sort === 'oldest') {
@@ -394,6 +393,9 @@ class ContentController extends Controller
             ->addColumn('book_genre_slug', function ($book) {
                 return $book?->bookGenre?->getTranslation('slug', app()->getLocale()) ?? null;
             })
+            ->addColumn('author_name', function ($book) {
+                return $book?->author?->getTranslation('name', app()->getLocale()) ?? null;
+            })
             ->editColumn('full_url', function ($book) {
                 return $book->full_url;
             })
@@ -423,7 +425,7 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
 
-        $authors = BookAuthor::withCount('books')->get();
+        $authors = BookAuthor::withCount('books')->whereNotNull('name->' . app()->getLocale())->limit(20)->get();
 
         return response()->json([
             'data' => BookAuthorResource::collection($authors)
