@@ -88,11 +88,11 @@ class BookAuthorController extends Controller
             $bookAuthor->image = '/uploads/images/' . $filename;
         }
 
-        $bookAuthor->setTranslation('name', app()->getLocale(), $request->name);
+        $bookAuthor->setTranslation('name', app()->getLocale(), $request->input('name'));
         $bookAuthor->date_of_birth = $request->input('date_of_birth');
         $bookAuthor->date_of_death = $request->input('date_of_death');
-        $bookAuthor->nationality = $request->input('nationality');
-        $bookAuthor->biography = $request->input('biography');
+        $bookAuthor->setTranslation('nationality', app()->getLocale(), $request->input('nationality'));
+        $bookAuthor->setTranslation('biography', app()->getLocale(), $request->input('biography'));
         $bookAuthor->save();
 
         return redirect()->route('admin.book-authors.index')->with('success', 'Book Author created successfully.');
@@ -144,11 +144,11 @@ class BookAuthorController extends Controller
             $bookAuthor->image = '/uploads/images/' . $filename;
         }
 
-        $bookAuthor->setTranslation('name', app()->getLocale(), $request->name);
+        $bookAuthor->setTranslation('name', app()->getLocale(), $request->input('name'));
         $bookAuthor->date_of_birth = $request->input('date_of_birth');
         $bookAuthor->date_of_death = $request->input('date_of_death');
-        $bookAuthor->nationality = $request->input('nationality');
-        $bookAuthor->biography = $request->input('biography');
+        $bookAuthor->setTranslation('nationality', app()->getLocale(), $request->input('nationality'));
+        $bookAuthor->setTranslation('biography', app()->getLocale(), $request->input('biography'));
         $bookAuthor->save();
 
         return redirect()->route('admin.book-authors.index')->with('success', 'Book Author updated successfully.');
