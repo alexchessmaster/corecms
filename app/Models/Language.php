@@ -14,42 +14,42 @@ class Language extends Model
             'code' => 'en',
             'default' => true,
             'use_separate_domain' => false,
-            'domain' => 'https://atheistlibrary.net/en'
+            'domain' => 'https://atheistlibrary.com'
         ],
         // [
         //     'name' => 'German', 
         //     'code' => 'de',
         //     'default' => false,
         //     'use_separate_domain' => false,
-        //     'domain' => 'https://atheistlibrary.net/de'
+        //     'domain' => 'https://atheistlibrary.com'
         // ],
         // [
         //     'name' => 'French', 
         //     'code' => 'fr',
         //     'default' => false,
         //     'use_separate_domain' => false,
-        //     'domain' => 'https://atheistlibrary.net/fr'
+        //     'domain' => 'https://atheistlibrary.com'
         // ],
         // [
         //     'name' => 'Danish', 
         //     'code' => 'da',
         //     'default' => false,
         //     'use_separate_domain' => false,
-        //     'domain' => 'https://atheistlibrary.net/da'
+        //     'domain' => 'https://atheistlibrary.com'
         // ],
         // [
         //     'name' => 'Swedish', 
         //     'code' => 'sv',
         //     'default' => false,
         //     'use_separate_domain' => false,
-        //     'domain' => 'https://atheistlibrary.net/sv'
+        //     'domain' => 'https://atheistlibrary.com'
         // ],
         [
             'name' => 'Persian', 
             'code' => 'fa',
             'default' => false,
             'use_separate_domain' => false,
-            'domain' => 'https://atheistlibrary.net/fa'
+            'domain' => 'https://atheistlibrary.com'
         ],
     ];
 }

@@ -40,7 +40,7 @@ class GenerateSitemapsCommand extends Command
         $defaultPriorityArticles = Setting::where('key', 'default-sitemap-priority-articles')->value('value');
 
         $frontendBaseUrl = '';
-        $tables = ['pages', 'articles'];
+        $tables = ['pages', 'articles', 'books'];
         foreach ($languages as $language) {
             $lang = $language->code;
             // dd($lang);

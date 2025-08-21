@@ -1,3 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+    <url>
+    <loc>https://atheistlibrary.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/" />
+    <lastmod>2025-08-10T19:21:58+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/books</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/books" />
+    <lastmod>2025-08-11T11:12:04+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/about-us</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/about-us" />
+    <lastmod>2025-08-13T19:23:35+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/contact-us</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/contact-us" />
+    <lastmod>2025-08-14T01:28:22+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/why-evolution-is-true</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/why-evolution-is-true" />
+    <lastmod>2025-08-20T12:59:45+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/philosophy/the-moral-landscape</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/philosophy/the-moral-landscape" />
+    <lastmod>2025-08-20T13:18:39+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/philosophy/end-of-faith</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/philosophy/end-of-faith" />
+    <lastmod>2025-08-20T13:27:13+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/psychology/intuition-pumps-and-other-tools-for-thinking</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/psychology/intuition-pumps-and-other-tools-for-thinking" />
+    <lastmod>2025-08-20T14:01:37+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/darwins-dangerous-idea</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/darwins-dangerous-idea" />
+    <lastmod>2025-08-20T14:39:27+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/the-greatest-show-on-earth-the-evidence-for-evolution</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/the-greatest-show-on-earth-the-evidence-for-evolution" />
+    <lastmod>2025-08-20T14:48:29+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/river-out-of-eden</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/river-out-of-eden" />
+    <lastmod>2025-08-20T14:56:14+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/the-blind-watchmaker</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/the-blind-watchmaker" />
+    <lastmod>2025-08-20T15:03:13+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/the-extended-phenotype</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/the-extended-phenotype" />
+    <lastmod>2025-08-20T15:13:52+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/science/the-selfish-gene</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/the-selfish-gene" />
+    <lastmod>2025-08-20T15:20:19+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/en/philosophy/the-god-delusion</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/philosophy/the-god-delusion" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/flsfh/pndar-khda" />
+    <lastmod>2025-08-20T18:44:10+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
 </urlset>

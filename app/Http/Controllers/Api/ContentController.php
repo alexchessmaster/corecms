@@ -400,8 +400,8 @@ class ContentController extends Controller
                 return $book->full_url;
             })
             ->filter(function ($query) {
-                if (request()->has('search') && !empty(request()->search['value'])) {
-                    $searchValue = request()->search['value'];
+                if (request()->has('search') && !empty(request()->search)) {
+                    $searchValue = request()->search;
                     $query->where(function ($query) use ($searchValue) {
                         $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
                             ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
