@@ -26,8 +26,10 @@ class WidgetController extends Controller
     public function create()
     {
         $fields = Field::all();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.widgets.create', compact('fields'));
+        return view('admin.widgets.create', compact('fields', 'authToken'));
     }
 
     // Store a newly created widget in the database
@@ -58,8 +60,10 @@ class WidgetController extends Controller
     {
         $widget = Widget::findOrFail($id);
         $fieldTypes = Field::get();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.widgets.edit', compact('widget', 'fieldTypes'));
+        return view('admin.widgets.edit', compact('widget', 'fieldTypes', 'authToken'));
     }
 
     // Update the specified widget in the database

@@ -50,8 +50,10 @@ class BookController extends Controller
     {
         $bookGenres = BookGenre::all();
         $allWidgets = Widget::where('active', true)->get();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.book.create', compact('bookGenres', 'allWidgets'));
+        return view('admin.book.create', compact('bookGenres', 'allWidgets', 'authToken'));
     }
 
     public function store(Request $request)
@@ -125,8 +127,10 @@ class BookController extends Controller
         $book = Book::withAllWidgetData()->findOrFail($bookId);
         $bookGenres = BookGenre::all();
         $allWidgets = Widget::where('active', true)->get();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.book.edit', compact('book', 'bookGenres', 'allWidgets'));
+        return view('admin.book.edit', compact('book', 'bookGenres', 'allWidgets', 'authToken'));
     }
 
     public function update(Request $request, Book $book)

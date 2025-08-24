@@ -43,11 +43,11 @@ class FieldController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
         ]);
 
         $field = new Field;
-        $field->name = $request->input('name');
+        $field->type = $request->input('type');
         $field->save();
 
         return redirect()->route('admin.fields.index')->with('success', 'Field created successfully.');

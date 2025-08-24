@@ -104,6 +104,10 @@
                 url: '/api/book-authors?lang={!! App::currentLocale() !!}',
                 dataType: 'json',
                 delay: 300,
+                headers: {
+                    'Authorization': 'Bearer {{ $authToken ?? "" }}',
+                    'Accept': 'application/json'
+                },
                 data: function (params) {
                     return {
                         search: params.term,

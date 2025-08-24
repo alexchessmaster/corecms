@@ -218,6 +218,8 @@
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Bearer {{ $authToken }}"
                     },
                     body: JSON.stringify(formData)
                 })
@@ -245,6 +247,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
+                        'Authorization': 'Bearer {{ $authToken }}'
                     },
                     body: JSON.stringify({
                         positionId: widget.position,
@@ -652,7 +655,9 @@
             fetch('/api/widgets/attach', {
                     method: 'PATCH',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer {{ $authToken }}'
                     },
                     body: JSON.stringify({
                         widgetableId: '{{ $widgetableId }}',
@@ -698,6 +703,9 @@
                 case 'select_option_on_off':
                     createSelectInput(widget, item, ['on', 'off']);
                     break;
+                case 'textarea_vanilla':
+                    createTextareaInput(widget, item, 'vanilla');
+                    break;
                 case 'textarea_one_line':
                     createTextareaInput(widget, item, 'text');
                     break;
@@ -723,7 +731,11 @@
     let addWidgetButtonPosition = null;
     const refreshWidgetList = () => {
         widgetContainer.innerHTML = null;
-        fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}?lang={!! App::currentLocale() !!}")
+        fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}?lang={!! App::currentLocale() !!}", {
+            headers: {
+                'Authorization': 'Bearer {{ $authToken }}'
+            }
+        })
             .then(response => {
                 return response.json()
             })

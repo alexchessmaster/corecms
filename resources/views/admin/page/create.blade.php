@@ -87,7 +87,7 @@
 
             return str.toLowerCase()
                 .trim()
-                .replace(/[^\w\s-]/g, '')
+                .replace(/[^\w\s-\/]/g, '')  // Added \/ to allow forward slashes
                 .replace(/[\s_-]+/g, '-')
                 .replace(/^-+|-+$/g, '');
         }

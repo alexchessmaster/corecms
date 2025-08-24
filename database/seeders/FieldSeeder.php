@@ -24,6 +24,7 @@ class FieldSeeder extends Seeder
     {
         Field::insert([
             ['type' => 'input'],
+            ['type' => 'textarea_vanilla'],
             ['type' => 'textarea_one_line'],
             ['type' => 'textarea_small'],
             ['type' => 'textarea_large'],

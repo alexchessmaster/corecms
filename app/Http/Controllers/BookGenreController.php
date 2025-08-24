@@ -141,8 +141,10 @@ class BookGenreController extends Controller
         $bookGenre = BookGenre::withAllWidgetData()->findOrFail($bookGenreId);
         $bookGenres = BookGenre::whereNull('parent_id')->where('id', '!=', $bookGenre->id)->get();
         $allWidgets = Widget::where('active', true)->get();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.book_genre.edit', compact('bookGenre', 'bookGenres', 'allWidgets'));
+        return view('admin.book_genre.edit', compact('bookGenre', 'bookGenres', 'allWidgets', 'authToken'));
     }
 
     public function update(Request $request, BookGenre $bookGenre)

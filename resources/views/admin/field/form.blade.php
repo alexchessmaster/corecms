@@ -1,5 +1,5 @@
 <div class="mb-3">
-    <label for="name" class="form-label">Name</label>
-    <input type="text" class="form-control" id="name" name="name" 
-           value="{{ isset($field) ? $field->name : '' }}" required>
+    <label for="type" class="form-label">type</label>
+    <input type="text" class="form-control" id="type" name="type" 
+           value="{{ isset($field) ? $field->type : '' }}" required>
 </div>

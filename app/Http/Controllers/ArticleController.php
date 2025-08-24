@@ -126,8 +126,10 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
         $allWidgets = Widget::where('active', true)->get();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.article.edit', compact('article', 'categories', 'tags', 'allWidgets'));
+        return view('admin.article.edit', compact('article', 'categories', 'tags', 'allWidgets', 'authToken'));
     }
 
     public function update(Request $request, Article $article)

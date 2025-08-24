@@ -47,8 +47,7 @@
         </style>
 
         <!-- Modal Widget Box -->
-        <div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="Label"
-            aria-hidden="true">
+        <div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="Label" aria-hidden="true">
             <div class="modal-dialog " role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -60,7 +59,9 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="field_key" class="form-label required">Field Key</label>
-                            <input value="{{ old('key', $field->key ?? '') }}" name="field_key" id="field_key" class="form-control" required>
+                            <input value="{{ old('key', $field->key ?? '') }}" name="field_key" id="field_key"
+                                class="form-control" required
+                                oninput="this.value = this.value.toLowerCase().replace(/[-\s]/g, '_')">
                         </div>
                         <div class="mb-3">
                             <h5 class="modal-title" id="Label">Choose field type</h5>
@@ -71,34 +72,34 @@
                         @endphp
                         @foreach ($fieldTypes as $fieldType)
                             @if ($i % $numberOfFieldTypesInARow === 0)
-                            <div class="row" id="widgetOptions">
+                                <div class="row" id="widgetOptions">
                             @endif
 
-                                <div class="col-md-4">
-                                    <div class="field-type-option card" data-value="{{ $fieldType->id }}">
-                                        <div class="card-body text-center">
-                                            <h5 class="card-title">{{ $fieldType->type }}</h5>
-                                        </div>
+                            <div class="col-md-4">
+                                <div class="field-type-option card" data-value="{{ $fieldType->id }}">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">{{ $fieldType->type }}</h5>
                                     </div>
                                 </div>
-
-                            @if (($i % $numberOfFieldTypesInARow) === ($numberOfFieldTypesInARow - 1))
                             </div>
-                            @endif
-                            @php
-                                $i++;
-                            @endphp
-                        @endforeach
+
+                            @if ($i % $numberOfFieldTypesInARow === $numberOfFieldTypesInARow - 1)
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmSelection">Add</button>
-                    </div>
+                    @endif
+                    @php
+                        $i++;
+                    @endphp
+                    @endforeach
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmSelection">Add</button>
                 </div>
             </div>
         </div>
-    @if ($i > 1 && (($i % $numberOfFieldTypesInARow) !== ($numberOfFieldTypesInARow - 1)))
     </div>
+    @if ($i > 1 && $i % $numberOfFieldTypesInARow !== $numberOfFieldTypesInARow - 1)
+        </div>
     @endif
 
 
@@ -122,12 +123,13 @@
             if (selectedOption) {
                 const key = document.getElementById('field_key');
                 const fieldId = selectedOption.getAttribute('data-value');
-                if(key.value !== ""){
+                if (key.value !== "") {
                     const widgetId = '{{ $widget->id }}';
                     fetch(`/api/widgets/${widgetId}/fields`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer {{ $authToken }}'
                         },
                         body: JSON.stringify({
                             id: fieldId,
@@ -165,7 +167,8 @@
             // Create the title (h5 element)
             const cardTitle = document.createElement('h5');
             cardTitle.classList.add('card-title');
-            cardTitle.innerHTML = '<strong>Type:</strong> ' + field.field_type + ' <strong>Key:</strong> ' + field.key; // Use the widget's name
+            cardTitle.innerHTML = '<strong>Type:</strong> ' + field.field_type + ' <strong>Key:</strong> ' + field
+                .key; // Use the widget's name
 
             // Create the Delete button with an icon
             const deleteBtn = document.createElement('button');
@@ -191,9 +194,10 @@
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
+                            'Authorization': 'Bearer {{ $authToken }}'
                         },
                         body: JSON.stringify({
-                            field_key : field.key,
+                            field_key: field.key,
                         })
                     })
                     .then(response => response.json)
@@ -208,7 +212,13 @@
         const refreshFieldsList = () => {
             document.getElementById('field_key').value = '';
             widgetContainer.innerHTML = null;
-            fetch('/api/widgets/{!! $widget->id !!}')
+            fetch('/api/widgets/{!! $widget->id !!}', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer {{ $authToken }}'
+                    }
+                })
                 .then(response => {
                     return response.json()
                 })

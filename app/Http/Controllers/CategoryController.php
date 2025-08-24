@@ -122,8 +122,10 @@ class CategoryController extends Controller
         $category = Category::withAllWidgetData()->findOrFail($categoryId);
         $categories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
         $allWidgets = Widget::where('active', true)->get();
-        
-        return view('admin.category.edit', compact('category', 'categories', 'allWidgets'));
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
+
+        return view('admin.category.edit', compact('category', 'categories', 'allWidgets', 'authToken'));
     }
 
     public function update(Request $request, Category $category)
