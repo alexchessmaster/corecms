@@ -547,12 +547,22 @@
         if (size === 'large') {
             tinyConfig = {
                 selector: `#textarea-` + widget.id + '-' + item.field_widget,
-                plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+                plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'pagebreak',
+                    'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons', 'codesample', 'directionality', 'hr', 'imagetools', 'nonbreaking', 'save', 'template', 'toc'
+                ],
+                toolbar: [
+                    'undo redo | bold italic underline strikethrough | forecolor backcolor | fontselect fontsizeselect formatselect',
+                    'outdent indent | numlist bullist checklist | link | removeformat' +
+                    ' emoticons | table'
+                ],
                 // toolbar_mode: 'floating',
                 // menubar: false,
             }
         }
-        tinymce.init(tinyConfig);
+        if (size === 'large'|| size === 'small' || size === 'text') {
+            tinymce.init(tinyConfig);
+        }
     }
 
     const createFileInput = (widget, item) => {

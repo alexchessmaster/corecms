@@ -18,14 +18,16 @@
     <url>
     <loc>https://atheistlibrary.com/en/about-us</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/about-us" />
-    <lastmod>2025-08-13T19:23:35+02:00</lastmod>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/about-us" />
+    <lastmod>2025-08-22T15:10:46+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
     <loc>https://atheistlibrary.com/en/contact-us</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/contact-us" />
-    <lastmod>2025-08-14T01:28:22+02:00</lastmod>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/contact-us" />
+    <lastmod>2025-08-22T15:11:25+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
@@ -60,7 +62,7 @@
     <url>
     <loc>https://atheistlibrary.com/en/science/darwins-dangerous-idea</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/science/darwins-dangerous-idea" />
-    <lastmod>2025-08-20T14:39:27+02:00</lastmod>
+    <lastmod>2025-08-21T21:25:13+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>

@@ -34,7 +34,13 @@ class PageController extends Controller
         $page = Page::find($pageId);
         $lang = request()->lang ?: app()->getLocale();
         $page->setTranslation('title', $lang, request()->title);
-        $page->setTranslation('slug', $lang, '/' . Str::slug(request()->slug));
+        
+        // Preserve slashes in slug: split, slugify each part, and join
+        $slugParts = explode('/', request()->slug);
+        $sluggedParts = array_map(fn($part) => Str::slug($part), $slugParts);
+        $slug = implode('/', $sluggedParts);
+        $page->setTranslation('slug', $lang, '/' . ltrim($slug, '/'));
+        
         $page->status = request()->status;
         $page->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         // $pageType = 'page';

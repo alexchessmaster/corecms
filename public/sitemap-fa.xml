@@ -9,6 +9,22 @@
     <priority>0.8</priority>
             </url>
     <url>
+    <loc>https://atheistlibrary.com/fa/about-us</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/about-us" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/about-us" />
+    <lastmod>2025-08-22T15:10:46+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/fa/contact-us</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/contact-us" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/contact-us" />
+    <lastmod>2025-08-22T15:11:25+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
     <loc>https://atheistlibrary.com/fa/tarykh/do-krn-skot</loc>
     <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/tarykh/do-krn-skot" />
     <lastmod>2025-08-20T16:49:01+02:00</lastmod>
