@@ -12,7 +12,9 @@ use App\Models\Category;
 use App\Models\Language;
 use App\Models\Redirect;
 use App\Models\BookGenre;
+use App\Models\BookAuthor;
 use App\Helpers\FileHelper;
+use App\Models\Commentable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TranslationText;
@@ -25,7 +27,6 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ArticleResource;
-use App\Http\Resources\BookAuthorResource;
 use App\Http\Resources\SettingResource;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
@@ -33,9 +34,10 @@ use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Resources\BookGenreResource;
+use App\Http\Resources\BookAuthorResource;
 use DebugBar\DebugBar as DebugBarDebugBar;
+use App\Http\Resources\CommentableResource;
 use App\Http\Resources\TranslationTextResource;
-use App\Models\BookAuthor;
 
 class ContentController extends Controller
 {
@@ -343,8 +345,16 @@ class ContentController extends Controller
         $bookGenre = request()->query('book_genre') ?? "";
         $authorId = request()->query('author');
         $sort = request()->query('sort');
+        $start = request()->get('start', 0);
+        $length = request()->get('length', 24);
+        if ($length > 24) {
+            $length = 24;
+        }
 
-        $query = Book::with(['author', 'bookGenre'])->where('status', 'published')->whereNotNull('title->' . app()->getLocale());
+        $query = Book::with(['author', 'bookGenre'])
+            ->where('status', 'published')->whereNotNull('title->' . app()->getLocale())
+            ->offset($start)
+            ->limit($length);
 
         if (! empty($sort)) {
             if ($sort === 'oldest') {
@@ -462,5 +472,95 @@ class ContentController extends Controller
                 return $category->slug;
             })
             ->make(true);
+    }
+
+    public function fetchBookComments()
+    {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        $start = request()->get('start', 0);
+        $length = request()->get('length', 24);
+        if ($length > 24) {
+            $length = 24;
+        }
+
+        $bookSlug = request()->query('book_slug');
+
+        $book = Book::withAllWidgetData()
+            ->with(['bookGenre'])
+            ->where('slug->' . app()->getLocale(), $bookSlug)
+            ->where('status', 'published')
+            ->first();
+
+        if ($book === null) {
+            return response()->json([
+                'data' => [],
+                'message' => 'Book not found'
+            ], 404);
+        }
+
+        $comments = Commentable::where('commentable_type', 'App\Models\Book')
+            ->where('commentable_id', $book->id)
+            ->where('content->' . app()->getLocale(), '!=', null)
+            ->where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->offset($start)
+            ->limit($length)
+            ->get();
+
+        return response()->json([
+            'data' => CommentableResource::collection($comments)
+        ]);
+    }
+
+    public function storeBookComments()
+    {
+        $name = request()->name;
+        $email = request()->email;
+        $content = request()->content;
+        $stars = request()->stars;
+        $lang = request()->lang;
+        $bookSlug = request()->book_slug;
+
+        if (!$bookSlug || !$lang || !$content || !$name || !$email) {
+            return response()->json(['error' => 'Invalid inputs'], 400);
+        }
+
+        if (strlen($lang) === 2) {
+            app()->setLocale($lang);
+        } else {
+            return response()->json(['error' => 'Language not specified'], 400);
+        }
+
+        $book = Book::withAllWidgetData()
+            ->with(['bookGenre'])
+            ->where('slug->' . app()->getLocale(), $bookSlug)
+            ->where('status', 'published')
+            ->first();
+
+        if (!$book) {
+            return response()->json([
+                'data' => [],
+                'message' => 'Book not found'
+            ], 404);
+        }
+
+        $comment = new Commentable();
+        $comment->commentable_type = 'App\Models\Book';
+        $comment->commentable_id = $book->id;
+        $comment->setTranslation('content', app()->getLocale(), $content);
+        $comment->name = $name;
+        $comment->email = $email;
+        $comment->stars = $stars;
+        $comment->save();
+
+        $totalStars = ($book->stars * $book->total_votes) + $stars;
+        $book->total_votes = $book->total_votes + 1;
+        $book->stars = $totalStars / $book->total_votes;
+        $book->save();
+
+        return response()->json(['message' => 'Comment saved successfully'], 201);
     }
 }

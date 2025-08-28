@@ -131,6 +131,15 @@
                 </a>
             </li>
             <div style="border: 1px gray solid"></div>
+                        <li class="nav-item">
+                <a href="/admin/comments" class="nav-link">
+                    <i class="nav-icon fas fa-comments"></i>
+                    <p>
+                        Comments
+                    </p>
+                </a>
+            </li>
+            <div style="border: 1px gray solid"></div>
             <!-- Design and Customization -->
             <li class="nav-item">
                 <a href="/admin/widgets" class="nav-link">

@@ -31,9 +31,12 @@ Route::middleware('throttle:240,1')->group(function () {
     Route::get('/fetch-books', [ContentController::class, 'fetchBooks'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
     Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
     Route::get('/fetch-authors', [ContentController::class, 'fetchAuthors']);
+    Route::get('/fetch-book-comments', [ContentController::class, 'fetchBookComments']);
     // Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
     // Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
 });
+
+Route::post('/store-book-comments', [ContentController::class, 'storeBookComments']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/pages', PageController::class);

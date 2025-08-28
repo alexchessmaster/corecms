@@ -27,7 +27,10 @@ return new class extends Migration
             $table->unsignedInteger('published_year')->nullable();
             $table->unsignedBigInteger('views')->default(0);
             $table->integer('total_pages')->default(0);
-            
+
+            $table->float('stars', 2)->default(0);
+            $table->unsignedBigInteger('total_votes')->default(0);
+
             $table->boolean('sitemap_exclude')->nullable();
             $table->float('sitemap_priority', 1)->nullable();
             $table->enum('sitemap_change_frequency', ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'])->nullable();

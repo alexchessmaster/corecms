@@ -23,6 +23,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
+use App\Http\Controllers\CommentableController;
 use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\TranslationTextController;
 
@@ -53,6 +54,7 @@ Route::group([
     Route::resource('book_genres', BookGenreController::class);
     Route::resource('book-authors', BookAuthorController::class);
     Route::resource('books', BookController::class);
+    Route::resource('comments', CommentableController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);
     Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');

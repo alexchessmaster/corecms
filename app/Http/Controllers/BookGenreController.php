@@ -31,12 +31,6 @@ class BookGenreController extends Controller
                 ->first();
             if ($bookGenre) {
                 $currentName = $bookGenre->getTranslation('name', $lang['code'], false);
-                
-                // Only set translations if current name is Uncategorized, null, or empty
-                if (empty($currentName) || $currentName === 'Uncategorized') {
-                    // $bookGenre->setTranslations('name', $nameTranslations);
-                }
-                
                 $bookGenre->setTranslations('slug', $slugTranslations);
                 $bookGenre->save();
 

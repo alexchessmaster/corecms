@@ -43,6 +43,7 @@ class BookResource extends JsonResource
             "all_urls" => $allUrls,
             "full_url" => $this->full_url,
             "description" => $this->description,
+            "stars" => $this->stars,
             "content" => $this->content,
             "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
             "book_genre_id" => $this->book_genre_id,
