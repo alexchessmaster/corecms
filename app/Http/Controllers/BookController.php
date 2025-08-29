@@ -16,7 +16,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $books = Book::select(['id', 'title', 'slug', 'book_genre_id'])->with(['bookGenre']);
+            $books = Book::select(['id', 'title', 'slug', 'book_genre_id', 'status'])->with(['bookGenre']);
 
             return DataTables::of($books)
                 ->editColumn('title', function ($book) {

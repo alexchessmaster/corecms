@@ -36,7 +36,7 @@ Route::middleware('throttle:240,1')->group(function () {
     // Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
 });
 
-Route::post('/store-book-comments', [ContentController::class, 'storeBookComments']);
+Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/pages', PageController::class);

@@ -22,6 +22,7 @@
                         <th>Id</th>
                         <th>Title</th>
                         <th>Book Genre</th>
+                        <th>Status</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -47,6 +48,7 @@
                         { data: 'id', name: 'id' },
                         { data: 'title', name: 'title' },
                         { data: 'book_genre', name: 'book_genre' },
+                        { data: 'status', name: 'status' },
                         { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
                     ],
                     columnDefs: [
