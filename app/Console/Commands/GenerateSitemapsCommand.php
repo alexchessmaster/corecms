@@ -33,6 +33,7 @@ class GenerateSitemapsCommand extends Command
     {
         $languages = Language::all(); // Add more languages as needed
         $articlePrefix = Setting::where('key', 'article-prefix')->value('value');
+        $bookPrefix = Setting::where('key', 'book-prefix')->value('value');
 
         $defaultFrequencyChangePages = Setting::where('key', 'default-sitemap-change-frequency-pages')->value('value');
         $defaultFrequencyChangeArticles = Setting::where('key', 'default-sitemap-change-frequency-articles')->value('value');
@@ -52,17 +53,31 @@ class GenerateSitemapsCommand extends Command
                 foreach ($pages as $page) {
                     if (array_key_exists('slug', $page)) {
                         if ($language->use_separate_domain) {
-                            $url = Url::create("{$frontendBaseUrl}{$page['slug']}");
+                            if ($table === 'articles') {
+                                $prefix = "/{$articlePrefix}";
+                            } elseif ($table === 'books') {
+                                $prefix = "/{$bookPrefix}";
+                            } else {
+                                $prefix = '';
+                            }
+                            $url = Url::create("{$frontendBaseUrl}{$prefix}{$page['slug']}");
                             // Add alternate links for all available translations
                             foreach ($page['alternates'] as $altLang => $altSlug) {
                                 $langTmp = $languages->where('code', $altLang)->first();
-                                $url->addAlternate("{$langTmp->domain}{$altSlug}", $altLang);
+                                $url->addAlternate("{$langTmp->domain}{$prefix}{$altSlug}", $altLang);
                             }
                         } else {
-                            $url = Url::create("{$frontendBaseUrl}/{$lang}{$page['slug']}");
+                            if ($table === 'articles') {
+                                $prefix = "/{$articlePrefix}";
+                            } elseif ($table === 'books') {
+                                $prefix = "/{$bookPrefix}";
+                            } else {
+                                $prefix = '';
+                            }
+                            $url = Url::create("{$frontendBaseUrl}/{$lang}{$prefix}{$page['slug']}");
                             // Add alternate links for all available translations
                             foreach ($page['alternates'] as $altLang => $altSlug) {
-                                $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$altSlug}", $altLang);
+                                $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$prefix}{$altSlug}", $altLang);
                             }
                         }
 
@@ -92,7 +107,7 @@ class GenerateSitemapsCommand extends Command
             ->where('status', 'published')
             ->whereNull('sitemap_exclude')
             ->orWhere('sitemap_exclude', false)
-            ->get()
+            ->get(['id', 'slug', 'sitemap_priority', 'sitemap_change_frequency', 'updated_at'])
             ->map(function ($pageOrArticle) use ($lang) {
                 // Decode the slug JSON safely
                 $slugs = json_decode($pageOrArticle->slug, true);

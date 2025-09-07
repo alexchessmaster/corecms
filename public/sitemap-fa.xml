@@ -4,7 +4,7 @@
     <loc>https://atheistlibrary.com/fa/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/" />
     <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/" />
-    <lastmod>2025-08-10T19:21:58+02:00</lastmod>
+    <lastmod>2025-09-03T11:50:09+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
@@ -25,52 +25,59 @@
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/tarykh/do-krn-skot</loc>
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/tarykh/do-krn-skot" />
+    <loc>https://atheistlibrary.com/fa/books/tarykh/do-krn-skot</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/tarykh/do-krn-skot" />
     <lastmod>2025-08-29T02:09:37+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/adbyat/symay-do-zn</loc>
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/adbyat/symay-do-zn" />
+    <loc>https://atheistlibrary.com/fa/books/adbyat/symay-do-zn</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/adbyat/symay-do-zn" />
     <lastmod>2025-08-20T17:35:34+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/tarykh/paskh-bh-tarykh-bdon-sansor</loc>
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/tarykh/paskh-bh-tarykh-bdon-sansor" />
+    <loc>https://atheistlibrary.com/fa/books/tarykh/paskh-bh-tarykh-bdon-sansor</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/tarykh/paskh-bh-tarykh-bdon-sansor" />
     <lastmod>2025-08-29T02:09:46+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/flsfh/chra-mn-msyhy-nystm</loc>
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/flsfh/chra-mn-msyhy-nystm" />
+    <loc>https://atheistlibrary.com/fa/books/flsfh/chra-mn-msyhy-nystm</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/flsfh/chra-mn-msyhy-nystm" />
     <lastmod>2025-08-29T02:09:51+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/flsfh/tarykh-flsfh-ghrb</loc>
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/flsfh/tarykh-flsfh-ghrb" />
+    <loc>https://atheistlibrary.com/fa/books/flsfh/tarykh-flsfh-ghrb</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/flsfh/tarykh-flsfh-ghrb" />
     <lastmod>2025-08-29T02:10:31+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/aalmy/tarykhchh-zman</loc>
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/aalmy/tarykhchh-zman" />
+    <loc>https://atheistlibrary.com/fa/books/aalmy/tarykhchh-zman</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/aalmy/tarykhchh-zman" />
     <lastmod>2025-08-29T02:09:55+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://atheistlibrary.com/fa/flsfh/pndar-khda</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/philosophy/the-god-delusion" />
-    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/flsfh/pndar-khda" />
+    <loc>https://atheistlibrary.com/fa/books/flsfh/pndar-khda</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://atheistlibrary.com/en/books/philosophy/the-god-delusion" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/flsfh/pndar-khda" />
     <lastmod>2025-08-29T02:10:06+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://atheistlibrary.com/fa/books/flsfh/shytan-o-khda</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://atheistlibrary.com/fa/books/flsfh/shytan-o-khda" />
+    <lastmod>2025-09-07T20:52:39+02:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
             </url>
