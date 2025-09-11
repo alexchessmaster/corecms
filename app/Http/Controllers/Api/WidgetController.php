@@ -32,12 +32,14 @@ class WidgetController extends Controller
         $widgetableType = request()->input('widgetableType');
         $addWidgetPosition = request()->input('addWidgetPosition');
 
+        info('111111112');
         // Find the widget
         $widget = Widget::findOrFail($widgetId);
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
 
+        info('111111113');
         // : fix this part  [2025-07-28 22:05:01] local.ERROR: Illegal operator and value combination. {"exception":"[object] (InvalidArgumentException(code: 0): Illegal operator and value combination. at /home/alex/azadandish.net_backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:956)
         //        #2 /home/alex/azadandish.net_backend/app/Http/Controllers/Api/WidgetController.php(43): Illuminate\\Database\\Eloquent\\Builder->where()
         // try this with postman
@@ -90,6 +92,17 @@ class WidgetController extends Controller
             $i++;
         }
 
+        // fix the bug related to to the getting value of the fields of the newly attached widget
+        // The bug appear after I wanted
+        // Find all FieldWidgets (fields attached to this widget)
+        $fieldWidgets = FieldWidget::where('widget_id', $widget->id)->get();
+        foreach ($fieldWidgets as $fieldWidget) {
+            $widgetFieldValue = new WidgetFieldValues;
+            $widgetFieldValue->widgetable_id = $created->id; // the new Widgetable we just attached
+            $widgetFieldValue->field_widget_id = $fieldWidget->id;
+            $widgetFieldValue->value = null; // initialize as null
+            $widgetFieldValue->save();
+        }
 
         if ($widget->locked_fields_value) {
             // Find all FieldWidgets (fields attached to this widget)
