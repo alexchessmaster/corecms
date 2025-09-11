@@ -20,6 +20,12 @@ class SettingSeeder extends Seeder
         $setting->save();
 
         $setting = new Setting;
+        $setting->key = 'product-prefix';
+        $setting->value = 'products';
+        $setting->description = "Can be empty or products can be change depends on your need some websites like to have /products before the slug of each product";
+        $setting->save();
+
+        $setting = new Setting;
         $setting->key = 'book-prefix';
         $setting->value = 'books';
         $setting->description = "Can be empty or books can be change depends on your need some websites like to have /books before the slug of each book";
@@ -48,6 +54,5 @@ class SettingSeeder extends Seeder
         $setting->value = '0.6';
         $setting->description = "Default sitemap priority for articles";
         $setting->save();
-
     }
 }
