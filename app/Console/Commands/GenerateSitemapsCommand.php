@@ -32,8 +32,9 @@ class GenerateSitemapsCommand extends Command
     public function handle()
     {
         $languages = Language::all(); // Add more languages as needed
-        $articlePrefix = Setting::where('key', 'article-prefix')->value('value');
-        $bookPrefix = Setting::where('key', 'book-prefix')->value('value');
+        $articlePrefix = '/' . Setting::where('key', 'article-prefix')->value('value') ?? '';
+        $bookPrefix = '/' . Setting::where('key', 'book-prefix')->value('value') ?? '';
+        $productPrefix = '/' . Setting::where('key', 'product-prefix')->value('value') ?? '';
 
         $defaultFrequencyChangePages = Setting::where('key', 'default-sitemap-change-frequency-pages')->value('value');
         $defaultFrequencyChangeArticles = Setting::where('key', 'default-sitemap-change-frequency-articles')->value('value');
@@ -54,9 +55,11 @@ class GenerateSitemapsCommand extends Command
                     if (array_key_exists('slug', $page)) {
                         if ($language->use_separate_domain) {
                             if ($table === 'articles') {
-                                $prefix = "/{$articlePrefix}";
+                                $prefix = "{$articlePrefix}";
                             } elseif ($table === 'books') {
-                                $prefix = "/{$bookPrefix}";
+                                $prefix = "{$bookPrefix}";
+                            } elseif ($table === 'product') {
+                                $prefix = "{$productPrefix}";
                             } else {
                                 $prefix = '';
                             }
@@ -68,9 +71,11 @@ class GenerateSitemapsCommand extends Command
                             }
                         } else {
                             if ($table === 'articles') {
-                                $prefix = "/{$articlePrefix}";
+                                $prefix = "{$articlePrefix}";
                             } elseif ($table === 'books') {
-                                $prefix = "/{$bookPrefix}";
+                                $prefix = "{$bookPrefix}";
+                            } elseif ($table === 'products') {
+                                $prefix = "{$productPrefix}";
                             } else {
                                 $prefix = '';
                             }

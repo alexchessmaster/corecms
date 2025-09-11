@@ -1,0 +1,77 @@
+@extends('admin.partials.app')
+@section('content-card-title', 'Products')
+@section('content-body')
+
+    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
+
+    <div class="container">
+        <div class="d-flex justify-content-between mb-3">
+            <h2 class="text-primary">Manage Products</h2>
+            <a href="{{ route('admin.products.create') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add a new product
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table id="products-table" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#products-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    autoWidth: false,
+                    ajax: "{{ route('admin.products.index') }}",
+                    columns: [
+                        { data: 'id', name: 'id' },
+                        { data: 'title', name: 'title' },
+                        { data: 'category', name: 'category' },
+                        { data: 'status', name: 'status' },
+                        { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
+                    ],
+                    columnDefs: [
+                        { targets: "_all", defaultContent: "" },
+                        { targets: [0], width: "5%" },
+                        { targets: [1], width: "30%" },
+                        { targets: [2], width: "20%" },
+                        { targets: [3], width: "25%" },
+                    ],
+                    language: {
+                        search: "Filter records:",
+                        paginate: {
+                            first: "<<",
+                            last: ">>",
+                            next: ">",
+                            previous: "<"
+                        }
+                    },
+                    pagingType: "full_numbers",
+                    lengthMenu: [10, 25, 50, 100, 200, 1000],
+                    pageLength: 25,
+                    order: [[0, 'desc']]
+                });
+            });
+        </script>
+    @endpush
+
+@endsection

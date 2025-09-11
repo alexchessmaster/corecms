@@ -1,0 +1,13 @@
+@extends('admin.partials.app')
+@section('content-card-title', 'Add a Product')
+@section('content-card-body')
+
+<div class="container">
+    <form action="{{ route('admin.products.store') }}" method="POST" enctype='multipart/form-data'>
+        @csrf
+        @include('admin.product.form')
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+@endsection

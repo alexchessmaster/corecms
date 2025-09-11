@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\BookGenreController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\BookAuthorController;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
@@ -44,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/categories', CategoryController::class);
     Route::apiResource('/books', BookController::class);
     Route::apiResource('/bookgenres', BookGenreController::class);
+    Route::apiResource('/products', ProductController::class);
+    Route::apiResource('/productcategories', ProductCategoryController::class);
     Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']);
     Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
     Route::patch('/widgets/detach', [WidgetController::class, 'detach']);

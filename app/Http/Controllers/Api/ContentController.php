@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Article;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
@@ -27,6 +28,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
@@ -142,11 +144,14 @@ class ContentController extends Controller
             'page' => collect(),
             'article' => collect(),
             'category' => collect(),
+            'tag' => collect(),
             'article_prefix' => '',
+            'product' => collect(),
+            'product_category' => collect(),
+            'product_prefix' => '',
             'book' => collect(),
             'book_genre' => collect(),
             'book_prefix' => '',
-            'tag' => collect(),
             'auth' => collect(),
             'redirect' => collect(),
             'notfound' => false,
@@ -191,6 +196,7 @@ class ContentController extends Controller
         //can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
         $articlePrefixSetting = $settings->where('key', 'article-prefix')->first();
         $articlePath = $path;
+        $articlePrefix = '';
         // $articlePrefixSetting->value is "articles" by default
         if (!empty($articlePrefixSetting) && !empty($articlePrefixSetting->value)) {
             $articlePrefix = '/' . trim($articlePrefixSetting->value, '/');
@@ -215,8 +221,35 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
+        $productPrefixSetting = $settings->where('key', 'product-prefix')->first();
+        $productPath = $path;
+        $productPrefix = '';
+        // $productPrefixSetting->value is "products" by default
+        if (!empty($productPrefixSetting) && !empty($productPrefixSetting->value)) {
+            $productPrefix = '/' . trim($productPrefixSetting->value, '/');
+            $productPath = substr($path, strlen($productPrefix));
+        }
+        // Is Product
+        $product = Product::withAllWidgetData()
+            ->with(['category'])
+            ->where('slug->' . app()->getLocale(), $productPath)
+            ->where('status', 'published')
+            ->first();
+
+        if ($product) {
+            // here check if productCategory is correct do it
+            $responseData["product_prefix"] = $productPrefix;
+            $responseData["product"] = ProductResource::make($product)->additional([
+                'product_prefix' => $productPrefix
+            ]);
+            $responseData['content_type'] = 'product';
+
+            return response()->json(['data' => $responseData], $responseCode);
+        }
+
         $bookPrefixSetting = $settings->where('key', 'book-prefix')->first();
         $bookPath = $path;
+        $bookPrefix = '';
         // $bookPrefixSetting->value is "books" by default
         if (!empty($bookPrefixSetting) && !empty($bookPrefixSetting->value)) {
             $bookPrefix = '/' . trim($bookPrefixSetting->value, '/');

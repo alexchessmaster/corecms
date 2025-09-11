@@ -24,6 +24,10 @@ use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
 use App\Http\Controllers\CommentableController;
+use App\Http\Controllers\ProductAuthorController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductTagController;
 use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\TranslationTextController;
 
@@ -54,6 +58,10 @@ Route::group([
     Route::resource('book_genres', BookGenreController::class);
     Route::resource('book-authors', BookAuthorController::class);
     Route::resource('books', BookController::class);
+    Route::resource('product-categories', ProductCategoryController::class);
+    Route::resource('product-tags', ProductTagController::class);
+    Route::resource('product-authors', ProductAuthorController::class);
+    Route::resource('products', ProductController::class);
     Route::resource('comments', CommentableController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);

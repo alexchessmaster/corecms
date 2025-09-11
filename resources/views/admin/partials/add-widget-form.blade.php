@@ -19,6 +19,14 @@
         $model = $bookGenre;
         $widgetableId = $bookGenre->id;
         $widgetableType = substr(get_class($bookGenre), 11);
+    } elseif (isset($product) && !empty($product)) {
+        $model = $product;
+        $widgetableId = $product->id;
+        $widgetableType = substr(get_class($product), 11);
+    } elseif (isset($productCategory) && !empty($productCategory)) {
+        $model = $productCategory;
+        $widgetableId = $productCategory->id;
+        $widgetableType = substr(get_class($productCategory), 11);
     } else {
         dd('model not found');
     }

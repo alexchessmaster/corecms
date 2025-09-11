@@ -107,6 +107,39 @@
             </li>
             <div style="border: 1px rgb(55, 67, 71) solid"></div>
             <li class="nav-item">
+                <a href="/admin/product-categories" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Product Categories
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/product-tags" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Product Tags
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/products" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Products
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/product-authors" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Product Authors
+                    </p>
+                </a>
+            </li>
+            <div style="border: 1px rgb(55, 67, 71) solid"></div>
+            <li class="nav-item">
                 <a href="/admin/book_genres" class="nav-link">
                     <i class="nav-icon fas fa-book"></i>
                     <p>

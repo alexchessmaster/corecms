@@ -1,0 +1,14 @@
+@extends('admin.partials.app')
+@section('content-card-title', 'Edit Product Tag')
+@section('content-card-body')
+
+<div class="container">
+    <form action="{{ route('admin.product-tags.update', $tag) }}" method="POST">
+        @csrf
+        @method('PUT')
+        @include('admin.product_tag.form')
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+
+@endsection

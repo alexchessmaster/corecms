@@ -31,15 +31,12 @@ class WidgetController extends Controller
         $widgetableId = request()->input('widgetableId');
         $widgetableType = request()->input('widgetableType');
         $addWidgetPosition = request()->input('addWidgetPosition');
-
-        info('111111112');
+        
         // Find the widget
         $widget = Widget::findOrFail($widgetId);
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
-
-        info('111111113');
         // : fix this part  [2025-07-28 22:05:01] local.ERROR: Illegal operator and value combination. {"exception":"[object] (InvalidArgumentException(code: 0): Illegal operator and value combination. at /home/alex/azadandish.net_backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:956)
         //        #2 /home/alex/azadandish.net_backend/app/Http/Controllers/Api/WidgetController.php(43): Illuminate\\Database\\Eloquent\\Builder->where()
         // try this with postman
