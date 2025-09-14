@@ -140,6 +140,10 @@
     </div>
 @endif
 <script>
+    if(typeof tinymce !== 'undefined'){
+        window.location.reload();
+    }
+
     // Add event listeners for the widget options
     document.querySelectorAll('.widget-option').forEach(option => {
         option.addEventListener('click', function() {
