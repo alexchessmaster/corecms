@@ -199,7 +199,7 @@
             "debug": false,
             "newestOnTop": true, // Show newest notifications at the top
             "progressBar": true, // Display a progress bar
-            "positionClass": "toast-top-right", // Position of the notification
+            "positionClass": "toast-bottom-right", // Position of the notification
             "preventDuplicates": true, // Prevent duplicate notifications
             "showDuration": "300", // Animation duration
             "hideDuration": "1000", // Hide animation duration
