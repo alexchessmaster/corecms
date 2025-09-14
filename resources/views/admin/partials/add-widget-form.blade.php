@@ -63,14 +63,14 @@
 
 <div id="widgets-container"></div>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#widgetModal">
+<button type="button" class="btn btn-primary" id="first-add-widget-btn" data-toggle="modal" data-target="#widgetModal">
     <i class="fa fa-plus"></i> Add Widget
 </button>
 <br><br>
 <div id="field-edit-container"></div>
 <br><br>
 <button type="button" id="save-all" class="btn btn-success margin-auto">
-    <i class="fa fa-check"></i> Save all
+    <i class="fa fa-check"></i> Save all widgets
 </button>
 
 <style>
@@ -150,6 +150,16 @@
             this.classList.add('selected');
         });
     });
+
+    const saveAllWidgets = (e) => {
+        console.log('saveAll clicked');
+        e.preventDefault();
+        const allSaveButtons = document.querySelectorAll('.btn.btn-success.save-button');
+        // click on each save button
+        allSaveButtons.forEach((button) => {
+            button.click();
+        })
+    }
 
     const createCardForWidget = (widget) => {
         // Create a new div element for the widget card
@@ -296,6 +306,7 @@
         iconEl.classList.add('fa', 'fa-plus');
         btnEl.appendChild(iconEl);
         btnEl.appendChild(document.createTextNode(' Add Widget'));
+        btnEl.addEventListener('mousedown', saveAllWidgets);
         document.getElementById('field-edit-container').appendChild(btnEl);
     };
 
@@ -559,8 +570,11 @@
             tinyConfig = {
                 selector: `#textarea-` + widget.id + '-' + item.field_widget,
                 plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'pagebreak',
-                    'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons', 'codesample', 'directionality', 'hr', 'imagetools', 'nonbreaking', 'save', 'template', 'toc'
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+                    'pagebreak',
+                    'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
+                    'table', 'help', 'wordcount', 'emoticons', 'codesample', 'directionality',
+                    'nonbreaking', 'save', 'template'
                 ],
                 toolbar: [
                     'undo redo | bold italic underline strikethrough | forecolor backcolor | fontselect fontsizeselect formatselect',
@@ -571,7 +585,7 @@
                 // menubar: false,
             }
         }
-        if (size === 'large'|| size === 'small' || size === 'text') {
+        if (size === 'large' || size === 'small' || size === 'text') {
             tinymce.init(tinyConfig);
         }
     }
@@ -740,10 +754,10 @@
     const refreshWidgetList = () => {
         widgetContainer.innerHTML = null;
         fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}?lang={!! App::currentLocale() !!}", {
-            headers: {
-                'Authorization': 'Bearer {{ $authToken }}'
-            }
-        })
+                headers: {
+                    'Authorization': 'Bearer {{ $authToken }}'
+                }
+            })
             .then(response => {
                 return response.json()
             })
@@ -767,14 +781,8 @@
     }
     refreshWidgetList();
 
-    document.getElementById('save-all').addEventListener('click', (e) => {
-        e.preventDefault();
-        const allSaveButtons = document.querySelectorAll('.btn.btn-success.save-button');
-        // click on each save button
-        allSaveButtons.forEach((button) => {
-            button.click();
-        })
-    });
+    document.getElementById('save-all').addEventListener('click', saveAllWidgets);
+    document.getElementById('first-add-widget-btn').addEventListener('mousedown', saveAllWidgets);
 </script>
 <script>
     // Close button inside the modal footer
