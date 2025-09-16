@@ -12,6 +12,11 @@ use App\Http\Requests\UpdateBookAuthorRequest;
 
 class BookAuthorController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(BookAuthor::class, 'bookAuthor');
+    }
+
     /**
      * Display a listing of the resource.
      */

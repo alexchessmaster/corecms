@@ -11,6 +11,11 @@ use App\Models\Language;
 
 class TranslationTextController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(TranslationText::class, 'translation_text');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

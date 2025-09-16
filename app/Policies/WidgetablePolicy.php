@@ -13,7 +13,7 @@ class WidgetablePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -21,7 +21,7 @@ class WidgetablePolicy
      */
     public function view(User $user, Widgetable $widgetable): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -29,7 +29,7 @@ class WidgetablePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -37,7 +37,7 @@ class WidgetablePolicy
      */
     public function update(User $user, Widgetable $widgetable): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -45,7 +45,7 @@ class WidgetablePolicy
      */
     public function delete(User $user, Widgetable $widgetable): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -53,7 +53,7 @@ class WidgetablePolicy
      */
     public function restore(User $user, Widgetable $widgetable): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -61,6 +61,6 @@ class WidgetablePolicy
      */
     public function forceDelete(User $user, Widgetable $widgetable): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 }

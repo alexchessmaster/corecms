@@ -11,6 +11,11 @@ use App\Models\Language;
 
 class RedirectController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Redirect::class, 'redirect');
+    }
+
     /**
      * Display a listing of the resource.
      */

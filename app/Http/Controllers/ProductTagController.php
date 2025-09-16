@@ -10,6 +10,11 @@ use App\Http\Requests\UpdateProductTagRequest;
 
 class ProductTagController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(ProductTag::class, 'product_tag');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

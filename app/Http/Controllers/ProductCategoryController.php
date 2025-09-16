@@ -12,6 +12,11 @@ use App\Models\Widget;
 
 class ProductCategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(ProductCategory::class, 'product_category');
+    }
+
     public function index(Request $request)
     {
 

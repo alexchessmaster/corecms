@@ -12,6 +12,11 @@ use App\Http\Requests\UpdateBookGenreRequest;
 
 class BookGenreController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(BookGenre::class, 'book_genre');
+    }
+
     public function index(Request $request)
     {
 

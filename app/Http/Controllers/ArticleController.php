@@ -14,6 +14,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Article::class, 'article');
+    }
+    
     public function index(Request $request)
     {
         if ($request->ajax()) {

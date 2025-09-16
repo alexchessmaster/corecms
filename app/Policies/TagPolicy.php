@@ -13,7 +13,7 @@ class TagPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -21,7 +21,7 @@ class TagPolicy
      */
     public function view(User $user, tag $tag): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -29,7 +29,7 @@ class TagPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -37,7 +37,7 @@ class TagPolicy
      */
     public function update(User $user, tag $tag): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -45,7 +45,7 @@ class TagPolicy
      */
     public function delete(User $user, tag $tag): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -53,7 +53,7 @@ class TagPolicy
      */
     public function restore(User $user, tag $tag): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -61,6 +61,6 @@ class TagPolicy
      */
     public function forceDelete(User $user, tag $tag): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 }

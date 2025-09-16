@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\File;
 
 class ProductAuthorController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(ProductAuthor::class, 'product_author');
+    }
+
     /**
      * Display a listing of the resource.
      */

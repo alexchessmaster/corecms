@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Tag::class, 'tag');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

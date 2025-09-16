@@ -14,6 +14,11 @@ use App\Models\ProductCategory;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class, 'product');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

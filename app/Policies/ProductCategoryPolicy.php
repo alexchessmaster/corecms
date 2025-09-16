@@ -13,7 +13,7 @@ class ProductCategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -21,7 +21,7 @@ class ProductCategoryPolicy
      */
     public function view(User $user, ProductCategory $productCategory): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -29,7 +29,7 @@ class ProductCategoryPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductCategoryPolicy
      */
     public function update(User $user, ProductCategory $productCategory): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductCategoryPolicy
      */
     public function delete(User $user, ProductCategory $productCategory): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -53,7 +53,7 @@ class ProductCategoryPolicy
      */
     public function restore(User $user, ProductCategory $productCategory): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -61,6 +61,6 @@ class ProductCategoryPolicy
      */
     public function forceDelete(User $user, ProductCategory $productCategory): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 }

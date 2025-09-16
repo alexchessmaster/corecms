@@ -13,7 +13,7 @@ class ProductTagPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -21,7 +21,7 @@ class ProductTagPolicy
      */
     public function view(User $user, ProductTag $productTag): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -29,7 +29,7 @@ class ProductTagPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductTagPolicy
      */
     public function update(User $user, ProductTag $productTag): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductTagPolicy
      */
     public function delete(User $user, ProductTag $productTag): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -53,7 +53,7 @@ class ProductTagPolicy
      */
     public function restore(User $user, ProductTag $productTag): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -61,6 +61,6 @@ class ProductTagPolicy
      */
     public function forceDelete(User $user, ProductTag $productTag): bool
     {
-        return false;
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 }

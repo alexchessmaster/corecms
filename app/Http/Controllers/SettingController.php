@@ -8,6 +8,11 @@ use App\Http\Requests\UpdateSettingRequest;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Setting::class, 'setting');
+    }
+    
     /**
      * Display a listing of the resource.
      */

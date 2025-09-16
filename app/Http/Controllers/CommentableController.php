@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class CommentableController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Commentable::class, 'commentable');
+    }
+
     /**
      * Display a listing of the resource.
      */

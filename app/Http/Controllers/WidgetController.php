@@ -14,6 +14,11 @@ use App\Http\Requests\UpdateWidgetRequest;
 
 class WidgetController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Widget::class, 'widget');
+    }
+
     // Display a listing of widgets
     public function index()
     {

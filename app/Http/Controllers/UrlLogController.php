@@ -11,6 +11,11 @@ use App\Http\Requests\UpdateUrlLogRequest;
 
 class UrlLogController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(UrlLog::class, 'url_log');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -35,6 +40,8 @@ class UrlLogController extends Controller
 
     public function statistic()
     {
+        $this->authorize('viewAny', UrlLog::class);
+        
         $dayAfterDate = Carbon::now()->subDays(180);// history from how many days ago
         $daysAfterDateString = $dayAfterDate->format('Y-m-d');
         $days = [];

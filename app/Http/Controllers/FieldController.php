@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class FieldController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Field::class, 'field');
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {

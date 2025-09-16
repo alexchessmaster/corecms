@@ -9,6 +9,11 @@ use App\Http\Requests\UpdateUploadRequest;
 
 class UploadController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Upload::class, 'upload');
+    }
+
     /**
      * Display a listing of the resource.
      */

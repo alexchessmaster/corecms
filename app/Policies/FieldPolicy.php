@@ -13,7 +13,7 @@ class FieldPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -21,7 +21,7 @@ class FieldPolicy
      */
     public function view(User $user, Field $field): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -29,7 +29,7 @@ class FieldPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -37,7 +37,7 @@ class FieldPolicy
      */
     public function update(User $user, Field $field): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -45,7 +45,7 @@ class FieldPolicy
      */
     public function delete(User $user, Field $field): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -53,7 +53,7 @@ class FieldPolicy
      */
     public function restore(User $user, Field $field): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -61,6 +61,6 @@ class FieldPolicy
      */
     public function forceDelete(User $user, Field $field): bool
     {
-        //
+        return $user->role === 'admin' || $user->role === 'editor';
     }
 }
