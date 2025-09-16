@@ -42,7 +42,7 @@ Route::get('admin', function () {
 Route::group([
     'prefix' => 'admin',
     'as' => 'admin.',
-    'middleware' => [AdminMiddleware::class, LanguageAdminMiddleware::class]
+    'middleware' => [LanguageAdminMiddleware::class]
 ], function () {
     Route::resource('menus', MenuController::class);
     Route::resource('upload', UploadController::class);

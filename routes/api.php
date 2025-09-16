@@ -40,7 +40,7 @@ Route::middleware('throttle:240,1')->group(function () {
 
 Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/pages', PageController::class);
     Route::apiResource('/articles', ArticleController::class);
     Route::apiResource('/categories', CategoryController::class);
@@ -55,5 +55,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/widgets/{widget_id}/fields', FieldWidgetController::class);
     Route::get('/book-authors', [BookAuthorController::class, 'index']);
 });
+
 // custom routes:
 Route::post('contact-us', [ContactController::class, 'submitContactForm'])->middleware('throttle:5,1');

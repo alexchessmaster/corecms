@@ -4,34 +4,65 @@
 
     <a class="btn btn-success" href="{{ route('admin.users.create') }}">Create</a>
     <hr>
-    <table class="table">
+    <table class="table" id="users-table">
         <thead>
             <tr>
+                <th scope="col">ID</th>
                 <th scope="col">NAME</th>
                 <th scope="col">EMAIL</th>
                 <th scope="col">ROLE</th>
                 <th scope="col">ACTION</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach ($users as $user)
-                <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ !empty($user->is_admin) ? "Admin" : 'Normal user' }}</td>
-                    <td>
-                        <a class="btn btn-info" href="{{ route('admin.users.edit', $user->id) }}"><i class="fa fa-edit"></i></a>
-                        <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" id="" style="display: inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" style="display: inline"><i class="fa fa-trash"></i></button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
     </table>
     <script>
     </script>
+
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+        {{-- <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> --}}
+        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#users-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true, // Enables responsiveness for the table
+                    autoWidth: false, // Prevents DataTable from calculating column width
+                    ajax: "{{ route('admin.users.index') }}", // Ajax route to fetch data
+                    columns: [
+                        { data: 'id', name: 'id' },
+                        { data: 'name', name: 'name' },
+                        { data: 'email', name: 'email' },
+                        { data: 'role', name: 'role' },
+                        { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
+                    ],
+                    columnDefs: [
+                        { targets: "_all", defaultContent: "" }, // Prevents undefined cells
+                        { targets: [0], width: "10%" },
+                        { targets: [1], width: "20%" },
+                        { targets: [2], width: "40%" }, // Set widths of the columns
+                        { targets: [3], width: "10%" },
+                        { targets: [4], width: "20%" },
+                    ],
+                    language: {
+                        search: "Filter records:",
+                        paginate: {
+                            first: "<<",
+                            last: ">>",
+                            next: ">",
+                            previous: "<"
+                        }
+                    },
+                    pagingType: "full_numbers",
+                    lengthMenu: [10, 25, 50, 100, 200, 1000],
+                    pageLength: 25,
+                    order: [[0, 'desc']]
+                });
+            });
+        </script>
+    @endpush
 
 @endsection

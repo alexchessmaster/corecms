@@ -47,4 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getRolesAttribute()
+    {
+        return ['admin', 'editor', 'author', 'viewer'];
+    }
 }

@@ -34,7 +34,7 @@ class LogVisitedUrlMiddleware
         }
 
         try {
-            if(!(Auth::user()?->is_admin)){
+            if(!(Auth::user()?->role === 'admin')){
                 UrlLog::create([
                     'user_id' => Auth::id(),
                     'params' => substr(json_encode($request->all()), 0, 255),

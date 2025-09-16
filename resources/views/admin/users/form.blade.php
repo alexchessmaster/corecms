@@ -12,9 +12,12 @@
 </div>
 <div class="form-group">
     <label for="exampleFormControlSelect12">Role</label>
-    <select class="form-control" name="is_admin" id="exampleFormControlSelect12">
-        <option {{ isset($user) && $user->is_admin ? "selected" : "" }} value="0">Normal user</option>
-        <option {{ isset($user) && $user->is_admin ? "selected" : "" }} value="1">Admin</option>
+    <select class="form-control" name="role" id="exampleFormControlSelect12">
+        @foreach ($roles as $role)
+            <option {{ isset($user) && $user->role === $role ? 'selected' : '' }} value="{{ $role }}">
+                {{ $role }}
+            </option>
+        @endforeach
     </select>
 </div>
 <div class="form-group">
