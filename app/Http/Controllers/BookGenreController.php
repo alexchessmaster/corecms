@@ -9,16 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreBookGenreRequest;
 use App\Http\Requests\UpdateBookGenreRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookGenreController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(BookGenre::class, 'book_genre');
-    }
+    use AuthorizesRequests;
 
     public function index(Request $request)
     {
+        $this->authorize('viewAny', BookGenre::class);
 
         // Ensure /uncategorized book-genre exists for each language
         $languages = Language::get();
@@ -78,6 +77,7 @@ class BookGenreController extends Controller
 
     public function create()
     {
+        $this->authorize('create', BookGenre::class);
         $bookGenres = BookGenre::whereNull('parent_id')->get();
 
         return view('admin.book_genre.create', compact('bookGenres'));
@@ -85,6 +85,7 @@ class BookGenreController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', BookGenre::class);
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
@@ -98,7 +99,7 @@ class BookGenreController extends Controller
         ]);
 
         $bookGenre = new BookGenre;
-
+        $bookGenre->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -138,6 +139,7 @@ class BookGenreController extends Controller
     public function edit($bookGenreId)
     {
         $bookGenre = BookGenre::withAllWidgetData()->findOrFail($bookGenreId);
+        $this->authorize('update', $bookGenre);
         $bookGenres = BookGenre::whereNull('parent_id')->where('id', '!=', $bookGenre->id)->get();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -148,6 +150,7 @@ class BookGenreController extends Controller
 
     public function update(Request $request, BookGenre $bookGenre)
     {
+        $this->authorize('update', $bookGenre);
         $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
@@ -158,7 +161,7 @@ class BookGenreController extends Controller
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
         ]);
-
+        $bookGenre->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -197,6 +200,7 @@ class BookGenreController extends Controller
 
     public function destroy(BookGenre $bookGenre)
     {
+        $this->authorize('delete', $bookGenre);
         // uncategorized in en and other languages are the same
         $newBookGenre = $bookGenre->parent ?? BookGenre::where("slug->" . "en", '/uncategorized')->first();
         if (!$newBookGenre) {

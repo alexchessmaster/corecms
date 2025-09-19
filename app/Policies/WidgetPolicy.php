@@ -21,7 +21,7 @@ class WidgetPolicy
      */
     public function view(User $user, Widget $widget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($widget->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class WidgetPolicy
      */
     public function update(User $user, Widget $widget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($widget->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class WidgetPolicy
      */
     public function delete(User $user, Widget $widget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($widget->user_id === $user->id && $user->role === 'author');
     }
 
     /**

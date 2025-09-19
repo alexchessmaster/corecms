@@ -21,7 +21,7 @@ class ProductTagPolicy
      */
     public function view(User $user, ProductTag $productTag): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($productTag->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductTagPolicy
      */
     public function update(User $user, ProductTag $productTag): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($productTag->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductTagPolicy
      */
     public function delete(User $user, ProductTag $productTag): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($productTag->user_id === $user->id && $user->role === 'author');
     }
 
     /**

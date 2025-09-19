@@ -8,12 +8,15 @@ use App\Models\FieldWidget;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FieldResource;
+use App\Http\Resources\FieldWidgetResource;
 use App\Http\Requests\StoreFieldWidgetRequest;
 use App\Http\Requests\UpdateFieldWidgetRequest;
-use App\Http\Resources\FieldWidgetResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class FieldWidgetController extends Controller
 {
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
@@ -32,6 +35,7 @@ class FieldWidgetController extends Controller
 
         $field = Field::findOrFail($id);
         $widget = Widget::findOrFail($widgetId);
+        $this->authorize('update', $widget);
         FieldWidget::updateOrCreate([
             'widget_id' => $widgetId, 'field_id' => $id, 'key' => $key
         ]);

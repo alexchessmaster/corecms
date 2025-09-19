@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Book::class, 'book');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Book::class);
+
         if ($request->ajax()) {
             $books = Book::select(['id', 'title', 'slug', 'book_genre_id', 'status'])->with(['bookGenre']);
 
@@ -53,6 +53,8 @@ class BookController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Book::class);
+
         $bookGenres = BookGenre::all();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -63,6 +65,8 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Book::class);
+
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
@@ -80,7 +84,7 @@ class BookController extends Controller
         ]);
 
         $book = new Book;
-
+        $book->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -130,6 +134,7 @@ class BookController extends Controller
     public function edit($bookId)
     {
         $book = Book::withAllWidgetData()->findOrFail($bookId);
+        $this->authorize('update', $book);
         $bookGenres = BookGenre::all();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -140,6 +145,7 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
+        $this->authorize('update', $book);
         $request->validate([
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
@@ -156,7 +162,7 @@ class BookController extends Controller
             'views' => 'nullable|integer|min:0',
             'total_pages' => 'nullable|integer|min:0',
         ]);
-
+        $book->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -167,7 +173,6 @@ class BookController extends Controller
             $image->move($destinationPath, $filename);
             $book->setTranslation('image', app()->getLocale(), '/uploads/books/' . $filename);
         }
-
         $book->setTranslation('title', app()->getLocale(), $request->input('title'));
         $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         $book->setTranslation('description', app()->getLocale(), $request->input('description'));
@@ -205,6 +210,7 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
+        $this->authorize('delete', $book);
         $book->delete();
 
         return redirect()->route('admin.books.index')->with('success', 'Book deleted successfully.');

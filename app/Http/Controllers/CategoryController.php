@@ -6,16 +6,16 @@ use App\Models\Widget;
 use App\Models\Category;
 use App\Models\Language;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CategoryController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Category::class, 'category');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Category::class);
+
         $languages = Language::get();
         $languageCodes = collect($languages)->pluck('code')->toArray();
 
@@ -26,7 +26,7 @@ class CategoryController extends Controller
             $slugTranslations[$lang['code']] = '/uncategorized';
         }
         foreach ($languages as $lang) {
-            $category = \App\Models\Category::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
+            $category = Category::whereRaw("JSON_EXTRACT(slug, '$." . $lang['code'] . "') = '/uncategorized'")
                 ->first();
             if($category){
                 $currentName = $category->getTranslation('name', $lang['code'], false);
@@ -78,6 +78,8 @@ class CategoryController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Category::class);
+
         $categories = Category::whereNull('parent_id')->get();
 
         return view('admin.category.create', compact('categories'));
@@ -85,6 +87,8 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Category::class);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
@@ -97,6 +101,7 @@ class CategoryController extends Controller
         ]);
 
         $category = new Category;
+        $category->user_id = auth()->id();
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
@@ -124,7 +129,10 @@ class CategoryController extends Controller
 
     public function edit($categoryId)
     {
+        
         $category = Category::withAllWidgetData()->findOrFail($categoryId);
+        $this->authorize('update', $category);
+
         $categories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -135,6 +143,8 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
+        $this->authorize('update', $category);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
@@ -144,7 +154,7 @@ class CategoryController extends Controller
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
         ]);
-
+        $category->user_id = auth()->id();
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
@@ -172,6 +182,8 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        $this->authorize('delete', $category);
+        
         // uncategorized in en and other languages are the same
         $newCategory = $category->parent ?? Category::where("slug->" . "en", '/uncategorized')->first();
         if (!$newCategory) {

@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductAuthor;
 use Illuminate\Http\Request;
+use App\Models\ProductAuthor;
 use Illuminate\Support\Facades\File;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductAuthorController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(ProductAuthor::class, 'product_author');
-    }
-
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ProductAuthor::class);
+
         if ($request->ajax() || false) {
             $data = ProductAuthor::select(['id', 'name', 'date_of_birth', 'date_of_death', 'nationality']);
             return datatables()
@@ -59,6 +59,8 @@ class ProductAuthorController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', ProductAuthor::class);
+        
         return view('admin.product_author.create');
     }
 
@@ -67,6 +69,8 @@ class ProductAuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', ProductAuthor::class);
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'date_of_birth' => 'nullable|date',
@@ -77,7 +81,7 @@ class ProductAuthorController extends Controller
         ]);
 
         $productAuthor = new ProductAuthor;
-
+        $productAuthor->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -104,6 +108,8 @@ class ProductAuthorController extends Controller
      */
     public function show(ProductAuthor $productAuthor)
     {
+        $this->authorize('view', $productAuthor);
+        
         return view('admin.product_author.show', compact('productAuthor'));
     }
 
@@ -112,6 +118,8 @@ class ProductAuthorController extends Controller
      */
     public function edit(ProductAuthor $productAuthor)
     {
+        $this->authorize('update', $productAuthor);
+        
         return view('admin.product_author.edit', compact('productAuthor'));
     }
 
@@ -120,6 +128,7 @@ class ProductAuthorController extends Controller
      */
     public function update(Request $request, ProductAuthor $productAuthor)
     {
+        $this->authorize('update', $productAuthor);
         $request->validate([
             'name' => 'required|string|max:255',
             'date_of_birth' => 'nullable|date',
@@ -128,13 +137,12 @@ class ProductAuthorController extends Controller
             'biography' => 'nullable|string',
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:2048',
         ]);
-
+        $productAuthor->user_id = auth()->id();
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($productAuthor->image && File::exists(public_path($productAuthor->image))) {
                 File::delete(public_path($productAuthor->image));
             }
-
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
             $destinationPath = public_path('uploads/images');
@@ -160,6 +168,8 @@ class ProductAuthorController extends Controller
      */
     public function destroy(ProductAuthor $productAuthor)
     {
+        $this->authorize('delete', $productAuthor);
+        
         // Delete associated image if exists
         if ($productAuthor->image && File::exists(public_path($productAuthor->image))) {
             File::delete(public_path($productAuthor->image));

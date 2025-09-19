@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Models\TranslationText;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreTranslationTextRequest;
 use App\Http\Requests\UpdateTranslationTextRequest;
-use App\Models\Language;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TranslationTextController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(TranslationText::class, 'translation_text');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', TranslationText::class);
+
         if ($request->ajax()) {
             $data = TranslationText::select(['id', 'key', 'text']);
             return datatables()
@@ -49,6 +49,8 @@ class TranslationTextController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', TranslationText::class);
+        
         $languages = Language::all();
 
         return view('admin.translation-text.create', compact('languages'));
@@ -59,6 +61,8 @@ class TranslationTextController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', TranslationText::class);
+        
         $request->validate([
             'key' => 'required|string',
         ]);
@@ -72,6 +76,7 @@ class TranslationTextController extends Controller
         }
 
         $translationText = new TranslationText;
+        $translationText->user_id = auth()->id();
         $translationText->key = $request->input('key');
         $translationText->setTranslations('text', $translations);
         $translationText->save();
@@ -84,7 +89,8 @@ class TranslationTextController extends Controller
      */
     public function show($id)
     {
-        //
+        $translationText = TranslationText::findOrFail($id);
+        $this->authorize('view', $translationText);
     }
 
     /**
@@ -92,6 +98,8 @@ class TranslationTextController extends Controller
      */
     public function edit(TranslationText $translationText)
     {
+        $this->authorize('view', $translationText);
+        
         $languages = Language::all();
         $translations = $translationText->getTranslations('text');
 
@@ -103,10 +111,11 @@ class TranslationTextController extends Controller
      */
     public function update(Request $request, TranslationText $translationText)
     {
+        $this->authorize('update', $translationText);
         $request->validate([
             'key' => 'required|string',
         ]);
-
+        $translationText->user_id = auth()->id();
         $translations = [];
         foreach ($request->all() as $key => $value) {
             if (str_starts_with($key, 'lang-')) {
@@ -128,6 +137,8 @@ class TranslationTextController extends Controller
     public function destroy($id)
     {
         $translation = TranslationText::findOrFail($id);
+        $this->authorize('delete', $translation);
+        
         $translation->delete();
 
         return redirect()->route('admin.translation-texts.index')

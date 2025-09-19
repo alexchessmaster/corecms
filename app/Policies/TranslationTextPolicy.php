@@ -21,7 +21,7 @@ class TranslationTextPolicy
      */
     public function view(User $user, TranslationText $translationText): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($translationText->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class TranslationTextPolicy
      */
     public function update(User $user, TranslationText $translationText): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($translationText->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class TranslationTextPolicy
      */
     public function delete(User $user, TranslationText $translationText): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($translationText->user_id === $user->id && $user->role === 'author');
     }
 
     /**

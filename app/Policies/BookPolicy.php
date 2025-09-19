@@ -21,7 +21,7 @@ class BookPolicy
      */
     public function view(User $user, Book $book): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($book->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class BookPolicy
      */
     public function update(User $user, Book $book): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($book->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class BookPolicy
      */
     public function delete(User $user, Book $book): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($book->user_id === $user->id && $user->role === 'author');
     }
 
     /**

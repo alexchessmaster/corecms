@@ -8,19 +8,19 @@ use Illuminate\Support\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreUrlLogRequest;
 use App\Http\Requests\UpdateUrlLogRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UrlLogController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(UrlLog::class, 'url_log');
-    }
-
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', UrlLog::class);
+
         // Check if the request is for DataTable
         if ($request->ajax()) {
             $logs = UrlLog::query();
@@ -71,7 +71,7 @@ class UrlLogController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', UrlLog::class);
     }
 
     /**
@@ -79,7 +79,7 @@ class UrlLogController extends Controller
      */
     public function store(StoreUrlLogRequest $request)
     {
-        //
+        $this->authorize('create', UrlLog::class);
     }
 
     /**
@@ -87,7 +87,7 @@ class UrlLogController extends Controller
      */
     public function show(UrlLog $urlLog)
     {
-        //
+        $this->authorize('view', $urlLog);
     }
 
     /**
@@ -95,7 +95,7 @@ class UrlLogController extends Controller
      */
     public function edit(UrlLog $urlLog)
     {
-        //
+        $this->authorize('view', $urlLog);
     }
 
     /**
@@ -103,7 +103,7 @@ class UrlLogController extends Controller
      */
     public function update(UpdateUrlLogRequest $request, UrlLog $urlLog)
     {
-        //
+        $this->authorize('update', $urlLog);
     }
 
     /**
@@ -111,6 +111,6 @@ class UrlLogController extends Controller
      */
     public function destroy(UrlLog $urlLog)
     {
-        //
+        $this->authorize('delete', $urlLog);
     }
 }

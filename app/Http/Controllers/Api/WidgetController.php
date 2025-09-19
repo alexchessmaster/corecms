@@ -15,9 +15,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\WidgetResource;
 use App\Http\Resources\PageWidgetResource;
 use App\Http\Resources\FieldWithValueResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class WidgetController extends Controller
 {
+    use AuthorizesRequests;
+    
     public function show($id)
     {
         $widget = Widget::with('fieldWidgets.field')->find($id);
@@ -34,6 +37,7 @@ class WidgetController extends Controller
         
         // Find the widget
         $widget = Widget::findOrFail($widgetId);
+        $this->authorize('update', $widget);
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }

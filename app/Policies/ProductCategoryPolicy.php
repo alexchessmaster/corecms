@@ -21,7 +21,7 @@ class ProductCategoryPolicy
      */
     public function view(User $user, ProductCategory $productCategory): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($productCategory->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductCategoryPolicy
      */
     public function update(User $user, ProductCategory $productCategory): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($productCategory->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductCategoryPolicy
      */
     public function delete(User $user, ProductCategory $productCategory): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($productCategory->user_id === $user->id && $user->role === 'author');
     }
 
     /**

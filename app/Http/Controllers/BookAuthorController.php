@@ -9,19 +9,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreBookAuthorRequest;
 use App\Http\Requests\UpdateBookAuthorRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookAuthorController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(BookAuthor::class, 'bookAuthor');
-    }
+    use AuthorizesRequests;
 
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', BookAuthor::class);
+
         if ($request->ajax() || false) {
             $data = BookAuthor::select(['id', 'name', 'date_of_birth', 'date_of_death', 'nationality']);
             return datatables()
@@ -63,6 +63,8 @@ class BookAuthorController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', BookAuthor::class);
+
         return view('admin.book_author.create');
     }
 
@@ -71,6 +73,8 @@ class BookAuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', BookAuthor::class);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'date_of_birth' => 'nullable|date',
@@ -81,7 +85,7 @@ class BookAuthorController extends Controller
         ]);
 
         $bookAuthor = new BookAuthor;
-
+        $bookAuthor->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -108,6 +112,8 @@ class BookAuthorController extends Controller
      */
     public function show(BookAuthor $bookAuthor)
     {
+        $this->authorize('view', $bookAuthor);
+
         return view('admin.book_author.show', compact('bookAuthor'));
     }
 
@@ -116,6 +122,8 @@ class BookAuthorController extends Controller
      */
     public function edit(BookAuthor $bookAuthor)
     {
+        $this->authorize('update', $bookAuthor);
+
         return view('admin.book_author.edit', compact('bookAuthor'));
     }
 
@@ -124,6 +132,8 @@ class BookAuthorController extends Controller
      */
     public function update(Request $request, BookAuthor $bookAuthor)
     {
+        $this->authorize('update', $bookAuthor);
+        $bookAuthor->user_id = auth()->id();
         $request->validate([
             'name' => 'required|string|max:255',
             'date_of_birth' => 'nullable|date',
@@ -164,6 +174,8 @@ class BookAuthorController extends Controller
      */
     public function destroy(BookAuthor $bookAuthor)
     {
+        $this->authorize('delete', $bookAuthor);
+
         // Delete associated image if exists
         if ($bookAuthor->image && File::exists(public_path($bookAuthor->image))) {
             File::delete(public_path($bookAuthor->image));
@@ -172,9 +184,9 @@ class BookAuthorController extends Controller
         // You might want to handle books that have this author
         // For example, set author_id to null or assign to a default author
         $bookAuthor->books()->update(['author_id' => null]);
-        
+
         $bookAuthor->delete();
-        
+
         return redirect()
             ->route('admin.book-authors.index')
             ->with('success', 'Book Author deleted successfully.');

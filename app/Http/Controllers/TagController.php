@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TagController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Tag::class, 'tag');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Tag::class);
+
         if ($request->ajax()) {
             $data = Tag::select(['id', 'name']);
             return datatables()
@@ -43,17 +43,22 @@ class TagController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Tag::class);
+        
         return view('admin.tag.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Tag::class);
+        
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
         $tag = new Tag;
         $tag->setTranslation('name', app()->getLocale(), $request->input('name'));
+        $tag->user_id = auth()->id();
         $tag->save();
 
         return redirect()->route('admin.tags.index')->with('success', 'Tag created successfully.');
@@ -61,15 +66,18 @@ class TagController extends Controller
 
     public function edit(Tag $tag)
     {
+        $this->authorize('view', $tag);
+        
         return view('admin.tag.edit', compact('tag'));
     }
 
     public function update(Request $request, Tag $tag)
     {
+        $this->authorize('update', $tag);
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
-
+        $tag->user_id = auth()->id();
         $tag->setTranslation('name', app()->getLocale(), $request->input('name'));
         $tag->save();
 
@@ -78,6 +86,8 @@ class TagController extends Controller
 
     public function destroy(Tag $tag)
     {
+        $this->authorize('delete', $tag);
+        
         $tag->delete();
         return redirect()->route('admin.tags.index')->with('success', 'Tag deleted successfully.');
     }

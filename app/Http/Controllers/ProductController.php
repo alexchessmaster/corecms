@@ -6,21 +6,21 @@ use App\Models\Widget;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Models\ProductCategory;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Product::class, 'product');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Product::class);
+
         if ($request->ajax()) {
             $products = Product::with(['category'])->select(['id', 'title', 'slug', 'product_category_id', 'status']);
 
@@ -54,6 +54,8 @@ class ProductController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Product::class);
+        
         $categories = ProductCategory::all();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -64,6 +66,8 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Product::class);
+        
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
@@ -76,7 +80,7 @@ class ProductController extends Controller
         ]);
 
         $product = new Product;
-
+        $product->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -104,6 +108,8 @@ class ProductController extends Controller
     public function edit($productId)
     {
         $product = Product::findOrFail($productId);
+        $this->authorize('update', $product);
+        
         $categories = ProductCategory::all();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -114,6 +120,8 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $this->authorize('update', $product);
+        
         $request->validate([
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
@@ -124,7 +132,7 @@ class ProductController extends Controller
             'price' => 'nullable|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
         ]);
-
+        $product->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -135,7 +143,6 @@ class ProductController extends Controller
             $image->move($destinationPath, $filename);
             $product->setTranslation('image', app()->getLocale(), '/uploads/products/' . $filename);
         }
-
         $product->setTranslation('title', app()->getLocale(), $request->input('title'));
         $product->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         $product->setTranslation('description', app()->getLocale(), $request->input('description'));
@@ -151,8 +158,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $this->authorize('delete', $product);
+        
         $product->delete();
-
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
     }
 }

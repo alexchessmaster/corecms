@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\FileHelper;
 use App\Models\Upload;
+use App\Helpers\FileHelper;
 use App\Http\Requests\StoreUploadRequest;
 use App\Http\Requests\UpdateUploadRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UploadController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Upload::class, 'upload');
-    }
-
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->authorize('viewAny', Upload::class);
+        
         return view('admin.upload.index');
     }
 
@@ -27,7 +27,7 @@ class UploadController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', Upload::class);
     }
 
     /**
@@ -35,6 +35,8 @@ class UploadController extends Controller
      */
     public function store(StoreUploadRequest $request)
     {
+        $this->authorize('create', Upload::class);
+        
         $path = FileHelper::upload($request);
         $parsedUrl = parse_url($path);
         $pathParts = explode('/', $parsedUrl['path']);
@@ -51,7 +53,7 @@ class UploadController extends Controller
      */
     public function show(Upload $upload)
     {
-        //
+        $this->authorize('view', $upload);
     }
 
     /**
@@ -59,7 +61,7 @@ class UploadController extends Controller
      */
     public function edit(Upload $upload)
     {
-        //
+        $this->authorize('view', $upload);
     }
 
     /**
@@ -67,7 +69,7 @@ class UploadController extends Controller
      */
     public function update(UpdateUploadRequest $request, Upload $upload)
     {
-        //
+        $this->authorize('update', $upload);
     }
 
     /**
@@ -75,6 +77,6 @@ class UploadController extends Controller
      */
     public function destroy(Upload $upload)
     {
-        //
+        $this->authorize('delete', $upload);
     }
 }

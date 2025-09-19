@@ -11,16 +11,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ArticleController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Article::class, 'article');
-    }
-    
+    use AuthorizesRequests;
+
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Article::class);
+
         if ($request->ajax()) {
             $articles = Article::select(['id', 'title', 'slug', 'category_id'])->with(['category', 'tags']);
 
@@ -59,6 +59,8 @@ class ArticleController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Article::class);
+
         $categories = Category::all();
         $tags = Tag::all();
         $allWidgets = Widget::where('active', true)->get();
@@ -68,6 +70,8 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Article::class);
+
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
@@ -84,7 +88,7 @@ class ArticleController extends Controller
         ]);
 
         $article = new Article;
-
+        $article->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -128,6 +132,8 @@ class ArticleController extends Controller
     public function edit($articleId)
     {
         $article = Article::withAllWidgetData()->findOrFail($articleId);
+        $this->authorize('update', $article);
+
         $categories = Category::all();
         $tags = Tag::all();
         $allWidgets = Widget::where('active', true)->get();
@@ -139,6 +145,8 @@ class ArticleController extends Controller
 
     public function update(Request $request, Article $article)
     {
+        $this->authorize('update', $article);
+
         $request->validate([
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
@@ -154,7 +162,7 @@ class ArticleController extends Controller
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
         ]);
-
+        $article->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -165,7 +173,6 @@ class ArticleController extends Controller
             $image->move($destinationPath, $filename);
             $article->setTranslation('image', app()->getLocale(), '/uploads/articles/' . $filename);
         }
-
         $article->setTranslation('title', app()->getLocale(), $request->input('title'));
         $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         $article->setTranslation('description', app()->getLocale(), $request->input('description'));
@@ -198,6 +205,8 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
+        $this->authorize('delete', $article);
+        
         $article->delete();
         return redirect()->route('admin.articles.index')->with('success', 'Article deleted successfully.');
     }

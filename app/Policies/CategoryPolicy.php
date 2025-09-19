@@ -21,7 +21,7 @@ class CategoryPolicy
      */
     public function view(User $user, category $category): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($category->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class CategoryPolicy
      */
     public function update(User $user, category $category): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($category->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class CategoryPolicy
      */
     public function delete(User $user, category $category): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($category->user_id === $user->id && $user->role === 'author');
     }
 
     /**

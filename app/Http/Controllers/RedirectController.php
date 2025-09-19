@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Language;
 use App\Models\Redirect;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\StoreRedirectRequest;
 use App\Http\Requests\UpdateRedirectRequest;
-use App\Models\Language;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class RedirectController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Redirect::class, 'redirect');
-    }
-
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Redirect::class);
+
         if ($request->ajax()) {
             $redirects = Redirect::query(); // Fetch redirects
 
@@ -53,8 +53,9 @@ class RedirectController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Redirect::class);
+        
         $languages = Language::all();
-
         return view('admin.redirect.create', compact('languages')); // Return the view to create a new redirect
     }
 
@@ -66,6 +67,8 @@ class RedirectController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Redirect::class);
+        
         $request->validate([
             'from' => 'required|string|max:255|unique:redirects,from',
             'to' => 'required|string|max:255',
@@ -92,6 +95,8 @@ class RedirectController extends Controller
      */
     public function show(Redirect $redirect)
     {
+        $this->authorize('view', $redirect);
+        
         return view('admin.redirect.show', compact('redirect')); // Return the show view for a single redirect
     }
 
@@ -103,8 +108,9 @@ class RedirectController extends Controller
      */
     public function edit(Redirect $redirect)
     {
+        $this->authorize('update', $redirect);
+        
         $languages = Language::all();
-
         return view('admin.redirect.edit', compact('redirect', 'languages')); // Return the view to edit a redirect
     }
 
@@ -117,6 +123,8 @@ class RedirectController extends Controller
      */
     public function update(Request $request, Redirect $redirect)
     {
+        $this->authorize('update', $redirect);
+        
         $request->validate([
             'from' => 'required|string|max:255|unique:redirects,from,' . $redirect->id,
             'to' => 'required|string|max:255',
@@ -142,6 +150,8 @@ class RedirectController extends Controller
      */
     public function destroy(Redirect $redirect)
     {
+        $this->authorize('delete', $redirect);
+        
         $redirect->delete(); // Delete the redirect
 
         return redirect()->route('admin.redirects.index')->with('success', 'Redirect deleted successfully!');

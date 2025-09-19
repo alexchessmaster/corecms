@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Widget;
+use App\Models\Language;
+use Illuminate\Http\Request;
+use App\Models\ProductCategory;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Requests\UpdateProductCategoryRequest;
-use App\Models\ProductCategory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use App\Models\Language;
-use App\Models\Widget;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductCategoryController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(ProductCategory::class, 'product_category');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ProductCategory::class);
 
         // Ensure /uncategorized product-category exists for each language
         $languages = Language::get();
@@ -78,13 +77,16 @@ class ProductCategoryController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ProductCategory::class);
+        
         $productCategories = ProductCategory::whereNull('parent_id')->get();
-
         return view('admin.product_category.create', compact('productCategories'));
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', ProductCategory::class);
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
@@ -98,7 +100,7 @@ class ProductCategoryController extends Controller
         ]);
 
         $productCategory = new ProductCategory;
-
+        $productCategory->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -138,6 +140,8 @@ class ProductCategoryController extends Controller
     public function edit($productCategoryId)
     {
         $productCategory = ProductCategory::withAllWidgetData()->findOrFail($productCategoryId);
+        $this->authorize('update', $productCategory);
+        
         $productCategories = ProductCategory::whereNull('parent_id')->where('id', '!=', $productCategory->id)->get();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -148,6 +152,8 @@ class ProductCategoryController extends Controller
 
     public function update(Request $request, ProductCategory $productCategory)
     {
+        $this->authorize('update', $productCategory);
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
@@ -158,7 +164,7 @@ class ProductCategoryController extends Controller
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
         ]);
-
+        $productCategory->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
@@ -169,7 +175,6 @@ class ProductCategoryController extends Controller
             $image->move($destinationPath, $filename);
             $productCategory->setTranslation('image', app()->getLocale(), '/uploads/images/' . $filename);
         }
-
         $productCategory->setTranslation('name', app()->getLocale(), $request->name);
         $productCategory->parent_id = $request->input('parent_id');
         $productCategory->description = $request->input('description');
@@ -197,6 +202,8 @@ class ProductCategoryController extends Controller
 
     public function destroy(ProductCategory $productCategory)
     {
+        $this->authorize('delete', $productCategory);
+        
         // uncategorized in en and other languages are the same
         $newProductCategory = $productCategory->parent ?? ProductCategory::where("slug->" . "en", '/uncategorized')->first();
 

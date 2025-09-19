@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Field;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class FieldController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Field::class, 'field');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Field::class);
+
         if ($request->ajax()) {
             $data = Field::select(['id', 'type']);
             return datatables()
@@ -42,11 +42,14 @@ class FieldController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Field::class);
+
         return view('admin.field.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Field::class);
         $request->validate([
             'type' => 'required|string|max:255',
         ]);
@@ -60,7 +63,9 @@ class FieldController extends Controller
 
     public function edit(Field $field)
     {
-        return view('admin.field.edit', compact('field'));
+        // $this->authorize('update', $field);
+
+        // return view('admin.field.edit', compact('field'));
     }
 
     public function update(Request $request, Field $field)

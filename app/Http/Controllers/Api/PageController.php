@@ -8,9 +8,12 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PageResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PageController extends Controller
 {
+    use AuthorizesRequests;
+    
     public function show($pageId)
     {
         if (!empty(request()->lang)) {
@@ -25,6 +28,7 @@ class PageController extends Controller
     public function update($pageId)
     {
         $page = Page::where('slug', request()->slug)->first();
+        $this->authorize('update', $page);
         if ($page) {
             return response()->json([
                 'status' => 'error',

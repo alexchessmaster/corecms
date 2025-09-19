@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Log;
 use App\Helpers\WidgetDefaultValueHelper;
 use App\Http\Requests\StoreWidgetRequest;
 use App\Http\Requests\UpdateWidgetRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class WidgetController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Widget::class, 'widget');
-    }
-
+    use AuthorizesRequests;
+    
     // Display a listing of widgets
     public function index()
     {
+        $this->authorize('viewAny', Widget::class);
+
         $widgets = Widget::all();
 
         return view('admin.widgets.index', compact('widgets'));
@@ -30,6 +30,8 @@ class WidgetController extends Controller
     // Show the form for creating a new widget
     public function create()
     {
+        $this->authorize('create', Widget::class);
+        
         $fields = Field::all();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
@@ -40,6 +42,8 @@ class WidgetController extends Controller
     // Store a newly created widget in the database
     public function store(Request $request)
     {
+        $this->authorize('create', Widget::class);
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'user_note' => 'nullable|string',
@@ -54,7 +58,7 @@ class WidgetController extends Controller
         if ($request->hasFile('image')) {
             $widget->image = FileHelper::upload($request, 'image');
         }
-
+        $widget->user_id = auth()->id();
         $widget->save();
 
         return redirect()->route('admin.widgets.edit', $widget->id)->with('success', 'Widget created successfully.');
@@ -64,6 +68,8 @@ class WidgetController extends Controller
     public function edit($id)
     {
         $widget = Widget::findOrFail($id);
+        $this->authorize('view', $widget);
+        
         $fieldTypes = Field::get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
@@ -75,6 +81,7 @@ class WidgetController extends Controller
     public function update(Request $request, $id)
     {
         $widget = Widget::findOrFail($id);
+        $this->authorize('update', $widget);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -90,7 +97,7 @@ class WidgetController extends Controller
         if ($request->hasFile('image')) {
             $widget->image = FileHelper::upload($request, 'image');
         }
-
+        $widget->user_id = auth()->id();
         $widget->save();
 
         return redirect()->route('admin.widgets.index')->with('success', 'Widget updated successfully.');
@@ -100,6 +107,8 @@ class WidgetController extends Controller
     public function destroy($id)
     {
         $widget = Widget::findOrFail($id);
+        $this->authorize('delete', $widget);
+        
         $widget->delete();
 
         return redirect()->route('admin.widgets.index')->with('success', 'Widget deleted successfully.');

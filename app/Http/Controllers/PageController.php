@@ -9,19 +9,19 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StorePageRequest;
 use App\Http\Requests\UpdatePageRequest;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PageController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Page::class, 'page');
-    }
-
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Page::class);
+
         if ($request->ajax()) {
             $pages = Page::select(['id', 'title', 'slug', 'status']);
 
@@ -68,6 +68,8 @@ class PageController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Page::class);
+        
         return view('admin.page.create');
     }
 
@@ -76,7 +78,10 @@ class PageController extends Controller
      */
     public function store(StorePageRequest $request)
     {
+        $this->authorize('create', Page::class);
+        
         $page = new Page;
+        $page->user_id = auth()->id();
         $page->setTranslation('title', app()->getLocale(), $request->title);
         $slug = '/' . Str::slug($request->slug);
 
@@ -99,6 +104,8 @@ class PageController extends Controller
      */
     public function show(Page $page)
     {
+        $this->authorize('view', $page);
+        
         //
     }
 
@@ -108,6 +115,8 @@ class PageController extends Controller
     public function edit($pageId)
     {
         $page = Page::findOrFail($pageId);
+        $this->authorize('update', $page);
+        $page->user_id = auth()->id();
         $pageWidgets = $page->widgets;
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -119,15 +128,21 @@ class PageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePageRequest $request, Page $page) {}
+    public function update(UpdatePageRequest $request, Page $page)
+    {
+        $this->authorize('update', $page);
+        
+        // ...existing code...
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Page $page)
     {
+        $this->authorize('delete', $page);
+        
         $page->delete();
-
         return redirect()->back();
     }
 }

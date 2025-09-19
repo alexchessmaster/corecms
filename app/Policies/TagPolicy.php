@@ -21,7 +21,7 @@ class TagPolicy
      */
     public function view(User $user, tag $tag): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($tag->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class TagPolicy
      */
     public function update(User $user, tag $tag): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($tag->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class TagPolicy
      */
     public function delete(User $user, tag $tag): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($tag->user_id === $user->id && $user->role === 'author');
     }
 
     /**

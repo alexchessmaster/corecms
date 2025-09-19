@@ -7,16 +7,16 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreProductTagRequest;
 use App\Http\Requests\UpdateProductTagRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductTagController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(ProductTag::class, 'product_tag');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', ProductTag::class);
+
         if ($request->ajax()) {
             $data = ProductTag::select(['id', 'name', 'slug']);
             return datatables()
@@ -49,16 +49,21 @@ class ProductTagController extends Controller
 
     public function create()
     {
+        $this->authorize('create', ProductTag::class);
+        
         return view('admin.product_tag.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', ProductTag::class);
+        
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
         $productTag = new ProductTag;
+        $productTag->user_id = auth()->id();
         $productTag->setTranslation('name', app()->getLocale(), $request->input('name'));
         $productTag->setTranslation('slug', app()->getLocale(), Str::slug($request->input('name')));
         $productTag->save();
@@ -68,15 +73,19 @@ class ProductTagController extends Controller
 
     public function edit(ProductTag $productTag)
     {
+        $this->authorize('update', $productTag);
+        
         return view('admin.product_tag.edit', ['tag' => $productTag]);
     }
 
     public function update(Request $request, ProductTag $productTag)
     {
+        $this->authorize('update', $productTag);
+        
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
-
+        $productTag->user_id = auth()->id();
         $productTag->setTranslation('name', app()->getLocale(), $request->input('name'));
         $productTag->setTranslation('slug', app()->getLocale(), Str::slug($request->input('name')));
 
@@ -87,6 +96,8 @@ class ProductTagController extends Controller
 
     public function destroy(ProductTag $productTag)
     {
+        $this->authorize('delete', $productTag);
+        
         $productTag->delete();
         return redirect()->route('admin.product-tags.index')->with('success', 'Tag deleted successfully.');
     }

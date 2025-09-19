@@ -7,16 +7,19 @@ use App\Models\Widgetable;
 use App\Models\FieldWidget;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use function Pest\Laravel\json;
 use App\Models\WidgetFieldValues;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreWidgetFieldValuesRequest;
-use App\Http\Requests\UpdateWidgetFieldValuesRequest;
 
-use function Pest\Laravel\json;
+use App\Http\Requests\UpdateWidgetFieldValuesRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class WidgetFieldValuesController extends Controller
 {
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
@@ -70,6 +73,7 @@ class WidgetFieldValuesController extends Controller
             $widget_field_value_id = $inputKeyArr[5] ?? null;
 
             $widgetable = Widgetable::find($widgetable_id);
+            $this->authorize('update', $widgetable);
             $fieldWidget = FieldWidget::find($field_widget_id);
             $widgetFieldValue = WidgetFieldValues::where('widgetable_id', $widgetable->id)
                 ->where('field_widget_id', $fieldWidget->id)

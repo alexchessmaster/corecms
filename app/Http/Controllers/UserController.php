@@ -5,16 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(User::class, 'user');
-    }
-
+    use AuthorizesRequests;
+    
     public function index(Request $request)
     {
+        $this->authorize('viewAny', User::class);
 
         if ($request->ajax()) {
             $users = User::select(['id', 'name', 'email', 'role']);
@@ -42,6 +41,8 @@ class UserController extends Controller
 
     public function create()
     {
+        $this->authorize('create', User::class);
+        
         $user = new User();
         $roles = $user->roles;
 
@@ -50,6 +51,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
+        
         $name = $request->name;
         $email = $request->email;
         $role = $request->role;
@@ -77,6 +80,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('view', $user);
+        
         $roles = $user->roles;
 
         return view('admin.users.edit', compact('user', 'roles'));
@@ -84,6 +89,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+        
         $name = $request->name;
         $email = $request->email;
         $role = $request->role;
@@ -110,6 +117,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+        
         $user->delete();
 
         return redirect()->route('admin.users.index');

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->json('name'); // Translatable field
             $table->json('slug'); // Translatable field
-            $table->json('teaser_description')->nullable();
-            $table->json('teaser_image')->nullable();
+            $table->json('description')->nullable();
+            $table->json('image')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->boolean('hide_from_frontend')->nullable();
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');

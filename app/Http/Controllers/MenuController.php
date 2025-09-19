@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\FileHelper;
 use App\Models\Menu;
+use App\Models\Language;
+use App\Helpers\FileHelper;
 use Illuminate\Support\Facades\View;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
-use App\Models\Language;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MenuController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Menu::class, 'menu');
-    }
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->authorize('viewAny', Menu::class);
+
         $menus = Menu::get();
 
         return view('admin.menu.index', compact('menus'));
@@ -30,8 +31,9 @@ class MenuController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Menu::class);
+        
         $menus = Menu::orderBy('order')->get();
-
         return view('admin.menu.create', compact('menus'));
     }
 
@@ -40,6 +42,8 @@ class MenuController extends Controller
      */
     public function store(StoreMenuRequest $request)
     {
+        $this->authorize('create', Menu::class);
+        
         $order = $request->input('order');
         if (!is_null($order)) {
             $order += 0.5;
@@ -80,7 +84,8 @@ class MenuController extends Controller
                         'image_alt' => $request->input('image_alt'),
                         'description' => $request->input('description'),
                         'parent_id' => $request->input('parent_id'),
-                        'order' => $value
+                        'order' => $value,
+                        'user_id' => auth()->id(),
                     ]);
                 } else {
                     $tmpMenu = Menu::find($key);
@@ -98,6 +103,8 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
+        $this->authorize('view', $menu);
+        
         //
     }
 
@@ -106,8 +113,9 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
+        $this->authorize('update', $menu);
+        
         $menus = Menu::orderBy('order')->get();
-
         return view('admin.menu.edit', compact('menus', 'menu'));
     }
 
@@ -116,6 +124,8 @@ class MenuController extends Controller
      */
     public function update(UpdateMenuRequest $request, Menu $menu)
     {
+        $this->authorize('update', $menu);
+        
         $order = $request->input('order');
         if (!is_null($order)) {
             $order += 0.5;
@@ -159,6 +169,7 @@ class MenuController extends Controller
         }
         $menu->image_alt = $request->input('image_alt');
         $menu->description = $request->input('description');
+        $menu->user_id = auth()->id();
         $menu->save();
 
         return redirect()->back()->with('success', 'Menu updated successfully.');
@@ -169,8 +180,9 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
+        $this->authorize('delete', $menu);
+        
         $menu->delete();
-
         return redirect()->back();
     }
 }

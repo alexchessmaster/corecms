@@ -10,7 +10,7 @@ class Menu extends Model
     use HasTranslations;
 
     protected $translatable = ['name', 'link', 'description'];
-    protected $fillable = ['name', 'link', 'parent_id', 'order', 'image', 'image_alt', 'description'];
+    protected $fillable = ['user_id', 'name', 'link', 'parent_id', 'order', 'image', 'image_alt', 'description'];
     protected $with = ['parent'];
 
     public function parent()

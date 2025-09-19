@@ -5,19 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use App\Http\Requests\StoreSettingRequest;
 use App\Http\Requests\UpdateSettingRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SettingController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Setting::class, 'setting');
-    }
+    use AuthorizesRequests;
     
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $this->authorize('viewAny', Setting::class);
+
         $settings = Setting::get();
 
         return view('admin.setting.index', compact('settings'));
@@ -28,7 +28,7 @@ class SettingController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', Setting::class);
     }
 
     /**
@@ -36,7 +36,7 @@ class SettingController extends Controller
      */
     public function store(StoreSettingRequest $request)
     {
-        //
+        $this->authorize('create', Setting::class);
     }
 
     /**
@@ -44,7 +44,7 @@ class SettingController extends Controller
      */
     public function show(Setting $setting)
     {
-        //
+        $this->authorize('view', $setting);
     }
 
     /**
@@ -52,6 +52,8 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
+        $this->authorize('view', $setting);
+        
         return view('admin.setting.edit', compact('setting'));
     }
 
@@ -60,6 +62,8 @@ class SettingController extends Controller
      */
     public function update(UpdateSettingRequest $request, Setting $setting)
     {
+        $this->authorize('update', $setting);
+        
         $setting->value = $request->input('value');
         $setting->save();
 
@@ -71,6 +75,6 @@ class SettingController extends Controller
      */
     public function destroy(Setting $setting)
     {
-        //
+        $this->authorize('delete', $setting);
     }
 }

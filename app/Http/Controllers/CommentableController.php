@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Commentable;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreCommentableRequest;
 use App\Http\Requests\UpdateCommentableRequest;
-use App\Models\Commentable;
-use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CommentableController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Commentable::class, 'commentable');
-    }
-
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Commentable::class);
+
         if ($request->ajax()) {
             $commentables = Commentable::select(['id', 'commentable_id', 'commentable_type', 'content', 'user_id', 'name', 'email', 'stars', 'total_votes', 'created_at', 'status']);
 
@@ -53,6 +53,8 @@ class CommentableController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Commentable::class);
+
         return view('admin.comment.create');
     }
 
@@ -61,6 +63,7 @@ class CommentableController extends Controller
      */
     public function store(StoreCommentableRequest $request)
     {
+        $this->authorize('create', Commentable::class);
         $data = $request->validated();
         $comment = new Commentable;
         $comment->fill($data);
@@ -84,6 +87,8 @@ class CommentableController extends Controller
      */
     public function edit(Commentable $comment)
     {
+        $this->authorize('update', $comment);
+
         return view('admin.comment.edit', compact('comment'));
     }
 
@@ -92,6 +97,7 @@ class CommentableController extends Controller
      */
     public function update(UpdateCommentableRequest $request, Commentable $comment)
     {
+        $this->authorize('update', $comment);
         $data = $request->validated();
         $comment->fill($data);
         $comment->setTranslation('content', app()->getLocale(), $data['content']);
@@ -105,6 +111,7 @@ class CommentableController extends Controller
      */
     public function destroy(Commentable $comment)
     {
+        $this->authorize('delete', $comment);
         $comment->delete();
 
         return redirect()->route('admin.comments.index')->with('success', 'Comment deleted successfully.');

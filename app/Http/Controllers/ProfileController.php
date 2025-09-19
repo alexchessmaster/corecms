@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+    use AuthorizesRequests;
+    
     public function edit(Request $request): View
     {
+        $this->authorize('update', $request->user());
+        
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
@@ -26,6 +28,8 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        $this->authorize('update', $request->user());
+        
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -42,6 +46,8 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $this->authorize('delete', $request->user());
+        
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);
