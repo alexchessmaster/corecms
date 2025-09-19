@@ -13,7 +13,7 @@ class BookGenrePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
     }
 
     /**
@@ -29,7 +29,7 @@ class BookGenrePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
     }
 
     /**

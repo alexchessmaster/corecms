@@ -13,7 +13,7 @@ class WidgetFieldValuesPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
     }
 
     /**
@@ -21,7 +21,7 @@ class WidgetFieldValuesPolicy
      */
     public function view(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($widgetFieldValues->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -29,7 +29,7 @@ class WidgetFieldValuesPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
     }
 
     /**
@@ -37,7 +37,7 @@ class WidgetFieldValuesPolicy
      */
     public function update(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($widgetFieldValues->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class WidgetFieldValuesPolicy
      */
     public function delete(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($widgetFieldValues->user_id === $user->id && $user->role === 'author');
     }
 
     /**

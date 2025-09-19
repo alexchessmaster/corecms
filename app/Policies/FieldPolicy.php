@@ -21,7 +21,7 @@ class FieldPolicy
      */
     public function view(User $user, Field $field): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($field->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class FieldPolicy
      */
     public function update(User $user, Field $field): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($field->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class FieldPolicy
      */
     public function delete(User $user, Field $field): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return $user->role === 'admin' || $user->role === 'editor' || ($field->user_id === $user->id && $user->role === 'author');
     }
 
     /**
