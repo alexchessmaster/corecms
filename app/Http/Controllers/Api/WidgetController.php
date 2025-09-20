@@ -37,7 +37,7 @@ class WidgetController extends Controller
         
         // Find the widget
         $widget = Widget::findOrFail($widgetId);
-        $this->authorize('update', $widget);
+        // $this->authorize('update', $widget);
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
@@ -68,6 +68,12 @@ class WidgetController extends Controller
             ->where('position', '>=', (int)$addWidgetPosition)
             ->orderBy('position')
             ->get();
+
+        //  Authorization
+        $modelClass = 'App\\Models\\' . $widgetableType;
+        $widgetableModel = $modelClass::find($widgetableId);
+        $this->authorize('update', $widgetableModel);
+
         foreach ($widgetables as $widgetable) {
             $widgetable->increment('position');
         }

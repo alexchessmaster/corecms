@@ -28,7 +28,6 @@ class PageController extends Controller
     public function update($pageId)
     {
         $page = Page::where('slug', request()->slug)->first();
-        $this->authorize('update', $page);
         if ($page) {
             return response()->json([
                 'status' => 'error',
@@ -36,6 +35,7 @@ class PageController extends Controller
             ]);
         }
         $page = Page::find($pageId);
+        $this->authorize('update', $page);
         $lang = request()->lang ?: app()->getLocale();
         $page->setTranslation('title', $lang, request()->title);
         

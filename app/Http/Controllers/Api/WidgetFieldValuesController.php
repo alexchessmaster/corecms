@@ -19,7 +19,9 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class WidgetFieldValuesController extends Controller
 {
     use AuthorizesRequests;
-    
+
+    private $authorized = false;
+
     /**
      * Display a listing of the resource.
      */
@@ -73,7 +75,9 @@ class WidgetFieldValuesController extends Controller
             $widget_field_value_id = $inputKeyArr[5] ?? null;
 
             $widgetable = Widgetable::find($widgetable_id);
-            $this->authorize('update', $widgetable);
+
+            $this->isAuthorized($widgetable);
+
             $fieldWidget = FieldWidget::find($field_widget_id);
             $widgetFieldValue = WidgetFieldValues::where('widgetable_id', $widgetable->id)
                 ->where('field_widget_id', $fieldWidget->id)
@@ -200,5 +204,18 @@ class WidgetFieldValuesController extends Controller
     public function destroy(WidgetFieldValues $widgetFieldValues)
     {
         //
+    }
+
+    private function isAuthorized($widgetable)
+    {
+        if ($this->authorized) {
+            return true;
+        }
+
+        $modelClass = $widgetable->widgetable_type;
+        $widgetableModel = $modelClass::find($widgetable->widgetable_id);
+        $this->authorize('update', $widgetableModel);
+        $this->authorized = true;
+        return true;
     }
 }
