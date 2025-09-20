@@ -21,7 +21,7 @@ class PagePolicy
      */
     public function view(User $user, Page $page): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($page->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($page->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -37,7 +37,7 @@ class PagePolicy
      */
     public function update(User $user, Page $page): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($page->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($page->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class PagePolicy
      */
     public function delete(User $user, Page $page): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($page->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($page->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -53,7 +53,7 @@ class PagePolicy
      */
     public function restore(User $user, Page $page): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -61,6 +61,6 @@ class PagePolicy
      */
     public function forceDelete(User $user, Page $page): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 }

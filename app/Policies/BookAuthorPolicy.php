@@ -13,7 +13,7 @@ class BookAuthorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
+        return in_array($user->role, ['admin', 'editor', 'author']);
     }
 
     /**
@@ -21,7 +21,7 @@ class BookAuthorPolicy
      */
     public function view(User $user, BookAuthor $bookAuthor): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($bookAuthor->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($bookAuthor->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -29,7 +29,7 @@ class BookAuthorPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
+        return in_array($user->role, ['admin', 'editor', 'author']);
     }
 
     /**
@@ -37,7 +37,7 @@ class BookAuthorPolicy
      */
     public function update(User $user, BookAuthor $bookAuthor): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($bookAuthor->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($bookAuthor->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class BookAuthorPolicy
      */
     public function delete(User $user, BookAuthor $bookAuthor): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($bookAuthor->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($bookAuthor->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -53,7 +53,7 @@ class BookAuthorPolicy
      */
     public function restore(User $user, BookAuthor $bookAuthor): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -61,6 +61,6 @@ class BookAuthorPolicy
      */
     public function forceDelete(User $user, BookAuthor $bookAuthor): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 }

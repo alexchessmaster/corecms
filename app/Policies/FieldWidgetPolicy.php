@@ -13,7 +13,7 @@ class FieldWidgetPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -21,7 +21,7 @@ class FieldWidgetPolicy
      */
     public function view(User $user, FieldWidget $fieldWidget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($fieldWidget->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($fieldWidget->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -29,7 +29,7 @@ class FieldWidgetPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -37,7 +37,7 @@ class FieldWidgetPolicy
      */
     public function update(User $user, FieldWidget $fieldWidget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($fieldWidget->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($fieldWidget->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class FieldWidgetPolicy
      */
     public function delete(User $user, FieldWidget $fieldWidget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($fieldWidget->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($fieldWidget->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -53,7 +53,7 @@ class FieldWidgetPolicy
      */
     public function restore(User $user, FieldWidget $fieldWidget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -61,6 +61,6 @@ class FieldWidgetPolicy
      */
     public function forceDelete(User $user, FieldWidget $fieldWidget): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 }

@@ -13,7 +13,7 @@ class RedirectSlugChangePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -21,7 +21,7 @@ class RedirectSlugChangePolicy
      */
     public function view(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -29,7 +29,7 @@ class RedirectSlugChangePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -37,7 +37,7 @@ class RedirectSlugChangePolicy
      */
     public function update(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -45,7 +45,7 @@ class RedirectSlugChangePolicy
      */
     public function delete(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -53,7 +53,7 @@ class RedirectSlugChangePolicy
      */
     public function restore(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -61,6 +61,6 @@ class RedirectSlugChangePolicy
      */
     public function forceDelete(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor';
+        return in_array($user->role, ['admin', 'editor']);
     }
 }

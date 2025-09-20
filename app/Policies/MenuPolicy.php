@@ -13,7 +13,7 @@ class MenuPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
+        return in_array($user->role, ['admin', 'editor', 'author']);
     }
 
     /**
@@ -21,7 +21,7 @@ class MenuPolicy
      */
     public function view(User $user, Menu $menu): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($menu->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($menu->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -29,7 +29,7 @@ class MenuPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || $user->role === 'author';
+        return in_array($user->role, ['admin', 'editor', 'author']);
     }
 
     /**
@@ -37,7 +37,7 @@ class MenuPolicy
      */
     public function update(User $user, Menu $menu): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($menu->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($menu->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -45,7 +45,7 @@ class MenuPolicy
      */
     public function delete(User $user, Menu $menu): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($menu->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']) || ($menu->user_id === $user->id && $user->role === 'author');
     }
 
     /**
@@ -53,7 +53,7 @@ class MenuPolicy
      */
     public function restore(User $user, Menu $menu): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($menu->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -61,6 +61,6 @@ class MenuPolicy
      */
     public function forceDelete(User $user, Menu $menu): bool
     {
-        return $user->role === 'admin' || $user->role === 'editor' || ($menu->user_id === $user->id && $user->role === 'author');
+        return in_array($user->role, ['admin', 'editor']);
     }
 }

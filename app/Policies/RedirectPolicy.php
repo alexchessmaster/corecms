@@ -13,7 +13,7 @@ class RedirectPolicy
      */
     public function viewAny(User $user): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -21,7 +21,7 @@ class RedirectPolicy
      */
     public function view(User $user, Redirect $redirect): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -29,7 +29,7 @@ class RedirectPolicy
      */
     public function create(User $user): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -37,7 +37,7 @@ class RedirectPolicy
      */
     public function update(User $user, Redirect $redirect): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -45,7 +45,7 @@ class RedirectPolicy
      */
     public function delete(User $user, Redirect $redirect): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -53,7 +53,7 @@ class RedirectPolicy
      */
     public function restore(User $user, Redirect $redirect): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 
     /**
@@ -61,6 +61,6 @@ class RedirectPolicy
      */
     public function forceDelete(User $user, Redirect $redirect): bool
     {
-       return $user->role === 'admin' || $user->role === 'editor';
+       return in_array($user->role, ['admin', 'editor']);
     }
 }
