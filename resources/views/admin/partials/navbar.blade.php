@@ -3,8 +3,7 @@
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
-                    class="fas fa-bars"></i></a>
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         {{-- <li class="nav-item d-none d-sm-inline-block">
             <a href="/AdminLTE-3.2.0/index3.html" class="nav-link">Home</a>
@@ -27,13 +26,11 @@
                             @foreach ($languages as $language)
                                 <option
                                     @php
-                                        $locale = session('lang');
+$locale = session('lang');
                                         if($language->code === $locale){
                                             echo 'selected';
-                                        }
-                                    @endphp
-                                    value="{{ $language->code }}"
-                                >
+                                        } @endphp
+                                    value="{{ $language->code }}">
                                     {{ $language->name }}
                                 </option>
                             @endforeach
@@ -55,12 +52,12 @@
                     return;
                     //name.value = menu.name.{l}
                     //link.value = menu.link.{l}
-            
+
                 })
             </script>
 
             {{-- <a class="btn btn-info" href="/login">Logout</a> --}}
-            
+
             {{-- <a class="nav-link" data-widget="navbar-search" href="#" role="button">
                 <i class="fas fa-search"></i>
             </a> --}}
@@ -182,6 +179,17 @@
                 <i class="fas fa-th-large"></i>
             </a>
         </li> --}}
+
+        <li class="nav-item">
+            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                <i class="fas fa-expand-arrows-alt"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-widget="control-sidebar" id="ai-box" data-slide="true" href="#" role="button">
+                <i class="fas fa-th-large"></i>
+            </a>
+        </li>
     </ul>
 </nav>
 <!-- /.navbar -->

@@ -30,6 +30,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\TranslationTextController;
+use App\Http\Controllers\AiPersonaController;
+use App\Http\Controllers\AiChatController;
 
 Route::get('/', function () {
     abort(403);
@@ -42,7 +44,7 @@ Route::get('admin', function () {
 Route::group([
     'prefix' => 'admin',
     'as' => 'admin.',
-    'middleware' => [LanguageAdminMiddleware::class]
+    'middleware' => [LanguageAdminMiddleware::class, 'auth', 'verified']
 ], function () {
     Route::resource('menus', MenuController::class);
     Route::resource('upload', UploadController::class);
@@ -68,7 +70,23 @@ Route::group([
     Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
     Route::resource('url-logs', UrlLogController::class);
     Route::resource('translation-texts', TranslationTextController::class);
+    
+    // AI Personas management routes
+    Route::resource('ai-personas', AiPersonaController::class);
+    Route::get('my-personas', [AiPersonaController::class, 'myPersonas'])->name('ai-personas.my');
+    Route::post('ai-personas/{aiPersona}/toggle', [AiPersonaController::class, 'toggleActive'])->name('ai-personas.toggle');
+    Route::post('ai-personas/{aiPersona}/clone', [AiPersonaController::class, 'duplicate'])->name('ai-personas.clone');
+    Route::get('popular-personas', [AiPersonaController::class, 'popular'])->name('ai-personas.popular');
+    Route::get('search-personas', [AiPersonaController::class, 'search'])->name('ai-personas.search');
 
+    // AI Chat session routes
+    Route::resource('ai-chats', AiChatController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    Route::get('ai-chats/{chat}/messages', [AiChatController::class, 'retrieveMessages'])->name('ai-chats.messages');
+    Route::post('ai-chats/{chat}/send-message', [AiChatController::class, 'dispatchMessage'])->name('ai-chats.send');
+    Route::delete('ai-chats/{chat}/clear', [AiChatController::class, 'purgeChat'])->name('ai-chats.clear');
+    Route::get('ai-chats/{chat}/export', [AiChatController::class, 'downloadChat'])->name('ai-chats.export');
+    Route::put('ai-chats/{chat}/change-persona', [AiChatController::class, 'switchPersona'])->name('ai-chats.change-persona');
+    
     Route::post('user-locale', function () {
         session(['lang' => request()->lang]);
         App::setLocale(request()->lang);
