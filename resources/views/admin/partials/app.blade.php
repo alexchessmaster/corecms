@@ -1047,9 +1047,9 @@
                                 <div class="chat-item p-2 mb-1 bg-secondary rounded cursor-pointer active" data-chat-id="${data.chat.id}">
                                     <div class="d-flex justify-content-between">
                                         <small class="text-light font-weight-bold">${data.chat.title}</small>
-                                        <small class="text-muted">just now</small>
+                                        <small class="text-light">just now</small>
                                     </div>
-                                    <small class="text-muted">New chat session...</small>
+                                    <small class="text-light">New chat session...</small>
                                 </div>
                             `;
 

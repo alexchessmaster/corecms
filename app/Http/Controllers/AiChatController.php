@@ -57,11 +57,12 @@ class AiChatController extends Controller
      */
     public function store(StoreAiChatRequest $request): JsonResponse
     {
+        $persona = AiPersona::find($request->persona_id);
         $chat = AiChat::create([
             'session_name' => $request->session_name,
             'user_id' => $request->user()?->id,
-            'ai_persona_id' => $request->ai_persona_id,
-            'ai_model_used' => $request->ai_model_used ?? 'gpt-3.5-turbo',
+            'ai_persona_id' => $request->persona_id,
+            'ai_model_used' => $persona?->suggested_model ?? $request->ai_model_used ?? 'gpt-3.5-turbo',
         ]);
 
         // If persona is selected, add system message
@@ -153,7 +154,7 @@ class AiChatController extends Controller
             if ($request->persona_id && $request->persona_id !== $chat->ai_persona_id) {
                 $persona = AiPersona::find($request->persona_id);
                 if ($persona && ($persona->is_public || $persona->created_by_user_id === auth()->id())) {
-                    $chat->update(['ai_persona_id' => $request->persona_id]);
+                    $chat->update(['ai_persona_id' => $request->persona_id, 'ai_model_used' => $persona->suggested_model]);
                 }
             }
 
@@ -222,7 +223,8 @@ class AiChatController extends Controller
 
         // Update the chat
         $chat->update([
-            'ai_persona_id' => $request->persona_id
+            'ai_persona_id' => $request->persona_id,
+            'ai_model_used' => $persona->suggested_model
         ]);
 
         return response()->json([
