@@ -41,11 +41,11 @@ class AiChatController extends Controller
                 ->where('role', '!=', 'system')
                 ->orderBy('created_at', 'desc')
                 ->first();
-            
-            $chat->last_message_preview = $lastMessage 
-                ? substr($lastMessage->content, 0, 100) 
+
+            $chat->last_message_preview = $lastMessage
+                ? substr($lastMessage->content, 0, 100)
                 : 'New chat session...';
-            
+
             return $chat;
         });
 
@@ -62,7 +62,7 @@ class AiChatController extends Controller
             'session_name' => $request->session_name,
             'user_id' => $request->user()?->id,
             'ai_persona_id' => $request->persona_id,
-            'ai_model_used' => $persona?->suggested_model ?? $request->ai_model_used ?? 'gpt-3.5-turbo',
+            'ai_model_used' => $persona?->suggested_model ?? $request->ai_model_used ?? 'gpt-5-nano',
         ]);
 
         // If persona is selected, add system message
@@ -165,12 +165,29 @@ class AiChatController extends Controller
             $messages = $chat->getMessageHistory();
 
             // Send to OpenAI API
-            $response = $this->openAiService->chat([
+            $payload = [
                 'model' => $chat->ai_model_used,
                 'messages' => $messages,
-                'max_tokens' => 1000,
-                'temperature' => 0.7,
-            ]);
+            ];
+            $supportedModels = [
+                'gpt-4',
+                'gpt-4-turbo',
+                'gpt-4-turbo-preview',
+                'gpt-4-0125-preview',
+                'gpt-4-1106-preview',
+                'gpt-4-vision-preview',
+                'gpt-4o',
+                'gpt-4o-mini',
+                'gpt-3.5-turbo',
+                'gpt-3.5-turbo-16k',
+                'gpt-3.5-turbo-0125',
+                'gpt-3.5-turbo-1106',
+            ];
+            if (in_array($chat->ai_model_used, $supportedModels)) {
+                $payload['max_tokens'] = 1000;
+                $payload['temperature'] = 0.3;
+            }
+            $response = $this->openAiService->chat($payload);
 
             // Extract token usage and response
             $inputTokens = $response['usage']['prompt_tokens'] ?? 0;
@@ -189,7 +206,6 @@ class AiChatController extends Controller
                 'cost' => number_format($cost, 4),
                 'message_id' => $aiMessage->id
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to send message: ' . $e->getMessage()
@@ -215,7 +231,6 @@ class AiChatController extends Controller
         // If persona_id is provided, verify user can access it
         if ($request->persona_id) {
             $persona = AiPersona::find($request->persona_id);
-            
             if (!$persona || (!$persona->is_public && $persona->created_by_user_id !== auth()->id())) {
                 return response()->json(['error' => 'Persona not found or access denied'], 404);
             }
@@ -251,13 +266,13 @@ class AiChatController extends Controller
     public function clearMessages(AiChat $aiChat): JsonResponse
     {
         $aiChat->messages()->delete();
-        
+
         // Reset token counts and costs
-        $aiChat->update([
-            'total_input_tokens' => 0,
-            'total_output_tokens' => 0,
-            'total_cost_usd' => 0,
-        ]);
+        // $aiChat->update([
+        //     'total_input_tokens' => 0,
+        //     'total_output_tokens' => 0,
+        //     'total_cost_usd' => 0,
+        // ]);
 
         // Re-add system message if persona exists
         if ($aiChat->ai_persona_id) {
@@ -305,7 +320,7 @@ class AiChatController extends Controller
         }
 
         $chat->messages()->delete();
-        
+
         // Reset token counts and costs
         $chat->update([
             'total_input_tokens' => 0,
@@ -380,7 +395,7 @@ class AiChatController extends Controller
         // If persona_id is provided, verify user can access it
         if ($request->persona_id) {
             $persona = AiPersona::find($request->persona_id);
-            
+
             if (!$persona || (!$persona->is_public && $persona->created_by_user_id !== auth()->id())) {
                 return response()->json(['error' => 'Persona not found or access denied'], 404);
             }
