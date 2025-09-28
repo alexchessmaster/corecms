@@ -21,7 +21,7 @@ class AiPersonaPolicy
      */
     public function view(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiPersona->created_by_user_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class AiPersonaPolicy
      */
     public function update(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiPersona->created_by_user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class AiPersonaPolicy
      */
     public function delete(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiPersona->created_by_user_id;
     }
 
     /**
@@ -53,7 +53,7 @@ class AiPersonaPolicy
      */
     public function restore(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin']);
     }
 
     /**

@@ -5,16 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAiPersonaRequest;
 use App\Http\Requests\UpdateAiPersonaRequest;
 use App\Models\AiPersona;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class AiPersonaController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', AiPersona::class);
         $personas = AiPersona::where(function ($query) use ($request) {
                 // Show public personas
                 $query->where('is_public', true)
@@ -38,6 +42,7 @@ class AiPersonaController extends Controller
      */
     public function myPersonas(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', AiPersona::class);
         if (!$request->user()) {
             return response()->json(['error' => 'Authentication required'], 401);
         }
@@ -54,6 +59,8 @@ class AiPersonaController extends Controller
      */
     public function store(StoreAiPersonaRequest $request): JsonResponse
     {
+        $this->authorize('create', AiPersona::class);
+
         $persona = AiPersona::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -76,6 +83,7 @@ class AiPersonaController extends Controller
      */
     public function show(AiPersona $aiPersona): JsonResponse
     {
+        $this->authorize('view', $aiPersona);
         // Check if user can view this persona
         if (!$aiPersona->is_public && $aiPersona->created_by_user_id !== auth()->id()) {
             return response()->json(['error' => 'Persona not found'], 404);
@@ -97,6 +105,7 @@ class AiPersonaController extends Controller
      */
     public function update(UpdateAiPersonaRequest $request, AiPersona $aiPersona): JsonResponse
     {
+        $this->authorize('update', $aiPersona);
         // Check if user owns this persona
         if ($aiPersona->created_by_user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
@@ -115,18 +124,19 @@ class AiPersonaController extends Controller
      */
     public function destroy(AiPersona $aiPersona): JsonResponse
     {
-        // Check if user owns this persona
-        if ($aiPersona->created_by_user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        $this->authorize('delete', $aiPersona);
 
         // Check if persona is being used in any active chats
-        $activeChatCount = $aiPersona->chats()->count();
-        if ($activeChatCount > 0) {
-            return response()->json([
-                'error' => 'Cannot delete persona that is being used in chats',
-                'active_chats' => $activeChatCount
-            ], 409);
+        $activeChats = $aiPersona->chats();
+        // if ($activeChatCount > 0) {
+        //     return response()->json([
+        //         'error' => 'Cannot delete persona that is being used in chats',
+        //         'active_chats' => $activeChatCount
+        //     ], 409);
+        // }
+        foreach ($activeChats as $chat) {
+            $chat->ai_persona_id = null; // Or set to a default persona ID if desired
+            $chat->save();
         }
 
         $aiPersona->delete();

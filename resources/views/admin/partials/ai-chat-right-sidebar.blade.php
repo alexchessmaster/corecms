@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/highlight/styles/panda-syntax-dark.min.css">
+<script src="/highlight/highlight.js"></script>
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
     <div class="p-0 h-100 d-flex flex-column">
@@ -114,9 +116,9 @@
                             <button id="clear-chat-btn" class="btn btn-outline-danger btn-xs">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
-                            {{-- <button id="export-chat-btn" class="btn btn-outline-info btn-xs">
+                            <button id="export-chat-btn" class="btn btn-outline-info btn-xs" style="display: none">
                                 <i class="fas fa-download"></i> Export
-                            </button> --}}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -301,6 +303,54 @@
     .system-message {
         margin: 0 20px;
     }
+
+
+    /* start highlight js */
+    .message-content pre {
+        margin: 10px 0;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    .message-content pre code {
+        padding: 12px;
+        display: block;
+        font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        white-space: pre;
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+
+    .message-content .inline-code {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+        font-size: 0.875em;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-message .inline-code {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .ai-message .inline-code {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Ensure highlight.js styles work in dark theme */
+    .hljs {
+        background: rgba(0, 0, 0, 0.3) !important;
+        color: #f8f8f2 !important;
+    }
+
+    /* end highlight js */
 </style>
 
 <!-- Add JavaScript for AI functionality -->
@@ -449,7 +499,7 @@
                     currentChatId = chatItem.dataset.chatId;
 
                     const chatName = chatItem.querySelector('.font-weight-bold')
-                    .textContent;
+                        .textContent;
                     document.getElementById('current-chat-name').textContent = chatName;
 
                     // Load chat messages
@@ -603,9 +653,9 @@
                         setTimeout(() => {
                             const modal = document.getElementById('persona-modal');
                             if (window.bootstrap) {
-                                bootstrap.Modal.getInstance(modal).hide();
+                                bootstrap?.Modal?.getInstance(modal)?.hide();
                             } else if (window.jQuery) {
-                                jQuery(modal).modal('hide');
+                                jQuery(modal)?.modal('hide');
                             }
                         }, 1000);
 
@@ -1049,42 +1099,85 @@
                     minute: '2-digit'
                 });
 
+                // Parse Markdown code blocks and render them with highlight.js
+                function renderContentWithCodeBlocks(text) {
+                    // First, handle code blocks
+                    let processedText = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match,
+                        lang, code) {
+                        // Escape HTML inside code block
+                        const escapedCode = code.trim().replace(/[<>&"']/g, function(c) {
+                            return {
+                                '<': '&lt;',
+                                '>': '&gt;',
+                                '&': '&amp;',
+                                '"': '&quot;',
+                                "'": '&#39;'
+                            } [c];
+                        });
+                        return `<pre><code class="hljs language-${lang || 'plaintext'}">${escapedCode}</code></pre>`;
+                    });
+
+                    // Handle inline code
+                    processedText = processedText.replace(/`([^`]+)`/g,
+                        '<code class="inline-code">$1</code>');
+
+                    // Convert line breaks to <br> for non-code content
+                    // processedText = processedText.replace(/\n/g, '<br>');
+
+                    return processedText;
+                }
+
                 let messageHtml = '';
 
                 if (role === 'user') {
                     messageHtml = `
-                            <div class="message mb-2">
-                                <div class="user-message bg-primary text-white p-2 rounded ml-4">
-                                    <small class="d-block mb-1 opacity-75">You • ${timeString}</small>
-                                    ${escapeHtml(content)}
-                                </div>
+                        <div class="message mb-2">
+                            <div class="user-message bg-primary text-white p-2 rounded ml-4">
+                                <small class="d-block mb-1 opacity-75">You • ${timeString}</small>
+                                ${renderContentWithCodeBlocks(content)}
                             </div>
-                        `;
+                        </div>
+                    `;
                 } else if (role === 'assistant') {
                     messageHtml = `
-                            <div class="message mb-2">
-                                <div class="ai-message bg-secondary text-light p-2 rounded mr-4">
-                                    <small class="d-block mb-1 opacity-75">
-                                        <i class="fas fa-robot"></i> AI Assistant • ${timeString}
-                                    </small>
-                                    ${escapeHtml(content)}
-                                </div>
+                        <div class="message mb-2">
+                            <div class="ai-message bg-secondary text-light p-2 rounded mr-4">
+                                <small class="d-block mb-1 opacity-75">
+                                    <i class="fas fa-robot"></i> AI Assistant • ${timeString}
+                                </small>
+                                <div class="message-content">${renderContentWithCodeBlocks(content)}</div>
                             </div>
-                        `;
+                        </div>
+                    `;
                 } else if (role === 'system') {
                     messageHtml = `
-                            <div class="message mb-2">
-                                <div class="system-message bg-warning text-dark p-2 rounded mx-2">
-                                    <small class="d-block mb-1 opacity-75">
-                                        <i class="fas fa-exclamation-triangle"></i> System • ${timeString}
-                                    </small>
-                                    ${escapeHtml(content)}
-                                </div>
+                        <div class="message mb-2">
+                            <div class="system-message bg-warning text-dark p-2 rounded mx-2">
+                                <small class="d-block mb-1 opacity-75">
+                                    <i class="fas fa-exclamation-triangle"></i> System • ${timeString}
+                                </small>
+                                ${renderContentWithCodeBlocks(content)}
                             </div>
-                        `;
+                        </div>
+                    `;
                 }
 
                 chatMessages.insertAdjacentHTML('beforeend', messageHtml);
+
+                // Highlight code blocks after inserting - with a small delay to ensure DOM is updated
+                setTimeout(() => {
+                    if (window.hljs) {
+                        const newMessage = chatMessages.lastElementChild;
+                        if (newMessage) {
+                            newMessage.querySelectorAll('pre code').forEach(block => {
+                                // Remove any existing highlighting
+                                block.removeAttribute('data-highlighted');
+                                window.hljs.highlightElement(block);
+                            });
+                        }
+                    }
+                }, 10);
+
                 scrollToBottom();
             }
 

@@ -22,7 +22,11 @@ class UpdateAiPersonaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'is_public' => 'boolean',
+            'description' => 'string|max:2000',
+            'name' => 'string|max:255',
+            'suggested_model' => 'string|max:50',
+            'system_prompt' => 'string|max:255',
         ];
     }
 }
