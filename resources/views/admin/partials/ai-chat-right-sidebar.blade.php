@@ -21,7 +21,7 @@
         height: 100%;
     }
 </style>
-<aside class="control-sidebar control-sidebar-dark" id="controlSidebar">
+<aside class="control-sidebar control-sidebar-dark" id="controlSidebar" style="height: 100vh; overflow-y: auto;">
     <div class="resize-handle" style="">
         <i class=" fas fa-grip-lines-vertical text-light"></i>
     </div>
@@ -103,7 +103,7 @@
                 <div id="chat-messages" class="flex-grow-1 p-2"
                     style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.1);">
                     <!-- Messages will be loaded here -->
-                    <div class="message mb-2">
+                    {{-- <div class="message mb-2">
                         <div class="user-message bg-primary text-white p-2 rounded ml-4">
                             <small class="d-block mb-1 opacity-75">You • 2 minutes ago</small>
                             Help me debug this Laravel controller issue
@@ -118,7 +118,7 @@
                             I'd be happy to help you debug your Laravel controller. Could you please share the
                             specific error message and the relevant code?
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <!-- Message Input -->
