@@ -26,7 +26,7 @@ class StoreCommentableRequest extends FormRequest
             'commentable_type' => [
                 'required',
                 'string',
-                Rule::in(['App\Models\Book', 'App\Models\Article',  'App\Models\Page'])
+                Rule::in(['App\Models\Book', 'App\Models\Article',  'App\Models\Page', 'App\Models\Product'])
             ],
             'commentable_id' => [
                 'required',
