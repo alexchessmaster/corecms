@@ -9,11 +9,14 @@ use App\Models\AiMessage;
 use App\Models\AiPersona;
 use App\Services\OpenAiService;
 use App\Services\TokenCostCalculator;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class AiChatController extends Controller
 {
+    use AuthorizesRequests;
+
     protected $openAiService;
     protected $tokenCalculator;
 
@@ -28,6 +31,8 @@ class AiChatController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', AiChat::class);
+
         $chats = AiChat::with(['persona:id,name'])
             ->when($request->user(), function ($query) use ($request) {
                 return $query->where('user_id', $request->user()->id);
@@ -57,6 +62,7 @@ class AiChatController extends Controller
      */
     public function store(StoreAiChatRequest $request): JsonResponse
     {
+        $this->authorize('create', AiChat::class);
         $persona = AiPersona::find($request->persona_id);
         $chat = AiChat::create([
             'session_name' => $request->session_name,
@@ -84,6 +90,7 @@ class AiChatController extends Controller
      */
     public function show(AiChat $aiChat): JsonResponse
     {
+        $this->authorize('view', $aiChat);
         $aiChat->load([
             'messages' => function ($query) {
                 $query->orderBy('created_at', 'asc');
@@ -99,6 +106,7 @@ class AiChatController extends Controller
      */
     public function update(UpdateAiChatRequest $request, AiChat $aiChat): JsonResponse
     {
+        $this->authorize('update', $aiChat);
         $aiChat->update($request->validated());
 
         return response()->json([
@@ -112,6 +120,7 @@ class AiChatController extends Controller
      */
     public function retrieveMessages(AiChat $chat): JsonResponse
     {
+        $this->authorize('view', $chat);
         // Check if user owns this chat
         if ($chat->user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
@@ -139,6 +148,7 @@ class AiChatController extends Controller
      */
     public function dispatchMessage(Request $request, AiChat $chat): JsonResponse
     {
+        $this->authorize('update', $chat);
         $request->validate([
             'message' => 'required|string|max:10000',
             'persona_id' => 'nullable|exists:ai_personas,id'
@@ -169,7 +179,7 @@ class AiChatController extends Controller
                 'model' => $chat->ai_model_used,
                 'messages' => $messages,
             ];
-            $supportedModels = [
+            $supportedModelsForTemperature = [
                 'gpt-4',
                 'gpt-4-turbo',
                 'gpt-4-turbo-preview',
@@ -183,7 +193,7 @@ class AiChatController extends Controller
                 'gpt-3.5-turbo-0125',
                 'gpt-3.5-turbo-1106',
             ];
-            if (in_array($chat->ai_model_used, $supportedModels)) {
+            if (in_array($chat->ai_model_used, $supportedModelsForTemperature)) {
                 $payload['max_tokens'] = 1000;
                 $payload['temperature'] = 0.3;
             }
@@ -218,6 +228,7 @@ class AiChatController extends Controller
      */
     public function updatePersona(Request $request, AiChat $chat): JsonResponse
     {
+        $this->authorize('update', $chat);
         // Validate the request
         $request->validate([
             'persona_id' => 'nullable|exists:ai_personas,id'
@@ -253,6 +264,7 @@ class AiChatController extends Controller
      */
     public function destroy(AiChat $aiChat): JsonResponse
     {
+        $this->authorize('delete', $aiChat);
         $aiChat->delete();
 
         return response()->json([
@@ -265,6 +277,7 @@ class AiChatController extends Controller
      */
     public function clearMessages(AiChat $aiChat): JsonResponse
     {
+        $this->authorize('delete', $aiChat);
         $aiChat->messages()->delete();
 
         // Reset token counts and costs
@@ -275,15 +288,15 @@ class AiChatController extends Controller
         // ]);
 
         // Re-add system message if persona exists
-        if ($aiChat->ai_persona_id) {
-            $persona = AiPersona::find($aiChat->ai_persona_id);
-            if ($persona) {
-                $aiChat->addMessage('system', $persona->system_prompt);
-            }
-        }
+        // if ($aiChat->ai_persona_id) {
+        //     $persona = AiPersona::find($aiChat->ai_persona_id);
+        //     if ($persona) {
+        //         $aiChat->addMessage('system', $persona->system_prompt);
+        //     }
+        // }
 
         return response()->json([
-            'message' => 'Chat messages cleared successfully'
+            'message' => 'Chat with messages deleted successfully'
         ]);
     }
 
@@ -292,6 +305,7 @@ class AiChatController extends Controller
      */
     public function export(AiChat $aiChat): JsonResponse
     {
+        $this->authorize('view', $aiChat);
         $messages = $aiChat->messages()
             ->select('role', 'content', 'created_at')
             ->orderBy('created_at', 'asc')
@@ -314,30 +328,28 @@ class AiChatController extends Controller
      */
     public function purgeChat(AiChat $chat): JsonResponse
     {
-        // Check if user owns this chat
-        if ($chat->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        $this->authorize('delete', $chat);
 
         $chat->messages()->delete();
+        $chat->delete();
 
         // Reset token counts and costs
-        $chat->update([
-            'total_input_tokens' => 0,
-            'total_output_tokens' => 0,
-            'total_cost_usd' => 0,
-        ]);
+        // $chat->update([
+        //     'total_input_tokens' => 0,
+        //     'total_output_tokens' => 0,
+        //     'total_cost_usd' => 0,
+        // ]);
 
         // Re-add system message if persona exists
-        if ($chat->ai_persona_id) {
-            $persona = AiPersona::find($chat->ai_persona_id);
-            if ($persona) {
-                $chat->addMessage('system', $persona->system_prompt);
-            }
-        }
+        // if ($chat->ai_persona_id) {
+        //     $persona = AiPersona::find($chat->ai_persona_id);
+        //     if ($persona) {
+        //         $chat->addMessage('system', $persona->system_prompt);
+        //     }
+        // }
 
         return response()->json([
-            'message' => 'Chat cleared successfully'
+            'message' => 'Chat with messages deleted successfully.'
         ]);
     }
 
@@ -346,11 +358,7 @@ class AiChatController extends Controller
      */
     public function downloadChat(AiChat $chat): JsonResponse
     {
-        // Check if user owns this chat
-        if ($chat->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
+        $this->authorize('view', $chat);
         $messages = $chat->messages()
             ->select('role', 'content', 'created_at')
             ->orderBy('created_at', 'asc')

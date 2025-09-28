@@ -43,7 +43,7 @@
 
                 <div id="chat-list" class="chat-list" style="max-height: 200px; overflow-y: auto;">
                     <!-- Chat items will be loaded here -->
-                    <div class="chat-item p-2 mb-1 bg-secondary rounded cursor-pointer" data-chat-id="1">
+                    {{-- <div class="chat-item p-2 mb-1 bg-secondary rounded cursor-pointer" data-chat-id="1">
                         <div class="d-flex justify-content-between">
                             <small class="text-light font-weight-bold">Debug Session</small>
                             <small class="text-muted">2m ago</small>
@@ -56,7 +56,7 @@
                             <small class="text-muted">1h ago</small>
                         </div>
                         <small class="text-muted">Can you review this function...</small>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -112,11 +112,11 @@
                         </small>
                         <div>
                             <button id="clear-chat-btn" class="btn btn-outline-danger btn-xs">
-                                <i class="fas fa-trash"></i> Clear
+                                <i class="fas fa-trash"></i> Delete
                             </button>
-                            <button id="export-chat-btn" class="btn btn-outline-info btn-xs">
+                            {{-- <button id="export-chat-btn" class="btn btn-outline-info btn-xs">
                                 <i class="fas fa-download"></i> Export
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
                 </div>
@@ -476,12 +476,13 @@
             });
 
             // Clear chat
-            document.getElementById('clear-chat-btn').addEventListener('click', function() {
+            document.getElementById('clear-chat-btn').addEventListener('click', async function() {
                 if (confirm('Are you sure you want to clear this chat?')) {
                     document.getElementById('chat-messages').innerHTML = '';
                     // Clear chat on backend
                     if (currentChatId) {
                         clearChat(currentChatId);
+                        await loadChats();
                     }
                 }
             });
@@ -789,9 +790,6 @@
                 }
             }
 
-            // console.log('loadChatMessages();')
-            // await loadChatMessages();
-
             async function loadPersonas() {
                 console.log('loadPersonas()');
                 try {
@@ -1043,9 +1041,6 @@
                 }
             }
 
-            // console.log('displayPersonas();')
-            // displayPersonas();
-
             function addMessage(role, content, timestamp = null) {
                 const chatMessages = document.getElementById('chat-messages');
                 const messageTime = timestamp ? new Date(timestamp) : new Date();
@@ -1153,6 +1148,7 @@
             }
 
             function displayChats(chats) {
+                console.log('displayChats()', chats);
                 const chatList = document.getElementById('chat-list');
 
                 if (!chats || chats.length === 0) {

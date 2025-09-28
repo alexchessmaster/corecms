@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('total_output_tokens')->default(0);
             $table->decimal('total_cost_usd', 10, 6)->default(0.000000);
             $table->json('pricing_config')->nullable(); // Store pricing rates used
+            $table->softDeletes();
             $table->timestamps();
         });
     }

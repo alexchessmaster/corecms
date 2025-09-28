@@ -6,12 +6,15 @@ use App\Models\AiMessage;
 use App\Models\AiPersona;
 use App\Services\TokenCostCalculator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AiChat extends Model
 {
+    use SoftDeletes;
+    
     protected $fillable = [
         'session_name',
         'user_id',

@@ -201,7 +201,7 @@
         </script>
 
         <!-- Control Sidebar -->
-        @include('admin.partials.ai-right-sidebar')
+        @include('admin.partials.ai-chat-right-sidebar')
 
 
         @yield('script')

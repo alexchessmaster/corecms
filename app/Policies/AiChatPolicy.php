@@ -21,7 +21,7 @@ class AiChatPolicy
      */
     public function view(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiChat->user_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class AiChatPolicy
      */
     public function update(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiChat->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class AiChatPolicy
      */
     public function delete(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiChat->user_id;
     }
 
     /**
