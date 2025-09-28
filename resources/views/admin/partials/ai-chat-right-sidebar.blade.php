@@ -1,6 +1,6 @@
 <style>
     #controlSidebar {
-        width: 700px;
+        width: 300px;
         /* default width */
         /* min-width: 200px; */
         /* max-width: 600px; */
@@ -22,7 +22,9 @@
     }
 </style>
 <aside class="control-sidebar control-sidebar-dark" id="controlSidebar">
-    <div class="resize-handle"></div>
+    <div class="resize-handle" style="">
+        <i class=" fas fa-grip-lines-vertical text-light"></i>
+    </div>
     <!-- Control sidebar content goes here -->
     <div class="p-0 h-100 d-flex flex-column">
         <!-- AI Header -->
@@ -1355,6 +1357,7 @@
     });
 </script>
 <script>
+    // Resizable sidebar
     const sidebar = document.getElementById("controlSidebar");
     const handle = sidebar.querySelector(".resize-handle");
 
@@ -1398,4 +1401,28 @@
         isResizing = false;
         document.body.style.userSelect = "";
     });
+
+    // Touch events for mobile resizing
+    handle.addEventListener("touchstart", function(e) {
+        console.log('touchstart sidebar handle');
+        isResizing = true;
+        document.body.style.userSelect = "none";
+        e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener("touchmove", function(e) {
+        if (!isResizing) return;
+        const touch = e.touches[0];
+        const newWidth = window.innerWidth - touch.clientX;
+        if (newWidth > 10) {
+            sidebar.style.width = newWidth + "px";
+            setCookie('sidebarWidth', newWidth);
+        }
+    }, { passive: false });
+
+    document.addEventListener("touchend", function() {
+        console.log('touchend sidebar handle');
+        isResizing = false;
+        document.body.style.userSelect = "";
+    }, { passive: false });
 </script>
