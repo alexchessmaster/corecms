@@ -1,27 +1,3 @@
-<style>
-    #controlSidebar {
-        width: 300px;
-        /* default width */
-        /* min-width: 200px; */
-        /* max-width: 600px; */
-        position: fixed;
-        /* AdminLTE already uses fixed */
-        top: 0;
-        right: 0;
-        /* height: 100%; */
-        overflow-y: auto;
-    }
-
-    #controlSidebar .resize-handle {
-        width: 5px;
-        cursor: ew-resize;
-        background: rgba(255, 255, 255, 0.1);
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-    }
-</style>
 <aside class="control-sidebar control-sidebar-dark" id="controlSidebar">
     <div class="resize-handle">
         <i class=" fas fa-grip-lines-vertical text-light"></i>
@@ -234,6 +210,23 @@
     /* .control-sidebar {
             width: 400px !important;
         } */
+
+    #controlSidebar {
+        width: 300px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        overflow-y: auto;
+    }
+    #controlSidebar .resize-handle {
+        width: 5px;
+        cursor: ew-resize;
+        background: rgba(255, 255, 255, 0.1);
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+    }
 
     .chat-item:hover {
         background-color: #495057 !important;
@@ -1409,7 +1402,9 @@
         isResizing = true;
         document.body.style.userSelect = "none";
         e.preventDefault();
-    }, { passive: false });
+    }, {
+        passive: false
+    });
 
     document.addEventListener("touchmove", function(e) {
         if (!isResizing) return;
@@ -1419,11 +1414,15 @@
             sidebar.style.width = newWidth + "px";
             setCookie('sidebarWidth', newWidth);
         }
-    }, { passive: false });
+    }, {
+        passive: false
+    });
 
     document.addEventListener("touchend", function() {
         console.log('touchend sidebar handle');
         isResizing = false;
         document.body.style.userSelect = "";
-    }, { passive: false });
+    }, {
+        passive: false
+    });
 </script>
