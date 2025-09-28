@@ -1,4 +1,28 @@
-<aside class="control-sidebar control-sidebar-dark">
+<style>
+    #controlSidebar {
+        width: 700px;
+        /* default width */
+        /* min-width: 200px; */
+        /* max-width: 600px; */
+        position: fixed;
+        /* AdminLTE already uses fixed */
+        top: 0;
+        right: 0;
+        /* height: 100%; */
+    }
+
+    #controlSidebar .resize-handle {
+        width: 5px;
+        cursor: ew-resize;
+        background: rgba(255, 255, 255, 0.1);
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+    }
+</style>
+<aside class="control-sidebar control-sidebar-dark" id="controlSidebar">
+    <div class="resize-handle"></div>
     <!-- Control sidebar content goes here -->
     <div class="p-0 h-100 d-flex flex-column">
         <!-- AI Header -->
@@ -204,9 +228,9 @@
 
 <!-- Add this CSS for better styling -->
 <style>
-    .control-sidebar {
-        width: 400px !important;
-    }
+    /* .control-sidebar {
+            width: 400px !important;
+        } */
 
     .chat-item:hover {
         background-color: #495057 !important;
@@ -1148,35 +1172,35 @@
 
                 if (role === 'user') {
                     messageHtml = `
-                        <div class="message mb-2">
-                            <div class="user-message bg-primary text-white p-2 rounded ml-4">
-                                <small class="d-block mb-1 opacity-75">You • ${timeString}</small>
-                                ${renderContentWithCodeBlocks(content)}
+                            <div class="message mb-2">
+                                <div class="user-message bg-primary text-white p-2 rounded ml-4">
+                                    <small class="d-block mb-1 opacity-75">You • ${timeString}</small>
+                                    ${renderContentWithCodeBlocks(content)}
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 } else if (role === 'assistant') {
                     messageHtml = `
-                        <div class="message mb-2">
-                            <div class="ai-message bg-secondary text-light p-2 rounded mr-4">
-                                <small class="d-block mb-1 opacity-75">
-                                    <i class="fas fa-robot"></i> AI Assistant • ${timeString}
-                                </small>
-                                <div class="message-content">${renderContentWithCodeBlocks(content)}</div>
+                            <div class="message mb-2">
+                                <div class="ai-message bg-secondary text-light p-2 rounded mr-4">
+                                    <small class="d-block mb-1 opacity-75">
+                                        <i class="fas fa-robot"></i> AI Assistant • ${timeString}
+                                    </small>
+                                    <div class="message-content">${renderContentWithCodeBlocks(content)}</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 } else if (role === 'system') {
                     messageHtml = `
-                        <div class="message mb-2">
-                            <div class="system-message bg-warning text-dark p-2 rounded mx-2">
-                                <small class="d-block mb-1 opacity-75">
-                                    <i class="fas fa-exclamation-triangle"></i> System • ${timeString}
-                                </small>
-                                ${renderContentWithCodeBlocks(content)}
+                            <div class="message mb-2">
+                                <div class="system-message bg-warning text-dark p-2 rounded mx-2">
+                                    <small class="d-block mb-1 opacity-75">
+                                        <i class="fas fa-exclamation-triangle"></i> System • ${timeString}
+                                    </small>
+                                    ${renderContentWithCodeBlocks(content)}
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 }
 
                 chatMessages.insertAdjacentHTML('beforeend', messageHtml);
@@ -1212,19 +1236,19 @@
             function showTypingIndicator() {
                 const chatMessages = document.getElementById('chat-messages');
                 const typingHtml = `
-                        <div class="message mb-2 typing-indicator">
-                            <div class="ai-message bg-secondary text-light p-2 rounded mr-4">
-                                <small class="d-block mb-1 opacity-75">
-                                    <i class="fas fa-robot"></i> AI Assistant • typing...
-                                </small>
-                                <div class="typing-animation">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+                            <div class="message mb-2 typing-indicator">
+                                <div class="ai-message bg-secondary text-light p-2 rounded mr-4">
+                                    <small class="d-block mb-1 opacity-75">
+                                        <i class="fas fa-robot"></i> AI Assistant • typing...
+                                    </small>
+                                    <div class="typing-animation">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                 chatMessages.insertAdjacentHTML('beforeend', typingHtml);
                 scrollToBottom();
             }
@@ -1273,15 +1297,15 @@
                     const preview = chat.last_message_preview || 'New chat session...';
 
                     const chatHtml = `
-                                <div class="chat-item p-2 mb-1 bg-secondary rounded cursor-pointer" data-chat-id="${chat.id}">
-                                    <div class="d-flex justify-content-between">
-                                        <small class="text-light font-weight-bold">${escapeHtml(chat.session_name || 'Chat Session')}</small>
-                                        <small class="text-light">${timeAgo}</small>
+                                    <div class="chat-item p-2 mb-1 bg-secondary rounded cursor-pointer" data-chat-id="${chat.id}">
+                                        <div class="d-flex justify-content-between">
+                                            <small class="text-light font-weight-bold">${escapeHtml(chat.session_name || 'Chat Session')}</small>
+                                            <small class="text-light">${timeAgo}</small>
+                                        </div>
+                                        <small class="text-light">${escapeHtml(preview.substring(0, 40))}${preview.length > 40 ? '...' : ''}</small>
+                                        ${chat.persona ? `<div><span class="badge badge-info badge-sm mt-1">${escapeHtml(chat.persona.name)}</span></div>` : ''}
                                     </div>
-                                    <small class="text-light">${escapeHtml(preview.substring(0, 40))}${preview.length > 40 ? '...' : ''}</small>
-                                    ${chat.persona ? `<div><span class="badge badge-info badge-sm mt-1">${escapeHtml(chat.persona.name)}</span></div>` : ''}
-                                </div>
-                            `;
+                                `;
 
                     chatList.insertAdjacentHTML('beforeend', chatHtml);
                 });
@@ -1328,5 +1352,50 @@
             // Load chats when the AI functionality is initialized
             await loadChats();
         });
+    });
+</script>
+<script>
+    const sidebar = document.getElementById("controlSidebar");
+    const handle = sidebar.querySelector(".resize-handle");
+
+    let isResizing = false;
+
+    // Helper functions for cookies
+    function setCookie(name, value, days = 365) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+    }
+
+    function getCookie(name) {
+        return document.cookie.split('; ').reduce((r, v) => {
+            const parts = v.split('=');
+            return parts[0] === name ? decodeURIComponent(parts[1]) : r
+        }, '');
+    }
+
+    // Load width from cookie
+    const savedWidth = parseInt(getCookie('sidebarWidth'), 10);
+    if (savedWidth && savedWidth >= 10 && savedWidth <= 1500) {
+        sidebar.style.width = savedWidth + "px";
+    }
+
+    handle.addEventListener("mousedown", function(e) {
+        isResizing = true;
+        document.body.style.userSelect = "none"; // prevent text selection
+    });
+
+    document.addEventListener("mousemove", function(e) {
+        if (!isResizing) return;
+
+        const newWidth = window.innerWidth - e.clientX; // distance from right edge
+        if (newWidth > 10) { // respect min/max
+            sidebar.style.width = newWidth + "px";
+            setCookie('sidebarWidth', newWidth);
+        }
+    });
+
+    document.addEventListener("mouseup", function() {
+        isResizing = false;
+        document.body.style.userSelect = "";
     });
 </script>
