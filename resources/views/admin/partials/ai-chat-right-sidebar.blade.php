@@ -9,6 +9,7 @@
         top: 0;
         right: 0;
         /* height: 100%; */
+        overflow-y: auto;
     }
 
     #controlSidebar .resize-handle {
@@ -21,8 +22,8 @@
         height: 100%;
     }
 </style>
-<aside class="control-sidebar control-sidebar-dark" id="controlSidebar" style="height: 100vh; overflow-y: auto;">
-    <div class="resize-handle" style="">
+<aside class="control-sidebar control-sidebar-dark" id="controlSidebar">
+    <div class="resize-handle">
         <i class=" fas fa-grip-lines-vertical text-light"></i>
     </div>
     <!-- Control sidebar content goes here -->
@@ -122,7 +123,7 @@
                 </div>
 
                 <!-- Message Input -->
-                <div class="p-2 border-top">
+                <div class="p-2 border-top" id="message-input-area">
                     <div class="input-group">
                         <textarea id="ai-message-input" class="form-control form-control-sm bg-dark text-light border-secondary" rows="2"
                             placeholder="Type your message..." style="resize: none;"></textarea>
