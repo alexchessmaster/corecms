@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="/highlight/styles/panda-syntax-dark.min.css">
-<script src="/highlight/highlight.js"></script>
 <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
     <div class="p-0 h-100 d-flex flex-column">
@@ -357,6 +355,25 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('ai-box').addEventListener('click', async () => {
+            if (!document.getElementById('hljs-css')) {
+                const hljsCss = document.createElement('link');
+                hljsCss.id = 'hljs-css';
+                hljsCss.rel = 'stylesheet';
+                hljsCss.href = '/highlight/styles/panda-syntax-dark.min.css';
+                document.head.appendChild(hljsCss);
+            }
+
+            // Dynamically load Highlight.js JS
+            if (!window.hljs) {
+                await new Promise((resolve, reject) => {
+                    const hljsScript = document.createElement('script');
+                    hljsScript.src = '/highlight/highlight.min.js';
+                    hljsScript.onload = resolve;
+                    hljsScript.onerror = reject;
+                    document.body.appendChild(hljsScript);
+                });
+            }
+
             // AI Chat functionality
             let currentChatId = null;
             let selectedPersonaId = null;
