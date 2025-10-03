@@ -191,7 +191,7 @@
                 "debug": false,
                 "newestOnTop": true, // Show newest notifications at the top
                 "progressBar": true, // Display a progress bar
-                "positionClass": "toast-bottom-right", // Position of the notification
+                "positionClass": "toast-top-right", // Position of the notification
                 "preventDuplicates": true, // Prevent duplicate notifications
                 "showDuration": "300", // Animation duration
                 "hideDuration": "1000", // Hide animation duration
@@ -201,7 +201,11 @@
         </script>
 
         <!-- Control Sidebar -->
-        @include('admin.partials.ai-chat-right-sidebar')
+        
+        @if(env('AI_CHAT_MODE') == true)
+            @include('admin.partials.ai-chat-right-sidebar')
+        @endif
+        
 
 
         @yield('script')
