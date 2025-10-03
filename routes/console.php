@@ -12,3 +12,4 @@ Schedule::command('redirects:remove-duplicate')->everyMinute()->withoutOverlappi
 Schedule::command('redirects:unchain')->everyMinute()->withoutOverlapping();
 Schedule::command('sitemap:generate')->daily();
 Schedule::command('backup:database')->daily();
+Schedule::command('booking:release-expired')->everyMinute();

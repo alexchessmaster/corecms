@@ -52,4 +52,14 @@ class User extends Authenticatable
     {
         return ['admin', 'editor', 'author', 'viewer'];
     }
+
+    public function bookingReservations()
+    {
+        return $this->hasMany(BookingReservation::class);
+    }
+
+    public function activeBookingReservations()
+    {
+        return $this->hasMany(BookingReservation::class)->whereIn('status', ['pending', 'confirmed']);
+    }
 }

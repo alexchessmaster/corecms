@@ -7,17 +7,21 @@ use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Middleware\BookingAdminMiddleware;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\BookGenreController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\BookAuthorController;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
 use App\Http\Controllers\Api\FieldWidgetController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
+use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
+use App\Http\Controllers\Api\BookingAppointmentController;
+use App\Http\Controllers\Api\BookingReservationController;
+use App\Http\Controllers\Api\BookingAvailabilityController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
@@ -58,3 +62,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 // custom routes:
 Route::post('contact-us', [ContactController::class, 'submitContactForm'])->middleware('throttle:5,1');
+
+// Booking System Routes
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('booking')->group(function () {
+        // Admin routes
+        Route::middleware(BookingAdminMiddleware::class)->group(function () {
+            Route::get('/reservations', [BookingReservationController::class, 'index']);
+            Route::get('/reservations/today', [BookingReservationController::class, 'today']);
+            Route::get('/reservations/week', [BookingReservationController::class, 'week']);
+            Route::get('/reservations/month', [BookingReservationController::class, 'month']);
+        });
+        // User routes
+        Route::get('/appointments', [BookingAppointmentController::class, 'index']);
+        Route::post('/book-appointment', [BookingAppointmentController::class, 'store']);
+        Route::patch('/appointments/{id}/cancel', [BookingAppointmentController::class, 'cancel']);
+    });
+});
+// Public booking routes (no auth required)
+Route::prefix('booking')->group(function () {
+    Route::get('/availability', [BookingAvailabilityController::class, 'index']);
+    Route::get('/availability/date/{date}', [BookingAvailabilityController::class, 'byDate']);
+});
