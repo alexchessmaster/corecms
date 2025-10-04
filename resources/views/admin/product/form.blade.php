@@ -21,6 +21,7 @@
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
             value="{{ isset($product) ? $product->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
+            <small><a href="{{ isset($product) ? App\Helpers\UrlHelper::getFrontendUrl($product->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ isset($product) ? App\Helpers\UrlHelper::getFrontendUrl($product->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
     </div>
 @endif
 <div class="mb-3">

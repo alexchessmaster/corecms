@@ -22,6 +22,7 @@
                             <input type="text" class="form-control" id="page_slug" aria-describedby=""
                                 placeholder="Page URL"
                                 value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
+                            <small id="" class="form-text text-muted"><a href="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? App\Helpers\UrlHelper::getFrontendUrl($page->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? App\Helpers\UrlHelper::getFrontendUrl($page->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -124,7 +125,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'Authorization' : 'Bearer {{  $authToken ?? "" }}'
+                        'Authorization': 'Bearer {{ $authToken ?? '' }}'
                     },
                     body: JSON.stringify({
                         title: title.value,
