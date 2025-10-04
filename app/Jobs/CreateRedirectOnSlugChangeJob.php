@@ -5,6 +5,9 @@ namespace App\Jobs;
 use App\Models\Article;
 use App\Models\Book;
 use App\Models\BookGenre;
+use App\Models\Page;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\Redirect;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +60,24 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
                 } elseif ($change->type === 'book_deleted') {
                     // Handle book deletion
                     $this->handleBookDeletion($change);
+                } elseif ($change->type === 'product_category_updated') {
+                    // Handle product category slug update
+                    $this->handleProductCategorySlugUpdate($change);
+                } elseif ($change->type === 'product_category_deleted') {
+                    // Handle product category deletion
+                    $this->handleProductCategoryDeletion($change);
+                } elseif ($change->type === 'product_updated') {
+                    // Handle product slug update
+                    $this->handleProductSlugUpdate($change);
+                } elseif ($change->type === 'product_deleted') {
+                    // Handle product deletion
+                    $this->handleProductDeletion($change);
+                } elseif ($change->type === 'page_updated') {
+                    // Handle page slug update
+                    $this->handlePageSlugUpdate($change);
+                } elseif ($change->type === 'page_deleted') {
+                    // Handle page deletion
+                    $this->handlePageDeletion($change);
                 }
 
                 // Mark as checked
@@ -257,6 +278,134 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
         Redirect::create([
             'from' => $change->old_slug,
             'to' => '/410', // Redirect to a custom 404 page or another fallback
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle product category slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleProductCategorySlugUpdate(RedirectSlugChange $change)
+    {
+        $products = Product::where('slug->' . $change->language, 'LIKE', $change->old_slug . '%')->get();
+        foreach ($products as $product) {
+            $oldProductSlug = $product->slug;
+            $newProductSlug = str_replace($change->old_slug, $change->new_slug, $product->slug);
+
+            // Update product slug
+            $product->setTranslation('slug', $change->language, $newProductSlug);
+            $product->save();
+
+            // Create redirect for the product
+            Redirect::create([
+                'from' => $oldProductSlug,
+                'to' => $newProductSlug,
+                'language' => $change->language,
+            ]);
+        }
+
+        // Create redirect for the product category
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle product category deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleProductCategoryDeletion(RedirectSlugChange $change)
+    {
+        $products = Product::where('slug->' . $change->language, 'LIKE', $change->old_slug . '%')->get();
+        foreach ($products as $product) {
+            $oldProductSlug = $product->slug;
+
+            if ($change->new_slug === '/') {
+                $newProductSlug = str_replace($change->old_slug, '/uncategorized', $oldProductSlug);
+            } else {
+                $newProductSlug = str_replace($change->old_slug, $change->new_slug, $oldProductSlug);
+            }
+
+            // Update product slug
+            $product->setTranslation('slug', $change->language, $newProductSlug);
+            $product->save();
+
+            Redirect::create([
+                'from' => $oldProductSlug,
+                'to' => $newProductSlug,
+                'language' => $change->language,
+            ]);
+        }
+
+        // Create a redirect for the product category itself to a placeholder or 404 page
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle product slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleProductSlugUpdate(RedirectSlugChange $change)
+    {
+        // Directly create a redirect for the product
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle product deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleProductDeletion(RedirectSlugChange $change)
+    {
+        // Create a redirect for the deleted product
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => '/410', // Redirect to a custom 404 page or another fallback
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle page slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handlePageSlugUpdate(RedirectSlugChange $change)
+    {
+        // Directly create a redirect for the page
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle page deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handlePageDeletion(RedirectSlugChange $change)
+    {
+        // Create a redirect for the deleted page
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => '/410', // Redirect to a custom 410 page or another fallback
             'language' => $change->language,
         ]);
     }
