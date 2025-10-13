@@ -50,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(SlugChangedEvent::class, HandleSlugChangeListener::class);
 
+        // if(app()->runningInConsole()) {
+        //     return;
+        // }
+
         Language::all()->each(function ($language) {
             if ($language->default) {
                 app()->setLocale($language->code);
