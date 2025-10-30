@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\Language;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Database\Seeders\LanguageSeeder;
 use Illuminate\Support\Facades\Hash;
 use Database\Seeders\TranslationTextSeeder;
 
@@ -21,6 +22,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+        $this->call(LanguageSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(MenuSeeder::class);

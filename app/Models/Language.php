@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Language extends Model
 {
-    // use \Sushi\Sushi;
-
-    // protected function getRows()
-    // {
-    //     return config('app.languages');
-    // }
+    protected $fillable = [
+        'name',
+        'code',
+        'default',
+        'use_separate_domain',
+        'domain',
+        'image'
+    ];
 }
