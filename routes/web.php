@@ -12,7 +12,6 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\UploadController;

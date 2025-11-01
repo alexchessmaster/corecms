@@ -10,7 +10,7 @@ class BookingAdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role === 'admin') {
+        if (auth()->check() && (auth()->user()->hasRole('super_admin') && auth()->user()->hasRole('admin'))) {
             return $next($request);
         }
 
