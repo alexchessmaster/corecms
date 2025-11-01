@@ -13,7 +13,7 @@ class BookAuthorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view book authors');
     }
 
     /**
@@ -21,7 +21,7 @@ class BookAuthorPolicy
      */
     public function view(User $user, BookAuthor $bookAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($bookAuthor->user_id === $user->id && $user->role === 'author');
+        return $user->can('view book authors') || ($bookAuthor->user_id === $user->id && $user->can('view own book authors'));
     }
 
     /**
@@ -29,7 +29,7 @@ class BookAuthorPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create book authors');
     }
 
     /**
@@ -37,7 +37,7 @@ class BookAuthorPolicy
      */
     public function update(User $user, BookAuthor $bookAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($bookAuthor->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit book authors') || ($bookAuthor->user_id === $user->id && $user->can('edit own book authors'));
     }
 
     /**
@@ -45,7 +45,7 @@ class BookAuthorPolicy
      */
     public function delete(User $user, BookAuthor $bookAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($bookAuthor->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete book authors') || ($bookAuthor->user_id === $user->id && $user->can('delete own book authors'));
     }
 
     /**
@@ -53,7 +53,7 @@ class BookAuthorPolicy
      */
     public function restore(User $user, BookAuthor $bookAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore book authors');
     }
 
     /**
@@ -61,6 +61,6 @@ class BookAuthorPolicy
      */
     public function forceDelete(User $user, BookAuthor $bookAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete book authors');
     }
 }

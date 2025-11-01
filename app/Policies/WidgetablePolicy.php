@@ -13,7 +13,7 @@ class WidgetablePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view widgetables');
     }
 
     /**
@@ -21,7 +21,8 @@ class WidgetablePolicy
      */
     public function view(User $user, Widgetable $widgetable): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widgetable->user_id === $user->id && $user->role === 'author');
+        return $user->can('view widgetables') 
+            || ($widgetable->user_id === $user->id && $user->can('view own widgetables'));
     }
 
     /**
@@ -29,7 +30,7 @@ class WidgetablePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create widgetables');
     }
 
     /**
@@ -37,7 +38,8 @@ class WidgetablePolicy
      */
     public function update(User $user, Widgetable $widgetable): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widgetable->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit widgetables') 
+            || ($widgetable->user_id === $user->id && $user->can('edit own widgetables'));
     }
 
     /**
@@ -45,7 +47,8 @@ class WidgetablePolicy
      */
     public function delete(User $user, Widgetable $widgetable): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widgetable->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete widgetables') 
+            || ($widgetable->user_id === $user->id && $user->can('delete own widgetables'));
     }
 
     /**
@@ -53,7 +56,7 @@ class WidgetablePolicy
      */
     public function restore(User $user, Widgetable $widgetable): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore widgetables');
     }
 
     /**
@@ -61,6 +64,6 @@ class WidgetablePolicy
      */
     public function forceDelete(User $user, Widgetable $widgetable): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete widgetables');
     }
 }

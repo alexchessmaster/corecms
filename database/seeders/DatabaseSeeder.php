@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call(LanguageSeeder::class);
+        $this->call(RoleAndPermissionSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(MenuSeeder::class);

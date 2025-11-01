@@ -13,7 +13,7 @@ class PagePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view pages');
     }
 
     /**
@@ -21,7 +21,7 @@ class PagePolicy
      */
     public function view(User $user, Page $page): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($page->user_id === $user->id && $user->role === 'author');
+        return $user->can('view pages') || ($page->user_id === $user->id && $user->can('view own pages'));
     }
 
     /**
@@ -29,7 +29,7 @@ class PagePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create pages');
     }
 
     /**
@@ -37,7 +37,7 @@ class PagePolicy
      */
     public function update(User $user, Page $page): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($page->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit pages') || ($page->user_id === $user->id && $user->can('edit own pages'));
     }
 
     /**
@@ -45,7 +45,7 @@ class PagePolicy
      */
     public function delete(User $user, Page $page): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($page->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete pages') || ($page->user_id === $user->id && $user->can('delete own pages'));
     }
 
     /**
@@ -53,7 +53,7 @@ class PagePolicy
      */
     public function restore(User $user, Page $page): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore pages');
     }
 
     /**
@@ -61,6 +61,6 @@ class PagePolicy
      */
     public function forceDelete(User $user, Page $page): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete pages');
     }
 }

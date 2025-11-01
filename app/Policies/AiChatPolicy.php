@@ -13,7 +13,7 @@ class AiChatPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view ai chats');
     }
 
     /**
@@ -21,7 +21,8 @@ class AiChatPolicy
      */
     public function view(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiChat->user_id;
+        return $user->can('view ai chats') 
+            || ($aiChat->user_id === $user->id && $user->can('view own ai chats'));
     }
 
     /**
@@ -29,7 +30,7 @@ class AiChatPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create ai chats');
     }
 
     /**
@@ -37,7 +38,8 @@ class AiChatPolicy
      */
     public function update(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiChat->user_id;
+        return $user->can('edit ai chats') 
+            || ($aiChat->user_id === $user->id && $user->can('edit own ai chats'));
     }
 
     /**
@@ -45,7 +47,8 @@ class AiChatPolicy
      */
     public function delete(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiChat->user_id;
+        return $user->can('delete ai chats') 
+            || ($aiChat->user_id === $user->id && $user->can('delete own ai chats'));
     }
 
     /**
@@ -53,7 +56,7 @@ class AiChatPolicy
      */
     public function restore(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore ai chats');
     }
 
     /**
@@ -61,6 +64,6 @@ class AiChatPolicy
      */
     public function forceDelete(User $user, AiChat $aiChat): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete ai chats');
     }
 }

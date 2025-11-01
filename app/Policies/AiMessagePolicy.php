@@ -13,7 +13,7 @@ class AiMessagePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view ai messages');
     }
 
     /**
@@ -21,7 +21,7 @@ class AiMessagePolicy
      */
     public function view(User $user, AiMessage $aiMessage): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view ai messages');
     }
 
     /**
@@ -29,7 +29,7 @@ class AiMessagePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create ai messages');
     }
 
     /**
@@ -37,7 +37,7 @@ class AiMessagePolicy
      */
     public function update(User $user, AiMessage $aiMessage): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('edit ai messages');
     }
 
     /**
@@ -45,7 +45,7 @@ class AiMessagePolicy
      */
     public function delete(User $user, AiMessage $aiMessage): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('delete ai messages');
     }
 
     /**
@@ -53,7 +53,7 @@ class AiMessagePolicy
      */
     public function restore(User $user, AiMessage $aiMessage): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore ai messages');
     }
 
     /**
@@ -61,6 +61,6 @@ class AiMessagePolicy
      */
     public function forceDelete(User $user, AiMessage $aiMessage): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete ai messages');
     }
 }

@@ -13,7 +13,7 @@ class ProductAuthorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view product authors');
     }
 
     /**
@@ -21,7 +21,8 @@ class ProductAuthorPolicy
      */
     public function view(User $user, ProductAuthor $productAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($productAuthor->user_id === $user->id && $user->role === 'author');
+        return $user->can('view product authors')
+            || ($productAuthor->user_id === $user->id && $user->can('view own product authors'));
     }
 
     /**
@@ -29,7 +30,7 @@ class ProductAuthorPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create product authors');
     }
 
     /**
@@ -37,7 +38,8 @@ class ProductAuthorPolicy
      */
     public function update(User $user, ProductAuthor $productAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($productAuthor->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit product authors')
+            || ($productAuthor->user_id === $user->id && $user->can('edit own product authors'));
     }
 
     /**
@@ -45,7 +47,8 @@ class ProductAuthorPolicy
      */
     public function delete(User $user, ProductAuthor $productAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($productAuthor->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete product authors')
+            || ($productAuthor->user_id === $user->id && $user->can('delete own product authors'));
     }
 
     /**
@@ -53,7 +56,7 @@ class ProductAuthorPolicy
      */
     public function restore(User $user, ProductAuthor $productAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore product authors');
     }
 
     /**
@@ -61,6 +64,6 @@ class ProductAuthorPolicy
      */
     public function forceDelete(User $user, ProductAuthor $productAuthor): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete product authors');
     }
 }

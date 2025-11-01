@@ -13,7 +13,7 @@ class ProductTagPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view product tags');
     }
 
     /**
@@ -21,7 +21,7 @@ class ProductTagPolicy
      */
     public function view(User $user, ProductTag $productTag): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($productTag->user_id === $user->id && $user->role === 'author');
+        return $user->can('view product tags') || ($productTag->user_id === $user->id && $user->can('view own product tags'));
     }
 
     /**
@@ -29,7 +29,7 @@ class ProductTagPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create product tags');
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductTagPolicy
      */
     public function update(User $user, ProductTag $productTag): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($productTag->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit product tags') || ($productTag->user_id === $user->id && $user->can('edit own product tags'));
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductTagPolicy
      */
     public function delete(User $user, ProductTag $productTag): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($productTag->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete product tags') || ($productTag->user_id === $user->id && $user->can('delete own product tags'));
     }
 
     /**
@@ -53,7 +53,7 @@ class ProductTagPolicy
      */
     public function restore(User $user, ProductTag $productTag): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore product tags');
     }
 
     /**
@@ -61,6 +61,6 @@ class ProductTagPolicy
      */
     public function forceDelete(User $user, ProductTag $productTag): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete product tags');
     }
 }

@@ -13,7 +13,7 @@ class RedirectPolicy
      */
     public function viewAny(User $user): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view redirects');
     }
 
     /**
@@ -21,7 +21,8 @@ class RedirectPolicy
      */
     public function view(User $user, Redirect $redirect): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view redirects')
+            || ($redirect->user_id === $user->id && $user->can('view own redirects'));
     }
 
     /**
@@ -29,7 +30,7 @@ class RedirectPolicy
      */
     public function create(User $user): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create redirects');
     }
 
     /**
@@ -37,7 +38,8 @@ class RedirectPolicy
      */
     public function update(User $user, Redirect $redirect): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('edit redirects')
+            || ($redirect->user_id === $user->id && $user->can('edit own redirects'));
     }
 
     /**
@@ -45,7 +47,8 @@ class RedirectPolicy
      */
     public function delete(User $user, Redirect $redirect): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('delete redirects')
+            || ($redirect->user_id === $user->id && $user->can('delete own redirects'));
     }
 
     /**
@@ -53,7 +56,7 @@ class RedirectPolicy
      */
     public function restore(User $user, Redirect $redirect): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore redirects');
     }
 
     /**
@@ -61,6 +64,6 @@ class RedirectPolicy
      */
     public function forceDelete(User $user, Redirect $redirect): bool
     {
-       return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete redirects');
     }
 }

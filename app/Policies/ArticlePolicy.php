@@ -13,7 +13,7 @@ class ArticlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view articles');
     }
 
     /**
@@ -21,7 +21,8 @@ class ArticlePolicy
      */
     public function view(User $user, Article $article): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($article->user_id === $user->id && $user->role === 'author');
+        return $user->can('view articles')
+            || ($article->user_id === $user->id && $user->can('view own articles'));
     }
 
     /**
@@ -29,7 +30,7 @@ class ArticlePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create articles');
     }
 
     /**
@@ -37,7 +38,8 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($article->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit articles')
+            || ($article->user_id === $user->id && $user->can('edit own articles'));
     }
 
     /**
@@ -45,7 +47,8 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($article->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete articles')
+            || ($article->user_id === $user->id && $user->can('delete own articles'));
     }
 
     /**
@@ -53,7 +56,7 @@ class ArticlePolicy
      */
     public function restore(User $user, Article $article): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore articles');
     }
 
     /**
@@ -61,6 +64,6 @@ class ArticlePolicy
      */
     public function forceDelete(User $user, Article $article): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete articles');
     }
 }

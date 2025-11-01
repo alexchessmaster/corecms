@@ -13,7 +13,7 @@ class SettingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view settings');
     }
 
     /**
@@ -21,7 +21,7 @@ class SettingPolicy
      */
     public function view(User $user, Setting $setting): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view settings');
     }
 
     /**
@@ -29,7 +29,7 @@ class SettingPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create settings');
     }
 
     /**
@@ -37,7 +37,7 @@ class SettingPolicy
      */
     public function update(User $user, Setting $setting): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('edit settings');
     }
 
     /**
@@ -45,7 +45,7 @@ class SettingPolicy
      */
     public function delete(User $user, Setting $setting): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('delete settings');
     }
 
     /**
@@ -53,7 +53,7 @@ class SettingPolicy
      */
     public function restore(User $user, Setting $setting): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore settings');
     }
 
     /**
@@ -61,6 +61,6 @@ class SettingPolicy
      */
     public function forceDelete(User $user, Setting $setting): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete settings');
     }
 }

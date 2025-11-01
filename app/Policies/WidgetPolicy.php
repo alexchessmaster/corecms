@@ -13,7 +13,7 @@ class WidgetPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view widgets');
     }
 
     /**
@@ -21,7 +21,8 @@ class WidgetPolicy
      */
     public function view(User $user, Widget $widget): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widget->user_id === $user->id && $user->role === 'author');
+        return $user->can('view widgets')
+            || ($widget->user_id === $user->id && $user->can('view own widgets'));
     }
 
     /**
@@ -29,7 +30,7 @@ class WidgetPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create widgets');
     }
 
     /**
@@ -37,7 +38,8 @@ class WidgetPolicy
      */
     public function update(User $user, Widget $widget): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widget->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit widgets')
+            || ($widget->user_id === $user->id && $user->can('edit own widgets'));
     }
 
     /**
@@ -45,7 +47,8 @@ class WidgetPolicy
      */
     public function delete(User $user, Widget $widget): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widget->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete widgets')
+            || ($widget->user_id === $user->id && $user->can('delete own widgets'));
     }
 
     /**
@@ -53,7 +56,7 @@ class WidgetPolicy
      */
     public function restore(User $user, Widget $widget): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore widgets');
     }
 
     /**
@@ -61,6 +64,6 @@ class WidgetPolicy
      */
     public function forceDelete(User $user, Widget $widget): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete widgets');
     }
 }

@@ -13,7 +13,7 @@ class ProductPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view products');
     }
 
     /**
@@ -21,7 +21,8 @@ class ProductPolicy
      */
     public function view(User $user, Product $product): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($product->user_id === $user->id && $user->role === 'author');
+        return $user->can('view products')
+            || ($product->user_id === $user->id && $user->can('view own products'));
     }
 
     /**
@@ -29,7 +30,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create products');
     }
 
     /**
@@ -37,7 +38,8 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($product->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit products')
+            || ($product->user_id === $user->id && $user->can('edit own products'));
     }
 
     /**
@@ -45,7 +47,8 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($product->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete products')
+            || ($product->user_id === $user->id && $user->can('delete own products'));
     }
 
     /**
@@ -53,7 +56,7 @@ class ProductPolicy
      */
     public function restore(User $user, Product $product): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore products');
     }
 
     /**
@@ -61,6 +64,6 @@ class ProductPolicy
      */
     public function forceDelete(User $user, Product $product): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete products');
     }
 }

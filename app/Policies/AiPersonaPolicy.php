@@ -13,7 +13,7 @@ class AiPersonaPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view ai personas');
     }
 
     /**
@@ -21,7 +21,8 @@ class AiPersonaPolicy
      */
     public function view(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiPersona->created_by_user_id;
+        return $user->can('view ai personas')
+            || ($user->id === $aiPersona->created_by_user_id && $user->can('view own ai personas'));
     }
 
     /**
@@ -29,7 +30,7 @@ class AiPersonaPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create ai personas');
     }
 
     /**
@@ -37,7 +38,8 @@ class AiPersonaPolicy
      */
     public function update(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiPersona->created_by_user_id;
+        return $user->can('edit ai personas')
+            || ($user->id === $aiPersona->created_by_user_id && $user->can('edit own ai personas'));
     }
 
     /**
@@ -45,7 +47,8 @@ class AiPersonaPolicy
      */
     public function delete(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || $user->id === $aiPersona->created_by_user_id;
+        return $user->can('delete ai personas')
+            || ($user->id === $aiPersona->created_by_user_id && $user->can('delete own ai personas'));
     }
 
     /**
@@ -53,7 +56,7 @@ class AiPersonaPolicy
      */
     public function restore(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin']);
+        return $user->can('restore ai personas');
     }
 
     /**
@@ -61,6 +64,6 @@ class AiPersonaPolicy
      */
     public function forceDelete(User $user, AiPersona $aiPersona): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete ai personas');
     }
 }

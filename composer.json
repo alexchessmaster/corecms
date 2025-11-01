@@ -6,11 +6,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "calebporzio/sushi": "^2.5",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "openai-php/laravel": "^0.16.0",
+        "spatie/laravel-permission": "^6.22",
         "spatie/laravel-sitemap": "^7.3",
         "spatie/laravel-translatable": "^6.8",
         "yajra/laravel-datatables-oracle": "^12.0"

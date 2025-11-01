@@ -13,7 +13,7 @@ class UploadPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view uploads');
     }
 
     /**
@@ -21,7 +21,7 @@ class UploadPolicy
      */
     public function view(User $user, Upload $upload): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($upload->user_id === $user->id && $user->role === 'author');
+        return $user->can('view uploads') || ($upload->user_id === $user->id && $user->can('view own uploads'));
     }
 
     /**
@@ -29,7 +29,7 @@ class UploadPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create uploads');
     }
 
     /**
@@ -37,7 +37,7 @@ class UploadPolicy
      */
     public function update(User $user, Upload $upload): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($upload->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit uploads') || ($upload->user_id === $user->id && $user->can('edit own uploads'));
     }
 
     /**
@@ -45,7 +45,7 @@ class UploadPolicy
      */
     public function delete(User $user, Upload $upload): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($upload->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete uploads') || ($upload->user_id === $user->id && $user->can('delete own uploads'));
     }
 
     /**
@@ -53,7 +53,7 @@ class UploadPolicy
      */
     public function restore(User $user, Upload $upload): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore uploads');
     }
 
     /**
@@ -61,6 +61,6 @@ class UploadPolicy
      */
     public function forceDelete(User $user, Upload $upload): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete uploads');
     }
 }

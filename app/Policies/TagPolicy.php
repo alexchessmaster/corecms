@@ -13,7 +13,7 @@ class TagPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view tags');
     }
 
     /**
@@ -21,7 +21,8 @@ class TagPolicy
      */
     public function view(User $user, tag $tag): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($tag->user_id === $user->id && $user->role === 'author');
+        return $user->can('view tags')
+            || ($tag->user_id === $user->id && $user->can('view own tags'));
     }
 
     /**
@@ -29,7 +30,7 @@ class TagPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create tags');
     }
 
     /**
@@ -37,7 +38,8 @@ class TagPolicy
      */
     public function update(User $user, tag $tag): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($tag->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit tags')
+            || ($tag->user_id === $user->id && $user->can('edit own tags'));
     }
 
     /**
@@ -45,7 +47,8 @@ class TagPolicy
      */
     public function delete(User $user, tag $tag): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($tag->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete tags')
+            || ($tag->user_id === $user->id && $user->can('delete own tags'));
     }
 
     /**
@@ -53,7 +56,7 @@ class TagPolicy
      */
     public function restore(User $user, tag $tag): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore tags');
     }
 
     /**
@@ -61,6 +64,6 @@ class TagPolicy
      */
     public function forceDelete(User $user, tag $tag): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete tags');
     }
 }

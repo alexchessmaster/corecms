@@ -44,198 +44,273 @@
                     </p>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="/admin/url-logs/statistics" class="nav-link">
-                    <i class="nav-icon fas fa-chart-bar"></i>
-                    <p>
-                        URL Logs Statistics
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/url-logs" class="nav-link">
-                    <i class="nav-icon fas fa-clock"></i>
-                    <p>
-                        URL Logs
-                    </p>
-                </a>
-            </li>
+            @can('view url logs')
+                <li class="nav-item">
+                    <a href="/admin/url-logs/statistics" class="nav-link">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <p>
+                            URL Logs Statistics
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view url logs')
+                <li class="nav-item">
+                    <a href="/admin/url-logs" class="nav-link">
+                        <i class="nav-icon fas fa-clock"></i>
+                        <p>
+                            URL Logs
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px gray solid"></div>
             <!-- Content Management -->
 
-            <li class="nav-item">
-                <a href="/admin/menus" class="nav-link">
-                    <i class="nav-icon fas fa-list-ul"></i>
-                    <p>
-                        Menus
-                    </p>
-                </a>
-            </li>
+            @can('view menus')
+                <li class="nav-item">
+                    <a href="/admin/menus" class="nav-link">
+                        <i class="nav-icon fas fa-list-ul"></i>
+                        <p>
+                            Menus
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px rgb(55, 67, 71) solid"></div>
-            <li class="nav-item">
-                <a href="/admin/pages" class="nav-link">
-                    <i class="nav-icon fas fa-file"></i>
-                    <p>
-                        Pages
-                    </p>
-                </a>
-            </li>
+            @can('view pages')
+                <li class="nav-item">
+                    <a href="/admin/pages" class="nav-link">
+                        <i class="nav-icon fas fa-file"></i>
+                        <p>
+                            Pages
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px rgb(55, 67, 71) solid"></div>
-            <li class="nav-item">
-                <a href="/admin/articles" class="nav-link">
-                    <i class="nav-icon fas fa-file-alt"></i>
-                    <p>
-                        Articles
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/categories" class="nav-link">
-                    <i class="nav-icon fas fa-folder"></i>
-                    <p>
-                        Articles Categories
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/tags" class="nav-link">
-                    <i class="nav-icon fas fa-tag"></i>
-                    <p>
-                        Articles Tags
-                    </p>
-                </a>
-            </li>
+            @can('view articles')
+                <li class="nav-item">
+                    <a href="/admin/articles" class="nav-link">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>
+                            Articles
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view categories')
+                <li class="nav-item">
+                    <a href="/admin/categories" class="nav-link">
+                        <i class="nav-icon fas fa-folder"></i>
+                        <p>
+                            Articles Categories
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view tags')
+                <li class="nav-item">
+                    <a href="/admin/tags" class="nav-link">
+                        <i class="nav-icon fas fa-tag"></i>
+                        <p>
+                            Articles Tags
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px rgb(55, 67, 71) solid"></div>
-            <li class="nav-item">
-                <a href="/admin/product-categories" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Product Categories
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/product-tags" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Product Tags
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/products" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Products
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/product-authors" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Product Authors
-                    </p>
-                </a>
-            </li>
+            @can('view product categories')
+                <li class="nav-item">
+                    <a href="/admin/product-categories" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Product Categories
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view product tags')
+                <li class="nav-item">
+                    <a href="/admin/product-tags" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Product Tags
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view products')
+                <li class="nav-item">
+                    <a href="/admin/products" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Products
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view product authors')
+                <li class="nav-item">
+                    <a href="/admin/product-authors" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Product Authors
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px rgb(55, 67, 71) solid"></div>
-            <li class="nav-item">
-                <a href="/admin/book_genres" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Books Genres
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/books" class="nav-link">
-                    <i class="nav-icon fas fa-book"></i>
-                    <p>
-                        Books
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/book-authors" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        Writers
-                    </p>
-                </a>
-            </li>
+            @can('view book genres')
+                <li class="nav-item">
+                    <a href="/admin/book_genres" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Books Genres
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view books')
+                <li class="nav-item">
+                    <a href="/admin/books" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Books
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view book authors')
+                <li class="nav-item">
+                    <a href="/admin/book-authors" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Writers
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px gray solid"></div>
-                        <li class="nav-item">
-                <a href="/admin/comments" class="nav-link">
-                    <i class="nav-icon fas fa-comments"></i>
-                    <p>
-                        Comments
-                    </p>
-                </a>
-            </li>
+            @can('view commentables')
+                <li class="nav-item">
+                    <a href="/admin/comments" class="nav-link">
+                        <i class="nav-icon fas fa-comments"></i>
+                        <p>
+                            Comments
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            <div style="border: 1px gray solid"></div>
+            @can('view redirects')
+                <li class="nav-item">
+                    <a href="/admin/redirects" class="nav-link">
+                        <i class="nav-icon fas fa-directions"></i>
+                        <p>
+                            Redirects
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px gray solid"></div>
             <!-- Design and Customization -->
-            <li class="nav-item">
-                <a href="/admin/widgets" class="nav-link">
-                    <i class="nav-icon fas fa-th-large"></i>
-                    <p>
-                        Widgets
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/fields" class="nav-link">
-                    <i class="nav-icon fas fa-layer-group"></i>
-                    <p>
-                        Fields
-                    </p>
-                </a>
-            </li>
+            @can('view widgets')
+                <li class="nav-item">
+                    <a href="/admin/widgets" class="nav-link">
+                        <i class="nav-icon fas fa-th-large"></i>
+                        <p>
+                            Widgets
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view fields')
+                <li class="nav-item">
+                    <a href="/admin/fields" class="nav-link">
+                        <i class="nav-icon fas fa-layer-group"></i>
+                        <p>
+                            Fields
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px gray solid"></div>
             <!-- Localization -->
-            <li class="nav-item">
-                <a href="/admin/translation-texts" class="nav-link">
-                    <i class="nav-icon fas fa-globe"></i>
-                    <p>
-                        Translation Texts
-                    </p>
-                </a>
-            </li>
+            @can('view translation texts')
+                <li class="nav-item">
+                    <a href="/admin/translation-texts" class="nav-link">
+                        <i class="nav-icon fas fa-globe"></i>
+                        <p>
+                            Translation Texts
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px gray solid"></div>
             <!-- Site Administration -->
-            <li class="nav-item">
-                <a href="/admin/users" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        Users
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/settings" class="nav-link">
-                    <i class="nav-icon fas fa-cog"></i>
-                    <p>
-                        Settings
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/admin/redirects" class="nav-link">
-                    <i class="nav-icon fas fa-directions"></i>
-                    <p>
-                        Redirects
-                    </p>
-                </a>
-            </li>
+            @can('view users')
+                <li class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Users
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view users')
+                <li class="nav-item">
+                    <a href="/admin/roles" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Roles
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view users')
+                <li class="nav-item">
+                    <a href="/admin/permissions" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Permissions
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view settings')
+                <li class="nav-item">
+                    <a href="/admin/settings" class="nav-link">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p>
+                            Settings
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view languages')
+                <li class="nav-item">
+                    <a href="/admin/languages" class="nav-link">
+                        <i class="nav-icon fas fa-globe"></i>
+                        <p>
+                            Languages
+                        </p>
+                    </a>
+                </li>
+            @endcan
             <div style="border: 1px gray solid"></div>
             <!-- File Management -->
-            <li class="nav-item">
-                <a href="/admin/upload" class="nav-link">
-                    <i class="nav-icon fas fa-upload"></i>
-                    <p>
-                        Upload
-                    </p>
-                </a>
-            </li>
+            @can('view uploads')
+                <li class="nav-item">
+                    <a href="/admin/upload" class="nav-link">
+                        <i class="nav-icon fas fa-upload"></i>
+                        <p>
+                            Upload
+                        </p>
+                    </a>
+                </li>
+            @endcan
         </ul>
     </nav>
 

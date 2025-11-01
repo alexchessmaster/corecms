@@ -13,7 +13,7 @@ class UrlLogPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view url logs');
     }
 
     /**
@@ -21,7 +21,8 @@ class UrlLogPolicy
      */
     public function view(User $user, UrlLog $urlLog): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view url logs')
+            || ($urlLog->user_id === $user->id && $user->can('view own url logs'));
     }
 
     /**
@@ -29,7 +30,7 @@ class UrlLogPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create url logs');
     }
 
     /**
@@ -37,7 +38,8 @@ class UrlLogPolicy
      */
     public function update(User $user, UrlLog $urlLog): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('edit url logs')
+            || ($urlLog->user_id === $user->id && $user->can('edit own url logs'));
     }
 
     /**
@@ -45,7 +47,8 @@ class UrlLogPolicy
      */
     public function delete(User $user, UrlLog $urlLog): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('delete url logs')
+            || ($urlLog->user_id === $user->id && $user->can('delete own url logs'));
     }
 
     /**
@@ -53,7 +56,7 @@ class UrlLogPolicy
      */
     public function restore(User $user, UrlLog $urlLog): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore url logs');
     }
 
     /**
@@ -61,6 +64,6 @@ class UrlLogPolicy
      */
     public function forceDelete(User $user, UrlLog $urlLog): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete url logs');
     }
 }

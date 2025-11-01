@@ -13,7 +13,7 @@ class FieldPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view fields');
     }
 
     /**
@@ -21,7 +21,7 @@ class FieldPolicy
      */
     public function view(User $user, Field $field): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($field->user_id === $user->id && $user->role === 'author');
+        return $user->can('view fields') || ($field->user_id === $user->id && $user->can('view own fields'));
     }
 
     /**
@@ -29,7 +29,7 @@ class FieldPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create fields');
     }
 
     /**
@@ -37,7 +37,7 @@ class FieldPolicy
      */
     public function update(User $user, Field $field): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($field->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit fields') || ($field->user_id === $user->id && $user->can('edit own fields'));
     }
 
     /**
@@ -45,7 +45,7 @@ class FieldPolicy
      */
     public function delete(User $user, Field $field): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($field->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete fields') || ($field->user_id === $user->id && $user->can('delete own fields'));
     }
 
     /**
@@ -53,7 +53,7 @@ class FieldPolicy
      */
     public function restore(User $user, Field $field): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore fields');
     }
 
     /**
@@ -61,6 +61,6 @@ class FieldPolicy
      */
     public function forceDelete(User $user, Field $field): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete fields');
     }
 }

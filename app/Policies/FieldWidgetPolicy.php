@@ -13,7 +13,7 @@ class FieldWidgetPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view field widgets');
     }
 
     /**
@@ -21,7 +21,8 @@ class FieldWidgetPolicy
      */
     public function view(User $user, FieldWidget $fieldWidget): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($fieldWidget->user_id === $user->id && $user->role === 'author');
+        return $user->can('view field widgets')
+            || ($fieldWidget->user_id === $user->id && $user->can('view own field widgets'));
     }
 
     /**
@@ -29,7 +30,7 @@ class FieldWidgetPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create field widgets');
     }
 
     /**
@@ -37,7 +38,8 @@ class FieldWidgetPolicy
      */
     public function update(User $user, FieldWidget $fieldWidget): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($fieldWidget->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit field widgets')
+            || ($fieldWidget->user_id === $user->id && $user->can('edit own field widgets'));
     }
 
     /**
@@ -45,7 +47,8 @@ class FieldWidgetPolicy
      */
     public function delete(User $user, FieldWidget $fieldWidget): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($fieldWidget->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete field widgets')
+            || ($fieldWidget->user_id === $user->id && $user->can('delete own field widgets'));
     }
 
     /**
@@ -53,7 +56,7 @@ class FieldWidgetPolicy
      */
     public function restore(User $user, FieldWidget $fieldWidget): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore field widgets');
     }
 
     /**
@@ -61,6 +64,6 @@ class FieldWidgetPolicy
      */
     public function forceDelete(User $user, FieldWidget $fieldWidget): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete field widgets');
     }
 }

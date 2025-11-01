@@ -13,7 +13,7 @@ class MenuPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view menus');
     }
 
     /**
@@ -21,7 +21,8 @@ class MenuPolicy
      */
     public function view(User $user, Menu $menu): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($menu->user_id === $user->id && $user->role === 'author');
+        return $user->can('view menus') 
+            || ($menu->user_id === $user->id && $user->can('view own menus'));
     }
 
     /**
@@ -29,7 +30,7 @@ class MenuPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create menus');
     }
 
     /**
@@ -37,7 +38,8 @@ class MenuPolicy
      */
     public function update(User $user, Menu $menu): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($menu->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit menus') 
+            || ($menu->user_id === $user->id && $user->can('edit own menus'));
     }
 
     /**
@@ -45,7 +47,8 @@ class MenuPolicy
      */
     public function delete(User $user, Menu $menu): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($menu->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete menus') 
+            || ($menu->user_id === $user->id && $user->can('delete own menus'));
     }
 
     /**
@@ -53,7 +56,7 @@ class MenuPolicy
      */
     public function restore(User $user, Menu $menu): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore menus');
     }
 
     /**
@@ -61,6 +64,6 @@ class MenuPolicy
      */
     public function forceDelete(User $user, Menu $menu): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete menus');
     }
 }

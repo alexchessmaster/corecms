@@ -10,28 +10,31 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\FieldController;
+use App\Http\Controllers\AiChatController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UrlLogController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\AiPersonaController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\CommentableController;
+use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\ProductAuthorController;
 use App\Http\Controllers\ProductCategoryController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductTagController;
-use App\Http\Middleware\LanguageAdminMiddleware;
 use App\Http\Controllers\TranslationTextController;
-use App\Http\Controllers\AiPersonaController;
-use App\Http\Controllers\AiChatController;
 
 Route::get('/', function () {
     abort(403);
@@ -46,6 +49,9 @@ Route::group([
     'as' => 'admin.',
     'middleware' => [LanguageAdminMiddleware::class, 'auth', 'verified']
 ], function () {
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
+    
     Route::resource('menus', MenuController::class);
     Route::resource('upload', UploadController::class);
     Route::resource('settings', SettingController::class);
@@ -70,6 +76,7 @@ Route::group([
     Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
     Route::resource('url-logs', UrlLogController::class);
     Route::resource('translation-texts', TranslationTextController::class);
+    Route::resource('languages', LanguageController::class);
     
     // AI Personas management routes
     Route::resource('ai-personas', AiPersonaController::class);

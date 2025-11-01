@@ -13,7 +13,7 @@ class BookPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view books');
     }
 
     /**
@@ -21,7 +21,8 @@ class BookPolicy
      */
     public function view(User $user, Book $book): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($book->user_id === $user->id && $user->role === 'author');
+        return $user->can('view books')
+            || ($book->user_id === $user->id && $user->can('view own books'));
     }
 
     /**
@@ -29,7 +30,7 @@ class BookPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create books');
     }
 
     /**
@@ -37,7 +38,8 @@ class BookPolicy
      */
     public function update(User $user, Book $book): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($book->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit books')
+            || ($book->user_id === $user->id && $user->can('edit own books'));
     }
 
     /**
@@ -45,7 +47,8 @@ class BookPolicy
      */
     public function delete(User $user, Book $book): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($book->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete books')
+            || ($book->user_id === $user->id && $user->can('delete own books'));
     }
 
     /**
@@ -53,7 +56,7 @@ class BookPolicy
      */
     public function restore(User $user, Book $book): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore books');
     }
 
     /**
@@ -61,6 +64,6 @@ class BookPolicy
      */
     public function forceDelete(User $user, Book $book): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete books');
     }
 }

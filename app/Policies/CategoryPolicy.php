@@ -13,7 +13,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view categories');
     }
 
     /**
@@ -21,7 +21,7 @@ class CategoryPolicy
      */
     public function view(User $user, category $category): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($category->user_id === $user->id && $user->role === 'author');
+        return $user->can('view categories') || ($category->user_id === $user->id && $user->can('view own categories'));
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create categories');
     }
 
     /**
@@ -37,7 +37,7 @@ class CategoryPolicy
      */
     public function update(User $user, category $category): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($category->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit categories') || ($category->user_id === $user->id && $user->can('edit own categories'));
     }
 
     /**
@@ -45,7 +45,7 @@ class CategoryPolicy
      */
     public function delete(User $user, category $category): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($category->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete categories') || ($category->user_id === $user->id && $user->can('delete own categories'));
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryPolicy
      */
     public function restore(User $user, category $category): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore categories');
     }
 
     /**
@@ -61,6 +61,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, category $category): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete categories');
     }
 }

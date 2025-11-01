@@ -16,9 +16,12 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         if ($request->ajax()) {
-            $users = User::select(['id', 'name', 'email', 'role']);
+            $users = User::with(['roles'])->select(['id', 'name', 'email']);
 
             return DataTables::of($users)
+                ->editColumn('role', function ($user) {
+                    return $user->roles->pluck('name')->join(', ');
+                })
                 ->addColumn('actions', function ($user) {
                     return '
                     <a href="' . route('admin.users.edit', $user) . '" class="btn btn-sm btn-warning">
@@ -43,8 +46,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         
-        $user = new User();
-        $roles = $user->roles;
+        $roles = \Spatie\Permission\Models\Role::all();
 
         return view('admin.users.create', compact('roles'));
     }
@@ -53,36 +55,32 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         
-        $name = $request->name;
-        $email = $request->email;
-        $role = $request->role;
-        $password = $request->password;
-        $repeat_password = $request->repeat_password;
-        $see_edit_button_on_texts = $request->see_edit_button_on_texts;
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'role' => 'required|exists:roles,name',
+        ]);
 
-        if($password !== $repeat_password){
-
-            return redirect()->back();
-        }
-        
         $user = new User();
-        $user->name = $name;
-        $user->email = $email;
-        $user->role = $role;
-        $user->show_edit_button_on_texts = $see_edit_button_on_texts;
-        if(!empty($password)){
-            $user->password = bcrypt($password);
-        }
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->show_edit_button_on_texts = $request->see_edit_button_on_texts ?? false;
+        $user->password = bcrypt($request->password);
         $user->save();
+        
+        // Assign role using Spatie
+        $user->assignRole($request->role);
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User created successfully');
     }
 
     public function edit(User $user)
     {
         $this->authorize('view', $user);
         
-        $roles = $user->roles;
+        $roles = \Spatie\Permission\Models\Role::all();
 
         return view('admin.users.edit', compact('user', 'roles'));
     }
@@ -91,28 +89,28 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         
-        $name = $request->name;
-        $email = $request->email;
-        $role = $request->role;
-        $password = $request->password;
-        $repeat_password = $request->repeat_password;
-        $see_edit_button_on_texts = $request->see_edit_button_on_texts;
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
+            'role' => 'required|exists:roles,name',
+        ]);
 
-        if($password !== $repeat_password){
-
-            return redirect()->back();
-        }
-        $user->name = $name;
-        $user->email = $email;
-        $user->role = $role;
-        $user->show_edit_button_on_texts = $see_edit_button_on_texts;
-        if(!empty($password)){
-            $user->password = bcrypt($password);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->show_edit_button_on_texts = $request->see_edit_button_on_texts ?? false;
+        
+        if(!empty($request->password)){
+            $user->password = bcrypt($request->password);
         }
 
         $user->save();
+        
+        // Sync role using Spatie
+        $user->syncRoles([$request->role]);
 
-        return redirect()->route('admin.users.edit', $user->id);
+        return redirect()->route('admin.users.edit', $user->id)
+            ->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user)

@@ -13,7 +13,7 @@ class WidgetFieldValuesPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view widget field values');
     }
 
     /**
@@ -21,7 +21,8 @@ class WidgetFieldValuesPolicy
      */
     public function view(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widgetFieldValues->user_id === $user->id && $user->role === 'author');
+        return $user->can('view widget field values')
+            || ($widgetFieldValues->user_id === $user->id && $user->can('view own widget field values'));
     }
 
     /**
@@ -29,7 +30,7 @@ class WidgetFieldValuesPolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create widget field values');
     }
 
     /**
@@ -37,7 +38,8 @@ class WidgetFieldValuesPolicy
      */
     public function update(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widgetFieldValues->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit widget field values')
+            || ($widgetFieldValues->user_id === $user->id && $user->can('edit own widget field values'));
     }
 
     /**
@@ -45,7 +47,8 @@ class WidgetFieldValuesPolicy
      */
     public function delete(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($widgetFieldValues->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete widget field values')
+            || ($widgetFieldValues->user_id === $user->id && $user->can('delete own widget field values'));
     }
 
     /**
@@ -53,7 +56,7 @@ class WidgetFieldValuesPolicy
      */
     public function restore(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore widget field values');
     }
 
     /**
@@ -61,6 +64,6 @@ class WidgetFieldValuesPolicy
      */
     public function forceDelete(User $user, WidgetFieldValues $widgetFieldValues): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete widget field values');
     }
 }

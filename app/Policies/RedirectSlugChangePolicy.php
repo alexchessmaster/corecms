@@ -13,7 +13,7 @@ class RedirectSlugChangePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view redirect slug changes');
     }
 
     /**
@@ -21,7 +21,7 @@ class RedirectSlugChangePolicy
      */
     public function view(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('view redirect slug changes');
     }
 
     /**
@@ -29,7 +29,7 @@ class RedirectSlugChangePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('create redirect slug changes');
     }
 
     /**
@@ -37,7 +37,7 @@ class RedirectSlugChangePolicy
      */
     public function update(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('edit redirect slug changes');
     }
 
     /**
@@ -45,7 +45,7 @@ class RedirectSlugChangePolicy
      */
     public function delete(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('delete redirect slug changes');
     }
 
     /**
@@ -53,7 +53,7 @@ class RedirectSlugChangePolicy
      */
     public function restore(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore redirect slug changes');
     }
 
     /**
@@ -61,6 +61,6 @@ class RedirectSlugChangePolicy
      */
     public function forceDelete(User $user, RedirectSlugChange $redirectSlugChange): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete redirect slug changes');
     }
 }

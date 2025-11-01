@@ -13,7 +13,7 @@ class BookGenrePolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('view book genres');
     }
 
     /**
@@ -21,7 +21,8 @@ class BookGenrePolicy
      */
     public function view(User $user, BookGenre $bookGenre): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($bookGenre->user_id === $user->id && $user->role === 'author');
+        return $user->can('view book genres') 
+            || ($bookGenre->user_id === $user->id && $user->can('view own book genres'));
     }
 
     /**
@@ -29,7 +30,7 @@ class BookGenrePolicy
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['admin', 'editor', 'author']);
+        return $user->can('create book genres');
     }
 
     /**
@@ -37,7 +38,8 @@ class BookGenrePolicy
      */
     public function update(User $user, BookGenre $bookGenre): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($bookGenre->user_id === $user->id && $user->role === 'author');
+        return $user->can('edit book genres') 
+            || ($bookGenre->user_id === $user->id && $user->can('edit own book genres'));
     }
 
     /**
@@ -45,7 +47,8 @@ class BookGenrePolicy
      */
     public function delete(User $user, BookGenre $bookGenre): bool
     {
-        return in_array($user->role, ['admin', 'editor']) || ($bookGenre->user_id === $user->id && $user->role === 'author');
+        return $user->can('delete book genres') 
+            || ($bookGenre->user_id === $user->id && $user->can('delete own book genres'));
     }
 
     /**
@@ -53,7 +56,7 @@ class BookGenrePolicy
      */
     public function restore(User $user, BookGenre $bookGenre): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('restore book genres');
     }
 
     /**
@@ -61,6 +64,6 @@ class BookGenrePolicy
      */
     public function forceDelete(User $user, BookGenre $bookGenre): bool
     {
-        return in_array($user->role, ['admin', 'editor']);
+        return $user->can('force delete book genres');
     }
 }

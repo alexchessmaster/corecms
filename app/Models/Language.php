@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Language extends Model
 {
-    protected $fillable = [
-        'name',
-        'code',
-        'default',
-        'use_separate_domain',
-        'domain',
-        'image'
-    ];
+    /** @use HasFactory<\Database\Factories\LanguageFactory> */
+    use HasFactory;
+    use HasRoles;
+
+    protected $guarded = [];
 }
