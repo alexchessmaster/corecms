@@ -471,7 +471,7 @@
         labelEl.style.textAlign = 'start';
         labelEl.classList.add('col-sm-12', 'mt-2', 'form-label');
         labelEl.setAttribute('for', 'alignmentSelect');
-        labelEl.textContent = 'Select';
+        labelEl.textContent = item.key + ':';
 
         const selectEl = document.createElement('select');
         selectEl.classList.add('form-control');
@@ -725,6 +725,18 @@
                     break;
                 case 'select_option_left_center_right':
                     createSelectInput(widget, item, ['left', 'center', 'right']);
+                    break;
+                case 'select_option_left_right':
+                    createSelectInput(widget, item, ['left', 'right']);
+                    break;
+                case 'select_option_top_bottom':
+                    createSelectInput(widget, item, ['top', 'bottom']);
+                    break;
+                case 'select_option_top_center_bottom':
+                    createSelectInput(widget, item, ['top', 'center', 'bottom']);
+                    break;
+                case 'select_option_dark_light':
+                    createSelectInput(widget, item, ['dark', 'light']);
                     break;
                 case 'select_option_on_off':
                     createSelectInput(widget, item, ['on', 'off']);

@@ -100,7 +100,7 @@ class WidgetController extends Controller
         }
 
         // fix the bug related to to the getting value of the fields of the newly attached widget
-        // The bug appear after I wanted
+        // The bug appear after I wanted to add new fields to existing widgets that has been already attached to some models.
         // Find all FieldWidgets (fields attached to this widget)
         $fieldWidgets = FieldWidget::where('widget_id', $widget->id)->get();
         foreach ($fieldWidgets as $fieldWidget) {
@@ -114,11 +114,11 @@ class WidgetController extends Controller
         if ($widget->locked_fields_value) {
             // Find all FieldWidgets (fields attached to this widget)
             $fieldWidgets = FieldWidget::where('widget_id', $widget->id)->get();
-
+            // dd($fieldWidgets);
             foreach ($fieldWidgets as $fieldWidget) {
-                $widgetFieldValue = new WidgetFieldValues;
-                $widgetFieldValue->widgetable_id = $created->id; // the new Widgetable we just attached
-                $widgetFieldValue->field_widget_id = $fieldWidget->id;
+                // $widgetFieldValue = new WidgetFieldValues; // since we already created above, we just need to update them
+                // $widgetFieldValue->widgetable_id = $created->id;
+                // $widgetFieldValue->field_widget_id = $fieldWidget->id;
 
                 // Attempt to copy from another instance if it exists
                 $existingWidgetFieldValue = WidgetFieldValues::whereIn(

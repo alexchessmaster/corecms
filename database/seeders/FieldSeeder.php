@@ -31,7 +31,11 @@ class FieldSeeder extends Seeder
             ['type' => 'file'],
             ['type' => 'color'],
             ['type' => 'code'],
+            ['type' => 'select_option_left_right'],
             ['type' => 'select_option_left_center_right'],
+            ['type' => 'select_option_top_bottom'],
+            ['type' => 'select_option_top_center_bottom'],
+            ['type' => 'select_option_dark_light'],
             ['type' => 'select_option_on_off'],
         ]);
     }
