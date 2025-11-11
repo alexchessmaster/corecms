@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Http;
 
-class OpenAiService
+class OpenAiService implements AiServiceInterface
 {
     protected $apiKey;
     protected $baseUrl = 'https://api.openai.com/v1';

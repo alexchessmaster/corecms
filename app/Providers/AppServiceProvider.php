@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Observers\ProductCategoryObserver;
 use App\Listeners\HandleSlugChangeListener;
+use App\Contracts\AiServiceInterface;
+use App\Services\OpenAiService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(AiServiceInterface::class, OpenAiService::class);
     }
 
     /**

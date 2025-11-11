@@ -7,7 +7,7 @@ use App\Http\Requests\UpdateAiChatRequest;
 use App\Models\AiChat;
 use App\Models\AiMessage;
 use App\Models\AiPersona;
-use App\Services\OpenAiService;
+use App\Contracts\AiServiceInterface;
 use App\Services\TokenCostCalculator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -17,12 +17,9 @@ class AiChatController extends Controller
 {
     use AuthorizesRequests;
 
-    protected $openAiService;
-    protected $tokenCalculator;
-
-    public function __construct(OpenAiService $openAiService, TokenCostCalculator $tokenCalculator)
+    public function __construct(protected AiServiceInterface $aiService, protected TokenCostCalculator $tokenCalculator)
     {
-        $this->openAiService = $openAiService;
+        $this->aiService = $aiService;
         $this->tokenCalculator = $tokenCalculator;
     }
 
@@ -197,7 +194,7 @@ class AiChatController extends Controller
                 $payload['max_tokens'] = 1000;
                 $payload['temperature'] = 0.3;
             }
-            $response = $this->openAiService->chat($payload);
+            $response = $this->aiService->chat($payload);
 
             // Extract token usage and response
             $inputTokens = $response['usage']['prompt_tokens'] ?? 0;
