@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AiMessage extends Model
 {
-    /** @use HasFactory<\Database\Factories\AiMessageFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -29,20 +28,5 @@ class AiMessage extends Model
     public function aiChat(): BelongsTo
     {
         return $this->belongsTo(AiChat::class);
-    }
-
-    public function getTotalTokensAttribute(): int
-    {
-        return ($this->input_tokens ?? 0) + ($this->output_tokens ?? 0);
-    }
-
-    public function isUserMessage(): bool
-    {
-        return $this->role === 'user';
-    }
-
-    public function isAssistantMessage(): bool
-    {
-        return $this->role === 'assistant';
     }
 }
