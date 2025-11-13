@@ -176,24 +176,6 @@ class AiChatController extends Controller
                 'model' => $chat->ai_model_used,
                 'messages' => $messages,
             ];
-            $supportedModelsForTemperature = [
-                'gpt-4',
-                'gpt-4-turbo',
-                'gpt-4-turbo-preview',
-                'gpt-4-0125-preview',
-                'gpt-4-1106-preview',
-                'gpt-4-vision-preview',
-                'gpt-4o',
-                'gpt-4o-mini',
-                'gpt-3.5-turbo',
-                'gpt-3.5-turbo-16k',
-                'gpt-3.5-turbo-0125',
-                'gpt-3.5-turbo-1106',
-            ];
-            if (in_array($chat->ai_model_used, $supportedModelsForTemperature)) {
-                $payload['max_tokens'] = 1000;
-                $payload['temperature'] = 0.3;
-            }
             $response = $this->aiService->chat($payload);
 
             // Extract token usage and response
@@ -270,57 +252,6 @@ class AiChatController extends Controller
     }
 
     /**
-     * Clear all messages from a chat (reset conversation).
-     */
-    public function clearMessages(AiChat $aiChat): JsonResponse
-    {
-        $this->authorize('delete', $aiChat);
-        $aiChat->messages()->delete();
-
-        // Reset token counts and costs
-        // $aiChat->update([
-        //     'total_input_tokens' => 0,
-        //     'total_output_tokens' => 0,
-        //     'total_cost_usd' => 0,
-        // ]);
-
-        // Re-add system message if persona exists
-        // if ($aiChat->ai_persona_id) {
-        //     $persona = AiPersona::find($aiChat->ai_persona_id);
-        //     if ($persona) {
-        //         $aiChat->addMessage('system', $persona->system_prompt);
-        //     }
-        // }
-
-        return response()->json([
-            'message' => 'Chat with messages deleted successfully'
-        ]);
-    }
-
-    /**
-     * Export chat messages.
-     */
-    public function export(AiChat $aiChat): JsonResponse
-    {
-        $this->authorize('view', $aiChat);
-        $messages = $aiChat->messages()
-            ->select('role', 'content', 'created_at')
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        return response()->json([
-            'chat_info' => [
-                'session_name' => $aiChat->session_name,
-                'model' => $aiChat->ai_model_used,
-                'persona' => $aiChat->persona?->name,
-                'total_cost' => $aiChat->total_cost_usd,
-                'created_at' => $aiChat->created_at,
-            ],
-            'messages' => $messages
-        ]);
-    }
-
-    /**
      * Purge all messages from a chat.
      */
     public function purgeChat(AiChat $chat): JsonResponse
@@ -330,57 +261,9 @@ class AiChatController extends Controller
         $chat->messages()->delete();
         $chat->delete();
 
-        // Reset token counts and costs
-        // $chat->update([
-        //     'total_input_tokens' => 0,
-        //     'total_output_tokens' => 0,
-        //     'total_cost_usd' => 0,
-        // ]);
-
-        // Re-add system message if persona exists
-        // if ($chat->ai_persona_id) {
-        //     $persona = AiPersona::find($chat->ai_persona_id);
-        //     if ($persona) {
-        //         $chat->addMessage('system', $persona->system_prompt);
-        //     }
-        // }
-
         return response()->json([
             'message' => 'Chat with messages deleted successfully.'
         ]);
-    }
-
-    /**
-     * Download chat export.
-     */
-    public function downloadChat(AiChat $chat): JsonResponse
-    {
-        $this->authorize('view', $chat);
-        $messages = $chat->messages()
-            ->select('role', 'content', 'created_at')
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        $exportData = [
-            'chat_info' => [
-                'session_name' => $chat->session_name,
-                'model' => $chat->ai_model_used,
-                'persona' => $chat->persona?->name,
-                'total_cost' => $chat->total_cost_usd,
-                'total_tokens' => $chat->total_input_tokens + $chat->total_output_tokens,
-                'created_at' => $chat->created_at,
-                'exported_at' => now(),
-            ],
-            'messages' => $messages,
-            'stats' => [
-                'total_messages' => $messages->count(),
-                'user_messages' => $messages->where('role', 'user')->count(),
-                'assistant_messages' => $messages->where('role', 'assistant')->count(),
-                'system_messages' => $messages->where('role', 'system')->count(),
-            ]
-        ];
-
-        return response()->json($exportData);
     }
 
     /**

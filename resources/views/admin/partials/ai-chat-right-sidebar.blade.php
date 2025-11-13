@@ -574,15 +574,6 @@
                 }
             });
 
-            // Export chat
-            document.getElementById('export-chat-btn').addEventListener('click', function() {
-                if (currentChatId) {
-                    exportChat(currentChatId);
-                } else {
-                    toastr.warning('Please select a chat to export');
-                }
-            });
-
             // Add this to the existing JavaScript section, after the other event listeners
             let currentPersonaId = null;
 
@@ -997,79 +988,6 @@
                     console.error('Error clearing chat:', error);
                     toastr.error('Network error clearing chat');
                 }
-            }
-
-            async function exportChat(chatId) {
-                try {
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute('content');
-
-                    // Show loading state
-                    const exportBtn = document.getElementById('export-chat-btn');
-                    const originalHtml = exportBtn.innerHTML;
-                    exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    exportBtn.disabled = true;
-
-                    const response = await fetch(`/admin/ai-chats/${chatId}/export`, {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        }
-                    });
-
-                    if (response.ok) {
-                        // Check if response is JSON or file
-                        const contentType = response.headers.get('content-type');
-
-                        if (contentType && contentType.includes('application/json')) {
-                            // JSON export
-                            const data = await response.json();
-                            downloadJsonFile(data, `chat-${chatId}-export.json`);
-                        } else {
-                            // File download
-                            const blob = await response.blob();
-                            const filename = response.headers.get('content-disposition')
-                                ?.split('filename=')[1]?.replace(/"/g, '') ||
-                                `chat-${chatId}-export.txt`;
-                            downloadBlob(blob, filename);
-                        }
-
-                        toastr.success('Chat exported successfully!');
-                    } else {
-                        const errorData = await response.json();
-                        toastr.error(errorData.message || 'Failed to export chat');
-                    }
-                } catch (error) {
-                    console.error('Error exporting chat:', error);
-                    toastr.error('Network error exporting chat');
-                } finally {
-                    // Restore button state
-                    const exportBtn = document.getElementById('export-chat-btn');
-                    exportBtn.innerHTML = originalHtml;
-                    exportBtn.disabled = false;
-                }
-            }
-
-            function downloadJsonFile(data, filename) {
-                const blob = new Blob([JSON.stringify(data, null, 2)], {
-                    type: 'application/json'
-                });
-                downloadBlob(blob, filename);
-            }
-
-            function downloadBlob(blob, filename) {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                if (a?.style?.display) {
-                    a.style.display = 'none';
-                }
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
             }
 
             function displayChatMessages(messages) {

@@ -90,7 +90,6 @@ Route::group([
     Route::get('ai-chats/{chat}/messages', [AiChatController::class, 'retrieveMessages'])->name('ai-chats.messages');
     Route::post('ai-chats/{chat}/send-message', [AiChatController::class, 'dispatchMessage'])->name('ai-chats.send');
     Route::delete('ai-chats/{chat}/clear', [AiChatController::class, 'purgeChat'])->name('ai-chats.clear');
-    Route::get('ai-chats/{chat}/export', [AiChatController::class, 'downloadChat'])->name('ai-chats.export');
     Route::put('ai-chats/{chat}/change-persona', [AiChatController::class, 'switchPersona'])->name('ai-chats.change-persona');
     
     Route::post('user-locale', function () {
