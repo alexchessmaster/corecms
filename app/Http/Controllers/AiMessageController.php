@@ -200,45 +200,4 @@ class AiMessageController extends Controller
         ]);
     }
 
-    /**
-     * Export messages from a chat.
-     */
-    public function export(AiChat $aiChat, Request $request)
-    {
-        $format = $request->get('format', 'json'); // json, txt, csv
-        
-        $messages = $aiChat->messages()
-            ->orderBy('created_at', 'asc')
-            ->get(['role', 'content', 'created_at']);
-
-        switch ($format) {
-            case 'txt':
-                $content = $messages->map(function ($message) {
-                    return "[{$message->created_at}] {$message->role}: {$message->content}";
-                })->implode("\n\n");
-                
-                return response($content)
-                    ->header('Content-Type', 'text/plain')
-                    ->header('Content-Disposition', 'attachment; filename="chat_messages.txt"');
-
-            case 'csv':
-                $headers = ['Role', 'Content', 'Created At'];
-                $data = $messages->map(function ($message) {
-                    return [$message->role, $message->content, $message->created_at];
-                })->prepend($headers);
-
-                $csv = $data->map(function ($row) {
-                    return implode(',', array_map(function ($field) {
-                        return '"' . str_replace('"', '""', $field) . '"';
-                    }, $row));
-                })->implode("\n");
-
-                return response($csv)
-                    ->header('Content-Type', 'text/csv')
-                    ->header('Content-Disposition', 'attachment; filename="chat_messages.csv"');
-
-            default:
-                return response()->json($messages);
-        }
-    }
 }

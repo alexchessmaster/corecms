@@ -117,9 +117,6 @@
                             <button id="clear-chat-btn" class="btn btn-outline-danger btn-xs">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
-                            <button id="export-chat-btn" class="btn btn-outline-info btn-xs" style="display: none">
-                                <i class="fas fa-download"></i> Export
-                            </button>
                         </div>
                     </div>
                 </div>

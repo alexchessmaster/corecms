@@ -17,7 +17,7 @@ class AiChatController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(protected AiServiceInterface $aiService, protected TokenCostCalculator $tokenCalculator)
+    public function __construct(private AiServiceInterface $aiService, private TokenCostCalculator $tokenCalculator)
     {
         $this->aiService = $aiService;
         $this->tokenCalculator = $tokenCalculator;
