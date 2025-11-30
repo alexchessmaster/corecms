@@ -32,6 +32,35 @@
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
+        <style>
+            /* Ensure text wraps and doesn't push columns off-screen */
+            #table td {
+                word-wrap: break-word;
+                word-break: break-word;
+                white-space: normal !important;
+            }
+            
+            /* Set max-width for text columns to prevent overflow */
+            #table td:nth-child(1),
+            #table td:nth-child(2) {
+                max-width: 300px;
+            }
+            
+            /* Keep actions column visible and compact */
+            #table td:nth-child(3) {
+                min-width: 100px;
+                white-space: nowrap;
+            }
+            
+            /* Mobile optimization */
+            @media (max-width: 768px) {
+                #table td:nth-child(1),
+                #table td:nth-child(2) {
+                    max-width: 150px;
+                }
+            }
+        </style>
+
         <script>
             $(document).ready(function() {
                 $('#table').DataTable({
@@ -42,18 +71,28 @@
                     ajax: "{{ route('admin.translation-texts.index') }}", // Ajax route to fetch data
                     columns: [{
                             data: 'key',
-                            name: 'key'
+                            name: 'key',
+                            width: '30%'
                         },
                         {
                             data: 'text',
-                            name: 'text'
+                            name: 'text',
+                            width: '50%',
+                            render: function(data, type, row) {
+                                // Truncate very long text for display
+                                if (type === 'display' && data && data.length > 100) {
+                                    return '<span title="' + data + '">' + data.substr(0, 100) + '...</span>';
+                                }
+                                return data;
+                            }
                         },
                         {
                             data: 'actions',
                             name: 'actions',
                             orderable: false,
                             searchable: false,
-                            className: 'text-center'
+                            className: 'text-center',
+                            width: '20%'
                         }
                     ],
                     language: {
@@ -66,8 +105,11 @@
                         }
                     },
                     pagingType: "full_numbers",
-                    lengthMenu: [10, 25, 50, 100, 200, 1000],
+                    lengthMenu: [[25, 100, 500, -1], [25, 100, 500, "All"]],
                     pageLength: 25,
+                    columnDefs: [
+                        { targets: [0, 1], className: 'text-break' }
+                    ]
                 });
             });
         </script>

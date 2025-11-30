@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
+use App\Http\Middleware\LanguageApiMiddleware;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\ProductController;
@@ -16,7 +17,9 @@ use App\Http\Controllers\Api\BookAuthorController;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
 use App\Http\Controllers\Api\FieldWidgetController;
+use App\Http\Controllers\Api\FormContactUsController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
+use App\Http\Controllers\Api\FormNewsletterController;
 use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
 use App\Http\Controllers\Api\BookingAppointmentController;
@@ -28,6 +31,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Used in the frontend
 Route::middleware('throttle:240,1')->group(function () {
     Route::get('/fetch-menu', [ContentController::class, 'fetchMenu']);
     Route::get('/fetch-languages', [ContentController::class, 'fetchLanguages']);
@@ -44,6 +48,7 @@ Route::middleware('throttle:240,1')->group(function () {
 
 Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
 
+// Used in admin-panel
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/pages', PageController::class);
     Route::apiResource('/articles', ArticleController::class);
@@ -61,26 +66,41 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // custom routes:
-Route::post('contact-us', [ContactController::class, 'submitContactForm'])->middleware('throttle:5,1');
-
-// Booking System Routes
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::prefix('booking')->group(function () {
-        // Admin routes
-        Route::middleware(BookingAdminMiddleware::class)->group(function () {
-            Route::get('/reservations', [BookingReservationController::class, 'index']);
-            Route::get('/reservations/today', [BookingReservationController::class, 'today']);
-            Route::get('/reservations/week', [BookingReservationController::class, 'week']);
-            Route::get('/reservations/month', [BookingReservationController::class, 'month']);
-        });
-        // User routes
-        Route::get('/appointments', [BookingAppointmentController::class, 'index']);
-        Route::post('/book-appointment', [BookingAppointmentController::class, 'store']);
-        Route::patch('/appointments/{id}/cancel', [BookingAppointmentController::class, 'cancel']);
+Route::prefix('contact-us')->middleware([LanguageApiMiddleware::class, 'throttle:2,1'])->group(function () {
+    // Contact us - Public
+    Route::post('', [FormContactUsController::class, 'store']);
+    // Admin only
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('', [FormContactUsController::class, 'index']);
+        Route::get('/statistics', [FormContactUsController::class, 'statistics']);
+        Route::get('/{uuid}', [FormContactUsController::class, 'show']);
+        Route::patch('/{uuid}/status', [FormContactUsController::class, 'updateStatus']);
+        Route::delete('/{uuid}', [FormContactUsController::class, 'destroy']);
     });
 });
-// Public booking routes (no auth required)
+Route::prefix('newsletter')->middleware([LanguageApiMiddleware::class, 'throttle:2,1'])->group(function () {
+    // Newsletter - Public
+    Route::post('/subscribe', [FormNewsletterController::class, 'store']);
+    Route::get('/verify/{token}', [FormNewsletterController::class, 'verify']);
+    Route::post('/unsubscribe/{email}', [FormNewsletterController::class, 'unsubscribe']);
+    Route::get('/status/{email}', [FormNewsletterController::class, 'status']);
+});
+
+
+// Booking System Routes
 Route::prefix('booking')->group(function () {
-    Route::get('/availability', [BookingAvailabilityController::class, 'index']);
-    Route::get('/availability/date/{date}', [BookingAvailabilityController::class, 'byDate']);
+    // Admin routes (require authentication)
+    Route::middleware(['auth:sanctum', BookingAdminMiddleware::class])->group(function () {
+        Route::get('/reservations', [BookingReservationController::class, 'index']);
+        Route::get('/reservations/today', [BookingReservationController::class, 'today']);
+        Route::get('/reservations/week', [BookingReservationController::class, 'week']);
+        Route::get('/reservations/month', [BookingReservationController::class, 'month']);
+    });
+    
+    // Public booking routes (no auth required)
+    Route::get('/availability', [BookingAvailabilityController::class, 'checkAvailability']); // GET /api/booking/availability?date=YYYY-MM-DD
+    Route::get('/appointments', [BookingAppointmentController::class, 'index']); // GET /api/booking/appointments?email=
+    Route::post('/reservations', [BookingReservationController::class, 'bookAppointment']); // POST /api/booking/reservations
+    // Future endpoints (not yet implemented in controller):
+    // Route::patch('/appointments/{id}/cancel', [BookingAppointmentController::class, 'cancel']);
 });
