@@ -17,11 +17,17 @@ class BookingReservation extends Model
         'booking_time_slot_id',
         'status',
         'expires_at',
-        'user_email'
+        'name',
+        'email',
+        'mobile_number',
+        'age',
+        'service',
+        'comments'
     ];
 
     protected $casts = [
-        'expires_at' => 'datetime'
+        'expires_at' => 'datetime',
+        'age' => 'integer'
     ];
 
     public function user()
@@ -48,5 +54,13 @@ class BookingReservation extends Model
     {
         return $query->where('status', 'pending')
                     ->where('expires_at', '<', Carbon::now());
+    }
+
+    /**
+     * Check if this is a guest booking (no registered user)
+     */
+    public function isGuestBooking()
+    {
+        return is_null($this->user_id);
     }
 }

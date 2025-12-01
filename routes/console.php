@@ -3,13 +3,12 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
+use App\Jobs\GenerateTimeSlotsFromTemplatesJob;
 
-// Artisan::command('inspire', function () {
-//     $this->comment(Inspiring::quote());
-// })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('redirects:remove-duplicate')->everyMinute()->withoutOverlapping();
 Schedule::command('redirects:unchain')->everyMinute()->withoutOverlapping();
 Schedule::command('sitemap:generate')->daily();
 Schedule::command('backup:database')->daily();
 Schedule::command('booking:release-expired')->everyMinute();
+Schedule::job(new GenerateTimeSlotsFromTemplatesJob())->daily();

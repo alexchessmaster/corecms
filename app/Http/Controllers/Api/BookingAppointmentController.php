@@ -9,24 +9,32 @@ use App\Http\Controllers\Controller;
 class BookingAppointmentController extends Controller
 {
     /**
-     * List appointments (reservations) for a user identified by email.
+    * List appointments (reservations) for a guest identified by email or mobile number.
      *
      * Endpoint: GET /api/booking/appointments?email=user@example.com
+     *           GET /api/booking/appointments?mobile_number=1234567890
      * Auth: Public - No authentication required.
      *
      * Query Parameters:
-     * - email (string, required): The user's email address. Used to filter reservations via related user model.
+     * - email (string, optional): The guest's email address
+     * - mobile_number (string, optional): The guest's mobile number
+     * - At least one must be provided
      *
      * Behavior:
-     * - If `email` is missing, returns 400 with { "error": "Email is required" }.
-     * - Eager loads associated time slot via `with('timeSlot')`.
+     * - Searches reservations by email or mobile_number directly (no user table join needed)
+     * - Eager loads associated time slot
+     * - Returns all matching reservations regardless of status
      *
      * Success Response (200): Array of reservation objects
      * [
      *   {
      *     "id": int,
-     *     "user_id": int,
-     *     "time_slot_id": int,
+     *     "user_id": int|null,
+     *     "booking_time_slot_id": int,
+     *     "name": string,
+     *     "email": string,
+     *     "mobile_number": string,
+     *     "service": string,
      *     "status": string,
      *     "created_at": "ISO8601",
      *     "updated_at": "ISO8601",
@@ -34,19 +42,37 @@ class BookingAppointmentController extends Controller
      *   }
      * ]
      *
-     * Error Response (400): { "error": "Email is required" }
+    * When to use:
+    * - Guests want to review their existing bookings using email or phone.
+    *
+    * How to use:
+    * - Request: GET /api/booking/appointments?email=user@example.com
+    * - Request: GET /api/booking/appointments?mobile_number=+4512345678
+    * - Example curl:
+    *   curl -X GET "https://<host>/api/booking/appointments?email=user@example.com"
+    *
+     * Error Response (400): { "error": "Email or mobile number is required" }
      */
     public function index(Request $request)
     {
         $email = $request->query('email');
+        $mobileNumber = $request->query('mobile_number');
 
-        if (!$email) {
-            return response()->json(['error' => 'Email is required'], 400);
+        if (!$email && !$mobileNumber) {
+            return response()->json(['error' => 'Email or mobile number is required'], 400);
         }
 
-        $appointments = BookingReservation::whereHas('user', function ($query) use ($email) {
+        $query = BookingReservation::query();
+
+        if ($email) {
             $query->where('email', $email);
-        })->with('timeSlot')->get();
+        }
+
+        if ($mobileNumber) {
+            $query->orWhere('mobile_number', $mobileNumber);
+        }
+
+        $appointments = $query->with('timeSlot')->get();
 
         return response()->json($appointments);
     }

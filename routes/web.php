@@ -27,6 +27,7 @@ use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\AiPersonaController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
+use App\Http\Controllers\BookingSlotTemplateController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\CommentableController;
@@ -76,6 +77,9 @@ Route::group([
     Route::resource('url-logs', UrlLogController::class);
     Route::resource('translation-texts', TranslationTextController::class);
     Route::resource('languages', LanguageController::class);
+    
+    Route::resource('booking-slot-templates', BookingSlotTemplateController::class);
+    Route::post('booking-slot-templates-toggle', [BookingSlotTemplateController::class, 'toggleActive'])->name('booking-slot-templates.toggle');
     
     // AI Personas management routes
     Route::resource('ai-personas', AiPersonaController::class);

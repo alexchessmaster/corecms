@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\WidgetFieldValuesController;
 use App\Http\Controllers\Api\BookingAppointmentController;
 use App\Http\Controllers\Api\BookingReservationController;
 use App\Http\Controllers\Api\BookingAvailabilityController;
+use App\Http\Controllers\Api\BookingSlotTemplateController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
@@ -66,7 +67,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // custom routes:
-Route::prefix('contact-us')->middleware([LanguageApiMiddleware::class, 'throttle:2,1'])->group(function () {
+Route::prefix('contact-us')->middleware([LanguageApiMiddleware::class, 'throttle:10,1'])->group(function () {
     // Contact us - Public
     Route::post('', [FormContactUsController::class, 'store']);
     // Admin only
@@ -78,7 +79,7 @@ Route::prefix('contact-us')->middleware([LanguageApiMiddleware::class, 'throttle
         Route::delete('/{uuid}', [FormContactUsController::class, 'destroy']);
     });
 });
-Route::prefix('newsletter')->middleware([LanguageApiMiddleware::class, 'throttle:2,1'])->group(function () {
+Route::prefix('newsletter')->middleware([LanguageApiMiddleware::class, 'throttle:10,1'])->group(function () {
     // Newsletter - Public
     Route::post('/subscribe', [FormNewsletterController::class, 'store']);
     Route::get('/verify/{token}', [FormNewsletterController::class, 'verify']);
@@ -88,13 +89,17 @@ Route::prefix('newsletter')->middleware([LanguageApiMiddleware::class, 'throttle
 
 
 // Booking System Routes
-Route::prefix('booking')->group(function () {
+Route::prefix('booking')->middleware([LanguageApiMiddleware::class, 'throttle:100,1'])->group(function () {
     // Admin routes (require authentication)
     Route::middleware(['auth:sanctum', BookingAdminMiddleware::class])->group(function () {
         Route::get('/reservations', [BookingReservationController::class, 'index']);
         Route::get('/reservations/today', [BookingReservationController::class, 'today']);
         Route::get('/reservations/week', [BookingReservationController::class, 'week']);
         Route::get('/reservations/month', [BookingReservationController::class, 'month']);
+
+        // Slot Template management (CRUD + toggle)
+        Route::apiResource('/templates', BookingSlotTemplateController::class);
+        Route::post('/templates/{id}/toggle', [BookingSlotTemplateController::class, 'toggleActive']);
     });
     
     // Public booking routes (no auth required)
