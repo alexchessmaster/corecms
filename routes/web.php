@@ -28,6 +28,8 @@ use App\Http\Controllers\AiPersonaController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
 use App\Http\Controllers\BookingSlotTemplateController;
+use App\Http\Controllers\BookingTimeSlotController;
+use App\Http\Controllers\BookingReservationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\CommentableController;
@@ -78,8 +80,16 @@ Route::group([
     Route::resource('translation-texts', TranslationTextController::class);
     Route::resource('languages', LanguageController::class);
     
+    // Booking
     Route::resource('booking-slot-templates', BookingSlotTemplateController::class);
     Route::post('booking-slot-templates-toggle', [BookingSlotTemplateController::class, 'toggleActive'])->name('booking-slot-templates.toggle');
+    Route::resource('booking-time-slots', BookingTimeSlotController::class);
+    Route::post('booking-time-slots/{id}/toggle', [BookingTimeSlotController::class, 'toggleActive'])->name('booking-time-slots.toggle');
+    Route::post('booking-time-slots/{id}/toggle-disable', [BookingTimeSlotController::class, 'toggleManualDisable'])->name('booking-time-slots.toggle-disable');
+    Route::get('booking-reservations/calendar', [BookingReservationController::class, 'calendar'])->name('booking-reservations.calendar');
+    Route::get('booking-reservations/{id}/details', [BookingReservationController::class, 'details'])->name('booking-reservations.details');
+    Route::resource('booking-reservations', BookingReservationController::class);
+    
     
     // AI Personas management routes
     Route::resource('ai-personas', AiPersonaController::class);

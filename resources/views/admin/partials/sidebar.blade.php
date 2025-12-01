@@ -64,10 +64,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
-            <!-- Content Management -->
-
             @can('view menus')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/menus" class="nav-link">
                         <i class="nav-icon fas fa-list-ul"></i>
@@ -77,8 +75,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             @can('view pages')
+                <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/pages" class="nav-link">
                         <i class="nav-icon fas fa-file"></i>
@@ -88,8 +86,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             @can('view articles')
+                <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/articles" class="nav-link">
                         <i class="nav-icon fas fa-file-alt"></i>
@@ -119,8 +117,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             @can('view product categories')
+                <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/product-categories" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
@@ -160,8 +158,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px rgb(55, 67, 71) solid"></div>
             @can('view book genres')
+                <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/book_genres" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
@@ -191,8 +189,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
             @can('view commentables')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/comments" class="nav-link">
                         <i class="nav-icon fas fa-comments"></i>
@@ -202,8 +200,47 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
+            @can('view booking reservations')
+                <div style="border: 1px gray solid"></div>
+                <li class="nav-item">
+                    <a href="/admin/booking-reservations/calendar?view=today_tomorrow" class="nav-link">
+                        <i class="nav-icon far fa-calendar"></i>
+                        <p>
+                            Booking calendar
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/booking-reservations" class="nav-link">
+                        <i class="nav-icon far fa-calendar"></i>
+                        <p>
+                            Booking reservation
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view booking time slots')
+                <li class="nav-item">
+                    <a href="/admin/booking-time-slots" class="nav-link">
+                        <i class="nav-icon far fa-calendar"></i>
+                        <p>
+                            Booking time slots
+                        </p>
+                    </a>
+                </li>
+            @endcan
+            @can('view booking slot templates')
+                <li class="nav-item">
+                    <a href="/admin/booking-slot-templates" class="nav-link">
+                        <i class="nav-icon far fa-calendar"></i>
+                        <p>
+                            Booking slot templates
+                        </p>
+                    </a>
+                </li>
+            @endcan
             @can('view redirects')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/redirects" class="nav-link">
                         <i class="nav-icon fas fa-directions"></i>
@@ -213,9 +250,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
-            <!-- Design and Customization -->
             @can('view widgets')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/widgets" class="nav-link">
                         <i class="nav-icon fas fa-th-large"></i>
@@ -235,9 +271,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
-            <!-- Localization -->
             @can('view translation texts')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/translation-texts" class="nav-link">
                         <i class="nav-icon fas fa-globe"></i>
@@ -247,9 +282,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
-            <!-- Site Administration -->
             @can('view users')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/users" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
@@ -299,9 +333,8 @@
                     </a>
                 </li>
             @endcan
-            <div style="border: 1px gray solid"></div>
-            <!-- File Management -->
             @can('view uploads')
+                <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/upload" class="nav-link">
                         <i class="nav-icon fas fa-upload"></i>

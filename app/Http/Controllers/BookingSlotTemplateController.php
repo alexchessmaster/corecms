@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\BookingSlotTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookingSlotTemplateController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of slot templates.
      *
@@ -26,6 +28,8 @@ class BookingSlotTemplateController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', BookingSlotTemplate::class);
+        
         $templates = BookingSlotTemplate::orderBy('created_at', 'desc')->get();
         return view('admin.booking-slot-template.index', compact('templates'));
     }
@@ -73,11 +77,15 @@ class BookingSlotTemplateController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', BookingSlotTemplate::class);
+        
         return view('admin.booking-slot-template.create');
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', BookingSlotTemplate::class);
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'days_of_week' => 'required|string',
@@ -115,6 +123,8 @@ class BookingSlotTemplateController extends Controller
     public function show($id)
     {
         $template = BookingSlotTemplate::findOrFail($id);
+        $this->authorize('view', $template);
+        
         return view('admin.booking-slot-template.show', compact('template'));
     }
 
@@ -144,12 +154,16 @@ class BookingSlotTemplateController extends Controller
     public function edit($id)
     {
         $template = BookingSlotTemplate::findOrFail($id);
+        $this->authorize('view', $template);
+        
         return view('admin.booking-slot-template.edit', compact('template'));
     }
 
     public function update(Request $request, $id)
     {
         $template = BookingSlotTemplate::findOrFail($id);
+        $this->authorize('update', $template);
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'days_of_week' => 'required|string',
@@ -184,6 +198,8 @@ class BookingSlotTemplateController extends Controller
     public function destroy($id)
     {
         $template = BookingSlotTemplate::findOrFail($id);
+        $this->authorize('delete', $template);
+        
         $template->delete();
         return redirect()->route('admin.booking-slot-templates.index')->with('success', 'Template deleted successfully.');
     }
@@ -205,6 +221,8 @@ class BookingSlotTemplateController extends Controller
     public function toggleActive($id)
     {
         $template = BookingSlotTemplate::findOrFail($id);
+        $this->authorize('update', $template);
+        
         $template->is_active = !$template->is_active;
         $template->save();
         return redirect()->route('admin.booking-slot-templates.index')->with('success', 'Template status updated.');
