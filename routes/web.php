@@ -79,6 +79,7 @@ Route::group([
     Route::resource('url-logs', UrlLogController::class);
     Route::resource('translation-texts', TranslationTextController::class);
     Route::resource('languages', LanguageController::class);
+    Route::post('user-locale', [LanguageController::class, 'setUserLocale'])->name('user-locale');
     
     // Booking
     Route::resource('booking-slot-templates', BookingSlotTemplateController::class);
@@ -90,7 +91,6 @@ Route::group([
     Route::get('booking-reservations/{id}/details', [BookingReservationController::class, 'details'])->name('booking-reservations.details');
     Route::resource('booking-reservations', BookingReservationController::class);
     
-    
     // AI Personas management routes
     Route::resource('ai-personas', AiPersonaController::class);
     Route::get('my-personas', [AiPersonaController::class, 'myPersonas'])->name('ai-personas.my');
@@ -98,20 +98,12 @@ Route::group([
     Route::post('ai-personas/{aiPersona}/clone', [AiPersonaController::class, 'duplicate'])->name('ai-personas.clone');
     Route::get('popular-personas', [AiPersonaController::class, 'popular'])->name('ai-personas.popular');
     Route::get('search-personas', [AiPersonaController::class, 'search'])->name('ai-personas.search');
-
     // AI Chat session routes
     Route::resource('ai-chats', AiChatController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::get('ai-chats/{chat}/messages', [AiChatController::class, 'retrieveMessages'])->name('ai-chats.messages');
     Route::post('ai-chats/{chat}/send-message', [AiChatController::class, 'dispatchMessage'])->name('ai-chats.send');
     Route::delete('ai-chats/{chat}/clear', [AiChatController::class, 'purgeChat'])->name('ai-chats.clear');
     Route::put('ai-chats/{chat}/change-persona', [AiChatController::class, 'switchPersona'])->name('ai-chats.change-persona');
-    
-    Route::post('user-locale', function () {
-        session(['lang' => request()->lang]);
-        App::setLocale(request()->lang);
-
-        return redirect()->back();
-    })->name('user-locale');
 });
 
 Route::get('/dashboard', function () {

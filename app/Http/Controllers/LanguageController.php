@@ -106,4 +106,12 @@ class LanguageController extends Controller
         $language->delete();
         return redirect()->route('admin.languages.index')->with('success', 'Language deleted successfully.');
     }
+
+    public function setUserLocale()
+    {
+        session(['lang' => request()->lang]);
+        App::setLocale(request()->lang);
+
+        return redirect()->back();
+    }
 }

@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
-    <loc>https://cemel.dk/en/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cemel.dk/en/" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://cemel.dk/fr/" />
-    <lastmod>2025-11-06T00:21:33+01:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>https://cemel.dk/en/services</loc>
+    <loc>https://cemel.dk/da/services</loc>
     <xhtml:link rel="alternate" hreflang="da" href="https://cemel.dk/da/services" />
     <xhtml:link rel="alternate" hreflang="en" href="https://cemel.dk/en/services" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://cemel.dk/fr/services" />
@@ -18,7 +10,7 @@
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://cemel.dk/en/specialists</loc>
+    <loc>https://cemel.dk/da/specialists</loc>
     <xhtml:link rel="alternate" hreflang="da" href="https://cemel.dk/da/specialists" />
     <xhtml:link rel="alternate" hreflang="en" href="https://cemel.dk/en/specialists" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://cemel.dk/fr/specialists" />
@@ -27,7 +19,7 @@
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://cemel.dk/en/about</loc>
+    <loc>https://cemel.dk/da/about</loc>
     <xhtml:link rel="alternate" hreflang="da" href="https://cemel.dk/da/about" />
     <xhtml:link rel="alternate" hreflang="en" href="https://cemel.dk/en/about" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://cemel.dk/fr/about" />
@@ -36,7 +28,7 @@
     <priority>0.8</priority>
             </url>
     <url>
-    <loc>https://cemel.dk/en/contact</loc>
+    <loc>https://cemel.dk/da/contact</loc>
     <xhtml:link rel="alternate" hreflang="da" href="https://cemel.dk/da/contact" />
     <xhtml:link rel="alternate" hreflang="en" href="https://cemel.dk/en/contact" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://cemel.dk/fr/contact" />
