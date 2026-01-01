@@ -13,7 +13,7 @@ class ArticlePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view articles');
+        return $user->can('view articles') || $user->can('view own articles');
     }
 
     /**

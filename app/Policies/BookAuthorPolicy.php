@@ -13,7 +13,7 @@ class BookAuthorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view book authors');
+        return $user->can('view book authors') || $user->can('view own book authors');
     }
 
     /**

@@ -44,7 +44,7 @@ class ProductCategoryController extends Controller
 
 
         if ($request->ajax()) {
-            $data = ProductCategory::with('children')->select(['id', 'name', 'slug', 'parent_id']);
+            $data = ProductCategory::visibleTo(auth()->user())->with('children')->select(['id', 'name', 'slug', 'parent_id']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

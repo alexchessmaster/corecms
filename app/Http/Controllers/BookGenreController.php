@@ -44,7 +44,7 @@ class BookGenreController extends Controller
 
 
         if ($request->ajax()) {
-            $data = BookGenre::with('children')->select(['id', 'name', 'parent_id']);
+            $data = BookGenre::visibleTo(auth()->user())->with('children')->select(['id', 'name', 'parent_id']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

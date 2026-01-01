@@ -13,7 +13,7 @@ class ProductAuthorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view product authors');
+        return $user->can('view product authors') || $user->can('view own product authors');
     }
 
     /**

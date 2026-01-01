@@ -13,7 +13,7 @@ class TagPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view tags');
+        return $user->can('view tags') || $user->can('view own tags');
     }
 
     /**

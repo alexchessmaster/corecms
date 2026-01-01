@@ -18,7 +18,7 @@ class ProductTagController extends Controller
         $this->authorize('viewAny', ProductTag::class);
 
         if ($request->ajax()) {
-            $data = ProductTag::select(['id', 'name', 'slug']);
+            $data = ProductTag::visibleTo(auth()->user())->select(['id', 'name', 'slug']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

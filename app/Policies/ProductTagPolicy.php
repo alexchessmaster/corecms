@@ -13,7 +13,7 @@ class ProductTagPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view product tags');
+        return $user->can('view product tags') || $user->can('view own product tags');
     }
 
     /**

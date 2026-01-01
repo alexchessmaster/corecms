@@ -13,7 +13,7 @@ class ProductCategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view product categories');
+        return $user->can('view product categories') || $user->can('view own product categories');
     }
 
     /**

@@ -20,4 +20,15 @@ class ProductTag extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view product tags')) {
+            return $query;
+        }
+
+        if($user->can('view own product tags')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
 }

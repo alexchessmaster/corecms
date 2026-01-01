@@ -23,7 +23,7 @@ class PageController extends Controller
         $this->authorize('viewAny', Page::class);
 
         if ($request->ajax()) {
-            $pages = Page::select(['id', 'title', 'slug', 'status']);
+            $pages = Page::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'status']);
 
             return DataTables::of($pages)
                 ->editColumn('title', function ($page) {

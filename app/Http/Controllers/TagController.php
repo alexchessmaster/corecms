@@ -16,7 +16,7 @@ class TagController extends Controller
         $this->authorize('viewAny', Tag::class);
 
         if ($request->ajax()) {
-            $data = Tag::select(['id', 'name']);
+            $data = Tag::visibleTo(auth()->user())->select(['id', 'name']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

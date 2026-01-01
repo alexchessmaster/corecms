@@ -13,7 +13,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view categories');
+        return $user->can('view categories') || $user->can('view categories');
     }
 
     /**

@@ -21,7 +21,7 @@ class BookController extends Controller
         $this->authorize('viewAny', Book::class);
 
         if ($request->ajax()) {
-            $books = Book::select(['id', 'title', 'slug', 'book_genre_id', 'status'])->with(['bookGenre']);
+            $books = Book::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'book_genre_id', 'status'])->with(['bookGenre']);
 
             return DataTables::of($books)
                 ->editColumn('title', function ($book) {

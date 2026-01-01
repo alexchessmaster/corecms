@@ -40,6 +40,17 @@ class Category extends Model
         ]);
     }
 
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view category')) {
+            return $query;
+        }
+
+        if($user->can('view own category')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
+
     public function widgetables(): MorphMany
     {
         return $this->morphMany(Widgetable::class, 'widgetable')->orderBy('position');

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('key');
             $table->string('value')->nullable();
+            $table->boolean('is_translatable')->default(false);
             $table->text('description')->nullable();
             $table->timestamps();
         });

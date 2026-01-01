@@ -13,7 +13,7 @@ class BookGenrePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view book genres');
+        return $user->can('view book genres') || $user->can('view book genres');
     }
 
     /**

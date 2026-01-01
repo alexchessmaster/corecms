@@ -25,4 +25,15 @@ class ProductAuthor extends Model
     {
         return $this->hasMany(Product::class, 'author_id', 'id');
     }
+
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view product authors')) {
+            return $query;
+        }
+
+        if($user->can('view own product authors')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
 }

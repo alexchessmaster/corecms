@@ -23,7 +23,7 @@ class BookAuthorController extends Controller
         $this->authorize('viewAny', BookAuthor::class);
 
         if ($request->ajax() || false) {
-            $data = BookAuthor::select(['id', 'name', 'date_of_birth', 'date_of_death', 'nationality']);
+            $data = BookAuthor::visibleTo(auth()->user())->select(['id', 'name', 'date_of_birth', 'date_of_death', 'nationality']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

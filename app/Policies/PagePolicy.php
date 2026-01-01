@@ -13,7 +13,7 @@ class PagePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view pages');
+        return $user->can('view pages') || $user->can('view own pages');
     }
 
     /**

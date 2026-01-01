@@ -43,6 +43,17 @@ class BookGenre extends Model
         ]);
     }
 
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view book genres')) {
+            return $query;
+        }
+
+        if($user->can('view own book genres')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
+
     public function widgetables(): MorphMany
     {
         return $this->morphMany(Widgetable::class, 'widgetable')->orderBy('position');

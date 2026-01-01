@@ -64,7 +64,7 @@
                     </a>
                 </li>
             @endcan
-            @can('view menus')
+            @if(auth()->user()->can('view menus') || auth()->user()->can('view own menus'))
                 <div style="border: 1px gray solid"></div>
                 <li class="nav-item">
                     <a href="/admin/menus" class="nav-link">
@@ -74,8 +74,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view pages')
+            @endif  
+            @if(auth()->user()->can('view pages') || auth()->user()->can('view own pages'))
                 <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/pages" class="nav-link">
@@ -85,8 +85,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view articles')
+            @endif
+            @if(auth()->user()->can('view articles') || auth()->user()->can('view own articles'))
                 <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/articles" class="nav-link">
@@ -96,8 +96,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view categories')
+            @endif
+            @if(auth()->user()->can('view categories') || auth()->user()->can('view own categories'))
                 <li class="nav-item">
                     <a href="/admin/categories" class="nav-link">
                         <i class="nav-icon fas fa-folder"></i>
@@ -106,8 +106,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view tags')
+            @endif
+            @if(auth()->user()->can('view tags') || auth()->user()->can('view own tags'))
                 <li class="nav-item">
                     <a href="/admin/tags" class="nav-link">
                         <i class="nav-icon fas fa-tag"></i>
@@ -116,8 +116,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view product categories')
+            @endif
+            @if(auth()->user()->can('view product categories') || auth()->user()->can('view own product categories'))
                 <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/product-categories" class="nav-link">
@@ -127,8 +127,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view product tags')
+            @endif
+            @if(auth()->user()->can('view product tags') || auth()->user()->can('view own product tags'))
                 <li class="nav-item">
                     <a href="/admin/product-tags" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
@@ -137,8 +137,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view products')
+            @endif
+            @if(auth()->user()->can('view products') || auth()->user()->can('view own products'))
                 <li class="nav-item">
                     <a href="/admin/products" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
@@ -147,8 +147,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view product authors')
+            @endif
+            @if(auth()->user()->can('view product authors') || auth()->user()->can('view own product authors'))
                 <li class="nav-item">
                     <a href="/admin/product-authors" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
@@ -157,8 +157,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view book genres')
+            @endif
+            @if(auth()->user()->can('view book genres') || auth()->user()->can('view own book genres'))
                 <div style="border: 1px rgb(55, 67, 71) solid"></div>
                 <li class="nav-item">
                     <a href="/admin/book_genres" class="nav-link">
@@ -168,8 +168,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view books')
+            @endif
+            @if(auth()->user()->can('view books') || auth()->user()->can('view own books'))
                 <li class="nav-item">
                     <a href="/admin/books" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
@@ -178,8 +178,8 @@
                         </p>
                     </a>
                 </li>
-            @endcan
-            @can('view book authors')
+            @endif
+            @if(auth()->user()->can('view book authors') || auth()->user()->can('view own book authors'))
                 <li class="nav-item">
                     <a href="/admin/book-authors" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
@@ -188,7 +188,7 @@
                         </p>
                     </a>
                 </li>
-            @endcan
+            @endif
             @can('view commentables')
                 <div style="border: 1px gray solid"></div>
                 <li class="nav-item">

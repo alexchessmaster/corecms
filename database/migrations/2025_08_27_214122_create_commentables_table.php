@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->smallInteger('stars')->default(0);
+            $table->unsignedBigInteger('total_votes')->default(0);
             $table->enum('status', [
                 'pending',
                 'approved',

@@ -19,7 +19,7 @@ class ProductAuthorController extends Controller
         $this->authorize('viewAny', ProductAuthor::class);
 
         if ($request->ajax() || false) {
-            $data = ProductAuthor::select(['id', 'name', 'date_of_birth', 'date_of_death', 'nationality']);
+            $data = ProductAuthor::visibleTo(auth()->user())->select(['id', 'name', 'date_of_birth', 'date_of_death', 'nationality']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

@@ -22,7 +22,7 @@ class ProductController extends Controller
         $this->authorize('viewAny', Product::class);
 
         if ($request->ajax()) {
-            $products = Product::with(['category'])->select(['id', 'title', 'slug', 'product_category_id', 'status']);
+            $products = Product::visibleTo(auth()->user())->with(['category'])->select(['id', 'title', 'slug', 'product_category_id', 'status']);
 
             return DataTables::of($products)
                 ->editColumn('title', function ($product) {

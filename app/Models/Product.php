@@ -69,6 +69,17 @@ class Product extends Model
         ]);
     }
 
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view products')) {
+            return $query;
+        }
+
+        if($user->can('view own products')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
+
     public function widgetables(): MorphMany
     {
         return $this->morphMany(Widgetable::class, 'widgetable')->orderBy('position');

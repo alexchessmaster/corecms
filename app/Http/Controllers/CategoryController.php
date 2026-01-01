@@ -45,7 +45,7 @@ class CategoryController extends Controller
 
 
         if ($request->ajax()) {
-            $data = Category::with('children')->select(['id', 'name', 'parent_id']);
+            $data = Category::visibleTo(auth()->user())->with('children')->select(['id', 'name', 'parent_id']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {

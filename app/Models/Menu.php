@@ -22,4 +22,15 @@ class Menu extends Model
     {
         return $this->hasMany(Menu::class, 'parent_id');
     }
+
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view menus')) {
+            return $query;
+        }
+
+        if($user->can('view own menus')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
 }

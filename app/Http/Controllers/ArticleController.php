@@ -22,7 +22,7 @@ class ArticleController extends Controller
         $this->authorize('viewAny', Article::class);
 
         if ($request->ajax()) {
-            $articles = Article::select(['id', 'title', 'slug', 'category_id'])->with(['category', 'tags']);
+            $articles = Article::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'category_id'])->with(['category', 'tags']);
 
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {

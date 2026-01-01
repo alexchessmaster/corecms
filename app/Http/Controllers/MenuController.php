@@ -21,7 +21,7 @@ class MenuController extends Controller
     {
         $this->authorize('viewAny', Menu::class);
 
-        $menus = Menu::get();
+        $menus = Menu::visibleTo(auth()->user())->get();
 
         return view('admin.menu.index', compact('menus'));
     }

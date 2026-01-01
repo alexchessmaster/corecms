@@ -25,4 +25,15 @@ class BookAuthor extends Model
     {
         return $this->hasMany(Book::class, 'author_id', 'id');
     }
+
+    public function scopeVisibleTo($query, User $user)
+    {
+        if($user->can('view book authors')) {
+            return $query;
+        }
+
+        if($user->can('view own book authors')) {
+            return $query->where('user_id', $user->id);
+        }
+    }
 }
