@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use App\Http\Requests\StoreSettingRequest;
 use App\Http\Requests\UpdateSettingRequest;
+use App\Models\Language;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SettingController extends Controller
@@ -53,8 +54,9 @@ class SettingController extends Controller
     public function edit(Setting $setting)
     {
         $this->authorize('view', $setting);
+        $languages = Language::all();
         
-        return view('admin.setting.edit', compact('setting'));
+        return view('admin.setting.edit', compact('setting', 'languages'));
     }
 
     /**

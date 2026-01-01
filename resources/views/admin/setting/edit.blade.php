@@ -18,6 +18,19 @@
                 placeholder="Enter link" name="value" value="{{ isset($setting) ? $setting->value : '' }}">
             <small id="emailHelp" class="form-text text-muted">Value of the setting</small>
         </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="is_translatable" name="is_translatable" value="1"
+                {{ isset($setting) && $setting->is_translatable ? 'checked' : '' }}>
+            <label class="form-check-label" for="is_translatable">Should be translatable for each languages</label>
+        </div>
+        @foreach ($languages as $language)
+            <div class="form-group">
+                <label for="{{ $language->name }}">{{ $language->name }}</label>
+                <input type="text" class="form-control" id="{{ $language->name }}" aria-describedby="{{ $language->name }}"
+                    placeholder="Value for {{ $language->name }}" name="value_{{ $language->code }}" value="{{ isset($setting) ? $setting->value : '' }}">
+                <small id="emailHelp" class="form-text text-muted">Value of the setting for {{ $language->name }}</small>
+            </div>
+        @endforeach
         <div class="form-group">
             <label for="exampleInputEmail12">Description</label>
             <input type="text" class="form-control" id="exampleInputEmail12" aria-describedby="emailHelp"
