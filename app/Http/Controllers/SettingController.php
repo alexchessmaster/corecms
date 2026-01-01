@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Repositories\SettingRepository;
 use App\Http\Requests\StoreSettingRequest;
 use App\Http\Requests\UpdateSettingRequest;
-use App\Models\Language;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SettingController extends Controller
 {
     use AuthorizesRequests;
-    
+
+    public function __construct(private SettingRepository $settings) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +31,7 @@ class SettingController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Setting::class);
+        //
     }
 
     /**
@@ -37,7 +39,7 @@ class SettingController extends Controller
      */
     public function store(StoreSettingRequest $request)
     {
-        $this->authorize('create', Setting::class);
+        //
     }
 
     /**
@@ -45,28 +47,45 @@ class SettingController extends Controller
      */
     public function show(Setting $setting)
     {
-        $this->authorize('view', $setting);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Setting $setting)
+    public function edit($settingId)
     {
+        $setting = $this->settings->findById($settingId);
         $this->authorize('view', $setting);
-        $languages = Language::all();
-        
-        return view('admin.setting.edit', compact('setting', 'languages'));
+
+        $values = [];
+        if (!empty($setting->is_translatable)) {
+            $values = unserialize($setting->value);
+        }
+
+        return view('admin.setting.edit', compact('setting', 'values'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSettingRequest $request, Setting $setting)
+    public function update(UpdateSettingRequest $request, int $settingId)
     {
+        $setting = $this->settings->findById($settingId);
         $this->authorize('update', $setting);
-        
-        $setting->value = $request->input('value');
+        if ($request->has('is_translatable')) {
+            $values = $request->all();
+            unset($values['_method']);
+            unset($values['_token']);
+            unset($values['is_translatable']);
+            unset($values['value']);
+            unset($values['description']);
+            $setting->value = serialize($values);
+            $setting->is_translatable = true;
+        } else {
+            $setting->value = $request->input('value');
+            $setting->is_translatable = false;
+        }
         $setting->save();
 
         return redirect()->back();

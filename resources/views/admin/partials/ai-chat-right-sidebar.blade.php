@@ -176,14 +176,37 @@
                             <div class="form-group">
                                 <label for="persona-model" class="text-light">Suggested Model</label>
                                 <select id="persona-model" class="form-control bg-dark text-light border-secondary">
-                                    <option value="gpt-5">GPT-5</option>
-                                    <option value="gpt-5-mini">GPT-5 Mini</option>
-                                    <option value="gpt-5-nano">GPT-5 Nano</option>
-                                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                                    <option value="gpt-4">GPT-4</option>
-                                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                    <option value="gpt-5">gpt-5</option>
+                                    <option value="gpt-5-mini">gpt-5-mini</option>
+                                    <option value="gpt-5-nano">gpt-5-nano</option>
+                                    <option value="gpt-4-turbo">gpt-4-turbo</option>
+                                    <option value="gpt-4">gpt-4</option>
+                                    <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                                 </select>
+                                <input type="text" id="custom-model"
+                                    class="form-control bg-dark text-light border-secondary mt-2"
+                                    placeholder="Or type custom model">
                             </div>
+                            <script>
+                                const select = document.getElementById('persona-model');
+                                const input = document.getElementById('custom-model');
+                                input.addEventListener('input', () => {
+                                    const val = input.value.trim();
+                                    if (!val) return;
+                                    // Check if the value already exists in select
+                                    let exists = Array.from(select.options).some(opt => opt.value === val);
+                                    if (!exists) {
+                                        // Create new option and select it
+                                        let newOption = document.createElement('option');
+                                        newOption.value = val;
+                                        newOption.text = val;
+                                        select.add(newOption);
+                                        select.value = val;
+                                    } else {
+                                        select.value = val; // just select the existing one
+                                    }
+                                });
+                            </script>
 
                             <div class="form-check">
                                 <input type="checkbox" id="persona-public" class="form-check-input">
@@ -215,6 +238,7 @@
         right: 0;
         overflow-y: auto;
     }
+
     #controlSidebar .resize-handle {
         width: 5px;
         cursor: ew-resize;
@@ -1053,30 +1077,106 @@
 
                 // Parse Markdown code blocks and render them with highlight.js
                 function renderContentWithCodeBlocks(text) {
-                    // First, handle code blocks
-                    let processedText = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match,
-                        lang, code) {
-                        // Escape HTML inside code block
-                        const escapedCode = code.trim().replace(/[<>&"']/g, function(c) {
-                            return {
-                                '<': '&lt;',
-                                '>': '&gt;',
-                                '&': '&amp;',
-                                '"': '&quot;',
-                                "'": '&#39;'
-                            } [c];
+                    const ESCAPE_HTML = s =>
+                        s.replace(/[&<>"']/g, c =>
+                            ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+                        );
+
+                    const blocks = [];
+                    let i = 0;
+
+                    // --- 1. Extract fenced code blocks (tokenization) ---
+                    text = text.replace(/```([\w+-]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+                        const token = `@@CODE_${i++}@@`;
+                        blocks.push({
+                            token,
+                            html: `<pre><code class="hljs language-${lang || 'plaintext'}">${ESCAPE_HTML(code.trim())}</code></pre>`
                         });
-                        return `<pre><code class="hljs language-${lang || 'plaintext'}">${escapedCode}</code></pre>`;
+                        return token;
                     });
 
-                    // Handle inline code
-                    processedText = processedText.replace(/`([^`]+)`/g,
-                        '<code class="inline-code">$1</code>');
+                    // --- 2. Escape remaining raw HTML (XSS fix) ---
+                    text = ESCAPE_HTML(text);
 
-                    // Convert line breaks to <br> for non-code content
-                    // processedText = processedText.replace(/\n/g, '<br>');
+                    // --- 3. Block-level parsing ---
+                    const lines = text.split('\n');
+                    const out = [];
+                    let list = null;
+                    let quote = null;
 
-                    return processedText;
+                    const flushList = () => {
+                        if (list) {
+                            out.push(`<ul>${list.join('')}</ul>`);
+                            list = null;
+                        }
+                    };
+
+                    const flushQuote = () => {
+                        if (quote) {
+                            out.push(`<blockquote>${quote.join('<br>')}</blockquote>`);
+                            quote = null;
+                        }
+                    };
+
+                    for (const line of lines) {
+                        // headers
+                        const h = line.match(/^(#{1,6})\s+(.*)$/);
+                        if (h) {
+                            flushList(); flushQuote();
+                            out.push(`<h${h[1].length}>${h[2]}</h${h[1].length}>`);
+                            continue;
+                        }
+
+                        // horizontal rule
+                        if (/^---+$/.test(line)) {
+                            flushList(); flushQuote();
+                            out.push('<hr>');
+                            continue;
+                        }
+
+                        // blockquote
+                        if (/^>\s+/.test(line)) {
+                            flushList();
+                            quote ??= [];
+                            quote.push(line.replace(/^>\s+/, ''));
+                            continue;
+                        } else {
+                            flushQuote();
+                        }
+
+                        // unordered list
+                        const li = line.match(/^[-*]\s+(.*)$/);
+                        if (li) {
+                            flushQuote();
+                            list ??= [];
+                            list.push(`<li>${li[1]}</li>`);
+                            continue;
+                        } else {
+                            flushList();
+                        }
+
+                        // paragraph / empty
+                        out.push(line ? line : '<br>');
+                    }
+
+                    flushList();
+                    flushQuote();
+
+                    text = out.join('\n');
+
+                    // --- 4. Inline parsing (safe now) ---
+                    text = text
+                        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(?!\s)(.+?)\*/g, '<em>$1</em>')
+                        .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
+                        .replace(/\[([^\]]+)]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+                    // --- 5. Restore code blocks ---
+                    for (const b of blocks) {
+                        text = text.replace(b.token, b.html);
+                    }
+
+                    return text;
                 }
 
                 let messageHtml = '';

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\Settings\SettingValueAction;
 use App\Models\Book;
 use App\Models\Article;
 use App\Models\Product;
@@ -10,19 +11,21 @@ use App\Models\Language;
 use App\Models\BookGenre;
 use App\Models\ProductCategory;
 use App\Observers\BookObserver;
+use App\Services\OpenAiService;
 use App\Events\SlugChangedEvent;
 use App\Observers\ArticleObserver;
 use App\Observers\ProductObserver;
 use App\Observers\CategoryObserver;
 use Illuminate\Support\Facades\URL;
 use App\Observers\BookGenreObserver;
+use App\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Observers\ProductCategoryObserver;
 use App\Listeners\HandleSlugChangeListener;
-use App\Contracts\AiServiceInterface;
-use App\Services\OpenAiService;
+use App\Repositories\SettingRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(SettingRepository::class, fn($app)=> new SettingRepository());
         $this->app->bind(AiServiceInterface::class, OpenAiService::class);
     }
 
@@ -52,14 +56,12 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(SlugChangedEvent::class, HandleSlugChangeListener::class);
 
-        // if(app()->runningInConsole()) {
-        //     return;
-        // }
-
-        Language::all()->each(function ($language) {
-            if ($language->default) {
-                app()->setLocale($language->code);
-            }
-        });
+        if ((!app()->runningInConsole()) || Schema::hasTable('languages')) {
+            Language::all()->each(function ($language) {
+                if ($language->default) {
+                    app()->setLocale($language->code);
+                }
+            });
+        }
     }
 }
