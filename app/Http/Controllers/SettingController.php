@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
-use App\Repositories\SettingRepository;
+use App\Stores\SettingStore;
 use App\Http\Requests\StoreSettingRequest;
 use App\Http\Requests\UpdateSettingRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -12,7 +12,7 @@ class SettingController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(private SettingRepository $settings) {}
+    public function __construct(private SettingStore $settings) {}
 
     /**
      * Display a listing of the resource.

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Stores;
 
 use App\Enums\SettingKeyEnum;
 use App\Models\Setting;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use RuntimeException;
 
-class SettingRepository
+class SettingStore
 {
     private Collection $allSettings;
 
