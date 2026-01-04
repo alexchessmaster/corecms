@@ -23,6 +23,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         if((!app()->runningInConsole()) || Schema::hasTable('languages')){
             $languages = Language::all();
+            // dd($languages);
             // Share the $languages variable with all views
             \View::share('languages', $languages);
         }

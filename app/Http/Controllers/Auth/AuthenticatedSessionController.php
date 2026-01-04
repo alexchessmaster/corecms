@@ -30,7 +30,9 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $language = Language::where('default', true)->first();
-        session(['lang' => $language->code]);
+        if($language){
+            session(['lang' => $language->code]);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

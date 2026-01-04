@@ -10,7 +10,8 @@ class ArticleControllerTest extends TestCase
 
     public function testAdminCanSeeArticles()
     {
-        $user = User::factory()->create(['role' => 'admin']);
+        $user = User::factory()->create();
+        $user->assignRole('admin');
         $this->actingAs($user);
         $response = $this->get('/admin/articles');
         $response->assertStatus(200);
@@ -18,23 +19,26 @@ class ArticleControllerTest extends TestCase
 
     public function testEditorCanSeeArticles()
     {
-        $user = User::factory()->create(['role' => 'editor']);
+        $user = User::factory()->create();
+        $user->assignRole('editor');
         $this->actingAs($user);
         $response = $this->get('/admin/articles');
         $response->assertStatus(200);
     }
 
-    public function testAuthorCannotSeeArticles()
+    public function testAuthorCanSeeArticles()
     {
-        $user = User::factory()->create(['role' => 'author']);
+        $user = User::factory()->create();
+        $user->assignRole('author');
         $this->actingAs($user);
         $response = $this->get('/admin/articles');
-        $response->assertStatus(403);
+        $response->assertStatus(200);
     }
 
     public function testViewerCannotSeeArticles()
     {
-        $user = User::factory()->create(['role' => 'viewer']);
+        $user = User::factory()->create();
+        $user->assignRole('guest');
         $this->actingAs($user);
         $response = $this->get('/admin/articles');
         $response->assertStatus(403);

@@ -20,5 +20,12 @@ class LanguageSeeder extends Seeder
             'use_separate_domain' => false,
             'domain' => 'example.com',
         ]);
+        Language::create([
+            'name' => 'Danish',
+            'code' => 'da',
+            'default' => false,
+            'use_separate_domain' => false,
+            'domain' => 'example.com',
+        ]);
     }
 }
