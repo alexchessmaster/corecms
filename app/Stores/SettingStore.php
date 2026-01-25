@@ -2,7 +2,7 @@
 
 namespace App\Stores;
 
-use App\Enums\SettingKeyEnum;
+use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;

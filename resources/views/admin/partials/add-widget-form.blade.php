@@ -3,30 +3,57 @@
         $model = $page;
         $widgetableId = $page->id;
         $widgetableType = substr(get_class($page), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/pages/' . $widgetableId;
     } elseif (isset($article) && !empty($article)) {
         $model = $article;
         $widgetableId = $article->id;
         $widgetableType = substr(get_class($article), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/articles/' . $widgetableId;
     } elseif (isset($category) && !empty($category)) {
         $model = $category;
         $widgetableId = $category->id;
         $widgetableType = substr(get_class($category), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/categories/' . $widgetableId;
     } elseif (isset($book) && !empty($book)) {
         $model = $book;
         $widgetableId = $book->id;
         $widgetableType = substr(get_class($book), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/books/' . $widgetableId;
     } elseif (isset($bookGenre) && !empty($bookGenre)) {
         $model = $bookGenre;
         $widgetableId = $bookGenre->id;
         $widgetableType = substr(get_class($bookGenre), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/bookgenres/' . $widgetableId;
     } elseif (isset($product) && !empty($product)) {
         $model = $product;
         $widgetableId = $product->id;
-        $widgetableType = substr(get_class($product), 11);
+        $widgetableType = get_class($product); // Product
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/products/' . $widgetableId;
     } elseif (isset($productCategory) && !empty($productCategory)) {
         $model = $productCategory;
         $widgetableId = $productCategory->id;
         $widgetableType = substr(get_class($productCategory), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/product-categories/' . $widgetableId;
+    } elseif (isset($news) && !empty($news)) {
+        $model = $news;
+        $widgetableId = $news->id;
+        $widgetableType = get_class($news); // Product
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/v1/news/' . $widgetableId;
+        // dd($widgetableType);
+    } elseif (isset($newsCategory) && !empty($newsCategory)) {
+        $model = $newsCategory;
+        $widgetableId = $newsCategory->id; // \News\Models\News
+        $widgetableType = substr(get_class($newsCategory), 11);
+        $widgetableType = str_replace('\\', '\\\\', $widgetableType);
+        $apiEndpoint = '/api/v1/news-categories/' . $widgetableId;
     } else {
         dd('model not found');
     }
@@ -770,7 +797,7 @@
 
     const allWidgetsList = [];
     const refreshWidgetList = () => {
-        fetch("/api/{!! Str::plural(strtolower($widgetableType)) !!}/{!! $widgetableId !!}?lang={!! App::currentLocale() !!}", {
+        fetch("{!! $apiEndpoint !!}?lang={!! App::currentLocale() !!}", {
             headers: {
                 'Authorization': 'Bearer {{ $authToken }}'
             }

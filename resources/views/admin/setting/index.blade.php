@@ -15,7 +15,7 @@
                 <tr>
                     <td>{{ $setting->key }}</td>
                     <td>{!! $setting->value !!}</td>
-                    <td>-</td>
+                    <td><div style="font-size: 14px; color:gray">{!! $setting->description !!}</div></td>
                     <td><a class="btn btn-info" href="{{ route('admin.settings.edit', $setting->id) }}"><i class="fa fa-edit"></i></a></td>
                 </tr>
             @endforeach

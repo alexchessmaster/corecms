@@ -59,7 +59,7 @@ class PermissionController extends Controller
     public function create()
     {
         $this->authorize('create', Permission::class);
-        $roles = \Spatie\Permission\Models\Role::orderBy('name')->get();
+        $roles = \Spatie\Permission\Models\Role::with(['users'])->orderBy('name')->get();
         return view('admin.permissions.create', compact('roles'));
     }
 

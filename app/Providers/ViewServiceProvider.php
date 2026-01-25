@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Language;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +27,8 @@ class ViewServiceProvider extends ServiceProvider
             // dd($languages);
             // Share the $languages variable with all views
             \View::share('languages', $languages);
+            $settings = Setting::all();
+            \View::share('settings', $settings);
         }
     }
 }

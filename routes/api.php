@@ -21,11 +21,11 @@ use App\Http\Controllers\Api\FormContactUsController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
 use App\Http\Controllers\Api\FormNewsletterController;
 use App\Http\Controllers\Api\ProductCategoryController;
+use App\Http\Controllers\BookingSlotTemplateController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
 use App\Http\Controllers\Api\BookingAppointmentController;
 use App\Http\Controllers\Api\BookingReservationController;
 use App\Http\Controllers\Api\BookingAvailabilityController;
-use App\Http\Controllers\Api\BookingSlotTemplateController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {

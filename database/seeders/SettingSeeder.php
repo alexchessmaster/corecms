@@ -13,46 +13,186 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        $setting = new Setting;
-        $setting->key = 'article-prefix';
-        $setting->value = 'articles';
-        $setting->description = "Can be empty or articles can be change depends on your need some websites like to have /articles before the slug of each article";
-        $setting->save();
+        $settings = [
+            [
+                'key' => 'default-user-role',
+                'value' => 'guest',
+                'description' => 'Role automatically assigned to new users after registration.'
+            ],
 
-        $setting = new Setting;
-        $setting->key = 'product-prefix';
-        $setting->value = 'products';
-        $setting->description = "Can be empty or products can be change depends on your need some websites like to have /products before the slug of each product";
-        $setting->save();
+            [
+                'key' => 'is-website-links-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-menu-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-page-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-article-active',
+                'value' => 'false',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-book-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-product-active',
+                'value' => 'false',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-news-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-comments-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-reservation-active',
+                'value' => 'false',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-widgets-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-fields-active',
+                'value' => 'false',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-translation-texts-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-language-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-users-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-redirect-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
+            [
+                'key' => 'is-upload-active',
+                'value' => 'true',
+                'description' => "If it is 'true' it will be shown in the sidebar menu."
+            ],
 
-        $setting = new Setting;
-        $setting->key = 'book-prefix';
-        $setting->value = 'books';
-        $setting->description = "Can be empty or books can be change depends on your need some websites like to have /books before the slug of each book";
-        $setting->save();
+            [
+                'key' => 'article-prefix',
+                'value' => 'articles',
+                'description' => 'Prefix for article URLs (e.g., /articles/article-path). Leave empty for no prefix.'
+            ],
+            [
+                'key' => 'book-prefix',
+                'value' => 'books',
+                'description' => 'Prefix for book URLs (e.g., /books/book-path). Leave empty for no prefix.'
+            ],
+            [
+                'key' => 'product-prefix',
+                'value' => 'products',
+                'description' => 'Prefix for product URLs (e.g., /products/product-path). Leave empty for no prefix.'
+            ],
+            [
+                'key' => 'news-prefix',
+                'value' => 'news',
+                'description' => 'Prefix for news URLs (e.g., /news/news-path). Leave empty for no prefix.'
+            ],
 
-        $setting = new Setting;
-        $setting->key = 'default-sitemap-change-frequency-pages';
-        $setting->value = 'monthly';
-        $setting->description = "Default sitemap change frequency pages";
-        $setting->save();
+            [
+                'key' => 'article-path-hierarchical',
+                'value' => 'true',
+                'description' => 'If true, article URLs include category hierarchy (e.g., /parent-category/category/article-path). If false, URLs are flat (e.g., /article-path).'
+            ],
+            [
+                'key' => 'book-path-hierarchical',
+                'value' => 'true',
+                'description' => 'If true, book URLs include category hierarchy (e.g., /parent-category/category/book-path). If false, URLs are flat (e.g., /book-path).'
+            ],
+            [
+                'key' => 'product-path-hierarchical',
+                'value' => 'true',
+                'description' => 'If true, product URLs include category hierarchy (e.g., /parent-category/category/product-path). If false, URLs are flat (e.g., /product-path).'
+            ],
+            [
+                'key' => 'news-path-hierarchical',
+                'value' => 'true',
+                'description' => 'If true, news URLs include category hierarchy (e.g., /parent-category/category/news-path). If false, URLs are flat (e.g., /product-path).'
+            ],
+            
+            [
+                'key' => 'notification-email-enabled',
+                'value' => 'false',
+                'description' => 'If true, you will receive email notifications; if false, you will not.'
+            ],
+            [
+                'key' => 'notification-slack-enabled',
+                'value' => 'false',
+                'description' => 'If true, you will receive Slack notifications; if false, you will not.'
+            ],
+            [
+                'key' => 'notification-email-recipients',
+                'value' => '',
+                'description' => 'Enter the email addresses to receive notifications, separated by commas. Leave empty to disable.'
+            ],
+            [
+                'key' => 'notification-slack-webhook',
+                'value' => 'false',
+                'description' => 'Enter the the slack webhook URL. Leave empty to disable.'
+            ],
+            [
+                'key' => 'notification-on-contact-form',
+                'value' => '',
+                'description' => 'Receive a notification when someone submits the contact us form.'
+            ],
+            [
+                'key' => 'notification-on-reservation',
+                'value' => '',
+                'description' => 'Receive a notification when someone makes a reservation.'
+            ],
+            [
+                'key' => 'notification-on-payment',
+                'value' => '',
+                'description' => 'Receive a notification when someone makes a payment.'
+            ],
+            [
+                'key' => 'notification-on-user-registration',
+                'value' => '',
+                'description' => 'Receive a notification when a new user registers.'
+            ],
+        ];
 
-        $setting = new Setting;
-        $setting->key = 'default-sitemap-change-frequency-articles';
-        $setting->value = 'yearly';
-        $setting->description = "Default sitemap change frequency articles";
-        $setting->save();
-
-        $setting = new Setting;
-        $setting->key = 'default-sitemap-priority-pages';
-        $setting->value = '0.8';
-        $setting->description = "Default sitemap priority for pages";
-        $setting->save();
-
-        $setting = new Setting;
-        $setting->key = 'default-sitemap-priority-articles';
-        $setting->value = '0.6';
-        $setting->description = "Default sitemap priority for articles";
-        $setting->save();
+        foreach ($settings as $setting) {
+            if(!Setting::where('key', $setting['key'])->exists()) {
+                Setting::create([
+                    'key' => $setting['key'],
+                    'value' => $setting['value'],
+                    'description' => $setting['description']
+                ]);
+            }
+        }
     }
 }

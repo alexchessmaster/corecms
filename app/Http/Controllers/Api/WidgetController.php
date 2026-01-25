@@ -64,13 +64,13 @@ class WidgetController extends Controller
         //
         // FIXED: Now I don't know why it was not working before, but now it works.
         $widgetables = Widgetable::where('widgetable_id', $widgetableId)
-            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
+            ->where('widgetable_type', $widgetableType)
             ->where('position', '>=', (int)$addWidgetPosition)
             ->orderBy('position')
             ->get();
 
         //  Authorization
-        $modelClass = 'App\\Models\\' . $widgetableType;
+        $modelClass = $widgetableType;
         $widgetableModel = $modelClass::find($widgetableId);
         $this->authorize('update', $widgetableModel);
 
@@ -81,7 +81,7 @@ class WidgetController extends Controller
         $created = Widgetable::create([
             'widget_id' => $widgetId,
             'widgetable_id' => $widgetableId,
-            'widgetable_type' => 'App\Models\\' . $widgetableType,
+            'widgetable_type' => $widgetableType,
             'position' => $addWidgetPosition,
         ]);
 
@@ -90,7 +90,7 @@ class WidgetController extends Controller
         // Just in case the positions are not correct. (if server got restarted during the previous loop)
         $i = 0;
         $widgetables = Widgetable::where('widgetable_id', $widgetableId)
-            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
+            ->where('widgetable_type', $widgetableType)
             ->orderBy('position')
             ->get();
         foreach ($widgetables as $widgetable) {
