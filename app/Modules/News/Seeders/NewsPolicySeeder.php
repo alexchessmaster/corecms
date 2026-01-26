@@ -14,16 +14,18 @@ class NewsPolicySeeder extends Seeder
     public function run(): void
     {
         // Only seed if roles and permissions tables are empty
-        if (\Spatie\Permission\Models\Role::count() === 0 && \Spatie\Permission\Models\Permission::count() === 0) {
+        // if (\Spatie\Permission\Models\Role::count() === 0 && \Spatie\Permission\Models\Permission::count() === 0) {
             // Reset cached roles and permissions
             app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+            $modelName = 'news';
+
             // Define all resources
             $resources = [
-                'news tags',
-                'news categories',
-                'news authors',
-                'news',
+                "$modelName tags",
+                "$modelName categories",
+                "$modelName authors",
+                "$modelName",
             ];
 
             // Define permission actions
@@ -42,24 +44,29 @@ class NewsPolicySeeder extends Seeder
             // Create permissions for each resource
             foreach ($resources as $resource) {
                 foreach ($actions as $action) {
-                    Permission::create(['name' => "$action $resource"]);
+                    Permission::firstOrCreate(
+                        [
+                            'name' => "$action $resource",
+                            'guard_name' => 'web',
+                        ]
+                    );
                 }
             }
 
             // Create roles
-            $adminRole = Role::create(['name' => 'admin']);
-            $editorRole = Role::create(['name' => 'editor']);
-            $authorRole = Role::create(['name' => 'author']);
+            $adminRole = Role::where('name', 'admin')->first();
+            $editorRole = Role::where('name', 'editor')->first();
+            $authorRole = Role::where('name', 'author')->first();
 
             // Admin gets all permissions
             $adminRole->givePermissionTo(Permission::all());
 
             // Editor permissions - can manage most content but not users or system settings
             $editorResources = [
-                'news tags',
-                'news categories',
-                'news authors',
-                'news',
+                "$modelName tags",
+                "$modelName categories",
+                "$modelName authors",
+                "$modelName",
             ];
 
             foreach ($editorResources as $resource) {
@@ -67,17 +74,18 @@ class NewsPolicySeeder extends Seeder
                     "view $resource",
                     "create $resource",
                     "edit $resource",
+                    "edit own $resource",
                     "delete $resource",
-                    "restore $resource",
+                    "delete own $resource",
                 ]);
             }
 
             // Author permissions - can only manage their own content
             $authorResources = [
-                'news tags',
-                'news categories',
-                'news authors',
-                'news',
+                "$modelName tags",
+                "$modelName categories",
+                "$modelName authors",
+                "$modelName",
             ];
 
             foreach ($authorResources as $resource) {
@@ -89,17 +97,9 @@ class NewsPolicySeeder extends Seeder
                 ]);
             }
 
-            // Additional specific permissions for authors
-            $authorRole->givePermissionTo([
-                'view fields',
-                'view widgets',
-                'view menus',
-                'view languages',
-            ]);
-
             $this->command->info('Roles and permissions created successfully!');
-        } else {
-            $this->command->info('Roles and permissions already exist. Seeder skipped.');
-        }
+        // } else {
+        //     $this->command->info('Roles and permissions already exist. Seeder skipped.');
+        // }
     }
 }

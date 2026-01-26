@@ -5,10 +5,12 @@ namespace App\Modules\News\Tests\Feature\Admin;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class NewsControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     public function test_that_admin_can_see_news()
     {
@@ -39,10 +41,15 @@ class NewsControllerTest extends TestCase
 
     public function test_viewer_cannot_see_news()
     {
+        $response = $this->get('/admin/news');
+        $response->assertStatus(403);
+        
         $user = User::factory()->create();
         $user->assignRole('guest');
         $this->actingAs($user);
         $response = $this->get('/admin/news');
         $response->assertStatus(403);
     }
+
+    
 }

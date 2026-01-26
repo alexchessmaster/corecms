@@ -145,6 +145,7 @@ class ContentController extends Controller
             'article' => collect(),
             'category' => collect(),
             'tag' => collect(),
+            'news' => collect(),
             'article_prefix' => '',
             'product' => collect(),
             'product_category' => collect(),

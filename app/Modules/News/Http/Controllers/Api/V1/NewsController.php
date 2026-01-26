@@ -6,17 +6,22 @@ use Illuminate\Http\Request;
 use App\Modules\News\Models\News;
 use App\Http\Controllers\Controller;
 use App\Modules\News\Http\Resources\NewsResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class NewsController extends Controller
 {
-    public function show($bookId)
+    use AuthorizesRequests;
+    
+    public function show($id)
     {
+        $news = News::withAllWidgetData()->find($id);
+        $this->authorize('view', $news);
+        
         if(!empty(request()->lang)){
             app()->setLocale(request()->lang);
         }
 
-        $book = News::withAllWidgetData()->find($bookId);
 
-        return response()->json(NewsResource::make($book));
+        return response()->json(NewsResource::make($news));
     }
 }
