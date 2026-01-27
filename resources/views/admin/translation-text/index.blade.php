@@ -2,10 +2,6 @@
 @section('content-card-title', 'Translation Texts')
 @section('content-body')
 
-    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
-
     <div class="container">
         <div class="d-flex justify-content-between mb-3">
             <h2 class="text-primary">Manage Translation Texts</h2>
@@ -28,39 +24,6 @@
     </div>
 
     @push('scripts')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
-        <style>
-            /* Ensure text wraps and doesn't push columns off-screen */
-            #table td {
-                word-wrap: break-word;
-                word-break: break-word;
-                white-space: normal !important;
-            }
-            
-            /* Set max-width for text columns to prevent overflow */
-            #table td:nth-child(1),
-            #table td:nth-child(2) {
-                max-width: 300px;
-            }
-            
-            /* Keep actions column visible and compact */
-            #table td:nth-child(3) {
-                min-width: 100px;
-                white-space: nowrap;
-            }
-            
-            /* Mobile optimization */
-            @media (max-width: 768px) {
-                #table td:nth-child(1),
-                #table td:nth-child(2) {
-                    max-width: 150px;
-                }
-            }
-        </style>
-
         <script>
             $(document).ready(function() {
                 $('#table').DataTable({

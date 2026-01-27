@@ -8,9 +8,7 @@
     <div class="mb-2" id="preview-container" style="display: none;">
         <img id="image-preview" style="max-width: 150px; height: auto;" />
     </div>
-    <input type="file" class="form-control" id="image" name="image"
-        {{-- @if (!(isset($news) && $news->image)) required @endif --}}
-        >
+    <input type="file" class="form-control" id="image" name="image" {{-- @if (!(isset($news) && $news->image)) required @endif --}}>
 </div>
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
@@ -22,7 +20,8 @@
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
             value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
-            <small><a href="{{ isset($news) ? App\Helpers\UrlHelper::getFrontendUrl($news->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ isset($news) ? App\Helpers\UrlHelper::getFrontendUrl($news->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
+        <small><a
+                href="{{ isset($news) ? App\Helpers\UrlHelper::getFrontendUrl($news->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ isset($news) ? App\Helpers\UrlHelper::getFrontendUrl($news->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
     </div>
 @endif
 <div class="mb-3">
@@ -30,8 +29,10 @@
         <label for="status">Status</label>
         <select id="status" name="status" class="form-control">
             <option value="draft" {{ isset($news) && $news->status === 'draft' ? 'selected' : '' }}>Draft</option>
-            <option value="published" {{ isset($news) && $news->status === 'published' ? 'selected' : '' }}>Published</option>
-            <option value="scheduled" {{ isset($news) && $news->status === 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+            <option value="published" {{ isset($news) && $news->status === 'published' ? 'selected' : '' }}>Published
+            </option>
+            <option value="scheduled" {{ isset($news) && $news->status === 'scheduled' ? 'selected' : '' }}>Scheduled
+            </option>
         </select>
     </div>
     <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
@@ -87,11 +88,6 @@
 <br>
 
 {{-- select2 for author --}}
-<!-- Include jQuery first -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Then Select2 -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     jQuery(document).ready(function($) {
         $('#author_id').select2({
@@ -100,23 +96,23 @@
                 dataType: 'json',
                 delay: 300,
                 headers: {
-                    'Authorization': 'Bearer {{ $authToken ?? "" }}',
+                    'Authorization': 'Bearer {{ $authToken ?? '' }}',
                     'Accept': 'application/json'
                 },
-                data: function (params) {
+                data: function(params) {
                     return {
                         search: params.term,
                         page: params.page || 1
                     };
                 },
-                processResults: function (data) {
+                processResults: function(data) {
                     const results = data.data.map(function(author) {
                         return {
                             id: author.id,
                             text: author.name
                         };
                     });
-                    
+
                     return {
                         results: results
                     };
@@ -138,11 +134,6 @@
 {{-- end select2 for author --}}
 
 {{-- news-tags --}}
-<style>
-    .select2-selection__choice__display{
-        color: 888;
-    }
-</style>
 <script>
     jQuery(document).ready(function($) {
         $('#tag_ids').select2({
@@ -152,16 +143,16 @@
                 dataType: 'json',
                 delay: 300,
                 headers: {
-                    'Authorization': 'Bearer {{ $authToken ?? "" }}',
+                    'Authorization': 'Bearer {{ $authToken ?? '' }}',
                     'Accept': 'application/json'
                 },
-                data: function (params) {
+                data: function(params) {
                     return {
                         search: params.term,
                         page: params.page || 1
                     };
                 },
-                processResults: function (data) {
+                processResults: function(data) {
                     const results = data.data.map(function(tag) {
                         return {
                             id: tag.id,

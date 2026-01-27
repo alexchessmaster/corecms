@@ -2,10 +2,6 @@
 @section('content-card-title', 'Permissions')
 @section('content-body')
 
-    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
-
     <div class="container">
         <div class="d-flex justify-content-between mb-3">
             <h2 class="text-primary">Manage Permissions</h2>
@@ -38,50 +34,11 @@
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
-                {{-- <tbody>
-                    @forelse ($permissions as $permission)
-                        <tr>
-                            <td>{{ $permission->id }}</td>
-                            <td>{{ $permission->name }}</td>
-                            <td>
-                                @if ($permission->roles->count() > 0)
-                                    @foreach ($permission->roles as $role)
-                                        <span class="badge bg-info">{{ $role->name }}</span>
-                                    @endforeach
-                                @else
-                                    <span class="text-muted">Not assigned</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                <a href="{{ route('admin.permissions.edit', $permission) }}" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.permissions.destroy', $permission) }}" method="POST" 
-                                      class="d-inline" onsubmit="return confirm('Are you sure you want to delete this permission?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">No permissions found</td>
-                        </tr>
-                    @endforelse
-                </tbody> --}}
             </table>
         </div>
     </div>
 
     @push('scripts')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-        {{-- <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> --}}
-        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
         <script>
             $(document).ready(function () {
                 $('#datatable-table').DataTable({

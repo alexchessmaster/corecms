@@ -2,33 +2,6 @@
 @section('content-card-title', 'Upload')
 @section('content-card-body')
 
-    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
-
-    <style>
-        table.dataTable, .card-body {
-            width: 100% !important;
-            overflow-x: auto;
-        }
-
-        td,
-        th {
-            max-width: 200px;
-            overflow: hidden;
-            /* text-overflow: ellipsis; */
-            white-space: wrap;
-        }
-
-        /* td:active,
-        th:active {
-            overflow: scroll;
-            text-overflow: initial;
-            white-space: pre-wrap;
-            background-color: red;
-        } */
-    </style>
     {{-- <div class="container"> --}}
         <h1>Logs</h1>
         <table id="logs-table" class="display" style="width:100%">
@@ -50,11 +23,6 @@
 
 
     @push('scripts')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-        {{-- <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script> --}}
-        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
         <script>
             $(document).ready(function() {
                 $('#logs-table').DataTable({

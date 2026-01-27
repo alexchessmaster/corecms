@@ -47,6 +47,41 @@
         }
     </style>
 
+    <!-- Include jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {{-- Datatable --}}
+    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
+
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    {{-- select2 custom style --}}
+
+
+    {{-- Color picker --}}
+    <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <style>
+        .tox-promotion {
+            visibility: hidden;
+        }
+
+        .tox .tox-editor-container {
+            border: 1px solid #d2d2d2 !important;
+            /* Set your desired color */
+        }
+
+        .tox .tox-edit-area iframe {
+            border: 1px solid #e7e7e7 !important;
+            /* Set your desired color */
+        }
+    </style>
+
+    {{-- datatable responsive --}}
+    <link rel="stylesheet" href="/styles/datatable-custom-style.css">
+
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -201,16 +236,23 @@
         </script>
 
         <!-- Control Sidebar -->
-        
-        @if(env('AI_CHAT_MODE') == true)
+
+        @if (env('AI_CHAT_MODE') == true)
             @include('admin.partials.ai-chat-right-sidebar')
         @endif
-        
+
 
 
         @yield('script')
         @stack('scripts')
 
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+        <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 
 </body>
 

@@ -1,0 +1,431 @@
+/* ==========================================================================
+   DataTable Styles - Sanitized & Optimized
+   ========================================================================== */
+
+/* ==========================================================================
+   1. BASE TABLE LAYOUT & OVERFLOW PROTECTION
+   ========================================================================== */
+
+/* Prevent table overflow and ensure proper wrapping */
+table.dataTable,
+.card-body {
+    width: 100% !important;
+    overflow-x: auto;
+}
+
+table td {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal !important;
+    max-width: 200px;
+    overflow: hidden;
+}
+
+table th {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: wrap;
+}
+
+/* Column-specific width constraints */
+table td:nth-child(1),
+table td:nth-child(2) {
+    max-width: 300px;
+}
+
+/* Actions column - keep compact and visible */
+table td:nth-child(3) {
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   2. TABLE CONTAINER & STRUCTURE
+   ========================================================================== */
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+        Arial, sans-serif;
+    font-size: 14px;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.07),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   3. TABLE HEADER
+   ========================================================================== */
+
+thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+}
+
+thead th {
+    padding: 18px 20px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-size: 12px;
+    border: none;
+    position: relative;
+}
+
+/* Round the top-left corner */
+thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+/* Round the top-right corner */
+thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+thead th::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   4. TABLE BODY
+   ========================================================================== */
+
+tbody tr {
+    background: #ffffff;
+    transition: all 0.25s ease;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr:hover {
+    background: linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%);
+    box-shadow: inset 4px 0 0 #667eea;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody td {
+    padding: 16px 20px;
+    color: #374151;
+    border: none;
+}
+
+/* Alternating row colors */
+tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+tbody tr:nth-child(even):hover {
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+/* First column emphasis */
+tbody td:first-child {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Accessibility - focus state */
+tbody tr:focus-within {
+    outline: 2px solid #667eea;
+    outline-offset: -2px;
+}
+
+/* ==========================================================================
+   5. TABLE FOOTER
+   ========================================================================== */
+
+tfoot {
+    background: #f9fafb;
+    border-top: 2px solid #667eea;
+}
+
+tfoot td {
+    padding: 14px 20px;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+/* ==========================================================================
+   6. INTERACTIVE ELEMENTS (Links & Buttons)
+   ========================================================================== */
+
+/* Links */
+table a {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+table a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Buttons */
+table button {
+    padding: 6px 14px;
+    margin: 2px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background: #667eea;
+    color: #ffffff;
+}
+
+table button:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+table button:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   7. DATATABLES PAGINATION
+   ========================================================================== */
+
+/* Info text */
+.dataTables_info {
+    padding: 12px 0;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Pagination container */
+.dataTables_paginate {
+    padding: 12px 0;
+    text-align: right;
+}
+
+.dataTables_paginate .pagination {
+    display: inline-flex;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+ul.pagination {
+    display: flex;
+    gap: 0;
+}
+
+/* Pagination items */
+.paginate_button.page-item {
+    margin: 0;
+    padding: 0;
+}
+
+/* Pagination links */
+.paginate_button .page-link {
+    padding: 10px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    color: #667eea;
+    background: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 44px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* Hover state */
+.paginate_button .page-link:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Active page */
+.paginate_button.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    cursor: default;
+}
+
+.paginate_button.active .page-link:hover {
+    transform: none;
+}
+
+/* Disabled state */
+.paginate_button.disabled .page-link:hover {
+    background: #f9fafb;
+    color: #d1d5db;
+    border-color: #f3f4f6;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Navigation arrows (First/Previous/Next/Last) */
+.paginate_button.first .page-link,
+.paginate_button.previous .page-link,
+.paginate_button.next .page-link,
+.paginate_button.last .page-link {
+    font-weight: 700;
+    padding: 10px 14px;
+    font-size: 0; /* Hide text, show only icons */
+    font-family: Arial, sans-serif;
+}
+
+.paginate_button.first .page-link::before {
+    content: "«";
+    display: inline-block;
+    font-size: 16px;
+}
+
+.paginate_button.previous .page-link::before {
+    content: "‹";
+    display: inline-block;
+    font-size: 18px;
+}
+
+.paginate_button.next .page-link::before {
+    content: "›";
+    display: inline-block;
+    font-size: 18px;
+}
+
+.paginate_button.last .page-link::before {
+    content: "»";
+    display: inline-block;
+    font-size: 16px;
+}
+
+/* Page change animation */
+@keyframes pageChange {
+    0% {
+        opacity: 0.5;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.paginate_button.active {
+    animation: pageChange 0.3s ease;
+}
+
+/* ==========================================================================
+   8. DATATABLES OVERRIDE - Remove default styles
+   ========================================================================== */
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: inherit !important;
+    border: 1px solid transparent !important;
+    background-color: transparent !important;
+    background: none !important;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE DESIGN
+   ========================================================================== */
+
+/* Tablet and below (768px) */
+@media (max-width: 768px) {
+    /* Reduce column widths */
+    table td:nth-child(1),
+    table td:nth-child(2) {
+        max-width: 150px;
+    }
+
+    /* Adjust table typography */
+    table {
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    thead th,
+    tbody td,
+    tfoot td {
+        padding: 12px 10px;
+    }
+
+    thead th {
+        font-size: 11px;
+    }
+
+    /* Center pagination info */
+    .dataTables_info {
+        text-align: center;
+        margin-bottom: 12px;
+        font-size: 13px;
+    }
+
+    .dataTables_paginate {
+        text-align: center;
+    }
+
+    .dataTables_paginate .pagination {
+        gap: 4px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .paginate_button .page-link {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: 38px;
+    }
+
+    .paginate_button.first .page-link::before,
+    .paginate_button.previous .page-link::before,
+    .paginate_button.next .page-link::before,
+    .paginate_button.last .page-link::before {
+        font-size: 14px;
+    }
+}
+
+/* Mobile (576px and below) */
+@media (max-width: 576px) {
+    .col-sm-12.col-md-5,
+    .col-sm-12.col-md-7 {
+        text-align: center;
+    }
+
+    .dataTables_paginate .pagination {
+        font-size: 12px;
+    }
+
+    .paginate_button .page-link {
+        padding: 6px 10px;
+        min-width: 34px;
+    }
+}

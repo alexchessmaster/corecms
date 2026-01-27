@@ -60,31 +60,12 @@
 @endphp
 
 @push('styles')
-    <link rel="stylesheet" href="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
-    <style>
-        .tox-promotion {
-            visibility: hidden;
-        }
 
-        .tox .tox-editor-container {
-            border: 1px solid #d2d2d2 !important;
-            /* Set your desired color */
-        }
-
-        .tox .tox-edit-area iframe {
-            border: 1px solid #e7e7e7 !important;
-            /* Set your desired color */
-        }
-    </style>
 @endpush
 @push('scripts')
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script src="/AdminLTE-3.2.0/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
     <script>
         $('.my-colorpicker2').colorpicker()
     </script>
-
-    <script src="/tinymce/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 @endpush
 
 

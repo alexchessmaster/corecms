@@ -30,11 +30,6 @@ class NewsModuleServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(News::class, NewsPolicy::class);
-        Gate::policy(NewsCategory::class, NewsCategoryPolicy::class);
-        Gate::policy(NewsTag::class, NewsTagPolicy::class);
-        Gate::policy(NewsAuthor::class, NewsAuthorPolicy::class);
-
         $this->loadRoutesFrom(app_path('Modules/News/routes/api.php'));
         $this->loadRoutesFrom(app_path('Modules/News/routes/web.php'));
         $this->loadViewsFrom(app_path('Modules/News/resources/views'), 'news');
