@@ -63,10 +63,11 @@
     <label for="category_id" class="form-label required">Category</label>
     <select class="form-control" id="category_id" name="category_id" required>
         @foreach ($categories as $category)
-            @if (!empty($category->getTranslation('name', app()->getLocale())))
+            <!-- The category must be translated before creating a new item to generate the correct slug -->
+            @if (!empty($category->getTranslation('name', app()->getLocale(), false)))
                 <option value="{{ $category->id }}"
                     {{ isset($news) && $news->news_category_id == $category->id ? 'selected' : '' }}>
-                    {{ '-Not translated-' . $category->getTranslation('name', app()->getLocale()) }}
+                    {{ $category->getTranslation('name', app()->getLocale()) }}
                 </option>
             @endif
         @endforeach

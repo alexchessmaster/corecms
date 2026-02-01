@@ -52,22 +52,23 @@
     <priority>0.5</priority>
             </url>
     <url>
-    <loc>https://corecms.nordicstandard.net/en/example-category/news-tag</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/example-category/news-tag" />
+    <loc>https://corecms.nordicstandard.net/en/news/example-category/news-tag</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/news-tag" />
     <lastmod>2026-01-25T18:25:53+01:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
             </url>
     <url>
-    <loc>https://corecms.nordicstandard.net/en/example-category/ny-bolig</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/example-category/ny-bolig" />
-    <lastmod>2026-02-01T11:49:50+01:00</lastmod>
+    <loc>https://corecms.nordicstandard.net/en/news/example-category/new</loc>
+    <xhtml:link rel="alternate" hreflang="da" href="https://corecms.nordicstandard.net/da/news/example-category/ny" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/new" />
+    <lastmod>2026-02-01T17:10:52+01:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
             </url>
     <url>
-    <loc>https://corecms.nordicstandard.net/en/example-category/dafdsfsda-two</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/example-category/dafdsfsda-two" />
+    <loc>https://corecms.nordicstandard.net/en/news/example-category/dafdsfsda-two</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/dafdsfsda-two" />
     <lastmod>2026-01-25T21:55:27+01:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
