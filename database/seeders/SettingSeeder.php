@@ -13,6 +13,10 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
+        // php artisan db:seed --class=SettingSeeder
+
+        \DB::table('settings')->truncate();
+
         $settings = [
             [
                 'key' => 'default-user-role',
@@ -142,6 +146,58 @@ class SettingSeeder extends Seeder
                 'value' => 'true',
                 'description' => 'If true, news URLs include category hierarchy (e.g., /parent-category/category/news-path). If false, URLs are flat (e.g., /product-path).'
             ],
+
+            [
+                'key' => 'default-sitemap-change-frequency-pages',
+                'value' => 'yearly',
+                'description' => 'The default sitemap-change-frequency for pages'
+            ],
+            [
+                'key' => 'default-sitemap-change-frequency-articles',
+                'value' => 'yearly',
+                'description' => 'The default sitemap-change-frequency for articles'
+            ],
+            [
+                'key' => 'default-sitemap-change-frequency-books',
+                'value' => 'yearly',
+                'description' => 'The default sitemap-change-frequency for books'
+            ],
+            [
+                'key' => 'default-sitemap-change-frequency-products',
+                'value' => 'yearly',
+                'description' => 'The default sitemap-change-frequency for products'
+            ],
+            [
+                'key' => 'default-sitemap-change-frequency-news',
+                'value' => 'yearly',
+                'description' => 'The default sitemap-change-frequency for news'
+            ],
+            [
+                'key' => 'default-sitemap-priority-pages',
+                'value' => '0.5',
+                'description' => 'The default sitemap-change-priority for pages'
+            ],
+            [
+                'key' => 'default-sitemap-priority-articles',
+                'value' => '0.8',
+                'description' => 'The default sitemap-change-priority for articles'
+            ],
+            [
+                'key' => 'default-sitemap-priority-books',
+                'value' => '0.8',
+                'description' => 'The default sitemap-change-priority for books'
+            ],
+            [
+                'key' => 'default-sitemap-priority-products',
+                'value' => '0.8',
+                'description' => 'The default sitemap-change-priority for products'
+            ],
+            [
+                'key' => 'default-sitemap-priority-news',
+                'value' => '0.8',
+                'description' => 'The default sitemap-change-priority for news'
+            ],
+
             
             [
                 'key' => 'notification-email-enabled',

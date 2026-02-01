@@ -48,7 +48,7 @@
                 const lang = document.getElementById('lang');
                 const langForm = document.getElementById('lang-form');
                 lang.addEventListener('change', function() {
-                    console.log('{{ \App::getLocale() }}');
+                    console.log('lang: {{ \App::getLocale() }}');
                     langForm.submit();
                     return;
                     //name.value = menu.name.{l}
