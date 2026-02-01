@@ -32,11 +32,19 @@ class GenerateSitemapsCommand extends Command
     public function handle()
     {
         $languages = Language::all(); // Add more languages as needed
+        $settings = Setting::get()->keyBy('key');
 
-        $defaultFrequencyChangePages = Setting::where('key', 'default-sitemap-change-frequency-pages')->value('value');
-        $defaultFrequencyChangeArticles = Setting::where('key', 'default-sitemap-change-frequency-articles')->value('value');
-        $defaultPriorityPages = Setting::where('key', 'default-sitemap-priority-pages')->value('value');
-        $defaultPriorityArticles = Setting::where('key', 'default-sitemap-priority-articles')->value('value');
+        $defaultFrequencyChangePages = $settings->get('default-sitemap-change-frequency-pages')->value;
+        $defaultFrequencyChangeArticles = $settings->get('default-sitemap-change-frequency-articles')->value;
+        $defaultFrequencyChangeBooks = $settings->get('default-sitemap-change-frequency-books')->value;
+        $defaultFrequencyChangeProducts = $settings->get('default-sitemap-change-frequency-products')->value;
+        $defaultFrequencyChangeNews = $settings->get('default-sitemap-change-frequency-news')->value;
+        
+        $defaultPriorityPages = $settings->get('default-sitemap-priority-pages')->value;
+        $defaultPriorityArticles = $settings->get('default-sitemap-priority-articles')->value;
+        $defaultPriorityBooks = $settings->get('default-sitemap-priority-books')->value;
+        $defaultPriorityProducts = $settings->get('default-sitemap-priority-products')->value;
+        $defaultPriorityNews = $settings->get('default-sitemap-priority-news')->value;
 
         $frontendBaseUrl = '';
         $tables = ['pages', 'articles', 'books', 'products', 'news'];
@@ -93,8 +101,8 @@ class GenerateSitemapsCommand extends Command
                         }
 
                         $item = $page['item'];
-                        $url->setPriority(floatval($item->sitemap_priority ?? $defaultPriorityPages));
-                        $url->setChangeFrequency($item->sitemap_change_frequency ?? $defaultFrequencyChangePages);
+                        $url->setPriority(floatval($item->sitemap_priority ?? $settings->get("default-sitemap-priority-$table")->value));
+                        $url->setChangeFrequency($item->sitemap_change_frequency ?? $settings->get("default-sitemap-change-frequency-$table")->value);
                         $url->setLastModificationDate(Carbon::createFromFormat('Y-m-d H:i:s', $item->updated_at));
                         $sitemap->add($url);
                     }
@@ -162,7 +170,7 @@ class GenerateSitemapsCommand extends Command
         if(empty($value)){
             return '';
         }
-        
+
         return '/' . $value;
     }
 }

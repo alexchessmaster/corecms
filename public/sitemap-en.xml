@@ -49,14 +49,14 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/my-product-category-1/my-product-number-one" />
     <lastmod>2026-02-01T22:52:40+01:00</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
             </url>
     <url>
     <loc>https://corecms.nordicstandard.net/en/news/example-category/news-tag</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/news-tag" />
     <lastmod>2026-01-25T18:25:53+01:00</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
             </url>
     <url>
     <loc>https://corecms.nordicstandard.net/en/news/example-category/new</loc>
@@ -64,13 +64,13 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/new" />
     <lastmod>2026-02-01T17:27:34+01:00</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
             </url>
     <url>
     <loc>https://corecms.nordicstandard.net/en/news/example-category/dafdsfsda-two</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/dafdsfsda-two" />
     <lastmod>2026-01-25T21:55:27+01:00</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
             </url>
 </urlset>
