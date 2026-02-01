@@ -41,12 +41,12 @@ class WidgetController extends Controller
         if (! $widget) {
             return response()->json(['status' => 'error', 'message' => 'Widget not found', 'request' => request()->all()]);
         }
-        // : fix this part  [2025-07-28 22:05:01] local.ERROR: Illegal operator and value combination. {"exception":"[object] (InvalidArgumentException(code: 0): Illegal operator and value combination. at /home/alex/azadandish.net_backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:956)
-        //        #2 /home/alex/azadandish.net_backend/app/Http/Controllers/Api/WidgetController.php(43): Illuminate\\Database\\Eloquent\\Builder->where()
+        // : fix this part  [2025-07-28 22:05:01] local.ERROR: Illegal operator and value combination. {"exception":"[object] (InvalidArgumentException(code: 0): Illegal operator and value combination. at /home/alex/nordicstandard.net_backend/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:956)
+        //        #2 /home/alex/nordicstandard.net_backend/app/Http/Controllers/Api/WidgetController.php(43): Illuminate\\Database\\Eloquent\\Builder->where()
         // try this with postman
         /*
         route: patch
-        https://backend.azadandish.net/api/widgets/attach
+        https://backend.nordicstandard.net/api/widgets/attach
 
         payload:
          {
@@ -158,9 +158,8 @@ class WidgetController extends Controller
         $position = request()->input('positionId');
 
         // Find the model (Page, Article, or Category)
-
         $deleted = Widgetable::where('widgetable_id', $widgetableId)
-            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
+            ->where('widgetable_type', $widgetableType)
             ->where('position', $position)
             ->delete();
 
@@ -170,10 +169,11 @@ class WidgetController extends Controller
 
         // Update positions for all remaining widgets
         $widgetables = Widgetable::where('widgetable_id', $widgetableId)
-            ->where('widgetable_type', 'App\Models\\' . $widgetableType)
+            ->where('widgetable_type', $widgetableType)
             ->where('position', '>=', $position)
             ->orderBy('position')
             ->get();
+        
         foreach ($widgetables as $widgetable) {
             $widgetable->decrement('position');
         }

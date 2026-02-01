@@ -22,17 +22,19 @@
 
 @endsection
 
-<script>
-function clickSaveAll(event) {
-    event.preventDefault(); // Prevent the default form submission
-    
-    // Find and click the save-all button
-    const saveAllButton = document.getElementById('save-all');
-    if (saveAllButton) {
-        saveAllButton.click();
-    }
-    
-    // Then submit the form
-    event.target.closest('form').submit();
-}
-</script>
+@push('scripts')
+    <script>
+        function clickSaveAll(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Find and click the save-all button
+            const saveAllButton = document.getElementById('save-all');
+            if (saveAllButton) {
+                saveAllButton.click();
+            }
+
+            // Then submit the form
+            event.target.closest('form').submit();
+        }
+    </script>
+@endpush

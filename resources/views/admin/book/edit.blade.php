@@ -3,7 +3,8 @@
 @section('content-body')
 
     <div class="container">
-        <a href="{{ route('admin.books.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new book</a>
+        <a href="{{ route('admin.books.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new
+            book</a>
         <form action="{{ route('admin.books.update', $book) }}" method="POST" enctype='multipart/form-data'>
             @csrf
             @method('PUT')
@@ -22,17 +23,19 @@
 
 @endsection
 
-<script>
-function clickSaveAll(event) {
-    event.preventDefault(); // Prevent the default form submission
-    
-    // Find and click the save-all button
-    const saveAllButton = document.getElementById('save-all');
-    if (saveAllButton) {
-        saveAllButton.click();
-    }
-    
-    // Then submit the form
-    event.target.closest('form').submit();
-}
-</script>
+@push('scripts')
+    <script>
+        function clickSaveAll(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Find and click the save-all button
+            const saveAllButton = document.getElementById('save-all');
+            if (saveAllButton) {
+                saveAllButton.click();
+            }
+
+            // Then submit the form
+            event.target.closest('form').submit();
+        }
+    </script>
+@endpush

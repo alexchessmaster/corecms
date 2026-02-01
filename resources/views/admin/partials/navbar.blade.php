@@ -26,10 +26,11 @@
                             @foreach ($languages as $language)
                                 <option
                                     @php
-$locale = session('lang');
+                                        $locale = session('lang');
                                         if($language->code === $locale){
                                             echo 'selected';
-                                        } @endphp
+                                        } 
+                                    @endphp
                                     value="{{ $language->code }}">
                                     {{ $language->name }}
                                 </option>

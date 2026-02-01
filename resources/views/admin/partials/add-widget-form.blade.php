@@ -183,7 +183,14 @@
         widgetOption.setAttribute('data-value', widget.position);
 
         const imgEl = document.createElement('img');
-        imgEl.src = widget.image;
+        if(widget?.image) {
+            imgEl.src = widget.image;
+        } else {
+            imgEl.style.width = "100%";
+            imgEl.style.height = "100%";
+            imgEl.style.objectFit = "cover";
+            imgEl.style.background = "linear-gradient(90deg, rgba(0,0,0,0.3), rgba(255,255,255,0.1))";
+        }
         imgEl.style.height = 'auto';
         imgEl.style.maxHeight = '400px';
         imgEl.style.width = '100%';
@@ -780,7 +787,8 @@
     const refreshWidgetList = () => {
         fetch("{!! $apiEndpoint !!}?lang={!! App::currentLocale() !!}", {
             headers: {
-                'Authorization': 'Bearer {{ $authToken }}'
+                'Authorization': 'Bearer {{ $authToken }}',
+                'Accept': 'application/json'
             }
         })
             .then(response => {
@@ -790,38 +798,7 @@
                 const verticalScroll = window.scrollY;
                 widgetContainer.innerHTML = null;
                 data.widgets.forEach((item, index) => {              
-                    // console.log('allWidgetsList', allWidgetsList);
-                    // // createWidget(item);
-                    // let position = null;
-                    // let widgetId = null;
-                    // let foundWidget = null;
-                    // console.log('item 11111111', item)
-                    // Array.from(widgetContainer.children).forEach((child, i) => {
-                    //     // console.log(`Child: ${index}`, child);
-                    //     // Do something with each child element
-                    //     // console.log('22222222', child.querySelector('input[name="widget-position"]')?.value);
-                    //     // console.log('333333', child.querySelector('input[name="widget-id"]')?.value);
-                    //     position = child.querySelector('input[name="widget-position"]')?.value
-                    //     widgetId = child.querySelector('input[name="widget-id"]')?.value
-                    //     if(position && widgetId){
-                    //         foundWidgetInList = allWidgetsList.find(w => w.id == widgetId && w.position == position);
-                    //         if(foundWidgetInList){
-                    //             if(item.id == widgetId && item.position == position){
-                    //                 foundWidget = true;
-                    //             }
-                    //             // console.log('foundWidget', foundWidget);
-                    //             // continue;
-                    //             console.log('item 22222', item)
-                    //         }else{
-                    //             console.log('item 3333333', item)
-                    //         }
-                    //     }
-                    // });
-                    // foundWidget = allWidgetsList.find(w => w.id == item.id && w.position == item.position);
-                    // if(!foundWidget){
                     createWidget(item);
-                    // }
-                    // allWidgetsList.push({id: item.id, position: item.position});
                 })
                 // restore scroll position
                 window.scrollTo(0, verticalScroll);

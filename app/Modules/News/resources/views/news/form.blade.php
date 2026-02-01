@@ -20,8 +20,22 @@
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
             value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
-        <small><a
-                href="{{ isset($news) ? App\Helpers\UrlHelper::getFrontendUrl($news->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ isset($news) ? App\Helpers\UrlHelper::getFrontendUrl($news->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
+        <small>
+            <a href="{{ isset($news) ? 
+                App\Helpers\UrlHelper::getFrontendUrl(
+                    $news->getTranslation('slug', app()->getLocale(), false), 
+                    session('lang')
+                ) 
+                : '' }}"
+            >
+                {{ isset($news) ? 
+                    App\Helpers\UrlHelper::getFrontendUrl(
+                        $news->getTranslation('slug', app()->getLocale(), false), 
+                        session('lang')
+                    ) 
+                    : '' }}
+            </a>
+        </small>
     </div>
 @endif
 <div class="mb-3">
