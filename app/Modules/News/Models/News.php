@@ -28,11 +28,6 @@ class News extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function category()
-    {
-        return $this->belongsTo(NewsCategory::class, 'news_category_id', 'id');
-    }
-
     public function getFullUrlAttribute()
     {
         $fullUrl = $this->slug;
@@ -98,13 +93,18 @@ class News extends Model
         )->where('widgetables.widgetable_type', self::class);
     }
 
-    public function author()
-    {
-        return $this->belongsTo(NewsAuthor::class, 'author_id', 'id');
-    }
-
     public function tags()
     {
         return $this->belongsToMany(NewsTag::class, 'news_news_tag');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(NewsCategory::class, 'news_category_id', 'id');
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(NewsAuthor::class, 'author_id', 'id');
     }
 }

@@ -40,6 +40,8 @@ use App\Http\Resources\BookAuthorResource;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use App\Http\Resources\CommentableResource;
 use App\Http\Resources\TranslationTextResource;
+use App\Modules\News\Http\Resources\NewsResource;
+use App\Modules\News\Models\News;
 
 class ContentController extends Controller
 {
@@ -194,23 +196,25 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
+        // Is Article
         //can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
         $articlePrefixSetting = $settings->where('key', 'article-prefix')->first();
         $articlePath = $path;
         $articlePrefix = '';
         // $articlePrefixSetting->value is "articles" by default
-        if (!empty($articlePrefixSetting) && !empty($articlePrefixSetting->value)) {
-            $articlePrefix = '/' . trim($articlePrefixSetting->value, '/');
+        $settingsValue = $articlePrefixSetting->value;
+        if($articlePrefixSetting->is_translatable){
+            $settingsValue = unserialize($settingsValue)[$lang];
+        }
+        if (!empty($articlePrefixSetting) && !empty($settingsValue)) {
+            $articlePrefix = '/' . trim($settingsValue, '/');
             $articlePath = substr($path, strlen($articlePrefix));
         }
-
-        // Is Article
         $article = Article::withAllWidgetData()
             ->with(['category', 'tags'])
             ->where('slug->' . app()->getLocale(), $articlePath)
             ->where('status', 'published')
             ->first();
-
         if ($article) {
             // here check if category is correct do it, otherwise return 404
             $responseData["article_prefix"] = $articlePrefix;
@@ -222,21 +226,24 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
+        // Is Product
         $productPrefixSetting = $settings->where('key', 'product-prefix')->first();
         $productPath = $path;
         $productPrefix = '';
         // $productPrefixSetting->value is "products" by default
-        if (!empty($productPrefixSetting) && !empty($productPrefixSetting->value)) {
-            $productPrefix = '/' . trim($productPrefixSetting->value, '/');
+        $settingsValue = $productPrefixSetting->value;
+        if($productPrefixSetting->is_translatable){
+            $settingsValue = unserialize($settingsValue)[$lang];
+        }
+        if (!empty($productPrefixSetting) && !empty($settingsValue)) {
+            $productPrefix = '/' . trim($settingsValue, '/');
             $productPath = substr($path, strlen($productPrefix));
         }
-        // Is Product
         $product = Product::withAllWidgetData()
             ->with(['category'])
             ->where('slug->' . app()->getLocale(), $productPath)
             ->where('status', 'published')
             ->first();
-
         if ($product) {
             // here check if productCategory is correct do it
             $responseData["product_prefix"] = $productPrefix;
@@ -248,22 +255,24 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
+        // Is Book
         $bookPrefixSetting = $settings->where('key', 'book-prefix')->first();
         $bookPath = $path;
         $bookPrefix = '';
         // $bookPrefixSetting->value is "books" by default
-        if (!empty($bookPrefixSetting) && !empty($bookPrefixSetting->value)) {
-            $bookPrefix = '/' . trim($bookPrefixSetting->value, '/');
+        $settingsValue = $bookPrefixSetting->value;
+        if($bookPrefixSetting->is_translatable){
+            $settingsValue = unserialize($settingsValue)[$lang];
+        }
+        if (!empty($bookPrefixSetting) && !empty($settingsValue)) {
+            $bookPrefix = '/' . trim($settingsValue, '/');
             $bookPath = substr($path, strlen($bookPrefix));
         }
-
-        // Is Book
         $book = Book::withAllWidgetData()
             ->with(['bookGenre'])
             ->where('slug->' . app()->getLocale(), $bookPath)
             ->where('status', 'published')
             ->first();
-
         if ($book) {
             // here check if bookGenre is correct do it
             $responseData["book_prefix"] = $bookPrefix;
@@ -271,6 +280,35 @@ class ContentController extends Controller
                 'book_prefix' => $bookPrefix
             ]);
             $responseData['content_type'] = 'book';
+
+            return response()->json(['data' => $responseData], $responseCode);
+        }
+
+        // Is News
+        $newsPrefixSetting = $settings->where('key', 'news-prefix')->first();
+        $newsPath = $path;
+        $newsPrefix = '';
+        // $newsPrefixSetting->value is "news" by default
+        $settingsValue = $newsPrefixSetting->value;
+        if($newsPrefixSetting->is_translatable){
+            $settingsValue = unserialize($settingsValue)[$lang];
+        }
+        if (!empty($newsPrefixSetting) && !empty($settingsValue)) {
+            $newsPrefix = '/' . trim($settingsValue, '/');
+            $newsPath = substr($path, strlen($newsPrefix));
+        }
+        $news = News::withAllWidgetData()
+            ->with(['category', 'tags', 'author'])
+            ->where('slug->' . app()->getLocale(), $newsPath)
+            ->where('status', 'published')
+            ->first();
+        if ($news) {
+            // here check if bookGenre is correct do it
+            $responseData["news_prefix"] = $newsPrefix;
+            $responseData["news"] = NewsResource::make($news)->additional([
+                'news_prefix' => $newsPrefix
+            ]);
+            $responseData['content_type'] = 'news';
 
             return response()->json(['data' => $responseData], $responseCode);
         }

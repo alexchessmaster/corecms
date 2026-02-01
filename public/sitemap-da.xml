@@ -37,10 +37,10 @@
     <priority>0.5</priority>
             </url>
     <url>
-    <loc>https://corecms.nordicstandard.net/da/news/example-category/ny</loc>
-    <xhtml:link rel="alternate" hreflang="da" href="https://corecms.nordicstandard.net/da/news/example-category/ny" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/news/example-category/new" />
-    <lastmod>2026-02-01T17:10:52+01:00</lastmod>
+    <loc>https://corecms.nordicstandard.net/da/nyheder/eksample-kategori/nyt</loc>
+    <xhtml:link rel="alternate" hreflang="da" href="https://corecms.nordicstandard.net/da/nyheder/eksample-kategori/nyt" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://corecms.nordicstandard.net/en/nyheder/example-category/new" />
+    <lastmod>2026-02-01T17:27:34+01:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
             </url>

@@ -32,9 +32,6 @@ class GenerateSitemapsCommand extends Command
     public function handle()
     {
         $languages = Language::all(); // Add more languages as needed
-        $articlePrefix = '/' . Setting::where('key', 'article-prefix')->value('value') ?? '';
-        $bookPrefix = '/' . Setting::where('key', 'book-prefix')->value('value') ?? '';
-        $productPrefix = '/' . Setting::where('key', 'product-prefix')->value('value') ?? '';
 
         $defaultFrequencyChangePages = Setting::where('key', 'default-sitemap-change-frequency-pages')->value('value');
         $defaultFrequencyChangeArticles = Setting::where('key', 'default-sitemap-change-frequency-articles')->value('value');
@@ -42,8 +39,13 @@ class GenerateSitemapsCommand extends Command
         $defaultPriorityArticles = Setting::where('key', 'default-sitemap-priority-articles')->value('value');
 
         $frontendBaseUrl = '';
-        $tables = ['pages', 'articles', 'books'];
+        $tables = ['pages', 'articles', 'books', 'products', 'news'];
         foreach ($languages as $language) {
+            $articlePrefix = $this->getPrefixSettingsValue('article-prefix', $language);
+            $bookPrefix = $this->getPrefixSettingsValue('book-prefix', $language);
+            $productPrefix = $this->getPrefixSettingsValue('product-prefix', $language);
+            $newsPrefix = $this->getPrefixSettingsValue('news-prefix', $language);
+
             $lang = $language->code;
             // dd($lang);
             $sitemap = Sitemap::create();
@@ -58,8 +60,10 @@ class GenerateSitemapsCommand extends Command
                                 $prefix = "{$articlePrefix}";
                             } elseif ($table === 'books') {
                                 $prefix = "{$bookPrefix}";
-                            } elseif ($table === 'product') {
+                            } elseif ($table === 'products') {
                                 $prefix = "{$productPrefix}";
+                            } elseif ($table === 'news') {
+                                $prefix = "{$newsPrefix}";
                             } else {
                                 $prefix = '';
                             }
@@ -76,6 +80,8 @@ class GenerateSitemapsCommand extends Command
                                 $prefix = "{$bookPrefix}";
                             } elseif ($table === 'products') {
                                 $prefix = "{$productPrefix}";
+                            } elseif ($table === 'news') {
+                                $prefix = "{$newsPrefix}";
                             } else {
                                 $prefix = '';
                             }
@@ -144,5 +150,19 @@ class GenerateSitemapsCommand extends Command
         $sitemapIndex->writeToFile($sitemapIndexPath);
 
         $this->info("Generated sitemap index: {$sitemapIndexPath}");
+    }
+
+    private function getPrefixSettingsValue($settingsKey, $language)
+    {
+        $setting = Setting::where('key', $settingsKey)->firstOrFail();
+        $value =  $setting->value;
+        if($setting->is_translatable){
+            $value = unserialize($value)[$language->code];
+        }
+        if(empty($value)){
+            return '';
+        }
+        
+        return '/' . $value;
     }
 }

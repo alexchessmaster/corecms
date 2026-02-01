@@ -47,7 +47,7 @@ class NewsResource extends JsonResource
             "content" => $this->content,
             "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
             "news_category_id" => $this->news_category_id,
-            "newsCategory" => $this->relationLoaded('newsCategory') ? new NewsCategoryResource($this->productCategory) : null,
+            "newsCategory" => $this->relationLoaded('category') ? new NewsCategoryResource($this->category) : 'yes',
             "published_year" => $this->published_year,
             "author_id" => $this->author_id,
             "author" => $this->relationLoaded('author') ? new NewsAuthorResource($this->author) : null,

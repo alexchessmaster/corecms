@@ -44,8 +44,14 @@ enum SettingKeyEnum: string
 
     case DEFAULT_SITEMAP_CHANGE_FREQUENCY_PAGES = 'default-sitemap-change-frequency-pages';
     case DEFAULT_SITEMAP_CHANGE_FREQUENCY_ARTICLES = 'default-sitemap-change-frequency-articles';
+    case DEFAULT_SITEMAP_CHANGE_FREQUENCY_BOOKS = 'default-sitemap-change-frequency-books';
+    case DEFAULT_SITEMAP_CHANGE_FREQUENCY_PRODUCTS = 'default-sitemap-change-frequency-products';
+    case DEFAULT_SITEMAP_CHANGE_FREQUENCY_NEWS = 'default-sitemap-change-frequency-news';
     case DEFAULT_SITEMAP_PRIORITY_PAGES = 'default-sitemap-priority-pages';
     case DEFAULT_SITEMAP_PRIORITY_ARTICLES = 'default-sitemap-priority-articles';
+    case DEFAULT_SITEMAP_PRIORITY_BOOKS = 'default-sitemap-priority-books';
+    case DEFAULT_SITEMAP_PRIORITY_PRODUCTS = 'default-sitemap-priority-products';
+    case DEFAULT_SITEMAP_PRIORITY_NEWS = 'default-sitemap-priority-news';
 
     public static function values(): array
     {
