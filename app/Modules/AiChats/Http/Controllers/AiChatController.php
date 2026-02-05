@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\AiChat\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAiChatRequest;
 use App\Http\Requests\UpdateAiChatRequest;
-use App\Models\AiChat;
-use App\Models\AiMessage;
-use App\Models\AiPersona;
+use App\Modules\AiChat\Models\AiChat;
+use App\Modules\AiChat\Models\AiMessage;
+use App\Modules\AiChat\Models\AiPersona;
 use App\Contracts\AiServiceInterface;
 use App\Services\TokenCostCalculator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
