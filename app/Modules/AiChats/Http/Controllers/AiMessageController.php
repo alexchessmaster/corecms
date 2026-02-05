@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\AiChat\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAiMessageRequest;
 use App\Http\Requests\UpdateAiMessageRequest;
-use App\Models\AiMessage;
-use App\Models\AiChat;
+use App\Modules\AiChat\Models\AiMessage;
+use App\Modules\AiChat\Models\AiChat;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -119,7 +120,7 @@ class AiMessageController extends Controller
     public function getByRole(Request $request, AiChat $aiChat, string $role): JsonResponse
     {
         $validRoles = ['user', 'assistant', 'system'];
-        
+
         if (!in_array($role, $validRoles)) {
             return response()->json(['error' => 'Invalid role'], 422);
         }
@@ -138,7 +139,7 @@ class AiMessageController extends Controller
     public function search(Request $request, AiChat $aiChat): JsonResponse
     {
         $query = $request->get('q');
-        
+
         if (!$query) {
             return response()->json([]);
         }

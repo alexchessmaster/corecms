@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\AiChat\Models;
 
-use App\Models\AiMessage;
-use App\Models\AiPersona;
+use App\Modules\AiChat\Models\AiMessage;
+use App\Modules\AiChat\Models\AiPersona;
 use App\Services\TokenCostCalculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AiChat extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'session_name',
         'user_id',
@@ -48,11 +48,11 @@ class AiChat extends Model
 
         if ($inputTokens || $outputTokens) {
             $messageCost = $calculator->calculateCost(
-                $this->ai_model_used, 
-                $inputTokens ?? 0, 
+                $this->ai_model_used,
+                $inputTokens ?? 0,
                 $outputTokens ?? 0
             );
-            
+
             $this->increment('total_input_tokens', $inputTokens ?? 0);
             $this->increment('total_output_tokens', $outputTokens ?? 0);
             $this->increment('total_cost_usd', $messageCost);

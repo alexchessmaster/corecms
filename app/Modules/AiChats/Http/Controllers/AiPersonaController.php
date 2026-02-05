@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\AiChat\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAiPersonaRequest;
 use App\Http\Requests\UpdateAiPersonaRequest;
-use App\Models\AiPersona;
+use App\Modules\AiChat\Models\AiPersona;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,7 @@ class AiPersonaController extends Controller
                 // Show public personas
                 $query->where('is_public', true)
                       ->where('is_active', true);
-                
+
                 // Also show user's own personas if authenticated
                 if ($request->user()) {
                     $query->orWhere('created_by_user_id', $request->user()->id);
@@ -212,7 +213,7 @@ class AiPersonaController extends Controller
     public function search(Request $request): JsonResponse
     {
         $query = $request->get('q');
-        
+
         if (!$query) {
             return response()->json([]);
         }
@@ -221,7 +222,7 @@ class AiPersonaController extends Controller
                 // Show public personas
                 $queryBuilder->where('is_public', true)
                            ->where('is_active', true);
-                
+
                 // Also show user's own personas if authenticated
                 if ($request->user()) {
                     $queryBuilder->orWhere('created_by_user_id', $request->user()->id);
