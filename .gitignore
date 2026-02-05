@@ -20,6 +20,7 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
-/certs
-!/certs.example.test.key
-!/certs.example.test.pem
+/certs/*
+!/certs/
+!/certs/example.test.key
+!/certs/example.test.pem
