@@ -4,7 +4,7 @@ namespace App\Modules\AiChats\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class AiChatModuleServiceProvider extends ServiceProvider
+class AiChatsModuleServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
