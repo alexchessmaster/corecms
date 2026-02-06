@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BookAuthor;
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;

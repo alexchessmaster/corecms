@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Booking\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\BookingTimeSlot;
-use App\Models\BookingSlotTemplate;
+use App\Modules\Booking\Models\BookingTimeSlot;
+use App\Modules\Booking\Models\BookingSlotTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -17,9 +17,9 @@ class BookingTimeSlotController extends Controller
     public function index()
     {
         $this->authorize('viewAny', BookingTimeSlot::class);
-        
+
         $timeSlots = BookingTimeSlot::with('template')->orderBy('start_time', 'desc')->get();
-        return view('admin.booking-time-slot.index', compact('timeSlots'));
+        return view('bookings::booking-time-slot.index', compact('timeSlots'));
     }
 
     /**
@@ -28,9 +28,9 @@ class BookingTimeSlotController extends Controller
     public function create()
     {
         $this->authorize('create', BookingTimeSlot::class);
-        
+
         $templates = BookingSlotTemplate::where('is_active', true)->get();
-        return view('admin.booking-time-slot.create', compact('templates'));
+        return view('bookings::booking-time-slot.create', compact('templates'));
     }
 
     /**
@@ -39,7 +39,7 @@ class BookingTimeSlotController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', BookingTimeSlot::class);
-        
+
         $validated = $request->validate([
             'template_id' => 'required|exists:booking_slot_templates,id',
             'start_time' => 'required|date',
@@ -52,7 +52,7 @@ class BookingTimeSlotController extends Controller
 
         $timeSlot = BookingTimeSlot::create($validated);
 
-        return redirect()->route('admin.booking-time-slots.index')->with('success', 'Time slot created successfully.');
+        return redirect()->route('bookings::booking-time-slots.index')->with('success', 'Time slot created successfully.');
     }
 
     /**
@@ -62,8 +62,8 @@ class BookingTimeSlotController extends Controller
     {
         $timeSlot = BookingTimeSlot::with(['template', 'reservations'])->findOrFail($id);
         $this->authorize('view', $timeSlot);
-        
-        return view('admin.booking-time-slot.show', compact('timeSlot'));
+
+        return view('bookings::booking-time-slot.show', compact('timeSlot'));
     }
 
     /**
@@ -73,9 +73,9 @@ class BookingTimeSlotController extends Controller
     {
         $timeSlot = BookingTimeSlot::findOrFail($id);
         $this->authorize('view', $timeSlot);
-        
+
         $templates = BookingSlotTemplate::where('is_active', true)->get();
-        return view('admin.booking-time-slot.edit', compact('timeSlot', 'templates'));
+        return view('bookings::booking-time-slot.edit', compact('timeSlot', 'templates'));
     }
 
     /**
@@ -85,7 +85,7 @@ class BookingTimeSlotController extends Controller
     {
         $timeSlot = BookingTimeSlot::findOrFail($id);
         $this->authorize('update', $timeSlot);
-        
+
         $validated = $request->validate([
             'template_id' => 'required|exists:booking_slot_templates,id',
             'start_time' => 'required|date',
@@ -95,10 +95,10 @@ class BookingTimeSlotController extends Controller
             'is_manually_disabled' => 'required|boolean',
             'admin_notes' => 'nullable|string|max:1000',
         ]);
-        
+
         $timeSlot->update($validated);
-        
-        return redirect()->route('admin.booking-time-slots.index')->with('success', 'Time slot updated successfully.');
+
+        return redirect()->route('bookings::booking-time-slots.index')->with('success', 'Time slot updated successfully.');
     }
 
     /**
@@ -108,10 +108,10 @@ class BookingTimeSlotController extends Controller
     {
         $timeSlot = BookingTimeSlot::findOrFail($id);
         $this->authorize('delete', $timeSlot);
-        
+
         $timeSlot->delete();
-        
-        return redirect()->route('admin.booking-time-slots.index')->with('success', 'Time slot deleted successfully.');
+
+        return redirect()->route('bookings::booking-time-slots.index')->with('success', 'Time slot deleted successfully.');
     }
 
     /**
@@ -121,11 +121,11 @@ class BookingTimeSlotController extends Controller
     {
         $timeSlot = BookingTimeSlot::findOrFail($id);
         $this->authorize('update', $timeSlot);
-        
+
         $timeSlot->is_active = !$timeSlot->is_active;
         $timeSlot->save();
-        
-        return redirect()->route('admin.booking-time-slots.index')->with('success', 'Time slot status updated.');
+
+        return redirect()->route('bookings::booking-time-slots.index')->with('success', 'Time slot status updated.');
     }
 
     /**
@@ -135,10 +135,10 @@ class BookingTimeSlotController extends Controller
     {
         $timeSlot = BookingTimeSlot::findOrFail($id);
         $this->authorize('update', $timeSlot);
-        
+
         $timeSlot->is_manually_disabled = !$timeSlot->is_manually_disabled;
         $timeSlot->save();
-        
-        return redirect()->route('admin.booking-time-slots.index')->with('success', 'Time slot manual disable status updated.');
+
+        return redirect()->route('bookings::booking-time-slots.index')->with('success', 'Time slot manual disable status updated.');
     }
 }

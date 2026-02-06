@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Modules\Booking\Jobs;
 
-use App\Models\BookingReservation;
+use App\Modules\Booking\Models\BookingReservation;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,7 +17,7 @@ class BookingReleaseExpiredJob implements ShouldQueue
     public function handle()
     {
         $expiredTime = Carbon::now()->subMinutes(15);
-        
+
         BookingReservation::where('created_at', '<', $expiredTime)
             ->where('status', 'pending')
             ->update(['status' => 'expired']);

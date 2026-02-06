@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\WidgetResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -34,7 +34,7 @@ class WidgetableResource extends JsonResource
             'fields' => $widget->fieldWidgets->map(function ($fieldWidget) use ($fieldValues) {
                 $widgetFieldValue = $fieldValues->get($fieldWidget->id);
                 $value = $widgetFieldValue?->getTranslation('value', app()->getLocale());
-                
+
                 return [
                     'id' => $fieldWidget->field->id,
                     'field_widget' => $fieldWidget->id,
@@ -44,7 +44,7 @@ class WidgetableResource extends JsonResource
                     'value' => !empty($value) && $fieldWidget->field->type === 'file' ? FileHelper::addDomainPrefixIfValueIsAFile($value) : $value,
                 ];
             }),
-            
+
         ];
     }
 }

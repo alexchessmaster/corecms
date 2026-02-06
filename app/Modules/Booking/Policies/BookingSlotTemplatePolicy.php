@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Policies;
+namespace App\Modules\Booking\Policies;
 
-use App\Models\BookingSlotTemplate;
+use App\Modules\Booking\Models\BookingSlotTemplate;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

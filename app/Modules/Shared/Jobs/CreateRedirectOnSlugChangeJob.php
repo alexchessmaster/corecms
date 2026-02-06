@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Modules\Shared\Jobs;
 
 use App\Models\Article;
 use App\Models\Book;

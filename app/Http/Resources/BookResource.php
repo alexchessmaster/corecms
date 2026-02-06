@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Language;
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\BookGenreResource;
@@ -34,7 +34,7 @@ class BookResource extends JsonResource
                 }
             }
         }
-        
+
         // return parent::toArray($request);
         return [
             "id" => $this->id,

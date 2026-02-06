@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Modules\Shared\Helpers;
 
 use App\Models\Language;
 
@@ -18,7 +18,7 @@ class UrlHelper
         }else{
             $url = $language->domain;
         }
-        
+
         return rtrim($url, '/') . '/' . ltrim($path, '/');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Booking\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -44,8 +44,8 @@ class BookingSlotTemplate extends Model
     public function isValidForDate($date)
     {
         $carbonDate = \Carbon\Carbon::parse($date);
-        
-        return $this->is_active 
+
+        return $this->is_active
             && $carbonDate->between($this->valid_from, $this->valid_until)
             && in_array($carbonDate->dayOfWeekIso, $this->days_of_week);
     }
@@ -61,14 +61,14 @@ class BookingSlotTemplate extends Model
 
         $slots = collect();
         $carbonDate = \Carbon\Carbon::parse($date);
-        
+
         // Extract time from the datetime objects
         $startTime = $carbonDate->copy()->setTimeFrom($this->start_time);
         $endTime = $carbonDate->copy()->setTimeFrom($this->end_time);
 
         while ($startTime->lessThan($endTime)) {
             $slotEnd = $startTime->copy()->addMinutes($this->slot_duration_minutes);
-            
+
             if ($slotEnd->lessThanOrEqualTo($endTime)) {
                 $slots->push([
                     'template_id' => $this->id,
@@ -79,7 +79,7 @@ class BookingSlotTemplate extends Model
                     'is_manually_disabled' => false
                 ]);
             }
-            
+
             $startTime = $slotEnd;
         }
 

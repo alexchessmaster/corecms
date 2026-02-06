@@ -6,33 +6,34 @@
         </div>
     @endif
     <div class="mb-2" id="preview-container" style="display: none;">
-        <img id="image-preview" style="max-width: 150px; height: auto;" />
+        <img id="image-preview" style="max-width: 150px; height: auto;"/>
     </div>
-    <input type="file" class="form-control" id="image" name="image" {{-- @if (!(isset($news) && $news->image)) required @endif --}}>
+    <input type="file" class="form-control" id="image"
+           name="image" {{-- @if (!(isset($news) && $news->image)) required @endif --}}>
 </div>
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
-        value="{{ isset($news) ? $news->getTranslation('title', app()->getLocale(), false) : '' }}" required>
+           value="{{ isset($news) ? $news->getTranslation('title', app()->getLocale(), false) : '' }}" required>
 </div>
 @if (isset($news))
     <div class="mb-3">
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
-            value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
+               value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
         <small>
-            <a href="{{ isset($news) ? 
-                App\Helpers\UrlHelper::getFrontendUrl(
-                    $news->getTranslation('slug', app()->getLocale(), false), 
+            <a href="{{ isset($news) ?
+                \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+                    $news->getTranslation('slug', app()->getLocale(), false),
                     session('lang')
-                ) 
+                )
                 : '' }}"
             >
-                {{ isset($news) ? 
-                    App\Helpers\UrlHelper::getFrontendUrl(
-                        $news->getTranslation('slug', app()->getLocale(), false), 
+                {{ isset($news) ?
+                    \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+                        $news->getTranslation('slug', app()->getLocale(), false),
                         session('lang')
-                    ) 
+                    )
                     : '' }}
             </a>
         </small>
@@ -52,12 +53,13 @@
     <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
         <label for="scheduled_at">Scheduled At</label>
         <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
-            value="{{ old('scheduled_at', isset($news->scheduled_at) ? $news->scheduled_at->format('Y-m-d\TH:i') : '') }}">
+               value="{{ old('scheduled_at', isset($news->scheduled_at) ? $news->scheduled_at->format('Y-m-d\TH:i') : '') }}">
     </div>
 </div>
 <div class="mb-3">
     <label for="description" class="form-label">Description (Short)</label>
-    <textarea class="form-control" id="description" name="description" rows="2">{{ isset($news) ? $news->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
+    <textarea class="form-control" id="description" name="description"
+              rows="2">{{ isset($news) ? $news->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
     <label for="category_id" class="form-label required">Category</label>
@@ -66,7 +68,7 @@
             <!-- The category must be translated before creating a new item to generate the correct slug -->
             @if (!empty($category->getTranslation('name', app()->getLocale(), false)))
                 <option value="{{ $category->id }}"
-                    {{ isset($news) && $news->news_category_id == $category->id ? 'selected' : '' }}>
+                        {{ isset($news) && $news->news_category_id == $category->id ? 'selected' : '' }}>
                     {{ $category->getTranslation('name', app()->getLocale()) }}
                 </option>
             @endif
@@ -104,7 +106,7 @@
 
 {{-- select2 for author --}}
 <script>
-    jQuery(document).ready(function($) {
+    jQuery(document).ready(function ($) {
         $('#author_id').select2({
             ajax: {
                 url: '/admin/news-authors/select?lang={!! App::currentLocale() !!}',
@@ -114,14 +116,14 @@
                     'Authorization': 'Bearer {{ $authToken ?? '' }}',
                     'Accept': 'application/json'
                 },
-                data: function(params) {
+                data: function (params) {
                     return {
                         search: params.term,
                         page: params.page || 1
                     };
                 },
-                processResults: function(data) {
-                    const results = data.data.map(function(author) {
+                processResults: function (data) {
+                    const results = data.data.map(function (author) {
                         return {
                             id: author.id,
                             text: author.name
@@ -142,7 +144,7 @@
 
         // Trigger change event to ensure the pre-selected option is properly loaded
         @if (isset($news) && $news->author_id && $news->author)
-            $('#author_id').trigger('change');
+        $('#author_id').trigger('change');
         @endif
     });
 </script>
@@ -150,7 +152,7 @@
 
 {{-- news-tags --}}
 <script>
-    jQuery(document).ready(function($) {
+    jQuery(document).ready(function ($) {
         $('#tag_ids').select2({
             multiple: true,
             ajax: {
@@ -161,14 +163,14 @@
                     'Authorization': 'Bearer {{ $authToken ?? '' }}',
                     'Accept': 'application/json'
                 },
-                data: function(params) {
+                data: function (params) {
                     return {
                         search: params.term,
                         page: params.page || 1
                     };
                 },
-                processResults: function(data) {
-                    const results = data.data.map(function(tag) {
+                processResults: function (data) {
+                    const results = data.data.map(function (tag) {
                         return {
                             id: tag.id,
                             text: tag.name
@@ -191,7 +193,7 @@
 
 {{-- status --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const statusSelect = document.getElementById('status');
         const scheduledGroup = document.getElementById('scheduled_at_group');
 
@@ -212,7 +214,7 @@
     const previewImage = document.getElementById('image-preview');
     const currentImageContainer = document.getElementById('current-image-container');
 
-    imageInput.addEventListener('change', function(event) {
+    imageInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
 
         if (file) {

@@ -20,9 +20,9 @@ class BookingModuleServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadRoutesFrom(app_path('Modules/AiChat/routes/api.php'));
-        $this->loadRoutesFrom(app_path('Modules/AiChat/routes/web.php'));
-        $this->loadViewsFrom(app_path('Modules/AiChat/resources/views'), 'bookings');
+        $this->loadRoutesFrom(app_path('Modules/Booking/routes/api.php'));
+        $this->loadRoutesFrom(app_path('Modules/Booking/routes/web.php'));
+        $this->loadViewsFrom(app_path('Modules/Booking/resources/views'), 'bookings');
     }
 }
 

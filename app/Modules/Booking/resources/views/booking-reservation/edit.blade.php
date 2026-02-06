@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('resources.views.admin.partials.app')
 @section('content-card-title', 'Edit Booking Reservation')
 @section('content-body')
     <div class="container">
@@ -11,7 +11,7 @@
         <form action="{{ route('admin.booking-reservations.update', $reservation->id) }}" method="POST">
             @csrf
             @method('PUT')
-            @include('admin.booking-reservation.form')
+            @include('booking-reservation.form')
             <button type="submit" class="btn btn-primary">Update Reservation</button>
         </form>
     </div>

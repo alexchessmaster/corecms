@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\V1\ContentController as ContentControllerV1;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Middleware\BookingAdminMiddleware;
+use App\Modules\Booking\Http\Middleware\BookingAdminMiddleware;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\BookGenreController;
@@ -24,9 +24,9 @@ use App\Http\Controllers\Api\FormNewsletterController;
 use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\BookingSlotTemplateController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
-use App\Http\Controllers\Api\BookingAppointmentController;
-use App\Http\Controllers\Api\BookingReservationController;
-use App\Http\Controllers\Api\BookingAvailabilityController;
+use App\Modules\Booking\Http\Controllers\Api\V1\BookingAppointmentController;
+use App\Modules\Booking\Http\Controllers\Api\V1\BookingReservationController;
+use App\Modules\Booking\Http\Controllers\Api\V1\BookingAvailabilityController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
@@ -109,23 +109,3 @@ Route::prefix('newsletter')->middleware([LanguageApiMiddleware::class, 'throttle
 
 
 // Booking System Routes
-Route::prefix('booking')->middleware([LanguageApiMiddleware::class, 'throttle:100,1'])->group(function () {
-    // Admin routes (require authentication)
-    Route::middleware(['auth:sanctum', BookingAdminMiddleware::class])->group(function () {
-        Route::get('/reservations', [BookingReservationController::class, 'index']);
-        Route::get('/reservations/today', [BookingReservationController::class, 'today']);
-        Route::get('/reservations/week', [BookingReservationController::class, 'week']);
-        Route::get('/reservations/month', [BookingReservationController::class, 'month']);
-
-        // Slot Template management (CRUD + toggle)
-        Route::apiResource('/templates', BookingSlotTemplateController::class);
-        Route::post('/templates/{id}/toggle', [BookingSlotTemplateController::class, 'toggleActive']);
-    });
-
-    // Public booking routes (no auth required)
-    Route::get('/availability', [BookingAvailabilityController::class, 'checkAvailability']); // GET /api/booking/availability?date=YYYY-MM-DD
-    Route::get('/appointments', [BookingAppointmentController::class, 'index']); // GET /api/booking/appointments?email=
-    Route::post('/reservations', [BookingReservationController::class, 'bookAppointment']); // POST /api/booking/reservations
-    // Future endpoints (not yet implemented in controller):
-    // Route::patch('/appointments/{id}/cancel', [BookingAppointmentController::class, 'cancel']);
-});

@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateAiChatRequest;
 use App\Modules\AiChat\Models\AiChat;
 use App\Modules\AiChat\Models\AiMessage;
 use App\Modules\AiChat\Models\AiPersona;
-use App\Contracts\AiServiceInterface;
+use App\Modules\AiChat\Contracts\AiServiceInterface;
 use App\Services\TokenCostCalculator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;

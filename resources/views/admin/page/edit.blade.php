@@ -11,8 +11,8 @@
                         <div class="form-group">
                             <label for="page_title">Page title</label>
                             <input type="text" class="form-control" id="page_title" aria-describedby=""
-                                placeholder="Page title"
-                                value="{{ !empty($page->getTranslation('title', app()->getLocale(), false)) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
+                                   placeholder="Page title"
+                                   value="{{ !empty($page->getTranslation('title', app()->getLocale(), false)) ? $page->getTranslation('title', app()->getLocale(), false) : '' }}">
                             <small id="" class="form-text text-muted">The title of the page.</small>
                         </div>
                     </div>
@@ -20,9 +20,10 @@
                         <div class="form-group">
                             <label for="page_slug">Page slug</label>
                             <input type="text" class="form-control" id="page_slug" aria-describedby=""
-                                placeholder="Page URL"
-                                value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
-                            <small id="" class="form-text text-muted"><a href="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? App\Helpers\UrlHelper::getFrontendUrl($page->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? App\Helpers\UrlHelper::getFrontendUrl($page->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
+                                   placeholder="Page URL"
+                                   value="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? $page->getTranslation('slug', app()->getLocale(), false) : '' }}">
+                            <small id="" class="form-text text-muted"><a
+                                        href="{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl($page->getTranslation('slug', app()->getLocale(), false)) : '' }}">{{ !empty($page->getTranslation('slug', app()->getLocale(), false)) ? \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl($page->getTranslation('slug', app()->getLocale(), false)) : '' }}</a></small>
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -30,13 +31,15 @@
                             <label for="status">Status</label>
                             <select id="status" name="status" class="form-control">
                                 <option value="draft"
-                                    {{ old('status', $page->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
+                                        {{ old('status', $page->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
                                 </option>
                                 <option value="published"
-                                    {{ old('status', $page->status ?? '') == 'published' ? 'selected' : '' }}>Published
+                                        {{ old('status', $page->status ?? '') == 'published' ? 'selected' : '' }}>
+                                    Published
                                 </option>
                                 <option value="scheduled"
-                                    {{ old('status', $page->status ?? '') == 'scheduled' ? 'selected' : '' }}>Scheduled
+                                        {{ old('status', $page->status ?? '') == 'scheduled' ? 'selected' : '' }}>
+                                    Scheduled
                                 </option>
                             </select>
                         </div>
@@ -44,7 +47,7 @@
                         <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
                             <label for="scheduled_at">Scheduled At</label>
                             <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
-                                value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
+                                   value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -64,7 +67,7 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const statusSelect = document.getElementById('status');
             const scheduledGroup = document.getElementById('scheduled_at_group');
 
@@ -121,24 +124,24 @@
             const sitemapExcludeValue = sitemapExclude.checked ? true : false;
 
             fetch('/api/pages/{!! $page->id !!}', {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer {{ $authToken ?? '' }}'
-                    },
-                    body: JSON.stringify({
-                        title: title.value,
-                        slug: slug.value,
-                        status: status.value,
-                        scheduled_at: scheduled_at.value,
-                        lang: currentLanguage,
-                        sitemap_priority: sitemapPriority.value,
-                        sitemap_change_frequency: sitemapChangeFrequency.value,
-                        primary_language: primaryLanguage.value,
-                        sitemap_exclude: sitemapExcludeValue,
-                    })
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer {{ $authToken ?? '' }}'
+                },
+                body: JSON.stringify({
+                    title: title.value,
+                    slug: slug.value,
+                    status: status.value,
+                    scheduled_at: scheduled_at.value,
+                    lang: currentLanguage,
+                    sitemap_priority: sitemapPriority.value,
+                    sitemap_change_frequency: sitemapChangeFrequency.value,
+                    primary_language: primaryLanguage.value,
+                    sitemap_exclude: sitemapExcludeValue,
                 })
+            })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -164,6 +167,5 @@
         primaryLanguageInput.addEventListener('change', updatePostInputs);
         sitemapExcludeInput.addEventListener('change', updatePostInputs);
     </script>
-
 
 @endsection

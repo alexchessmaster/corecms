@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Booking\Models;
 
-use App\Models\BookingReservation;
-use App\Models\BookingSlotTemplate;
+use App\Modules\Booking\Models\BookingReservation;
+use App\Modules\Booking\Models\BookingSlotTemplate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -50,8 +50,8 @@ class BookingTimeSlot extends Model
 
     public function isAvailable()
     {
-        return $this->is_active 
-            && !$this->is_manually_disabled 
+        return $this->is_active
+            && !$this->is_manually_disabled
             && $this->availableCapacity() > 0;
     }
 }

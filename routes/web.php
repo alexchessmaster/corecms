@@ -1,11 +1,7 @@
 <?php
 
-use App\Models\Page;
-use App\Models\Widget;
-use App\Models\PageWidget;
-use Illuminate\Support\Facades\App;
+
 use Illuminate\Support\Facades\Route;
-use App\Http\Resources\WidgetResource;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\MenuController;
@@ -13,7 +9,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FieldController;
-use App\Modules\AiChats\Http\Controllers\AiChatController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UrlLogController;
 use App\Http\Controllers\WidgetController;
@@ -24,12 +19,11 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\RedirectController;
-use App\Modules\AiChats\Http\Controllers\AiPersonaController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
-use App\Http\Controllers\BookingSlotTemplateController;
-use App\Http\Controllers\BookingTimeSlotController;
-use App\Http\Controllers\BookingReservationController;
+use App\Modules\Booking\Http\Controllers\BookingSlotTemplateController;
+use App\Modules\Booking\Http\Controllers\BookingTimeSlotController;
+use App\Modules\Booking\Http\Controllers\BookingReservationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\CommentableController;
@@ -81,15 +75,6 @@ Route::group([
     Route::resource('languages', LanguageController::class);
     Route::post('user-locale', [LanguageController::class, 'setUserLocale'])->name('user-locale');
 
-    // Booking
-    Route::resource('booking-slot-templates', BookingSlotTemplateController::class);
-    Route::post('booking-slot-templates-toggle', [BookingSlotTemplateController::class, 'toggleActive'])->name('booking-slot-templates.toggle');
-    Route::resource('booking-time-slots', BookingTimeSlotController::class);
-    Route::post('booking-time-slots/{id}/toggle', [BookingTimeSlotController::class, 'toggleActive'])->name('booking-time-slots.toggle');
-    Route::post('booking-time-slots/{id}/toggle-disable', [BookingTimeSlotController::class, 'toggleManualDisable'])->name('booking-time-slots.toggle-disable');
-    Route::get('booking-reservations/calendar', [BookingReservationController::class, 'calendar'])->name('booking-reservations.calendar');
-    Route::get('booking-reservations/{id}/details', [BookingReservationController::class, 'details'])->name('booking-reservations.details');
-    Route::resource('booking-reservations', BookingReservationController::class);
 });
 
 Route::get('/dashboard', function () {

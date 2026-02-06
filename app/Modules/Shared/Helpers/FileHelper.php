@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Modules\Shared\Helpers;
 
 use InvalidArgumentException;
 
@@ -9,8 +9,8 @@ class FileHelper
 
     // store the Files that come for message in the public folder
     // return $files(string) to store it in the $message->files
-    // Usage: 
-    // $files = storeFilesAsString($request); 
+    // Usage:
+    // $files = storeFilesAsString($request);
     // $message->files = $files;
     // $message->save();
     public static function upload($request, $fileInputName = 'file')

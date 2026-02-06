@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Booking\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\BookingReservation;
-use App\Models\BookingTimeSlot;
+use App\Modules\Booking\Models\BookingReservation;
+use App\Modules\Booking\Models\BookingTimeSlot;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -19,11 +19,11 @@ class BookingReservationController extends Controller
     public function index()
     {
         $this->authorize('viewAny', BookingReservation::class);
-        
+
         $reservations = BookingReservation::with(['user', 'timeSlot'])
             ->orderBy('created_at', 'desc')
             ->get();
-        return view('admin.booking-reservation.index', compact('reservations'));
+        return view('bookings::booking-reservation.index', compact('reservations'));
     }
 
     /**
@@ -32,12 +32,12 @@ class BookingReservationController extends Controller
     public function calendar(Request $request)
     {
         $this->authorize('viewAny', BookingReservation::class);
-        
+
         $view = $request->get('view', 'today'); // today, tomorrow, week, month
         $date = $request->get('date', now()->format('Y-m-d'));
-        
+
         $startDate = Carbon::parse($date)->startOfDay();
-        
+
         switch ($view) {
             case 'tomorrow':
                 $startDate = Carbon::parse($date)->addDay()->startOfDay();
@@ -58,7 +58,7 @@ class BookingReservationController extends Controller
                 $endDate = $startDate->copy()->endOfDay();
                 break;
         }
-        
+
         $reservations = BookingReservation::with(['user', 'timeSlot'])
             ->whereHas('timeSlot', function($query) use ($startDate, $endDate) {
                 $query->whereBetween('start_time', [$startDate, $endDate]);
@@ -67,8 +67,8 @@ class BookingReservationController extends Controller
             ->groupBy(function($reservation) {
                 return $reservation->timeSlot->start_time->format('Y-m-d');
             });
-        
-        return view('admin.booking-reservation.calendar', compact('reservations', 'view', 'startDate', 'endDate'));
+
+        return view('bookings::booking-reservation.calendar', compact('reservations', 'view', 'startDate', 'endDate'));
     }
 
     /**
@@ -78,7 +78,7 @@ class BookingReservationController extends Controller
     {
         $reservation = BookingReservation::with(['user', 'timeSlot'])->findOrFail($id);
         $this->authorize('view', $reservation);
-        
+
         return response()->json($reservation);
     }
 
@@ -88,12 +88,12 @@ class BookingReservationController extends Controller
     public function create()
     {
         $this->authorize('create', BookingReservation::class);
-        
+
         $timeSlots = BookingTimeSlot::where('is_active', true)
             ->orderBy('start_time', 'asc')
             ->get();
         $users = User::orderBy('name', 'asc')->get();
-        return view('admin.booking-reservation.create', compact('timeSlots', 'users'));
+        return view('bookings::booking-reservation.create', compact('timeSlots', 'users'));
     }
 
     /**
@@ -102,7 +102,7 @@ class BookingReservationController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', BookingReservation::class);
-        
+
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'booking_time_slot_id' => 'required|exists:booking_time_slots,id',
@@ -118,7 +118,7 @@ class BookingReservationController extends Controller
 
         $reservation = BookingReservation::create($validated);
 
-        return redirect()->route('admin.booking-reservations.index')
+        return redirect()->route('bookings::booking-reservations.index')
             ->with('success', 'Booking reservation created successfully.');
     }
 
@@ -129,8 +129,8 @@ class BookingReservationController extends Controller
     {
         $reservation = BookingReservation::with(['user', 'timeSlot'])->findOrFail($id);
         $this->authorize('view', $reservation);
-        
-        return view('admin.booking-reservation.show', compact('reservation'));
+
+        return view('bookings::booking-reservation.show', compact('reservation'));
     }
 
     /**
@@ -140,12 +140,12 @@ class BookingReservationController extends Controller
     {
         $reservation = BookingReservation::findOrFail($id);
         $this->authorize('view', $reservation);
-        
+
         $timeSlots = BookingTimeSlot::where('is_active', true)
             ->orderBy('start_time', 'asc')
             ->get();
         $users = User::orderBy('name', 'asc')->get();
-        return view('admin.booking-reservation.edit', compact('reservation', 'timeSlots', 'users'));
+        return view('bookings::booking-reservation.edit', compact('reservation', 'timeSlots', 'users'));
     }
 
     /**
@@ -155,7 +155,7 @@ class BookingReservationController extends Controller
     {
         $reservation = BookingReservation::findOrFail($id);
         $this->authorize('update', $reservation);
-        
+
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'booking_time_slot_id' => 'required|exists:booking_time_slots,id',
@@ -171,7 +171,7 @@ class BookingReservationController extends Controller
 
         $reservation->update($validated);
 
-        return redirect()->route('admin.booking-reservations.index')
+        return redirect()->route('bookings::booking-reservations.index')
             ->with('success', 'Booking reservation updated successfully.');
     }
 
@@ -182,10 +182,10 @@ class BookingReservationController extends Controller
     {
         $reservation = BookingReservation::findOrFail($id);
         $this->authorize('delete', $reservation);
-        
+
         $reservation->delete();
-        
-        return redirect()->route('admin.booking-reservations.index')
+
+        return redirect()->route('bookings::booking-reservations.index')
             ->with('success', 'Booking reservation deleted successfully.');
     }
 }

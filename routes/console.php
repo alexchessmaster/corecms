@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
-use App\Jobs\GenerateTimeSlotsFromTemplatesJob;
+use App\Modules\Booking\Jobs\GenerateTimeSlotsFromTemplatesJob;
 
 
 Schedule::command('redirects:remove-duplicate')->everyMinute()->withoutOverlapping();

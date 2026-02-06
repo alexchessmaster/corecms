@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Upload;
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use App\Http\Requests\StoreUploadRequest;
 use App\Http\Requests\UpdateUploadRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -11,14 +11,14 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class UploadController extends Controller
 {
     use AuthorizesRequests;
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $this->authorize('viewAny', Upload::class);
-        
+
         return view('admin.upload.index');
     }
 
@@ -36,7 +36,7 @@ class UploadController extends Controller
     public function store(StoreUploadRequest $request)
     {
         $this->authorize('create', Upload::class);
-        
+
         $path = FileHelper::upload($request);
         $parsedUrl = parse_url($path);
         $pathParts = explode('/', $parsedUrl['path']);

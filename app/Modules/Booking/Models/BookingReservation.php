@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Booking\Models;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\BookingTimeSlot;
+use App\Modules\Booking\Models\BookingTimeSlot;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

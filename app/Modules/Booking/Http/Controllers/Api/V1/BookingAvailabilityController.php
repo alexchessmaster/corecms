@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\Booking\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingTimeSlot;
@@ -49,7 +49,7 @@ class BookingAvailabilityController extends Controller
     public function checkAvailability(Request $request)
     {
         $date = $request->input('date');
-        
+
         if (!$date) {
             return response()->json(['error' => 'Date is required'], 400);
         }

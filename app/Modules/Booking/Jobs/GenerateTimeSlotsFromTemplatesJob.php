@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Modules\Booking\Jobs;
 
-use App\Models\BookingSlotTemplate;
-use App\Models\BookingTimeSlot;
+use App\Modules\Booking\Models\BookingSlotTemplate;
+use App\Modules\Booking\Models\BookingTimeSlot;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +35,7 @@ class GenerateTimeSlotsFromTemplatesJob implements ShouldQueue
     {
         $startDate = Carbon::today();
         $endDate = Carbon::today()->addDays($this->daysAhead);
-        
+
         Log::info('Starting time slot generation', [
             'start_date' => $startDate->toDateString(),
             'end_date' => $endDate->toDateString(),
@@ -70,9 +70,9 @@ class GenerateTimeSlotsFromTemplatesJob implements ShouldQueue
                                 $skippedCount++;
                                 continue;
                             }
-                            
+
                             // Update existing slot if needed
-                            if ($existingSlot->max_capacity != $slotData['max_capacity'] || 
+                            if ($existingSlot->max_capacity != $slotData['max_capacity'] ||
                                 $existingSlot->template_id != $slotData['template_id']) {
                                 $existingSlot->update([
                                     'max_capacity' => $slotData['max_capacity'],

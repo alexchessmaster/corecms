@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Language;
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Support\Facades\View;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class MenuController extends Controller
 {
     use AuthorizesRequests;
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -32,7 +32,7 @@ class MenuController extends Controller
     public function create()
     {
         $this->authorize('create', Menu::class);
-        
+
         $menus = Menu::orderBy('order')->get();
         return view('admin.menu.create', compact('menus'));
     }
@@ -43,7 +43,7 @@ class MenuController extends Controller
     public function store(StoreMenuRequest $request)
     {
         $this->authorize('create', Menu::class);
-        
+
         $order = $request->input('order');
         if (!is_null($order)) {
             $order += 0.5;
@@ -104,7 +104,7 @@ class MenuController extends Controller
     public function show(Menu $menu)
     {
         $this->authorize('view', $menu);
-        
+
         //
     }
 
@@ -114,7 +114,7 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         $this->authorize('update', $menu);
-        
+
         $menus = Menu::orderBy('order')->get();
         return view('admin.menu.edit', compact('menus', 'menu'));
     }
@@ -125,7 +125,7 @@ class MenuController extends Controller
     public function update(UpdateMenuRequest $request, Menu $menu)
     {
         $this->authorize('update', $menu);
-        
+
         $order = $request->input('order');
         if (!is_null($order)) {
             $order += 0.5;
@@ -181,7 +181,7 @@ class MenuController extends Controller
     public function destroy(Menu $menu)
     {
         $this->authorize('delete', $menu);
-        
+
         $menu->delete();
         return redirect()->back();
     }
