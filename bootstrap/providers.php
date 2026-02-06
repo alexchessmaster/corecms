@@ -6,5 +6,5 @@ return [
     App\Providers\ViewServiceProvider::class,
 
     App\Modules\News\Providers\NewsModuleServiceProvider::class,
-    App\Modules\AiChats\Providers\AiChatModuleServiceProvider::class,
+    App\Modules\AiChats\Providers\AiChatsModuleServiceProvider::class,
 ];
