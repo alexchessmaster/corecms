@@ -18,7 +18,7 @@ use App\Observers\ProductObserver;
 use App\Observers\CategoryObserver;
 use Illuminate\Support\Facades\URL;
 use App\Observers\BookGenreObserver;
-use App\Contracts\AiServiceInterface;
+use App\Modules\AiChat\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;

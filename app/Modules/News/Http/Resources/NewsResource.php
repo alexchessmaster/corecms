@@ -3,7 +3,7 @@
 namespace App\Modules\News\Http\Resources;
 
 use App\Models\Language;
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\WidgetableResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -34,7 +34,7 @@ class NewsResource extends JsonResource
                 }
             }
         }
-        
+
         // return parent::toArray($request);
         return [
             "id" => $this->id,

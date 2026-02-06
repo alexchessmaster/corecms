@@ -2,7 +2,7 @@
 
 namespace App\Modules\News\Http\Resources;
 
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Resources\WidgetableResource;
 use Illuminate\Http\Resources\Json\JsonResource;

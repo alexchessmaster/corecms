@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Jobs\CreateRedirectOnSlugChangeJob;
+use App\Modules\Shared\Jobs\CreateRedirectOnSlugChangeJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

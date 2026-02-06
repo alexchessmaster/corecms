@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\AiServiceInterface;
+use App\Modules\AiChat\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Http;
 
 class OpenAiService implements AiServiceInterface

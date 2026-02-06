@@ -14,7 +14,7 @@ use App\Models\Language;
 use App\Models\Redirect;
 use App\Models\BookGenre;
 use App\Models\BookAuthor;
-use App\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\FileHelper;
 use App\Models\Commentable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
