@@ -22,7 +22,7 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if((!app()->runningInConsole()) || Schema::hasTable('languages')){
+        if((!app()->runningInConsole()) && Schema::hasTable('languages')){
             $languages = Language::all();
             // dd($languages);
             // Share the $languages variable with all views

@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\AiChat;
+use App\Modules\AiChat\Models\AiChat;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -21,7 +21,7 @@ class AiChatPolicy
      */
     public function view(User $user, AiChat $aiChat): bool
     {
-        return $user->can('view ai chats') 
+        return $user->can('view ai chats')
             || ($aiChat->user_id === $user->id && $user->can('view own ai chats'));
     }
 
@@ -38,7 +38,7 @@ class AiChatPolicy
      */
     public function update(User $user, AiChat $aiChat): bool
     {
-        return $user->can('edit ai chats') 
+        return $user->can('edit ai chats')
             || ($aiChat->user_id === $user->id && $user->can('edit own ai chats'));
     }
 
@@ -47,7 +47,7 @@ class AiChatPolicy
      */
     public function delete(User $user, AiChat $aiChat): bool
     {
-        return $user->can('delete ai chats') 
+        return $user->can('delete ai chats')
             || ($aiChat->user_id === $user->id && $user->can('delete own ai chats'));
     }
 

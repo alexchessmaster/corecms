@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\AiMessage;
+use App\Modules\AiChat\Models\AiMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 

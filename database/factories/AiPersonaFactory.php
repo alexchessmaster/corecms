@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AiPersona>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\AiChat\Models\AiPersona>
  */
 class AiPersonaFactory extends Factory
 {

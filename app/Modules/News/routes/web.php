@@ -5,6 +5,7 @@ use App\Modules\News\Http\Controllers\Admin\NewsController;
 use App\Modules\News\Http\Controllers\Admin\NewsTagController;
 use App\Modules\News\Http\Controllers\Admin\NewsAuthorController;
 use App\Modules\News\Http\Controllers\Admin\NewsCategoryController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware([
     'web', LanguageAdminMiddleware::class, 'auth', 'verified',

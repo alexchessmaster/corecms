@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(SlugChangedEvent::class, HandleSlugChangeListener::class);
 
-        if ((!app()->runningInConsole()) || Schema::hasTable('languages')) {
+        if ((!app()->runningInConsole()) && Schema::hasTable('languages')) {
             Language::all()->each(function ($language) {
                 if ($language->default) {
                     app()->setLocale($language->code);

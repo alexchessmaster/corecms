@@ -13,7 +13,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FieldController;
-use App\Http\Controllers\AiChatController;
+use App\Modules\AiChats\Http\Controllers\AiChatController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UrlLogController;
 use App\Http\Controllers\WidgetController;
@@ -24,7 +24,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\RedirectController;
-use App\Http\Controllers\AiPersonaController;
+use App\Modules\AiChats\Http\Controllers\AiPersonaController;
 use App\Http\Controllers\BookGenreController;
 use App\Http\Controllers\BookAuthorController;
 use App\Http\Controllers\BookingSlotTemplateController;
@@ -53,7 +53,7 @@ Route::group([
 ], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
-    
+
     Route::resource('menus', MenuController::class);
     Route::resource('upload', UploadController::class);
     Route::resource('settings', SettingController::class);
@@ -80,7 +80,7 @@ Route::group([
     Route::resource('translation-texts', TranslationTextController::class);
     Route::resource('languages', LanguageController::class);
     Route::post('user-locale', [LanguageController::class, 'setUserLocale'])->name('user-locale');
-    
+
     // Booking
     Route::resource('booking-slot-templates', BookingSlotTemplateController::class);
     Route::post('booking-slot-templates-toggle', [BookingSlotTemplateController::class, 'toggleActive'])->name('booking-slot-templates.toggle');
@@ -90,20 +90,6 @@ Route::group([
     Route::get('booking-reservations/calendar', [BookingReservationController::class, 'calendar'])->name('booking-reservations.calendar');
     Route::get('booking-reservations/{id}/details', [BookingReservationController::class, 'details'])->name('booking-reservations.details');
     Route::resource('booking-reservations', BookingReservationController::class);
-    
-    // AI Personas management routes
-    Route::resource('ai-personas', AiPersonaController::class);
-    Route::get('my-personas', [AiPersonaController::class, 'myPersonas'])->name('ai-personas.my');
-    Route::post('ai-personas/{aiPersona}/toggle', [AiPersonaController::class, 'toggleActive'])->name('ai-personas.toggle');
-    Route::post('ai-personas/{aiPersona}/clone', [AiPersonaController::class, 'duplicate'])->name('ai-personas.clone');
-    Route::get('popular-personas', [AiPersonaController::class, 'popular'])->name('ai-personas.popular');
-    Route::get('search-personas', [AiPersonaController::class, 'search'])->name('ai-personas.search');
-    // AI Chat session routes
-    Route::resource('ai-chats', AiChatController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
-    Route::get('ai-chats/{chat}/messages', [AiChatController::class, 'retrieveMessages'])->name('ai-chats.messages');
-    Route::post('ai-chats/{chat}/send-message', [AiChatController::class, 'dispatchMessage'])->name('ai-chats.send');
-    Route::delete('ai-chats/{chat}/clear', [AiChatController::class, 'purgeChat'])->name('ai-chats.clear');
-    Route::put('ai-chats/{chat}/change-persona', [AiChatController::class, 'switchPersona'])->name('ai-chats.change-persona');
 });
 
 Route::get('/dashboard', function () {

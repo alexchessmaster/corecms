@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\AiChat\Providers;
+namespace App\Modules\AiChats\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -19,9 +19,9 @@ class AiChatModuleServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadRoutesFrom(app_path('Modules/AiChat/routes/api.php'));
-        $this->loadRoutesFrom(app_path('Modules/AiChat/routes/web.php'));
-        $this->loadViewsFrom(app_path('Modules/AiChat/resources/views'), 'ai-chats');
+        $this->loadRoutesFrom(app_path('Modules/AiChats/routes/api.php'));
+        $this->loadRoutesFrom(app_path('Modules/AiChats/routes/web.php'));
+        $this->loadViewsFrom(app_path('Modules/AiChats/resources/views'), 'ai-chats');
 
     }
 }
