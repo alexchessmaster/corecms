@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\AiChat\Models;
+namespace App\Modules\AiChats\Models;
 
-use App\Modules\AiChat\Models\AiMessage;
-use App\Modules\AiChat\Models\AiPersona;
+use App\Modules\AiChats\Models\AiMessage;
+use App\Modules\AiChats\Models\AiPersona;
 use App\Services\TokenCostCalculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

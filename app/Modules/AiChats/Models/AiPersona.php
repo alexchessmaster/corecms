@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\AiChat\Models;
+namespace App\Modules\AiChats\Models;
 
 use App\Models\User;
-use App\Modules\AiChat\Models\AiChat;
+use App\Modules\AiChats\Models\AiChat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

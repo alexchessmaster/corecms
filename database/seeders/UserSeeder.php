@@ -19,12 +19,12 @@ class UserSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $editorRole = Role::firstOrCreate(['name' => 'editor']);
         $authorRole = Role::firstOrCreate(['name' => 'author']);
-        
+
         // Give super_admin all permissions (if not already done)
         if ($superAdminRole->permissions()->count() === 0) {
             $superAdminRole->givePermissionTo(\Spatie\Permission\Models\Permission::all());
         }
-        
+
         // Create super admin user
         $superAdmin = User::create([
             'name' => 'Alex',
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
             'show_edit_button_on_texts' => false,
         ]);
         $superAdmin->assignRole('super_admin');
-        
+
         // Create admin user
         $admin = User::create([
             'name' => 'Admin User',
@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
             'show_edit_button_on_texts' => false,
         ]);
         $admin->assignRole('admin');
-        
+
         // Create editor user
         $editor = User::create([
             'name' => 'Editor User',
@@ -51,7 +51,7 @@ class UserSeeder extends Seeder
             'show_edit_button_on_texts' => false,
         ]);
         $editor->assignRole('editor');
-        
+
         // Create author user
         $author = User::create([
             'name' => 'Author User',
