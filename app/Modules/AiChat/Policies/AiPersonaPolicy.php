@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Modules\AiChat\Policies;
 
 use App\Modules\AiChat\Models\AiPersona;
 use App\Models\User;
