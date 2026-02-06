@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Middleware\LanguageAdminMiddleware;
-use App\Modules\AiChats\Http\Controllers\AiChatController;
-use App\Modules\AiChats\Http\Controllers\AiPersonaController;
+use App\Modules\AiChat\Http\Controllers\AiChatController;
+use App\Modules\AiChat\Http\Controllers\AiPersonaController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([

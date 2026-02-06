@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\AiChats\Http\Controllers;
+namespace App\Modules\AiChat\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAiPersonaRequest;
 use App\Http\Requests\UpdateAiPersonaRequest;
-use App\Modules\AiChats\Models\AiPersona;
+use App\Modules\AiChat\Models\AiPersona;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;

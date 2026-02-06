@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\AiChats\Models;
+namespace App\Modules\AiChat\Models;
 
-use App\Modules\AiChats\Models\AiChat;
+use App\Modules\AiChat\Models\AiChat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
