@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Modules\Shared\Listeners;
 
 use App\Modules\Shared\Jobs\CreateRedirectOnSlugChangeJob;
 use Illuminate\Contracts\Queue\ShouldQueue;

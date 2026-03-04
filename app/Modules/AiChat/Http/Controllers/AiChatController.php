@@ -9,7 +9,7 @@ use App\Modules\AiChat\Models\AiChat;
 use App\Modules\AiChat\Models\AiMessage;
 use App\Modules\AiChat\Models\AiPersona;
 use App\Modules\AiChat\Contracts\AiServiceInterface;
-use App\Services\TokenCostCalculator;
+use App\Modules\Shared\Actions\TokenCostCalculatorAction;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +18,7 @@ class AiChatController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(private AiServiceInterface $aiService, private TokenCostCalculator $tokenCalculator)
+    public function __construct(private AiServiceInterface $aiService, private TokenCostCalculatorAction $tokenCalculator)
     {
         $this->aiService = $aiService;
         $this->tokenCalculator = $tokenCalculator;

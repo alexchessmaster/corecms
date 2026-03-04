@@ -4,7 +4,7 @@ namespace App\Modules\AiChat\Models;
 
 use App\Modules\AiChat\Models\AiMessage;
 use App\Modules\AiChat\Models\AiPersona;
-use App\Services\TokenCostCalculator;
+use App\Modules\Shared\Actions\TokenCostCalculatorAction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -43,7 +43,7 @@ class AiChat extends Model
 
     public function addMessage(string $role, string $content, ?int $inputTokens = null, ?int $outputTokens = null): AiMessage
     {
-        $calculator = new TokenCostCalculator();
+        $calculator = new TokenCostCalculatorAction();
         $messageCost = 0;
 
         if ($inputTokens || $outputTokens) {

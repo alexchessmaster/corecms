@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\WidgetController;
 use App\Http\Middleware\LanguageApiMiddleware;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
-use App\Http\Controllers\Api\V1\ContentController as ContentControllerV1;
+use App\Modules\Shared\Http\Controllers\Api\V2\ContentController as ContentControllerV1;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\CommonDataController;
@@ -16,15 +16,15 @@ use App\Http\Controllers\Api\FieldWidgetController;
 use App\Http\Controllers\Api\FormContactUsController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
 use App\Http\Controllers\Api\FormNewsletterController;
-use App\Http\Controllers\BookingSlotTemplateController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
-use App\Http\Controllers\NordicStandard\Api\ContactController;
+
+// Used in the frontend
+// Deprecated. These routes are for the existing frontend apps. For new apps use: App/Modules/Shared/routes/api.php
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Used in the frontend
 Route::middleware([
     // 'throttle:2000,1'
 ])->group(function () {
@@ -37,23 +37,6 @@ Route::middleware([
     Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
     Route::get('/fetch-authors', [ContentController::class, 'fetchAuthors']);
     Route::get('/fetch-book-comments', [ContentController::class, 'fetchBookComments']);
-    // Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
-    // Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
-});
-
-// API v1
-Route::middleware([
-    // 'throttle:2000,1'
-])->prefix('/v1')->name('.v1')->group(function () {
-    Route::get('/fetch-menu', [ContentControllerV1::class, 'fetchMenu']);
-    Route::get('/fetch-languages', [ContentControllerV1::class, 'fetchLanguages']);
-    Route::get('/fetch-settings', [ContentControllerV1::class, 'fetchSettings']);
-    Route::get('/fetch-translations', [ContentControllerV1::class, 'fetchTranslations']);
-    Route::get('/fetch-content', [ContentControllerV1::class, 'fetchContent'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
-    Route::get('/fetch-books', [ContentControllerV1::class, 'fetchBooks'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
-    Route::get('/fetch-book-genres', [ContentControllerV1::class, 'fetchBookGenres']);
-    Route::get('/fetch-authors', [ContentControllerV1::class, 'fetchAuthors']);
-    Route::get('/fetch-book-comments', [ContentControllerV1::class, 'fetchBookComments']);
     // Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
     // Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
 });
