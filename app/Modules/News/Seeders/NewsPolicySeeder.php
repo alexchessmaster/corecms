@@ -20,6 +20,9 @@ class NewsPolicySeeder extends Seeder
 
             $modelName = 'news';
 
+            // remove all the old data from permission that contains modelName
+            Permission::where('name', 'LIKE', "%$modelName%")->delete();
+
             // Define all resources
             $resources = [
                 "$modelName tags",

@@ -8,4 +8,5 @@ return [
     App\Modules\AiChat\Providers\AiChatModuleServiceProvider::class,
     App\Modules\Booking\Providers\BookingModuleServiceProvider::class,
     App\Modules\News\Providers\NewsModuleServiceProvider::class,
+    App\Modules\Books\Providers\BooksModuleServiceProvider::class,
 ];

@@ -20,15 +20,16 @@
     } elseif (isset($book) && !empty($book)) {
         $model = $book;
         $widgetableId = $book->id;
-        $widgetableType = substr(get_class($book), 11);
+        $widgetableType = get_class($book); // Book
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
-        $apiEndpoint = '/api/books/' . $widgetableId;
+        $apiEndpoint = '/api/v1/books/' . $widgetableId;
+//        dd($widgetableType);
     } elseif (isset($bookGenre) && !empty($bookGenre)) {
         $model = $bookGenre;
         $widgetableId = $bookGenre->id;
-        $widgetableType = substr(get_class($bookGenre), 11);
+        $widgetableType = get_class($bookGenre); // Book
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
-        $apiEndpoint = '/api/bookgenres/' . $widgetableId;
+        $apiEndpoint = '/api/v1/bookgenres/' . $widgetableId;
     } elseif (isset($product) && !empty($product)) {
         $model = $product;
         $widgetableId = $product->id;
@@ -149,7 +150,8 @@
 @endif
 <script>
     if(typeof tinymce !== 'undefined'){
-        window.location.reload();
+        // window.location.reload();
+        console.error('typeof tinymce is undefined 63315')
     }
 
     // Add event listeners for the widget options
@@ -514,10 +516,10 @@
 
         //  <div class="form-group col-md-12">
         //      <label for="alignmentSelect">Alignment</label>
-        //      <select class="form-control" 
-        //      id="alignmentSelect" 
+        //      <select class="form-control"
+        //      id="alignmentSelect"
         //      name="field_id-10-field_value_id-7">
-        //          <option value="left">left</option>  
+        //          <option value="left">left</option>
         //          <option value="center">center</option>
         //          <option value="right">right</option>
         //      </select>
@@ -797,7 +799,7 @@
             .then(data => {
                 const verticalScroll = window.scrollY;
                 widgetContainer.innerHTML = null;
-                data.widgets.forEach((item, index) => {              
+                data.widgets.forEach((item, index) => {
                     createWidget(item);
                 })
                 // restore scroll position
