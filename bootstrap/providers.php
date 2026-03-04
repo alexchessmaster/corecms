@@ -9,4 +9,5 @@ return [
     App\Modules\Booking\Providers\BookingModuleServiceProvider::class,
     App\Modules\News\Providers\NewsModuleServiceProvider::class,
     App\Modules\Books\Providers\BooksModuleServiceProvider::class,
+    App\Modules\Products\Providers\ProductsModuleServiceProvider::class,
 ];

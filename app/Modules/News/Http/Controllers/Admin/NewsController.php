@@ -77,6 +77,7 @@ class NewsController extends Controller
             'category_id' => 'required|exists:news_categories,id',
             'status' => 'required|string',
             'author_id' => 'nullable|int',
+            'tag_ids' => 'nullable'
         ]);
 
         $news = new News;
@@ -97,9 +98,14 @@ class NewsController extends Controller
 
         $news->setTranslation('title', app()->getLocale(), $request->input('title'));
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
-        // $news->setTranslation('slug', app()->getLocale(), Str::slug($request->input('title')));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
+
+        // Sync tags if provided
+        if ($request->has('tag_ids')) {
+            $news->tags()->sync($request->input('tag_ids', []));
+        }
+
         if ($request->author_id) {
             $news->author_id = $request->author_id;
         }
@@ -136,7 +142,7 @@ class NewsController extends Controller
             'author_id' => 'nullable|int',
             'tag_ids' => 'nullable'
         ]);
-        \Log::info($request->input('tag_ids'));
+
         $news->user_id = auth()->id();
 
         $folderName = 'news';
@@ -175,6 +181,7 @@ class NewsController extends Controller
         $this->authorize('delete', $news);
 
         $news->delete();
+
         return redirect()->route('admin.news.index')->with('success', 'News deleted successfully.');
     }
 }

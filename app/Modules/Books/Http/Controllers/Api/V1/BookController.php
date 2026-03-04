@@ -9,7 +9,7 @@ use App\Models\PageWidget;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BookResource;
+use App\Modules\Books\Http\Resources\BookResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\ArticleResource;
 

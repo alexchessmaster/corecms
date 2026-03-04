@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class NewsAuthorController extends Controller
 {
     use AuthorizesRequests;
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +28,7 @@ class NewsAuthorController extends Controller
                     $text = $item->getTranslation('name', app()->getLocale(), false);
                     return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), true);
                 })
-            
+
                 ->editColumn('nationality', function ($item) {
                     $text = $item->getTranslation('nationality', app()->getLocale(), false);
                     return $text ?: '-Not translated- ' . $item->getTranslation('nationality', app()->getLocale(), true);
@@ -37,12 +37,12 @@ class NewsAuthorController extends Controller
                     $editUrl = route('admin.news-authors.edit', $row->id);
                     $deleteUrl = route('admin.news-authors.destroy', $row->id);
                     return '
-                    <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
-                    <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;">
-                        ' . csrf_field() . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
-                    </form>
-                ';
+                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="' . $deleteUrl . '" method="POST" style="display: inline-block;">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>
+                        </form>
+                    ';
                 })
                 ->rawColumns(['actions'])
                 ->make(true);
@@ -79,7 +79,7 @@ class NewsAuthorController extends Controller
     public function create()
     {
         $this->authorize('create', NewsAuthor::class);
-        
+
         return view('news::news_author.create');
     }
 
@@ -89,7 +89,7 @@ class NewsAuthorController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', NewsAuthor::class);
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'date_of_birth' => 'nullable|date',
@@ -128,7 +128,7 @@ class NewsAuthorController extends Controller
     public function show(NewsAuthor $newsAuthor)
     {
         $this->authorize('view', $newsAuthor);
-        
+
         return view('news::news_author.show', compact('newsAuthor'));
     }
 
@@ -138,7 +138,7 @@ class NewsAuthorController extends Controller
     public function edit(NewsAuthor $newsAuthor)
     {
         $this->authorize('update', $newsAuthor);
-        
+
         return view('news::news_author.edit', compact('newsAuthor'));
     }
 
@@ -188,7 +188,7 @@ class NewsAuthorController extends Controller
     public function destroy(NewsAuthor $newsAuthor)
     {
         $this->authorize('delete', $newsAuthor);
-        
+
         // Delete associated image if exists
         if ($newsAuthor->image && File::exists(public_path($newsAuthor->image))) {
             File::delete(public_path($newsAuthor->image));

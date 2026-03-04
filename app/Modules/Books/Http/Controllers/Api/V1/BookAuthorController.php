@@ -5,7 +5,7 @@ namespace App\Modules\Books\Http\Controllers\Api\V1;
 use App\Modules\Books\Models\BookAuthor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BookAuthorResource;
+use App\Modules\Books\Http\Resources\BookAuthorResource;
 
 class BookAuthorController extends Controller
 {

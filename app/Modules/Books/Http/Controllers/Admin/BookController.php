@@ -8,8 +8,8 @@ use App\Models\Widget;
 use App\Modules\Books\Models\BookGenre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use App\Http\Requests\StoreBookRequest;
-use App\Http\Requests\UpdateBookRequest;
+use App\Modules\Books\Http\Requests\StoreBookRequest;
+use App\Modules\Books\Http\Requests\UpdateBookRequest;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 

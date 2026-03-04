@@ -12,18 +12,14 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UrlLogController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\CommentableController;
 use App\Http\Middleware\LanguageAdminMiddleware;
-use App\Http\Controllers\ProductAuthorController;
-use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\TranslationTextController;
 
 Route::get('/', function () {
@@ -53,10 +49,6 @@ Route::group([
     Route::resource('templates', PageController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('articles', ArticleController::class);
-    Route::resource('product-categories', ProductCategoryController::class);
-    Route::resource('product-tags', ProductTagController::class);
-    Route::resource('product-authors', ProductAuthorController::class);
-    Route::resource('products', ProductController::class);
     Route::resource('comments', CommentableController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);

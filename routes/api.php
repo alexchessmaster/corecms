@@ -2,31 +2,22 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Modules\Books\Http\Controllers\Api\V1\BookController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
 use App\Http\Middleware\LanguageApiMiddleware;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\V1\ContentController as ContentControllerV1;
-use App\Http\Controllers\Api\ProductController;
-use App\Modules\Booking\Http\Middleware\BookingAdminMiddleware;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
-use App\Modules\Books\Http\Controllers\Api\V1\BookGenreController;
-use App\Modules\Books\Http\Controllers\Api\V1\BookAuthorController;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
 use App\Http\Controllers\Api\FieldWidgetController;
 use App\Http\Controllers\Api\FormContactUsController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
 use App\Http\Controllers\Api\FormNewsletterController;
-use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\BookingSlotTemplateController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
-use App\Modules\Booking\Http\Controllers\Api\V1\BookingAppointmentController;
-use App\Modules\Booking\Http\Controllers\Api\V1\BookingReservationController;
-use App\Modules\Booking\Http\Controllers\Api\V1\BookingAvailabilityController;
 use App\Http\Controllers\NordicStandard\Api\ContactController;
 
 Route::get('/user', function (Request $request) {
@@ -74,8 +65,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/pages', PageController::class);
     Route::apiResource('/articles', ArticleController::class);
     Route::apiResource('/categories', CategoryController::class);
-    Route::apiResource('/products', ProductController::class);
-    Route::apiResource('/productcategories', ProductCategoryController::class);
     Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']);
     Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
     Route::patch('/widgets/detach', [WidgetController::class, 'detach']);

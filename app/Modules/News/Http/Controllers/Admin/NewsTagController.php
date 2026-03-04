@@ -64,9 +64,9 @@ class NewsTagController extends Controller
             });
         }
 
-        $authors = $query->paginate(50);
+        $tags = $query->paginate(50);
 
-        return NewsTagResource::collection($authors);
+        return NewsTagResource::collection($tags);
     }
 
     public function create()
@@ -121,6 +121,7 @@ class NewsTagController extends Controller
         $this->authorize('delete', $newsTag);
 
         $newsTag->delete();
+        
         return redirect()->route('admin.news-tags.index')->with('success', 'Tag deleted successfully.');
     }
 }
