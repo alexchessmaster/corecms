@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Modules\Shared\Actions;
 
-class TokenCostCalculator
+class TokenCostCalculatorAction
 {
     // Pricing per 1K tokens - 2025
     private const MODEL_PRICING = [

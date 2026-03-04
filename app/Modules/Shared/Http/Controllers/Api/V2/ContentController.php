@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Modules\Shared\Http\Controllers\Api\V2;
 
 use App\Models\Tag;
 use App\Modules\Books\Models\Book;
@@ -25,19 +25,15 @@ use App\Modules\Books\Http\Resources\BookResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ArticleResource;
 use App\Modules\Products\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
 use Yajra\DataTables\Facades\DataTables;
 use App\Modules\Books\Http\Resources\BookGenreResource;
 use App\Modules\Books\Http\Resources\BookAuthorResource;
-use DebugBar\DebugBar as DebugBarDebugBar;
 use App\Http\Resources\CommentableResource;
 use App\Http\Resources\TranslationTextResource;
 use App\Modules\News\Http\Resources\NewsResource;
@@ -68,13 +64,6 @@ class ContentController extends Controller
         $languages = Language::all();
 
         return response()->json(['data' => LanguageResource::collection($languages)]);
-    }
-
-    public function fetchSettings()
-    {
-        $settings = Setting::all();
-
-        return response()->json(['data' => SettingResource::collection($settings)]);
     }
 
     public function fetchTranslations()
@@ -139,8 +128,6 @@ class ContentController extends Controller
             $path = rtrim($path, '/');
         }
         $settings = Setting::all();
-        $translationTexts = TranslationText::all();
-        $menus = Menu::with('children')->where('parent_id', null)->orderBy('order')->get();
         // TODO: add books and book genres to the response
         $responseData = [
             'content' => collect(),
@@ -151,6 +138,8 @@ class ContentController extends Controller
             'path' => $path,
             'lang' => $lang,
             'content_type' => '',
+            'languages' => LanguageResource::collection($languages),
+            'settings' => SettingResource::collection($settings),
         ];
 
         if (auth()->check()) {
@@ -579,12 +568,12 @@ class ContentController extends Controller
 
     public function storeBookComments()
     {
-        $name = request()->name;
-        $email = request()->email;
-        $content = request()->content;
-        $stars = request()->stars;
-        $lang = request()->lang;
-        $bookSlug = request()->book_slug;
+        $name = request()->input('name');
+        $email = request()->input('email');
+        $content = request()->input('content');
+        $stars = request()->input('stars');
+        $lang = request()->input('lang');
+        $bookSlug = request()->input('book_slug');
 
         if (!$bookSlug || !$lang || !$content || !$name || !$email) {
             return response()->json(['error' => 'Invalid inputs'], 400);

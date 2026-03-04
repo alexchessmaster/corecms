@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\Products\Observers\ProductCategoryObserver;
-use App\Listeners\HandleSlugChangeListener;
+use App\Modules\Shared\Listeners\HandleSlugChangeListener;
 use App\Stores\SettingStore;
 
 class AppServiceProvider extends ServiceProvider
