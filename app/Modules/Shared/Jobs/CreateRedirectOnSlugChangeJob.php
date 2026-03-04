@@ -3,8 +3,8 @@
 namespace App\Modules\Shared\Jobs;
 
 use App\Models\Article;
-use App\Models\Book;
-use App\Models\BookGenre;
+use App\Modules\Books\Models\Book;
+use App\Modules\Books\Models\BookGenre;
 use App\Models\Page;
 use App\Models\Product;
 use App\Models\ProductCategory;

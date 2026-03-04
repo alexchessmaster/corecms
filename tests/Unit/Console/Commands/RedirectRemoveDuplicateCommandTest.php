@@ -13,7 +13,7 @@ class RedirectRemoveDuplicateCommandTest extends TestCase
     use RefreshDatabase;
 
     private $redirectsTableData = [
-        ['from' => 'a', 'to' => 'b', 'language' => 'en'], // 
+        ['from' => 'a', 'to' => 'b', 'language' => 'en'], //
         ['from' => 'a', 'to' => 'c', 'language' => 'en'], // Duplicate and Chain 1.a
         ['from' => 'c', 'to' => 'a', 'language' => 'en'], // Chain 1.b
         ['from' => 'd', 'to' => 'e', 'language' => 'en'], // Three level chain 2
@@ -52,7 +52,7 @@ class RedirectRemoveDuplicateCommandTest extends TestCase
         $redirect = DB::table('redirects')->where('from', 'h')->where('to', 'l')->first();
         $this->assertNull($redirect);
     }
-    
+
     public function testCommandDoNotRemovesUniq()
     {
         $redirect = DB::table('redirects')->where('from', 'a')->where('to', 'c')->first();

@@ -3,21 +3,21 @@
 namespace App\Providers;
 
 use App\Actions\Settings\SettingValueAction;
-use App\Models\Book;
+use App\Modules\Books\Models\Book;
 use App\Models\Article;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Language;
-use App\Models\BookGenre;
+use App\Modules\Books\Models\BookGenre;
 use App\Models\ProductCategory;
-use App\Observers\BookObserver;
+use App\Modules\Books\Observers\BookObserver;
 use App\Services\OpenAiService;
 use App\Events\SlugChangedEvent;
 use App\Observers\ArticleObserver;
 use App\Observers\ProductObserver;
 use App\Observers\CategoryObserver;
 use Illuminate\Support\Facades\URL;
-use App\Observers\BookGenreObserver;
+use App\Modules\Books\Observers\BookGenreObserver;
 use App\Modules\AiChat\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;

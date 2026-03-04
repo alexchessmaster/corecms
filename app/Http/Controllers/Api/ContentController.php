@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Tag;
-use App\Models\Book;
+use App\Modules\Books\Models\Book;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Article;
@@ -12,12 +12,11 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Redirect;
-use App\Models\BookGenre;
-use App\Models\BookAuthor;
+use App\Modules\Books\Models\BookGenre;
+use App\Modules\Books\Models\BookAuthor;
 use App\Modules\Shared\Helpers\FileHelper;
 use App\Models\Commentable;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\TranslationText;
 use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
@@ -25,19 +24,15 @@ use App\Http\Resources\BookResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Resources\BookGenreResource;
 use App\Http\Resources\BookAuthorResource;
-use DebugBar\DebugBar as DebugBarDebugBar;
 use App\Http\Resources\CommentableResource;
 use App\Http\Resources\TranslationTextResource;
 use App\Modules\News\Http\Resources\NewsResource;
@@ -573,7 +568,7 @@ class ContentController extends Controller
             ], 404);
         }
 
-        $comments = Commentable::where('commentable_type', 'App\Models\Book')
+        $comments = Commentable::where('commentable_type', 'App\Modules\Books\Models\Book')
             ->where('commentable_id', $book->id)
             ->where('content->' . app()->getLocale(), '!=', null)
             ->where('status', 'approved')
@@ -620,7 +615,7 @@ class ContentController extends Controller
         }
 
         $comment = new Commentable();
-        $comment->commentable_type = 'App\Models\Book';
+        $comment->commentable_type = 'App\Modules\Books\Models\Book';
         $comment->commentable_id = $book->id;
         $comment->setTranslation('content', app()->getLocale(), $content);
         $comment->name = $name;

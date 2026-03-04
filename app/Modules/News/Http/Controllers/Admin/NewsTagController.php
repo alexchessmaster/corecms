@@ -44,7 +44,7 @@ class NewsTagController extends Controller
                 ->make(true);
         }
 
-        return view('news::product_tag.index');
+        return view('news::news_tag.index');
     }
 
     public function selectTags(Request $request)
@@ -73,7 +73,7 @@ class NewsTagController extends Controller
     {
         $this->authorize('create', NewsTag::class);
 
-        return view('news::product_tag.create');
+        return view('news::news_tag.create');
     }
 
     public function store(Request $request)
@@ -97,7 +97,7 @@ class NewsTagController extends Controller
     {
         $this->authorize('update', $newsTag);
 
-        return view('news::product_tag.edit', ['tag' => $newsTag]);
+        return view('news::news_tag.edit', ['tag' => $newsTag]);
     }
 
     public function update(Request $request, NewsTag $newsTag)

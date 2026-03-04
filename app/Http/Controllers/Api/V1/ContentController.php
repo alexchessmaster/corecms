@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Tag;
-use App\Models\Book;
+use App\Modules\Books\Models\Book;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Article;
@@ -12,8 +12,8 @@ use App\Models\Setting;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Redirect;
-use App\Models\BookGenre;
-use App\Models\BookAuthor;
+use App\Modules\Books\Models\BookGenre;
+use App\Modules\Books\Models\BookAuthor;
 use App\Modules\Shared\Helpers\FileHelper;
 use App\Models\Commentable;
 use Illuminate\Support\Str;
@@ -563,7 +563,7 @@ class ContentController extends Controller
             ], 404);
         }
 
-        $comments = Commentable::where('commentable_type', 'App\Models\Book')
+        $comments = Commentable::where('commentable_type', 'App\Modules\Books\Models\Book')
             ->where('commentable_id', $book->id)
             ->where('content->' . app()->getLocale(), '!=', null)
             ->where('status', 'approved')
@@ -610,7 +610,7 @@ class ContentController extends Controller
         }
 
         $comment = new Commentable();
-        $comment->commentable_type = 'App\Models\Book';
+        $comment->commentable_type = 'App\Modules\Books\Models\Book';
         $comment->commentable_id = $book->id;
         $comment->setTranslation('content', app()->getLocale(), $content);
         $comment->name = $name;

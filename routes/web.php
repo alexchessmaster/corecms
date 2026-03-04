@@ -3,7 +3,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\BookController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RoleController;
@@ -19,11 +18,6 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\RedirectController;
-use App\Http\Controllers\BookGenreController;
-use App\Http\Controllers\BookAuthorController;
-use App\Modules\Booking\Http\Controllers\BookingSlotTemplateController;
-use App\Modules\Booking\Http\Controllers\BookingTimeSlotController;
-use App\Modules\Booking\Http\Controllers\BookingReservationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductTagController;
 use App\Http\Controllers\CommentableController;
@@ -59,9 +53,6 @@ Route::group([
     Route::resource('templates', PageController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('articles', ArticleController::class);
-    Route::resource('book_genres', BookGenreController::class);
-    Route::resource('book-authors', BookAuthorController::class);
-    Route::resource('books', BookController::class);
     Route::resource('product-categories', ProductCategoryController::class);
     Route::resource('product-tags', ProductTagController::class);
     Route::resource('product-authors', ProductAuthorController::class);

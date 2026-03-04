@@ -42,14 +42,12 @@ class NewsControllerTest extends TestCase
     public function test_viewer_cannot_see_news()
     {
         $response = $this->get('/admin/news');
-        $response->assertStatus(403);
-        
+        $response->assertStatus(302);
+
         $user = User::factory()->create();
         $user->assignRole('guest');
         $this->actingAs($user);
         $response = $this->get('/admin/news');
         $response->assertStatus(403);
     }
-
-    
 }

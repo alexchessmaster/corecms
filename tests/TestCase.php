@@ -2,9 +2,11 @@
 
 namespace Tests;
 
-use Tests\CreatesApplication;
-use Spatie\Permission\PermissionRegistrar;
+use App\Models\Language;
+use App\Models\Setting;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\PermissionRegistrar;
+use Tests\CreatesApplication;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -18,7 +20,35 @@ abstract class TestCase extends BaseTestCase
         // This just ensures Spatie's cached permissions don't bite you.
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
+        $this->setLanguages();
         $this->setUserPermissions();
+
+        // Share the $languages variable with all views
+        $languages = Language::all();
+        \View::share('languages', $languages);
+        // Share the $settings variable with all views
+        $settings = Setting::all();
+        \View::share('settings', $settings);
+    }
+
+    private function setLanguages(): void
+    {
+        if(Language::count() === 0){
+            Language::create([
+                'name' => 'English',
+                'code' => 'en',
+                'default' => true,
+                'use_separate_domain' => false,
+                'domain' => 'example.com',
+            ]);
+            Language::create([
+                'name' => 'Danish',
+                'code' => 'da',
+                'default' => false,
+                'use_separate_domain' => false,
+                'domain' => 'example.com',
+            ]);
+        }
     }
 
     private function setUserPermissions()
