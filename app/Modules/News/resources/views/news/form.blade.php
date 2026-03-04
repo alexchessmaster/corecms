@@ -77,7 +77,7 @@
 </div>
 
 <div class="mb-3">
-    <label for="tag_ids" class="form-label">News Tag</label>
+    <label for="tag_ids" class="form-label">News Tags</label>
     <select class="form-control" id="tag_ids" name="tag_ids[]" multiple style="width: 100%;">
         @if (isset($news) && $news->tags)
             @foreach ($news->tags as $tag)
@@ -144,13 +144,13 @@
 
         // Trigger change event to ensure the pre-selected option is properly loaded
         @if (isset($news) && $news->author_id && $news->author)
-        $('#author_id').trigger('change');
+            $('#author_id').trigger('change');
         @endif
     });
 </script>
 {{-- end select2 for author --}}
 
-{{-- news-tags --}}
+{{-- select2 for tags --}}
 <script>
     jQuery(document).ready(function ($) {
         $('#tag_ids').select2({
@@ -189,7 +189,7 @@
         });
     });
 </script>
-{{-- end news-tags --}}
+{{-- end select2 for tags --}}
 
 {{-- status --}}
 <script>

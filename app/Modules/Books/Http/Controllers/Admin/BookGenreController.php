@@ -8,8 +8,8 @@ use App\Models\Language;
 use App\Modules\Books\Models\BookGenre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use App\Http\Requests\StoreBookGenreRequest;
-use App\Http\Requests\UpdateBookGenreRequest;
+use App\Modules\Books\Http\Requests\StoreBookGenreRequest;
+use App\Modules\Books\Http\Requests\UpdateBookGenreRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookGenreController extends Controller

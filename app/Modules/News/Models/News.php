@@ -93,14 +93,14 @@ class News extends Model
         )->where('widgetables.widgetable_type', self::class);
     }
 
-    public function tags()
-    {
-        return $this->belongsToMany(NewsTag::class, 'news_news_tag');
-    }
-
     public function category()
     {
         return $this->belongsTo(NewsCategory::class, 'news_category_id', 'id');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(NewsTag::class, 'news_news_tag');
     }
 
     public function author()

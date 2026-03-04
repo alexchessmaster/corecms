@@ -36,5 +36,7 @@ class NewsAuthor extends Model
         if($user->can('view own news authors')) {
             return $query->where('user_id', $user->id);
         }
+
+        return $query->whereRaw('1 = 0');
     }
 }

@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\BookGenreResource;
+use App\Modules\Books\Http\Resources\BookGenreResource;
 
 class BookGenreController extends Controller
 {

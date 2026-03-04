@@ -35,13 +35,13 @@
         $widgetableId = $product->id;
         $widgetableType = get_class($product); // Product
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
-        $apiEndpoint = '/api/products/' . $widgetableId;
+        $apiEndpoint = '/api/v1/products/' . $widgetableId;
     } elseif (isset($productCategory) && !empty($productCategory)) {
         $model = $productCategory;
         $widgetableId = $productCategory->id;
-        $widgetableType = substr(get_class($productCategory), 11);
+        $widgetableType = get_class($productCategory);
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
-        $apiEndpoint = '/api/product-categories/' . $widgetableId;
+        $apiEndpoint = '/api/v1/product-categories/' . $widgetableId;
     } elseif (isset($news) && !empty($news)) {
         $model = $news;
         $widgetableId = $news->id;

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Modules\Books\Seeders\BookGenreSeeder;
 use App\Modules\Books\Seeders\BookPolicySeeder;
+use App\Modules\Books\Seeders\ProductPolicySeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -35,6 +36,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(BookGenreSeeder::class);
         $this->call(BookPolicySeeder::class);
+
+        $this->call(ProductPolicySeeder::class);
 
         $this->call(TranslationTextSeeder::class);
     }

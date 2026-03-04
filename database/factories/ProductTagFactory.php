@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductTag>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Products\Models\ProductTag>
  */
 class ProductTagFactory extends Factory
 {

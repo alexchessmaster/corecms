@@ -7,8 +7,8 @@ use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
-use App\Http\Requests\StoreBookAuthorRequest;
-use App\Http\Requests\UpdateBookAuthorRequest;
+use App\Modules\Books\Http\Requests\StoreBookAuthorRequest;
+use App\Modules\Books\Http\Requests\UpdateBookAuthorRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookAuthorController extends Controller

@@ -18,7 +18,7 @@ class BookPolicySeeder extends Seeder
             // Reset cached roles and permissions
             app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-            $modelName = 'book'; // plural
+            $modelName = 'book';
 
             // remove all the old data from permission that contains modelName
             Permission::where('name', 'LIKE', "% $modelName tags%")->delete();
