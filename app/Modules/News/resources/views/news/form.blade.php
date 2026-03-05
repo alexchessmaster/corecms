@@ -16,6 +16,11 @@
     <input type="text" class="form-control" id="title" name="title"
            value="{{ isset($news) ? $news->getTranslation('title', app()->getLocale(), false) : '' }}" required>
 </div>
+<div class="mb-3">
+    <label for="slug" class="form-label required">Slug</label>
+    <input type="text" class="form-control" id="slug" name="slug"
+           value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
+</div>
 @if (isset($news))
     <div class="mb-3">
         <label for="slug" class="form-label required">Slug</label>
@@ -190,6 +195,29 @@
     });
 </script>
 {{-- end select2 for tags --}}
+
+{{-- auto-fill slug from title --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+
+        if (titleInput && slugInput && !slugInput.disabled) {
+            titleInput.addEventListener('blur', function () {
+                if (slugInput.value.trim() === '') {
+                    slugInput.value = titleInput.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\u0600-\u06FF\w-]/g, '')
+                        .replace(/-+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                }
+            });
+        }
+    });
+</script>
+{{-- end auto-fill slug from title --}}
 
 {{-- status --}}
 <script>

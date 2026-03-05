@@ -83,12 +83,12 @@ class PageController extends Controller
         $page = new Page;
         $page->user_id = auth()->id();
         $page->setTranslation('title', app()->getLocale(), $request->title);
-        $slug = '/' . Str::slug($request->slug);
+        $slug = '/' . trim($request->slug);
 
         // Preserve slashes in slug: split, slugify each part, and join
         $lang = request()->lang ?: app()->getLocale();
         $slugParts = explode('/', request()->slug);
-        $sluggedParts = array_map(fn($part) => Str::slug($part), $slugParts);
+        $sluggedParts = array_map(fn($part) => trim($part), $slugParts);
         $slug = implode('/', $sluggedParts);
         $page->setTranslation('slug', $lang, '/' . ltrim($slug, '/'));
 
@@ -132,7 +132,7 @@ class PageController extends Controller
     {
         $this->authorize('update', $page);
         
-        // ...existing code...
+        // Api/PageController.php
     }
 
     /**

@@ -41,7 +41,7 @@ class PageController extends Controller
         
         // Preserve slashes in slug: split, slugify each part, and join
         $slugParts = explode('/', request()->slug);
-        $sluggedParts = array_map(fn($part) => Str::slug($part), $slugParts);
+        $sluggedParts = array_map(fn($part) => trim($part), $slugParts);
         $slug = implode('/', $sluggedParts);
         $page->setTranslation('slug', $lang, '/' . ltrim($slug, '/'));
         

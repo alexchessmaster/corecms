@@ -103,6 +103,7 @@ class CategoryController extends Controller
         $category = new Category;
         $category->user_id = auth()->id();
         $category->setTranslation('name', app()->getLocale(), $request->name);
+        $category->setTranslation('slug', app()->getLocale(), $request->slug);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
         if(!empty($request->input('sitemap_exclude'))){
@@ -147,6 +148,7 @@ class CategoryController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'sitemap_exclude' => 'nullable',
@@ -156,6 +158,7 @@ class CategoryController extends Controller
         ]);
         $category->user_id = auth()->id();
         $category->setTranslation('name', app()->getLocale(), $request->name);
+        $category->setTranslation('slug', app()->getLocale(), $request->slug);
         $category->parent_id = $request->input('parent_id');
         $category->description = $request->input('description');
         if(!empty($request->input('sitemap_exclude'))){

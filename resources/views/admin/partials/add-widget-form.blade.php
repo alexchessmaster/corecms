@@ -2,19 +2,20 @@
     if (isset($page) && !empty($page)) {
         $model = $page;
         $widgetableId = $page->id;
-        $widgetableType = substr(get_class($page), 11);
+        $widgetableType = get_class($page);
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
         $apiEndpoint = '/api/pages/' . $widgetableId;
+        // dd($widgetableType);
     } elseif (isset($article) && !empty($article)) {
         $model = $article;
         $widgetableId = $article->id;
-        $widgetableType = substr(get_class($article), 11);
+        $widgetableType = get_class($article);
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
         $apiEndpoint = '/api/articles/' . $widgetableId;
     } elseif (isset($category) && !empty($category)) {
         $model = $category;
         $widgetableId = $category->id;
-        $widgetableType = substr(get_class($category), 11);
+        $widgetableType = get_class($category);
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
         $apiEndpoint = '/api/categories/' . $widgetableId;
     } elseif (isset($book) && !empty($book)) {
@@ -52,7 +53,7 @@
     } elseif (isset($newsCategory) && !empty($newsCategory)) {
         $model = $newsCategory;
         $widgetableId = $newsCategory->id; // \News\Models\News
-        $widgetableType = substr(get_class($newsCategory), 11);
+        $widgetableType = get_class($newsCategory);
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
         $apiEndpoint = '/api/v1/news-categories/' . $widgetableId;
     } else {
