@@ -77,16 +77,16 @@ class MenuController extends Controller
             }
             foreach ($tmpMenus as $key => $value) {
                 if ($key === 'new') {
-                    Menu::create([
-                        'name' => $request->input('name'),
-                        'link' => $request->input('link'),
-                        'image' => FileHelper::upload($request, 'image'),
-                        'image_alt' => $request->input('image_alt'),
-                        'description' => $request->input('description'),
-                        'parent_id' => $request->input('parent_id'),
-                        'order' => $value,
-                        'user_id' => auth()->id(),
-                    ]);
+                    $menu = new Menu;
+                    $menu->setTranslation('name', app()->getLocale(), $request->input('name'));
+                    $menu->setTranslation('link', app()->getLocale(), $request->input('link'));
+                    $menu->setTranslation('description', app()->getLocale(), $request->input('description'));
+                    $menu->image = FileHelper::upload($request, 'image');
+                    $menu->image_alt = $request->input('image_alt');
+                    $menu->parent_id = $request->input('parent_id');
+                    $menu->order = $value;
+                    $menu->user_id = auth()->id();
+                    $menu->save();
                 } else {
                     $tmpMenu = Menu::find($key);
                     $tmpMenu->order = $value;
@@ -161,14 +161,14 @@ class MenuController extends Controller
                 $tmpMenu->save();
             }
         }
-        $menu->name = $request->input('name');
-        $menu->link = $request->input('link');
+        $menu->setTranslation('name', app()->getLocale(), $request->input('name'));
+        $menu->setTranslation('link', app()->getLocale(), $request->input('link'));
+        $menu->setTranslation('description', app()->getLocale(), $request->input('description'));
         $menu->parent_id = $request->input('parent_id');
         if ($request->hasFile('image')) {
             $menu->image = FileHelper::upload($request, 'image');
         }
         $menu->image_alt = $request->input('image_alt');
-        $menu->description = $request->input('description');
         $menu->user_id = auth()->id();
         $menu->save();
 

@@ -71,6 +71,7 @@ class BookController extends Controller
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
             'description' => 'nullable|string|max:1500',
             'book_genre_id' => 'required|exists:book_genres,id',
             'sitemap_exclude' => 'nullable',
@@ -98,6 +99,7 @@ class BookController extends Controller
         }
 
         $book->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         $book->setTranslation('description', app()->getLocale(), $request->input('description'));
         $book->book_genre_id = $request->input('book_genre_id');
         if (!empty($request->input('sitemap_exclude'))) {
@@ -111,12 +113,6 @@ class BookController extends Controller
         if (!empty($request->input('sitemap_change_frequency'))) {
             $book->sitemap_change_frequency = $request->input('sitemap_change_frequency');
         }
-        // if (!empty($request->input('primary_language'))) {
-        //     $book->primary_language = $request->input('primary_language');
-        //     if ($request->input('primary_language') === 'default') {
-        //         $book->primary_language = null;
-        //     }
-        // }
         $book->primary_language = app()->getLocale(); // Default to current locale
         $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
@@ -189,12 +185,6 @@ class BookController extends Controller
         if (!empty($request->input('sitemap_change_frequency'))) {
             $book->sitemap_change_frequency = $request->input('sitemap_change_frequency');
         }
-        // if (!empty($request->input('primary_language'))) {
-        //     $book->primary_language = $request->input('primary_language');
-        //     if ($request->input('primary_language') === 'default') {
-        //         $book->primary_language = null;
-        //     }
-        // }
         $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $book->published_year = $request->input('published_year');

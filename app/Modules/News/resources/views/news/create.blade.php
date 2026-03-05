@@ -5,7 +5,9 @@
 <div class="container">
     <form action="{{ route('admin.news.store') }}" method="POST" enctype='multipart/form-data'>
         @csrf
+
         @include('news::news.form')
+
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 </div>
