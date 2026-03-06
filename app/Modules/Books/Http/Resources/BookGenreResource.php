@@ -29,6 +29,7 @@ class BookGenreResource extends JsonResource
             "books" => $this->relationLoaded('books') ? BookResource::collection($this->books) : null,
             "books_count" => $this->books_count ?? null,
             "primary_language" => $this->primary_language,
+            "hide_from_frontend" => $this->hide_from_frontend,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,

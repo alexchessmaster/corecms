@@ -97,6 +97,7 @@ class BookGenreController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
 
         $bookGenre = new BookGenre;
@@ -107,13 +108,17 @@ class BookGenreController extends Controller
             $destinationPath = public_path('uploads/images');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $bookGenre->setTranslation('image', app()->getLocale(), '/uploads/images/' . $filename);
         }
 
         $bookGenre->setTranslation('name', app()->getLocale(), $request->name);
+        $bookGenre->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $bookGenre->parent_id = $request->input('parent_id');
+        $bookGenre->hide_from_frontend = $request->boolean('hide_from_frontend');
         $bookGenre->setTranslation('description', app()->getLocale(), $request->input('description'));
         if (!empty($request->input('sitemap_exclude'))) {
             $bookGenre->sitemap_exclude = true;
@@ -154,6 +159,7 @@ class BookGenreController extends Controller
         $this->authorize('update', $bookGenre);
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:2048',
@@ -161,6 +167,7 @@ class BookGenreController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
         $bookGenre->user_id = auth()->id();
         if ($request->hasFile('image')) {
@@ -169,13 +176,17 @@ class BookGenreController extends Controller
             $destinationPath = public_path('uploads/images');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $bookGenre->setTranslation('image', app()->getLocale(), '/uploads/images/' . $filename);
         }
 
         $bookGenre->setTranslation('name', app()->getLocale(), $request->name);
+        $bookGenre->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $bookGenre->parent_id = $request->input('parent_id');
+        $bookGenre->hide_from_frontend = $request->boolean('hide_from_frontend');
         $bookGenre->description = $request->input('description');
         if (!empty($request->input('sitemap_exclude'))) {
             $bookGenre->sitemap_exclude = true;

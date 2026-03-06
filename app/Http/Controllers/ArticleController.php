@@ -95,6 +95,8 @@ class ArticleController extends Controller
             $destinationPath = public_path('uploads/articles');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $article->setTranslation('image', app()->getLocale(), '/uploads/articles/' . $filename);

@@ -93,6 +93,8 @@ class BookController extends Controller
             $destinationPath = public_path('uploads/books');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $book->setTranslation('image', app()->getLocale(), '/uploads/books/' . $filename);

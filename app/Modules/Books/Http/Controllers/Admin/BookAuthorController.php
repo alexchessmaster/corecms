@@ -92,6 +92,8 @@ class BookAuthorController extends Controller
             $destinationPath = public_path('uploads/images');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $bookAuthor->image = '/uploads/images/' . $filename;
@@ -154,6 +156,8 @@ class BookAuthorController extends Controller
             $destinationPath = public_path('uploads/images');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $bookAuthor->image = '/uploads/images/' . $filename;

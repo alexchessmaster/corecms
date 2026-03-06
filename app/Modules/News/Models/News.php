@@ -24,6 +24,7 @@ class News extends Model
     public $translatable = ['title', 'slug', 'description', 'image'];
     protected $casts = [
         'scheduled_at' => 'datetime',
+        'news_date' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

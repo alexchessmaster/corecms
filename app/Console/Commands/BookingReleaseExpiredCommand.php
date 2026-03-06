@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Modules\Booking\Models\BookingReservation;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

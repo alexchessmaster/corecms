@@ -2,18 +2,18 @@
 
 namespace App\Modules\Books\Models;
 
-use App\Modules\Books\Models\BookGenre;
+use App\Models\Language;
 use App\Models\User;
 use App\Models\Widget;
-use App\Models\Setting;
-use App\Models\Category;
-use App\Models\Language;
-use App\Modules\Books\Models\BookAuthor;
 use App\Models\Widgetable;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Modules\Books\Models\BookAuthor;
+use App\Modules\Books\Models\BookGenre;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Stores\SettingStore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\HasTranslations;
 
 class Book extends Model
 {
@@ -38,19 +38,17 @@ class Book extends Model
     {
         $fullUrl = $this->slug;
 
-        $bookPrefix = cache()->remember('book-prefix', 3600, function () {
-            return Setting::where('key', 'book-prefix')->value('value');
-        });
+        $languages = Language::all();
+
+        $settingStore = new SettingStore;
+        $bookPrefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX);
+
+        $multipleLanguages = $settingStore->isTranslatable(SettingKeyEnum::BOOK_PREFIX);
 
         if (!empty($bookPrefix)) {
             $bookPrefix = '/' . trim($bookPrefix, '/');
             $fullUrl = $bookPrefix . $fullUrl;
         }
-
-        $languages = Language::all();
-        $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () use ($languages) {
-            return count($languages) > 1;
-        });
 
         if ($multipleLanguages) {
             $lang = app()->getLocale();
@@ -73,13 +71,15 @@ class Book extends Model
 
     public function scopeVisibleTo($query, User $user)
     {
-        if($user->can('view books')) {
+        if ($user->can('view books')) {
             return $query;
         }
 
-        if($user->can('view own books')) {
+        if ($user->can('view own books')) {
             return $query->where('user_id', $user->id);
         }
+
+        return $query->whereRaw('1 = 0');
     }
 
     public function widgetables(): MorphMany

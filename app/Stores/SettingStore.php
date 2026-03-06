@@ -6,7 +6,6 @@ use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use RuntimeException;
 
 class SettingStore
 {
@@ -36,16 +35,31 @@ class SettingStore
     public function findByKey(SettingKeyEnum $key)
     {
         $setting = $this->allSettings->firstWhere('key', $key->value);
+        if (!$setting) {
+            throw new ModelNotFoundException('The settings model not found for key: ' . $key->value);
+        }
+        if ($setting->is_translatable) {
+            $value = unserialize($setting->value)[app()->getLocale()];
+        } else {
+            $value = $setting->value;
+        }
 
+        return $value;
+    }
+
+    public function isTranslatable(SettingKeyEnum $key): bool
+    {
+        $setting = $this->allSettings->firstWhere('key', $key->value);
         if (!$setting) {
             throw new ModelNotFoundException('The settings model not found for key: ' . $key->value);
         }
 
-        return $setting;
+        return $setting->is_translatable ? true : false;
     }
     
     public function updateByKey(SettingKeyEnum $key, string $value): Setting
     {
+        // not used anywhere, but take care of is_translatable later
         $setting = Setting::where('key', $key->value)->firstOrFail();
         $setting->value = $value;
         $setting->save();
