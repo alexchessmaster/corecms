@@ -19,13 +19,8 @@
 <div class="mb-3">
     <label for="slug" class="form-label required">Slug</label>
     <input type="text" class="form-control" id="slug" name="slug"
-           value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
-</div>
-@if (isset($news))
-    <div class="mb-3">
-        <label for="slug" class="form-label required">Slug</label>
-        <input type="text" class="form-control" id="slug" name="slug"
-               value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
+        value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
+    @if (isset($news))
         <small>
             <a href="{{ isset($news) ?
                 \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
@@ -42,8 +37,8 @@
                     : '' }}
             </a>
         </small>
-    </div>
-@endif
+    @endif
+</div>
 <div class="mb-3">
     <div class="form-group">
         <label for="status">Status</label>
@@ -60,6 +55,11 @@
         <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
                value="{{ old('scheduled_at', isset($news->scheduled_at) ? $news->scheduled_at->format('Y-m-d\TH:i') : '') }}">
     </div>
+</div>
+<div class="mb-3">
+    <label for="news_date">News date</label>
+    <input type="datetime-local" class="form-control" id="news_date" name="news_date"
+            value="{{ old('news_date', isset($news->news_date) ? $news->news_date->format('Y-m-d\TH:i') : '') }}">
 </div>
 <div class="mb-3">
     <label for="description" class="form-label">Description (Short)</label>

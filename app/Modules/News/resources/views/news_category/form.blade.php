@@ -10,7 +10,6 @@
         @if(isset($newsCategory))
             required
         @endif
-        disabled
     >
 </div>
 <div class="mb-3">
@@ -26,8 +25,8 @@
     </select>
 </div>
 <div class="mb-3">
-    <label for="description" class="form-label required">Description</label>
-    <textarea class="form-control tinymce" id="description" name="description" rows="5" required>
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control tinymce" id="description" name="description" rows="5">
         {{ isset($newsCategory) ? $newsCategory->getTranslation('description', app()->getLocale(), false) : '' }}
     </textarea>
 </div>
@@ -51,3 +50,26 @@
 <br>
 
 {{-- @include('admin.partials.tinymce-full') --}}
+
+{{-- auto-fill slug from title --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('name');
+        const slugInput = document.getElementById('slug');
+
+        if (titleInput && slugInput && !slugInput.disabled) {
+            titleInput.addEventListener('blur', function () {
+                if (slugInput.value.trim() === '') {
+                    slugInput.value = titleInput.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\u0600-\u06FF\w-]/g, '')
+                        .replace(/-+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                }
+            });
+        }
+    });
+</script>
+{{-- end auto-fill slug from title --}}

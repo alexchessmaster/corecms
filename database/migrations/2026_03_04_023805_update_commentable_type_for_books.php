@@ -7,15 +7,15 @@ return new class extends Migration
 {
     public function up()
     {
-        DB::table('commentables')
-            ->where('commentable_type', 'App\Models\Book')
-            ->update(['commentable_type' => 'App\Modules\Books\Models\Book']);
+        DB::table('widgetables')
+            ->where('widgetable_type', 'App\Models\Book')
+            ->update(['widgetable_type' => 'App\Modules\Books\Models\Book']);
     }
 
     public function down()
     {
-        DB::table('commentables')
-            ->where('commentable_type', 'App\Modules\Books\Models\Book')
-            ->update(['commentable_type' => 'App\Models\Book']);
+        DB::table('widgetables')
+            ->where('widgetable_type', 'App\Modules\Books\Models\Book')
+            ->update(['widgetable_type' => 'App\Models\Book']);
     }
 };

@@ -91,6 +91,8 @@ class NewsController extends Controller
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $news->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);

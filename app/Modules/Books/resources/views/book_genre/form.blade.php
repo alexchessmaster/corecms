@@ -10,7 +10,6 @@
         @if(isset($bookGenre))
             required
         @endif
-        disabled
     >
 </div>
 <div class="mb-3">
@@ -31,7 +30,12 @@
         {{ isset($bookGenre) ? $bookGenre->getTranslation('description', app()->getLocale(), false) : '' }}
     </textarea>
 </div>
-
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input custom-control-input-danger" type="checkbox"
+        name="hide_from_frontend" id="hide_from_frontend" value="1"
+        @checked(old('hide_from_frontend', isset($bookGenre) ? $bookGenre->hide_from_frontend : false))>
+    <label for="hide_from_frontend" class="custom-control-label">Hide it from frontend</label>
+</div>
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>
     @if (isset($bookGenre) && $bookGenre->image)

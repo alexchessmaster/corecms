@@ -163,6 +163,9 @@ class ContentController extends Controller
         }
 
         $responseCode = 200;
+        $parsedUrl = parse_url($path);
+        $path = $parsedUrl['path'];
+        // $query = $parsedUrl['query']; if isset($parsedUrl['query']) // not needed yet
 
         // Is Page
         $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $path)->where('status', 'published')->first();
@@ -443,7 +446,7 @@ class ContentController extends Controller
 
         // Filter by book genre if provided
         if (!empty($bookGenre) && $bookGenre !== 'null') {
-            $bookGenre = BookGenre::where('slug->' . app()->getLocale(), '/' . ltrim(Str::slug($bookGenre), '/'))->first();
+            $bookGenre = BookGenre::where('slug->' . app()->getLocale(), '/' . ltrim($bookGenre), '/')->first();
             if ($bookGenre) {
                 $query = $query->where('book_genre_id', $bookGenre->id);
             } else {
@@ -515,8 +518,11 @@ class ContentController extends Controller
         if ($language) {
             app()->setLocale($language);
         }
+        $bookGenres = BookGenre::where(function($query){
+            $query->whereNull('hide_from_frontend')
+                ->orWhere('hide_from_frontend', false);
+        })->withCount('books')->get();
 
-        $bookGenres = BookGenre::withCount('books')->get();
         return response()->json([
             'data' => BookGenreResource::collection($bookGenres)
         ]);

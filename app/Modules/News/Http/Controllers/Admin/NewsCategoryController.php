@@ -59,9 +59,7 @@ class NewsCategoryController extends Controller
                         return '<a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>';
                     }
                     $deleteUrl = route('admin.news-categories.destroy', $row->id);
-                    return '
-                    <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
-                ';
+                    return '<a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>';
                 })
                 ->rawColumns(['actions'])
                 ->make(true);
@@ -102,6 +100,8 @@ class NewsCategoryController extends Controller
             $destinationPath = public_path('uploads/news_categories');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $newsCategory->setTranslation('image', app()->getLocale(), '/uploads/news_categories/' . $filename);
@@ -166,6 +166,8 @@ class NewsCategoryController extends Controller
             $destinationPath = public_path('uploads/news_categories');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $newsCategory->setTranslation('image', app()->getLocale(), '/uploads/news_categories/' . $filename);

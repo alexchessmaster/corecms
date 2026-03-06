@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('stock')->nullable();
             $table->unsignedBigInteger('news_category_id')->nullable();
             $table->unsignedBigInteger('author_id')->nullable();
+            $table->dateTime('news_date')->nullable();
 
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
             $table->dateTime('scheduled_at')->nullable();

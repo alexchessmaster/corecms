@@ -90,6 +90,8 @@ class ProductController extends Controller
             $destinationPath = public_path('uploads/products');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
             $product->setTranslation('image', app()->getLocale(), '/uploads/products/' . $filename);

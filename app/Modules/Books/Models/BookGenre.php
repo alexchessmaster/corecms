@@ -21,6 +21,10 @@ class BookGenre extends Model
     public $translatable = ['name', 'slug', 'description', 'image'];
     protected $with = ['parent'];
 
+    protected $casts = [
+        'hide_from_frontend' => 'boolean',
+    ];
+
     public function parent()
     {
         return $this->belongsTo(BookGenre::class, 'parent_id');
