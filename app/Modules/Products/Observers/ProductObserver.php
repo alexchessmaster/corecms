@@ -15,8 +15,8 @@ class ProductObserver
      */
     public function creating(Product $product): void
     {
-        if (empty($product->slug)) {
-            $product->slug = $this->generateSlug($product);
+        if (empty($product->getTranslation('slug', app()->getLocale()))) {
+            $product->setTranslation('slug', app()->getLocale(), $this->generateSlug($product));
         }
     }
 
@@ -27,7 +27,7 @@ class ProductObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $product->slug,
+            'new_slug' => $product->getTranslation('slug', app()->getLocale()),
             'type' => 'product_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -39,8 +39,13 @@ class ProductObserver
      */
     public function updating(Product $product)
     {
-        if ($product->isDirty('product_category_id') || $product->isDirty('title') || $product->isDirty('slug') || empty($product->slug)) {
-            $product->slug = $this->generateSlug($product, $product->id);
+        if (
+            $product->isDirty('product_category_id')
+            || $product->isDirty('title')
+            || $product->isDirty('slug')
+            || empty($product->getTranslation('slug', app()->getLocale()))
+        ) {
+            $product->setTranslation('slug', app()->getLocale(), $this->generateSlug($product, $product->id));
         }
     }
 
@@ -53,7 +58,7 @@ class ProductObserver
             if (array_key_exists(app()->getLocale(), $product->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $product->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $product->slug,
+                    'new_slug' => $product->getTranslation('slug', app()->getLocale()),
                     'type' => 'product_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -70,8 +75,8 @@ class ProductObserver
     public function deleted(Product $product)
     {
         RedirectSlugChange::create([
-            'old_slug' => $product->slug,
-            'new_slug' => $product->category->slug,
+            'old_slug' => $product->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $product->category->getTranslation('slug', app()->getLocale()),
             'type' => 'product_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -87,19 +92,13 @@ class ProductObserver
     {
         $productCategoryId = $product->category->id ?? $product->product_category_id ?? null;
         if (!$productCategoryId) {
-            // If no category, generate a simple slug based on title
-            $slug = '/' . Str::slug($product->title);
-        } else {
-            // Build the full link with category
-            $categorySlug = $product->category->slug ?? '';
-            if ($categorySlug) {
-                $link = rtrim($categorySlug, '/') . '/';
-                $link = '/' . ltrim($link, '/');
-                $slug = $link . Str::slug($product->title);
-            } else {
-                $slug = '/' . Str::slug($product->title);
-            }
+            return null;
         }
+
+        // Build the full link
+        $link = rtrim($product->category->getTranslation('slug', app()->getLocale()), '/') . '/';
+        $link = '/' . ltrim($link, '/');
+        $slug = $link . $product->getTranslation('slug', app()->getLocale());
 
         // Handle duplicate slugs
         $originalSlug = $slug;

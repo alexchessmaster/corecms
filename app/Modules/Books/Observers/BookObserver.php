@@ -3,7 +3,6 @@
 namespace App\Modules\Books\Observers;
 
 use App\Modules\Books\Models\Book;
-use Illuminate\Support\Str;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +14,8 @@ class BookObserver
      */
     public function creating(Book $book): void
     {
-        if (empty($book->slug)) {
-            $book->slug = $this->generateSlug($book);
+        if (empty($book->getTranslation('slug', app()->getLocale()))) {
+            $book->setTranslation('slug', app()->getLocale(), $this->generateSlug($book));
         }
     }
 
@@ -27,7 +26,7 @@ class BookObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $book->slug,
+            'new_slug' => $book->getTranslation('slug', app()->getLocale()),
             'type' => 'book_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -39,8 +38,8 @@ class BookObserver
      */
     public function updating(Book $book)
     {
-        if ($book->isDirty('book_genre_id') || $book->isDirty('title') || $book->isDirty('slug') || empty($book->slug)) {
-            $book->slug = $this->generateSlug($book, $book->id);
+        if ($book->isDirty('book_genre_id') || $book->isDirty('title') || $book->isDirty('slug') || empty($book->getTranslation('slug', app()->getLocale()))) {
+            $book->setTranslation('slug', app()->getLocale(), $this->generateSlug($book, $book->id));
         }
     }
 
@@ -54,7 +53,7 @@ class BookObserver
             if(array_key_exists(app()->getLocale(), $book->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $book->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $book->slug,
+                    'new_slug' => $book->getTranslation('slug', app()->getLocale()),
                     'type' => 'book_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -71,8 +70,8 @@ class BookObserver
     public function deleted(Book $book)
     {
         RedirectSlugChange::create([
-            'old_slug' => $book->slug,
-            'new_slug' => $book->bookGenre->slug,
+            'old_slug' => $book->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $book->bookGenre->getTranslation('slug', app()->getLocale()),
             'type' => 'book_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -92,9 +91,9 @@ class BookObserver
         }
 
         // Build the full link
-        $link = rtrim($book->bookGenre->slug, '/') . '/';
+        $link = rtrim($book->bookGenre->getTranslation('slug', app()->getLocale()), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . Str::slug($book->title);
+        $slug = $link . $book->getTranslation('slug', app()->getLocale());
 
         // Handle duplicate slugs
         $originalSlug = $slug;

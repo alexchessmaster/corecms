@@ -15,7 +15,7 @@ class NewsCategoryObserver
      */
     public function creating(NewsCategory $newsCategory)
     {
-        $newsCategory->slug = $this->generateSlug($newsCategory);
+        $newsCategory->setTranslation('slug', app()->getLocale(), $this->generateSlug($newsCategory));
     }
 
     /**
@@ -25,20 +25,24 @@ class NewsCategoryObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $newsCategory->slug,
+            'new_slug' => $newsCategory->getTranslation('slug', app()->getLocale()),
             'type' => 'news_category_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);
     }
 
-        /**
+    /**
      * Handle the NewsCategory "updating" event.
      */
     public function updating(NewsCategory $newsCategory)
     {
-        if ($newsCategory->isDirty('name') || $newsCategory->isDirty('parent_id') || empty($newsCategory->slug)) {
-            $newsCategory->slug = $this->generateSlug($newsCategory, $newsCategory->id);
+        if (
+            $newsCategory->isDirty('slug')
+            || $newsCategory->isDirty('parent_id')
+            || empty($newsCategory->getTranslation('slug', app()->getLocale()))
+        ) {            
+            $newsCategory->setTranslation('slug', app()->getLocale(), $this->generateSlug($newsCategory, $newsCategory->id));
         }
     }
 
@@ -49,7 +53,7 @@ class NewsCategoryObserver
     {
         $slug = rtrim($this->getFullLink($newsCategory), '/');
         $slug = '/' . ltrim($slug, '/');
-        
+
         // Handle duplicate slugs
         $originalSlug = $slug;
         $counter = 2;
@@ -74,7 +78,7 @@ class NewsCategoryObserver
             return "/" . $link;
         }
 
-        $slug = Str::slug($newsCategory->name);
+        $slug = $newsCategory->getTranslation('slug', app()->getLocale());
 
         // Root news category check
         if (empty($newsCategory->parent_id)) {
@@ -95,7 +99,7 @@ class NewsCategoryObserver
             if (array_key_exists(app()->getLocale(), $newsCategory->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $newsCategory->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $newsCategory->slug,
+                    'new_slug' => $newsCategory->getTranslation('slug', app()->getLocale()),
                     'type' => 'news_category_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -112,8 +116,8 @@ class NewsCategoryObserver
     public function deleted(NewsCategory $newsCategory)
     {
         RedirectSlugChange::create([
-            'old_slug' => $newsCategory->slug,
-            'new_slug' => $newsCategory->parent?->slug ?? '/',
+            'old_slug' => $newsCategory->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $newsCategory->parent?->getTranslation('slug', app()->getLocale()) ?? '/',
             'type' => 'news_category_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),

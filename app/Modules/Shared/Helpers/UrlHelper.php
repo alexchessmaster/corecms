@@ -6,7 +6,7 @@ use App\Models\Language;
 
 class UrlHelper
 {
-    public static function getFrontendUrl($path = '', $lang = '')
+    public static function getFrontendUrl($path = '', $lang = '', $betweenLangAndPath = '')
     {
         if (empty($lang)) {
             $lang = app()->getLocale();
@@ -18,7 +18,14 @@ class UrlHelper
         }else{
             $url = $language->domain;
         }
+        if(!empty($betweenLangAndPath)){
+            $betweenLangAndPath = '/' . ltrim($betweenLangAndPath, '/');
+            $betweenLangAndPath = rtrim($betweenLangAndPath, '/');
+        }
+        $url = rtrim($url, '/') . $betweenLangAndPath . '/' . ltrim($path, '/');
+        $url = ltrim($url, '/');
+        $url = 'https://' . ltrim($url, 'https://');
 
-        return rtrim($url, '/') . '/' . ltrim($path, '/');
+        return $url;
     }
 }

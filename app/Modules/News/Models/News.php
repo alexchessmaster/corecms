@@ -2,18 +2,20 @@
 
 namespace App\Modules\News\Models;
 
+use App\Models\Language;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\Widget;
-use App\Models\Setting;
-use App\Models\Language;
 use App\Models\Widgetable;
 use App\Modules\News\Models\NewsAuthor;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 use App\Modules\News\Models\NewsCategory;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Stores\SettingStore;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\HasTranslations;
 
 class News extends Model
 {
@@ -29,27 +31,23 @@ class News extends Model
         'updated_at' => 'datetime',
     ];
 
+    // /en/news/category1/the-news-title
     public function getFullUrlAttribute()
     {
         $fullUrl = $this->slug;
-
-        $newsPrefix = cache()->remember('news-prefix', 3600, function () {
-            return Setting::where('key', 'news-prefix')->value('value');
-        });
-
+        $languages = Language::all();
+        $settingStore = new SettingStore;
+        $newsPrefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
+        $multipleLanguages = $settingStore->isTranslatable(SettingKeyEnum::NEWS_PREFIX);
         if (!empty($newsPrefix)) {
             $newsPrefix = '/' . trim($newsPrefix, '/');
             $fullUrl = $newsPrefix . $fullUrl;
         }
-
-        $languages = Language::all();
-        $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () use ($languages) {
-            return count($languages) > 1;
-        });
-
         if ($multipleLanguages) {
-            $currentLocale = app()->getLocale();
-            $fullUrl = '/' . $currentLocale . $fullUrl;
+            $lang = app()->getLocale();
+            if (! $languages->value('use_separate_domain')) {
+                $fullUrl = '/' . $lang . $fullUrl;
+            }
         }
 
         return $fullUrl;

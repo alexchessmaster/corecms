@@ -3,7 +3,6 @@
 namespace App\Modules\Books\Observers;
 
 use App\Modules\Books\Models\BookGenre;
-use Illuminate\Support\Str;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +14,7 @@ class BookGenreObserver
      */
     public function creating(BookGenre $bookGenre)
     {
-        $bookGenre->slug = $this->generateSlug($bookGenre);
+        $bookGenre->setTranslation('slug', app()->getLocale(), $this->generateSlug($bookGenre));
     }
 
     /**
@@ -25,7 +24,7 @@ class BookGenreObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $bookGenre->slug,
+            'new_slug' => $bookGenre->getTranslation('slug', app()->getLocale()),
             'type' => 'book_genre_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -37,8 +36,11 @@ class BookGenreObserver
      */
     public function updating(BookGenre $bookGenre)
     {
-        if ($bookGenre->isDirty('name') || $bookGenre->isDirty('parent_id') || empty($bookGenre->slug)) {
-            $bookGenre->slug = $this->generateSlug($bookGenre, $bookGenre->id);
+        if ($bookGenre->isDirty('name') 
+            || $bookGenre->isDirty('parent_id') 
+            || empty($bookGenre->getTranslation('slug', app()->getLocale()))
+        ) {
+            $bookGenre->setTranslation('slug', app()->getLocale(), $this->generateSlug($bookGenre, $bookGenre->id));
         }
     }
 
@@ -74,7 +76,7 @@ class BookGenreObserver
             return "/" . $link;
         }
 
-        $slug = Str::slug($bookGenre->name);
+        $slug = $bookGenre->getTranslation('slug', app()->getLocale());
 
         // Root book genre check
         if (empty($bookGenre->parent_id)) {
@@ -95,7 +97,7 @@ class BookGenreObserver
             if (array_key_exists(app()->getLocale(), $bookGenre->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $bookGenre->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $bookGenre->slug,
+                    'new_slug' => $bookGenre->getTranslation('slug', app()->getLocale()),
                     'type' => 'book_genre_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -112,8 +114,8 @@ class BookGenreObserver
     public function deleted(BookGenre $bookGenre)
     {
         RedirectSlugChange::create([
-            'old_slug' => $bookGenre->slug,
-            'new_slug' => $bookGenre?->parent?->slug ?? '/',
+            'old_slug' => $bookGenre->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $bookGenre?->parent?->getTranslation('slug', app()->getLocale()) ?? '/',
             'type' => 'book_genre_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),

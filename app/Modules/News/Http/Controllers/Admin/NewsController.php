@@ -77,7 +77,9 @@ class NewsController extends Controller
             'category_id' => 'required|exists:news_categories,id',
             'status' => 'required|string',
             'author_id' => 'nullable|int',
-            'tag_ids' => 'nullable'
+            'tag_ids' => 'nullable',
+            'scheduled_at' => 'nullable|date',
+            'news_date' => 'nullable|date',
         ]);
 
         $news = new News;
@@ -102,6 +104,8 @@ class NewsController extends Controller
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
+        $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+        $news->news_date = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : null;
 
         // Sync tags if provided
         if ($request->has('tag_ids')) {
@@ -142,7 +146,9 @@ class NewsController extends Controller
             'category_id' => 'required|exists:news_categories,id',
             'status' => 'required|string',
             'author_id' => 'nullable|int',
-            'tag_ids' => 'nullable'
+            'tag_ids' => 'nullable',
+            'scheduled_at' => 'nullable|date',
+            'news_date' => 'nullable|date',
         ]);
 
         $news->user_id = auth()->id();
@@ -164,6 +170,8 @@ class NewsController extends Controller
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
+        $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+        $news->news_date = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : null;
         if ($request->author_id) {
             $news->author_id = $request->author_id;
         }

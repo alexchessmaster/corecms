@@ -21,9 +21,9 @@ class NewsResource extends JsonResource
     public function toArray(Request $request): array
     {
         $newsPrefix = $this->additional['news_prefix'] ?? null;
-
         $allUrls = [];
-        foreach(Language::all() as $language){
+        $languages = Language::all();
+        foreach($languages as $language){
             foreach($this->getTranslations('slug') as $lang => $slug){
                 if($language->code === $lang){
                     if($newsPrefix) {
@@ -35,7 +35,16 @@ class NewsResource extends JsonResource
             }
         }
 
-        // return parent::toArray($request);
+        $file = $this->getTranslation('image', app()->getLocale());
+        if(empty($file)){
+            foreach($languages as $language){
+                $file = $this->getTranslation('image', $language->code);
+                if(!empty($file)){
+                    break;
+                }
+            }
+        }
+
         return [
             "id" => $this->id,
             "title" => $this->title,
@@ -45,9 +54,9 @@ class NewsResource extends JsonResource
             "description" => $this->description,
             "stars" => $this->stars,
             "content" => $this->content,
-            "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile($file),
             "news_category_id" => $this->news_category_id,
-            "newsCategory" => $this->relationLoaded('category') ? new NewsCategoryResource($this->category) : 'yes',
+            "category" => $this->relationLoaded('category') ? new NewsCategoryResource($this->category) : 'yes',
             "published_year" => $this->published_year,
             "author_id" => $this->author_id,
             "author" => $this->relationLoaded('author') ? new NewsAuthorResource($this->author) : null,
