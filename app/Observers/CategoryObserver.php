@@ -15,7 +15,7 @@ class CategoryObserver
      */
     public function creating(Category $category)
     {
-        $category->slug = $this->generateSlug($category);
+        $category->setTranslation('slug', app()->getLocale(), $this->generateSlug($category));
     }
 
     /**
@@ -25,7 +25,7 @@ class CategoryObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $category->slug,
+            'new_slug' => $category->getTranslation('slug', app()->getLocale()),
             'type' => 'category_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -37,8 +37,11 @@ class CategoryObserver
      */
     public function updating(Category $category)
     {
-        if ($category->isDirty('name') || $category->isDirty('parent_id') || empty($category->slug)) {
-            $category->slug = $this->generateSlug($category, $category->id);
+        if ($category->isDirty('name') 
+            || $category->isDirty('parent_id') 
+            || empty($category->getTranslation('slug', app()->getLocale()))
+        ) {
+            $category->setTranslation('slug', app()->getLocale(), $this->generateSlug($category, $category->id));
         }
     }
 
@@ -93,7 +96,7 @@ class CategoryObserver
 
                 RedirectSlugChange::create([
                     'old_slug' => $category->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $category->slug,
+                    'new_slug' => $category->getTranslation('slug', app()->getLocale()),
                     'type' => 'category_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -110,8 +113,8 @@ class CategoryObserver
     public function deleted(Category $category)
     {
         RedirectSlugChange::create([
-            'old_slug' => $category->slug,
-            'new_slug' => $category?->parent?->slug ?? '/',
+            'old_slug' => $category->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $category?->parent?->getTranslation('slug', app()->getLocale()) ?? '/',
             'type' => 'category_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),

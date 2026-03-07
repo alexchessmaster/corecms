@@ -15,7 +15,7 @@ class ProductCategoryObserver
      */
     public function creating(ProductCategory $productCategory)
     {
-        $productCategory->slug = $this->generateSlug($productCategory);
+        $productCategory->setTranslation('slug', app()->getLocale(), $this->generateSlug($productCategory));
     }
 
     /**
@@ -25,7 +25,7 @@ class ProductCategoryObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $productCategory->slug,
+            'new_slug' => $productCategory->getTranslation('slug', app()->getLocale()),
             'type' => 'product_category_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -37,8 +37,11 @@ class ProductCategoryObserver
      */
     public function updating(ProductCategory $productCategory)
     {
-        if ($productCategory->isDirty('name') || $productCategory->isDirty('parent_id') || empty($productCategory->slug)) {
-            $productCategory->slug = $this->generateSlug($productCategory, $productCategory->id);
+        if ($productCategory->isDirty('name') 
+            || $productCategory->isDirty('parent_id') 
+            || empty($productCategory->getTranslation('slug', app()->getLocale()))
+        ) {
+            $productCategory->setTranslation('slug', app()->getLocale(), $this->generateSlug($productCategory, $productCategory->id));
         }
     }
 
@@ -95,7 +98,7 @@ class ProductCategoryObserver
             if (array_key_exists(app()->getLocale(), $productCategory->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $productCategory->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $productCategory->slug,
+                    'new_slug' => $productCategory->getTranslation('slug', app()->getLocale()),
                     'type' => 'product_category_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -112,8 +115,8 @@ class ProductCategoryObserver
     public function deleted(ProductCategory $productCategory)
     {
         RedirectSlugChange::create([
-            'old_slug' => $productCategory->slug,
-            'new_slug' => $productCategory->parent?->slug ?? '/',
+            'old_slug' => $productCategory->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $productCategory->parent?->getTranslation('slug', app()->getLocale()) ?? '/',
             'type' => 'product_category_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),

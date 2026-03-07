@@ -16,8 +16,8 @@ class ArticleObserver
      */
     public function creating(Article $article)
     {
-        if (empty($article->slug)) {
-            $article->slug = $this->generateSlug($article);
+        if (empty($article->getTranslation('slug', app()->getLocale()))) {
+            $article->setTranslation('slug', app()->getLocale(), $this->generateSlug($article));
         }
     }
 
@@ -28,7 +28,7 @@ class ArticleObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $article->slug,
+            'new_slug' => $article->getTranslation('slug', app()->getLocale()),
             'type' => 'article_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -40,8 +40,12 @@ class ArticleObserver
      */
     public function updating(Article $article)
     {
-        if ($article->isDirty('category_id') || $article->isDirty('title') || $article->isDirty('slug') || empty($article->slug)) {
-            $article->slug = $this->generateSlug($article, $article->id);
+        if ($article->isDirty('category_id') 
+            || $article->isDirty('title') 
+            || $article->isDirty('slug') 
+            || empty($article->getTranslation('slug', app()->getLocale()))
+        ) {
+            $article->setTranslation('slug', app()->getLocale(), $this->generateSlug($article, $article->id));
         }
     }
 
@@ -54,7 +58,7 @@ class ArticleObserver
             if(array_key_exists(app()->getLocale(), $article->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $article->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $article->slug,
+                    'new_slug' => $article->getTranslation('slug', app()->getLocale()),
                     'type' => 'article_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -76,9 +80,9 @@ class ArticleObserver
         }
 
         // Build the full link
-        $link = rtrim($article->category->slug, '/') . '/';
+        $link = rtrim($article->category->getTranslation('slug', app()->getLocale()), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . Str::slug($article->title);
+        $slug = $link . $article->getTranslation('slug', app()->getLocale());
 
         // Handle duplicate slugs
         $originalSlug = $slug;
@@ -101,8 +105,8 @@ class ArticleObserver
     public function deleted(Article $article)
     {
         RedirectSlugChange::create([
-            'old_slug' => $article->slug,
-            'new_slug' => $article->category->slug,
+            'old_slug' => $article->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $article->category->getTranslation('slug', app()->getLocale()),
             'type' => 'article_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),

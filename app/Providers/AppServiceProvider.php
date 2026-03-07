@@ -48,11 +48,11 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading();
 
         Article::observe(ArticleObserver::class);
-        Book::observe(BookObserver::class);
-        BookGenre::observe(BookGenreObserver::class);
+        // Book::observe(BookObserver::class);
+        // BookGenre::observe(BookGenreObserver::class);
         Category::observe(CategoryObserver::class);
-        Product::observe(ProductObserver::class);
-        ProductCategory::observe(ProductCategoryObserver::class);
+        // Product::observe(ProductObserver::class);
+        // ProductCategory::observe(ProductCategoryObserver::class);
 
         Event::listen(SlugChangedEvent::class, HandleSlugChangeListener::class);
 

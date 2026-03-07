@@ -22,19 +22,23 @@
         value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
     @if (isset($news))
         <small>
-            <a href="{{ isset($news) ?
-                \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
-                    $news->getTranslation('slug', app()->getLocale(), false),
-                    session('lang')
-                )
-                : '' }}"
-            >
-                {{ isset($news) ?
-                    \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+            @php
+                $settingStore = new App\Stores\SettingStore;
+                // get the prefix from settings
+                $prefix = $settingStore->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::NEWS_PREFIX)
+            @endphp
+            <a href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
                         $news->getTranslation('slug', app()->getLocale(), false),
-                        session('lang')
+                        session('lang'),
+                        $prefix
                     )
-                    : '' }}
+                }}">
+                {{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+                        $news->getTranslation('slug', app()->getLocale(), false),
+                        session('lang'),
+                        $prefix
+                    )
+                }}
             </a>
         </small>
     @endif
@@ -59,7 +63,7 @@
 <div class="mb-3">
     <label for="news_date">News date</label>
     <input type="datetime-local" class="form-control" id="news_date" name="news_date"
-            value="{{ old('news_date', isset($news->news_date) ? $news->news_date->format('Y-m-d\TH:i') : '') }}">
+        value="{{ old('news_date', isset($news->news_date) ? $news->news_date->format('Y-m-d\TH:i') : '') }}">
 </div>
 <div class="mb-3">
     <label for="description" class="form-label">Description (Short)</label>

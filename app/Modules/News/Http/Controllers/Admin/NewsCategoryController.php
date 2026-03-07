@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class NewsCategoryController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', NewsCategory::class);
@@ -71,7 +71,7 @@ class NewsCategoryController extends Controller
     public function create()
     {
         $this->authorize('create', NewsCategory::class);
-        
+
         $newsCategories = NewsCategory::whereNull('parent_id')->get();
         return view('news::news_category.create', compact('newsCategories'));
     }
@@ -79,7 +79,7 @@ class NewsCategoryController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', NewsCategory::class);
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
@@ -108,6 +108,7 @@ class NewsCategoryController extends Controller
         }
 
         $newsCategory->setTranslation('name', app()->getLocale(), $request->name);
+        $newsCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $newsCategory->parent_id = $request->input('parent_id');
         $newsCategory->setTranslation('description', app()->getLocale(), $request->input('description'));
         if (!empty($request->input('sitemap_exclude'))) {
@@ -136,7 +137,7 @@ class NewsCategoryController extends Controller
     {
         $newsCategory = NewsCategory::withAllWidgetData()->findOrFail($newsCategoryId);
         $this->authorize('update', $newsCategory);
-        
+
         $newsCategories = NewsCategory::whereNull('parent_id')->where('id', '!=', $newsCategory->id)->get();
         $allWidgets = Widget::where('active', true)->get();
         $user = auth()->user();
@@ -148,9 +149,10 @@ class NewsCategoryController extends Controller
     public function update(Request $request, NewsCategory $newsCategory)
     {
         $this->authorize('update', $newsCategory);
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:news_categories,id',
             'description' => 'nullable|string',
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:2048',
@@ -173,6 +175,7 @@ class NewsCategoryController extends Controller
             $newsCategory->setTranslation('image', app()->getLocale(), '/uploads/news_categories/' . $filename);
         }
         $newsCategory->setTranslation('name', app()->getLocale(), $request->name);
+        $newsCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $newsCategory->parent_id = $request->input('parent_id');
         $newsCategory->description = $request->input('description');
         if (!empty($request->input('sitemap_exclude'))) {
@@ -200,7 +203,7 @@ class NewsCategoryController extends Controller
     public function destroy(NewsCategory $newsCategory)
     {
         $this->authorize('delete', $newsCategory);
-        
+
         // uncategorized in en and other languages are the same
         $newNewsCategory = $newsCategory->parent ?? NewsCategory::where("slug->" . "en", '/uncategorized')->first();
 

@@ -116,6 +116,7 @@ class ProductCategoryController extends Controller
         }
 
         $productCategory->setTranslation('name', app()->getLocale(), $request->name);
+        $productCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $productCategory->parent_id = $request->input('parent_id');
         $productCategory->setTranslation('description', app()->getLocale(), $request->input('description'));
         if (!empty($request->input('sitemap_exclude'))) {
@@ -159,6 +160,7 @@ class ProductCategoryController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:2048',
@@ -181,6 +183,7 @@ class ProductCategoryController extends Controller
             $productCategory->setTranslation('image', app()->getLocale(), '/uploads/images/' . $filename);
         }
         $productCategory->setTranslation('name', app()->getLocale(), $request->name);
+        $productCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $productCategory->parent_id = $request->input('parent_id');
         $productCategory->description = $request->input('description');
         if (!empty($request->input('sitemap_exclude'))) {

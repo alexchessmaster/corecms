@@ -82,12 +82,13 @@ class NewsTagController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
         ]);
 
         $newsTag = new NewsTag;
         $newsTag->user_id = auth()->id();
         $newsTag->setTranslation('name', app()->getLocale(), $request->input('name'));
-        $newsTag->setTranslation('slug', app()->getLocale(), Str::slug($request->input('name')));
+        $newsTag->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? Str::slug($request->input('name')));
         $newsTag->save();
 
         return redirect()->route('admin.news-tags.index')->with('success', 'Tag created successfully.');
@@ -106,10 +107,11 @@ class NewsTagController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
         ]);
         $newsTag->user_id = auth()->id();
         $newsTag->setTranslation('name', app()->getLocale(), $request->input('name'));
-        $newsTag->setTranslation('slug', app()->getLocale(), Str::slug($request->input('name')));
+        $newsTag->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? Str::slug($request->input('name')));
 
         $newsTag->save();
 

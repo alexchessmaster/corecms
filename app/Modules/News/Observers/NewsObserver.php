@@ -3,7 +3,6 @@
 namespace App\Modules\News\Observers;
 
 use App\Modules\News\Models\News;
-use Illuminate\Support\Str;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +14,8 @@ class NewsObserver
      */
     public function creating(News $news): void
     {
-        if (empty($news->slug)) {
-            $news->slug = $this->generateSlug($news);
+        if (empty($news->getTranslation('slug', app()->getLocale()))) {
+            $news->setTranslation('slug', app()->getLocale(), $this->generateSlug($news));
         }
     }
 
@@ -27,7 +26,7 @@ class NewsObserver
     {
         RedirectSlugChange::create([
             'old_slug' => null,
-            'new_slug' => $news->slug,
+            'new_slug' => $news->getTranslation('slug', app()->getLocale()),
             'type' => 'news_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -39,8 +38,8 @@ class NewsObserver
      */
     public function updating(News $news)
     {
-        if ($news->isDirty('news_category_id') || $news->isDirty('title') || $news->isDirty('slug') || empty($news->slug)) {
-            $news->slug = $this->generateSlug($news, $news->id);
+        if ($news->isDirty('news_category_id') || $news->isDirty('title') || $news->isDirty('slug') || empty($news->getTranslation('slug', app()->getLocale()))) {
+            $news->setTranslation('slug', app()->getLocale(), $this->generateSlug($news, $news->id));
         }
     }
 
@@ -53,7 +52,7 @@ class NewsObserver
             if (array_key_exists(app()->getLocale(), $news->getOriginal('slug'))) {
                 RedirectSlugChange::create([
                     'old_slug' => $news->getOriginal('slug')[app()->getLocale()],
-                    'new_slug' => $news->slug,
+                    'new_slug' => $news->getTranslation('slug', app()->getLocale()),
                     'type' => 'news_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
@@ -70,8 +69,8 @@ class NewsObserver
     public function deleted(News $news)
     {
         RedirectSlugChange::create([
-            'old_slug' => $news->slug,
-            'new_slug' => $news->category->slug ?? '/',
+            'old_slug' => $news->getTranslation('slug', app()->getLocale()),
+            'new_slug' => $news->category->getTranslation('slug', app()->getLocale()) ?? '/',
             'type' => 'news_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
@@ -87,19 +86,13 @@ class NewsObserver
     {
         $newsCategoryId = $news->category->id ?? $news->news_category_id ?? null;
         if (!$newsCategoryId) {
-            // If no category, generate a simple slug based on title
-            $slug = '/' . Str::slug($news->title);
-        } else {
-            // Build the full link with category
-            $categorySlug = $news->category->slug ?? '';
-            if ($categorySlug) {
-                $link = rtrim($categorySlug, '/') . '/';
-                $link = '/' . ltrim($link, '/');
-                $slug = $link . Str::slug($news->title);
-            } else {
-                $slug = '/' . Str::slug($news->title);
-            }
+            return null;
         }
+
+        // Build the full link
+        $link = rtrim($news->category->getTranslation('slug', app()->getLocale()), '/') . '/';
+        $link = '/' . ltrim($link, '/');
+        $slug = $link . $news->getTranslation('slug', app()->getLocale());     
 
         // Handle duplicate slugs
         $originalSlug = $slug;
