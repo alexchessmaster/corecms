@@ -6,6 +6,11 @@ use App\Models\Language;
 
 class UrlHelper
 {
+    public static function isUrlEncoded($str)
+    {
+        return $str !== rawurldecode($str);
+    }
+
     public static function getFrontendUrl($path = '', $lang = '', $betweenLangAndPath = '')
     {
         if (empty($lang)) {

@@ -20,6 +20,7 @@ class WidgetFieldValuesResource extends JsonResource
             'id' => $this->id,
             'field_widget_id' => $this->field_widget_id,
             'widgetable_id' => $this->widgetable_id,
+            // Maybe it need TranslatorHelper in future for value:
             'value' => FileHelper::addDomainPrefixIfValueIsAFile($this->value),
             'key' => $this?->fieldWidget?->key,// for easy access to key
             'type' => $this?->fieldWidget?->field?->type, // for easy access to field type

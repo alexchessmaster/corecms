@@ -2,41 +2,48 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Tag;
-use App\Modules\Books\Models\Book;
-use App\Models\Menu;
-use App\Models\Page;
-use App\Models\Article;
-use App\Modules\Products\Models\Product;
-use App\Models\Setting;
-use App\Models\Category;
-use App\Models\Language;
-use App\Models\Redirect;
-use App\Modules\Books\Models\BookGenre;
-use App\Modules\Books\Models\BookAuthor;
-use App\Modules\Shared\Helpers\FileHelper;
-use App\Models\Commentable;
-use Illuminate\Support\Str;
-use App\Models\TranslationText;
-use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
-use App\Modules\Books\Http\Resources\BookResource;
+use App\Http\Resources\ArticleResource;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CommentableResource;
+use App\Http\Resources\LanguageResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\ArticleResource;
-use App\Modules\Products\Http\Resources\ProductResource;
-use App\Http\Resources\SettingResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
-use Yajra\DataTables\Facades\DataTables;
-use App\Modules\Books\Http\Resources\BookGenreResource;
-use App\Modules\Books\Http\Resources\BookAuthorResource;
-use App\Http\Resources\CommentableResource;
+use App\Http\Resources\SettingResource;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\TranslationTextResource;
+use App\Http\Resources\UserResource;
+use App\Models\Article;
+use App\Models\Category;
+use App\Models\Commentable;
+use App\Models\Language;
+use App\Models\Menu;
+use App\Models\Page;
+use App\Models\Redirect;
+use App\Models\Setting;
+use App\Models\Tag;
+use App\Models\TranslationText;
+use App\Modules\Books\Http\Resources\BookAuthorResource;
+use App\Modules\Books\Http\Resources\BookGenreResource;
+use App\Modules\Books\Http\Resources\BookResource;
+use App\Modules\Books\Models\Book;
+use App\Modules\Books\Models\BookAuthor;
+use App\Modules\Books\Models\BookGenre;
+use App\Modules\News\Http\Resources\NewsCategoryResource;
 use App\Modules\News\Http\Resources\NewsResource;
 use App\Modules\News\Models\News;
+use App\Modules\News\Models\NewsCategory;
+use App\Modules\Products\Http\Resources\ProductResource;
+use App\Modules\Products\Models\Product;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Modules\Shared\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\TranslationHelper;
+use App\Modules\Shared\Helpers\UrlHelper;
+use App\Repositories\LanguageRepository;
+use App\Stores\SettingStore;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class ContentController extends Controller
 {
@@ -94,7 +101,8 @@ class ContentController extends Controller
             return response()->json(["status" => "error", "message" => "\"path\" should start with '/'"], 400);
         }
         $lang = request()->query('lang');
-        $languages = Language::all();
+        $languageRepository = new LanguageRepository;
+        $languages = $languageRepository->all();
         if ($languages->count() < 2) {
             // site is not multilingual (test it later)
             $lang = Language::pluck('code')->first();
@@ -498,6 +506,102 @@ class ContentController extends Controller
             ->make(true);
     }
 
+    public function fetchNews()
+    {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        $newsCategory = request()->query('c') ?? "";
+        $authorId = request()->query('author');
+        $sort = request()->query('sort');
+        $start = request()->get('start', 0);
+        $length = request()->get('length', 24);
+        if ($length > 24) {
+            $length = 24;
+        }
+
+        $query = News::with(['author', 'category'])
+            ->where('status', 'published')->whereNotNull('title->' . app()->getLocale())
+            ->offset($start)
+            ->limit($length);
+
+        if (! empty($sort)) {
+            if ($sort === 'oldest') {
+                $query = $query->orderBy('created_at', 'desc');
+            } else if ($sort === 'views') {
+                $query = $query->orderBy('views', 'desc');
+            } else if ($sort === 'random') {
+                $query = $query->inRandomOrder();
+            } else if ($sort === 'title') {
+                $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
+            } else { // 'created_at'
+                $query = $query->orderBy('created_at', 'desc');
+            }
+        }
+
+        if (! empty($authorId)) {
+            $query = $query->where('author_id', $authorId);
+        }
+
+        // Filter by news category if provided
+        if (!empty($newsCategory) && $newsCategory !== 'null') {
+            $newsCategory = NewsCategory::where('slug->' . app()->getLocale(), '/' . ltrim($newsCategory, '/'))->first();
+            if ($newsCategory) {
+                $query = $query->where('news_category_id', $newsCategory->id);
+            } else {
+                $query = $query->whereRaw('1 = 0');
+            }
+        }
+
+        return DataTables::of($query)
+            ->editColumn('title', function ($news) {
+                return $news->getTranslation('title', app()->getLocale());
+            })
+            ->editColumn('slug', function ($news) {
+                return $news->getTranslation('slug', app()->getLocale());
+            })
+            ->editColumn('description', function ($news) {
+                return $news->getTranslation('description', app()->getLocale());
+            })
+            ->editColumn('image', function ($news) {
+                return FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($news, 'image'));
+            })
+            ->editColumn('news_category_name', function ($news) {
+                return $news?->category?->getTranslation('name', app()->getLocale()) ?? null;
+            })
+            ->addColumn('news_category_slug', function ($news) {
+                return $news?->category?->getTranslation('slug', app()->getLocale()) ?? null;
+            })
+            ->addColumn('author_name', function ($news) {
+                return $news?->author?->getTranslation('name', app()->getLocale()) ?? null;
+            })
+            ->editColumn('full_url', function ($news) {
+                return $news->full_url;
+            })
+            ->filter(function ($query) {
+                if (request()->has('search') && !empty(request()->search)) {
+                    $searchValue = request()->search;
+                    $query->where(function ($query) use ($searchValue) {
+                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
+                            ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
+                    });
+                }
+            })
+            ->addColumn('prefix', function() {
+                $settingStore = new SettingStore;
+                return $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
+            })
+            ->order(function ($query) {
+                if (request()->has('order')) {
+                    $orderColumn = request()->columns[request()->order[0]['column']]['data'];
+                    $orderDirection = request()->order[0]['dir'];
+                    $query->orderBy($orderColumn, $orderDirection);
+                }
+            })
+            ->make(true);
+    }
+
     public function fetchAuthors()
     {
         $language = request()->query('lang');
@@ -525,6 +629,22 @@ class ContentController extends Controller
 
         return response()->json([
             'data' => BookGenreResource::collection($bookGenres)
+        ]);
+    }
+
+    public function fetchNewsCategories()
+    {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        $newsCategories = NewsCategory::where(function($query){
+            $query->whereNull('hide_from_frontend')
+                ->orWhere('hide_from_frontend', false);
+        })->withCount('news')->get();
+
+        return response()->json([
+            'data' => NewsCategoryResource::collection($newsCategories)
         ]);
     }
 
@@ -633,6 +753,90 @@ class ContentController extends Controller
         $book->total_votes = $book->total_votes + 1;
         $book->stars = $totalStars / $book->total_votes;
         $book->save();
+
+        return response()->json(['message' => 'Comment saved successfully'], 201);
+    }
+
+    public function fetchNewsComments()
+    {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        $start = request()->get('start', 0);
+        $length = request()->get('length', 24);
+        if ($length > 24) {
+            $length = 24;
+        }
+
+        $newsSlug = request()->query('news_slug');
+
+        $newsSlug = urldecode($newsSlug);
+
+        $news = News::where('slug->' . app()->getLocale(), $newsSlug)
+            ->where('status', 'published')
+            ->first();
+
+        if ($news === null) {
+            return response()->json([
+                'data' => [],
+                'message' => 'News not found'
+            ], 404);
+        }
+
+        $comments = Commentable::where('commentable_type', 'App\Modules\News\Models\News')
+            ->where('commentable_id', $news->id)
+            ->where('content->' . app()->getLocale(), '!=', null)
+            ->where('status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->offset($start)
+            ->limit($length)
+            ->get();
+
+        return response()->json([
+            'data' => CommentableResource::collection($comments)
+        ]);
+    }
+
+    public function storeNewsComments()
+    {
+        $name = request()->name;
+        $email = request()->email;
+        $content = request()->content;
+        $stars = request()->stars;
+        $lang = request()->lang;
+        $newsSlug = request()->news_slug;
+
+        if (!$newsSlug || !$lang || !$content || !$name || !$email) {
+            return response()->json(['error' => 'Invalid inputs'], 400);
+        }
+
+        if (strlen($lang) === 2) {
+            app()->setLocale($lang);
+        } else {
+            return response()->json(['error' => 'Language not specified'], 400);
+        }
+
+        // check later why it's needed:
+        $newsSlug = urldecode($newsSlug);
+
+        $news = News::where('slug->' . app()->getLocale(), $newsSlug)->first();
+
+        if (!$news) {
+            return response()->json([
+                'data' => [],
+                'message' => 'News not found'
+            ], 404);
+        }
+
+        $comment = new Commentable();
+        $comment->commentable_type = 'App\Modules\News\Models\News';
+        $comment->commentable_id = $news->id;
+        $comment->setTranslation('content', app()->getLocale(), $content);
+        $comment->name = $name;
+        $comment->email = $email;
+        $comment->stars = $stars;
+        $comment->save();
 
         return response()->json(['message' => 'Comment saved successfully'], 201);
     }

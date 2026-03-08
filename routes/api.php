@@ -37,11 +37,17 @@ Route::middleware([
     Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
     Route::get('/fetch-authors', [ContentController::class, 'fetchAuthors']);
     Route::get('/fetch-book-comments', [ContentController::class, 'fetchBookComments']);
+    Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
+
+    Route::get('/fetch-news', [ContentController::class, 'fetchNews'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
+    Route::get('/fetch-news-categories', [ContentController::class, 'fetchNewsCategories']);
+    Route::get('/fetch-news-comments', [ContentController::class, 'fetchNewsComments']);
+    Route::post('/store-news-comments', [ContentController::class, 'storeNewsComments'])->middleware('throttle:10,1');
+
     // Route::get('/fetch-articles', [ContentController::class, 'fetchArticles']); // later
     // Route::get('/fetch-categories', [ContentController::class, 'fetchCategories']); // later
 });
 
-Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
 
 // Used in admin-panel
 Route::middleware(['auth:sanctum'])->group(function () {
