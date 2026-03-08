@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\Products\Observers\ProductCategoryObserver;
 use App\Modules\Shared\Listeners\HandleSlugChangeListener;
+use App\Repositories\LanguageRepository;
 use App\Stores\SettingStore;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(SettingStore::class, fn($app)=> new SettingStore());
+        $this->app->singleton(LanguageRepository::class, fn($app)=> new LanguageRepository());
         $this->app->bind(AiServiceInterface::class, OpenAiService::class);
     }
 

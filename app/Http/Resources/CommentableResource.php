@@ -23,6 +23,7 @@ class CommentableResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'stars' => $this->stars,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }

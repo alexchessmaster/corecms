@@ -19,8 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('views')->default(0);
             $table->json('description')->nullable();
             $table->json('image')->nullable();
-            $table->json('price')->nullable();
-            $table->integer('stock')->nullable();
             $table->unsignedBigInteger('news_category_id')->nullable();
             $table->unsignedBigInteger('author_id')->nullable();
             $table->dateTime('news_date')->nullable();
