@@ -2,6 +2,8 @@
 
 return [
 
+    'translate_inputs_online' => env('TRANSLATE_INPUTS_ONLINE', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -53,9 +55,6 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
-    // Get all languages from .env and cache it in the language model
-    'languages' => json_decode(env('LANGUAGES', '[{"name":"English","code":"en","default":true,"use_separate_domain":false,"domain":"' . env('APP_URL', 'http://localhost') . '"}]'), true),
 
     /*
     |--------------------------------------------------------------------------
