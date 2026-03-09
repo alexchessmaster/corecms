@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\WidgetResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\WidgetFieldValuesResource;
+use App\Modules\Shared\Helpers\TranslationHelper;
 
 class WidgetableResource extends JsonResource
 {
@@ -33,7 +34,8 @@ class WidgetableResource extends JsonResource
             'key' => $this->widget->key,
             'fields' => $widget->fieldWidgets->map(function ($fieldWidget) use ($fieldValues) {
                 $widgetFieldValue = $fieldValues->get($fieldWidget->id);
-                $value = $widgetFieldValue?->getTranslation('value', app()->getLocale());
+                // $value = $widgetFieldValue?->getTranslation('value', app()->getLocale());
+                $value = TranslationHelper::firstAvailableValue($widgetFieldValue, 'value');
 
                 return [
                     'id' => $fieldWidget->field->id,

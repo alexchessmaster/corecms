@@ -444,7 +444,7 @@ class ContentController extends Controller
             } else if ($sort === 'title') {
                 $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
             } else { // 'created_at'
-                $query = $query->orderBy('created_at', 'desc');
+                $query = $query->orderBy('created_at', 'asc');
             }
         }
 
@@ -528,7 +528,7 @@ class ContentController extends Controller
 
         if (! empty($sort)) {
             if ($sort === 'oldest') {
-                $query = $query->orderBy('created_at', 'desc');
+                $query = $query->orderBy('news_date', 'desc');
             } else if ($sort === 'views') {
                 $query = $query->orderBy('views', 'desc');
             } else if ($sort === 'random') {
@@ -536,7 +536,7 @@ class ContentController extends Controller
             } else if ($sort === 'title') {
                 $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
             } else { // 'created_at'
-                $query = $query->orderBy('created_at', 'desc');
+                $query = $query->orderBy('news_date', 'asc');
             }
         }
 
@@ -578,6 +578,9 @@ class ContentController extends Controller
             })
             ->editColumn('full_url', function ($news) {
                 return $news->full_url;
+            })
+            ->editColumn('news_date', function ($news) {
+                return $news->news_date->format('Y-m-d');
             })
             ->filter(function ($query) {
                 if (request()->has('search') && !empty(request()->search)) {
