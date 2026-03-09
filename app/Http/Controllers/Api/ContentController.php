@@ -528,15 +528,15 @@ class ContentController extends Controller
 
         if (! empty($sort)) {
             if ($sort === 'oldest') {
-                $query = $query->orderBy('news_date', 'desc');
+                $query = $query->orderBy('news_date', 'asc');
             } else if ($sort === 'views') {
                 $query = $query->orderBy('views', 'desc');
             } else if ($sort === 'random') {
                 $query = $query->inRandomOrder();
             } else if ($sort === 'title') {
                 $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
-            } else { // 'created_at'
-                $query = $query->orderBy('news_date', 'asc');
+            } else { // 'newest'
+                $query = $query->orderBy('news_date', 'desc');
             }
         }
 
