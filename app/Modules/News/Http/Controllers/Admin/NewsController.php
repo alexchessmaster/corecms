@@ -70,7 +70,7 @@ class NewsController extends Controller
         $this->authorize('create', News::class);
 
         $request->validate([
-            'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
+            'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
@@ -101,22 +101,24 @@ class NewsController extends Controller
         }
 
         $news->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $news->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? str_replace(' ', '-', $request->input('title')));
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
         $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $news->news_date = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : null;
-
-        // Sync tags if provided
-        if ($request->has('tag_ids')) {
-            $news->tags()->sync($request->input('tag_ids', []));
-        }
+        $news->created_at = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : now();
 
         if ($request->author_id) {
             $news->author_id = $request->author_id;
         }
 
         $news->save();
+
+        // Sync tags if provided after save
+        if ($request->has('tag_ids')) {
+            $news->tags()->sync($request->input('tag_ids', []));
+        }
 
         return redirect()->route('admin.news.edit', [$news->id])->with('success', 'News created successfully.');
     }
@@ -166,19 +168,20 @@ class NewsController extends Controller
             $news->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
         $news->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        $news->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? str_replace(' ', '-', $request->input('title')));
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
         $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $news->news_date = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : null;
+        $news->created_at = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : now();
         if ($request->author_id) {
             $news->author_id = $request->author_id;
         }
 
         $news->save();
 
-        // Sync tags if provided
+        // Sync tags if provided after save
         if ($request->has('tag_ids')) {
             $news->tags()->sync($request->input('tag_ids', []));
         }

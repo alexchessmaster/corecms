@@ -98,21 +98,20 @@ class ProductController extends Controller
         }
 
         $product->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $product->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? str_replace(' ', '-', $request->input('title')));
         $product->setTranslation('description', app()->getLocale(), $request->input('description'));
-        // $product->setTranslation('slug', app()->getLocale(), Str::slug($request->input('title')));
         $product->product_category_id = $request->input('category_id');
         $product->status = $request->input('status');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock') ?? 0;
-
-        // Sync tags if provided
-        if ($request->has('tag_ids')) {
-            $product->tags()->sync($request->input('tag_ids', []));
-        }
-
         $product->author_id = $request->input('author_id') ?? null;
 
         $product->save();
+
+        // Sync tags if provided after save
+        if ($request->has('tag_ids')) {
+            $product->tags()->sync($request->input('tag_ids', []));
+        }
 
         return redirect()->route('admin.products.edit', [$product->id])->with('success', 'Product created successfully.');
     }
@@ -168,15 +167,14 @@ class ProductController extends Controller
         $product->status = $request->input('status');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock') ?? 0;
-
-        // Sync tags if provided
-        if ($request->has('tag_ids')) {
-            $product->tags()->sync($request->input('tag_ids', []));
-        }
-
         $product->author_id = $request->input('author_id') ?? null;
 
         $product->save();
+
+        // Sync tags if provided after save
+        if ($request->has('tag_ids')) {
+            $product->tags()->sync($request->input('tag_ids', []));
+        }
 
         return redirect()->back()->with('success', 'Product updated successfully.');
     }
