@@ -10,6 +10,7 @@ use App\Models\Widgetable;
 use App\Modules\News\Models\NewsAuthor;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Repositories\LanguageRepository;
 use App\Stores\SettingStore;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,7 +36,8 @@ class News extends Model
     public function getFullUrlAttribute()
     {
         $fullUrl = $this->slug;
-        $languages = Language::all();
+        $languageRepository = new LanguageRepository;
+        $languages = $languageRepository->all();
         $settingStore = new SettingStore;
         $newsPrefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
         $multipleLanguages = $settingStore->isTranslatable(SettingKeyEnum::NEWS_PREFIX);

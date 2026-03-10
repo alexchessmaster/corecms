@@ -169,31 +169,42 @@ class WidgetFieldValuesController extends Controller
 
     private function handleBase64File($base64Data)
     {
-        $fileParts = explode(';base64,', $base64Data);
-        $mimeType = str_replace('data:', '', $fileParts[0]); // Extract MIME type
-        $base64Content = $fileParts[1]; // Extract base64 content
+        $fileParts = explode(';base64,', $base64Data, 2);
 
-        // Decode the base64 content
-        $decodedFile = base64_decode($base64Content, true);
-        if ($decodedFile === false) {
-            throw new \Exception('Invalid base64 content');
+        if (count($fileParts) !== 2) {
+            throw new \Exception('Invalid base64 format');
         }
 
-        // Generate a unique file name
+        $mimeType = str_replace('data:', '', $fileParts[0]);
+        $base64Content = $fileParts[1];
+
         $extension = Str::after($mimeType, '/');
-        $extension = Str::before($extension, '+'); // Remove anything after "+"
+        $extension = Str::before($extension, '+');
+
         $fileName = uniqid() . '.' . $extension;
+        $uploadDir = public_path('uploads');
+        $filePath = $uploadDir . '/' . $fileName;
 
-        // Define the file path
-        $filePath = public_path('uploads/' . $fileName);
-
-        // Ensure the uploads directory exists
-        if (!file_exists(public_path('uploads'))) {
-            mkdir(public_path('uploads'), 0755, true);
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
         }
 
-        // Save the file
-        file_put_contents($filePath, $decodedFile);
+        // Open output file
+        $output = fopen($filePath, 'w');
+
+        // Create input stream
+        $input = fopen('php://temp', 'r+');
+        fwrite($input, $base64Content);
+        rewind($input);
+
+        // Attach base64 decoding filter
+        stream_filter_append($input, 'convert.base64-decode');
+
+        // Stream copy
+        stream_copy_to_stream($input, $output);
+
+        fclose($input);
+        fclose($output);
 
         return '/uploads/' . $fileName;
     }

@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\FormContactUsController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
 use App\Http\Controllers\Api\FormNewsletterController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
+use App\Http\Middleware\IncreaseMemoryLimit;
 
 // Used in the frontend
 // Deprecated. These routes are for the existing frontend apps. For new apps use: App/Modules/Shared/routes/api.php
@@ -54,7 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/pages', PageController::class);
     Route::apiResource('/articles', ArticleController::class);
     Route::apiResource('/categories', CategoryController::class);
-    Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update']);
+    Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update'])->middleware([IncreaseMemoryLimit::class]);
     Route::patch('/widgets/attach', [WidgetController::class, 'attach']);
     Route::patch('/widgets/detach', [WidgetController::class, 'detach']);
     Route::get('/widgets/{id}', [WidgetController::class, 'show']);

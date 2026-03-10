@@ -98,7 +98,9 @@ class ProductController extends Controller
         }
 
         $product->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $product->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? str_replace(' ', '-', $request->input('title')));
+        if (!empty($request->slug)) {
+            $product->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $product->setTranslation('description', app()->getLocale(), $request->input('description'));
         $product->product_category_id = $request->input('category_id');
         $product->status = $request->input('status');
@@ -161,7 +163,9 @@ class ProductController extends Controller
             $product->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
         $product->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $product->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        if ($request->slug !== $product->getTranslation('slug', app()->getLocale())) {
+            $product->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $product->setTranslation('description', app()->getLocale(), $request->input('description'));
         $product->product_category_id = $request->input('category_id');
         $product->status = $request->input('status');

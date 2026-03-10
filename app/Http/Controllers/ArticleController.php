@@ -75,6 +75,7 @@ class ArticleController extends Controller
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|array',
@@ -103,6 +104,9 @@ class ArticleController extends Controller
         }
 
         $article->setTranslation('title', app()->getLocale(), $request->input('title'));
+        if(!empty($request->slug)){
+            $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->category_id = $request->input('category_id');
         if (!empty($request->input('sitemap_exclude'))) {
@@ -152,7 +156,7 @@ class ArticleController extends Controller
         $request->validate([
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string',
@@ -176,7 +180,9 @@ class ArticleController extends Controller
             $article->setTranslation('image', app()->getLocale(), '/uploads/articles/' . $filename);
         }
         $article->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        if($request->slug !== $article->getTranslation('slug', app()->getLocale())){
+            $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $article->setTranslation('description', app()->getLocale(), $request->input('description'));
         $article->category_id = $request->input('category_id');
         if (!empty($request->input('sitemap_exclude'))) {

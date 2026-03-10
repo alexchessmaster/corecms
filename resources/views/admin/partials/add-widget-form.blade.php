@@ -79,7 +79,7 @@
 <br><br>
 <div id="field-edit-container"></div>
 <br><br>
-<button type="button" id="save-all" class="btn btn-success margin-auto">
+<button type="button" id="save-all" class="btn btn-success margin-auto" style="margin-bottom: 30px">
     <i class="fa fa-check"></i> Save all widgets
 </button>
 
@@ -571,7 +571,10 @@
                             e.preventDefault(); // Prevent multi-line entry
                         }
                     });
-                }
+                },
+                @if (session('lang') === 'fa')
+                    directionality: 'rtl',
+                @endif
             }
         }
         if (size === 'small') {
@@ -586,6 +589,9 @@
                 content_style: 'white-space: nowrap;', // Forces single-line editing
                 statusbar: false,
                 newline_behavior: 'linebreak',
+                @if (session('lang') === 'fa')
+                    directionality: 'rtl',
+                @endif
             }
         }
         if (size === 'large') {
@@ -605,6 +611,9 @@
                 ],
                 // toolbar_mode: 'floating',
                 // menubar: false,
+                @if (session('lang') === 'fa')
+                    directionality: 'rtl',
+                @endif
             }
         }
         if (size === 'large' || size === 'small' || size === 'text') {
