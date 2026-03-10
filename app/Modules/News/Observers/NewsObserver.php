@@ -5,6 +5,7 @@ namespace App\Modules\News\Observers;
 use App\Modules\News\Models\News;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
+use App\Modules\Shared\Helpers\UrlHelper;
 use Illuminate\Support\Facades\Auth;
 
 class NewsObserver
@@ -89,10 +90,18 @@ class NewsObserver
             return null;
         }
 
+        // Keep the last part of the url
+        $oldSlug = $news->getTranslation('slug', app()->getLocale());
+        $parts = explode('/', $oldSlug);
+        $slugWithoutCategories = end($parts);
+        if(empty($slugWithoutCategories)){
+            $slugWithoutCategories = UrlHelper::generateSlug($news->getTranslation('title', app()->getLocale(), false));
+        }
+
         // Build the full link
         $link = rtrim($news->category->getTranslation('slug', app()->getLocale()), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . $news->getTranslation('slug', app()->getLocale());     
+        $slug = $link . $slugWithoutCategories;     
 
         // Handle duplicate slugs
         $originalSlug = $slug;

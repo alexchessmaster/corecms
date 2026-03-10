@@ -2,11 +2,12 @@
 
 namespace App\Modules\Products\Observers;
 
-use App\Modules\Products\Models\Product;
-use Illuminate\Support\Str;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
+use App\Modules\Products\Models\Product;
+use App\Modules\Shared\Helpers\UrlHelper;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProductObserver
 {
@@ -95,10 +96,18 @@ class ProductObserver
             return null;
         }
 
+        // Keep the last part of the url
+        $oldSlug = $product->getTranslation('slug', app()->getLocale());
+        $parts = explode('/', $oldSlug);
+        $slugWithoutCategories = end($parts);
+        if(empty($slugWithoutCategories)){
+            $slugWithoutCategories = UrlHelper::generateSlug($product->getTranslation('title', app()->getLocale(), false));
+        }
+
         // Build the full link
         $link = rtrim($product->category->getTranslation('slug', app()->getLocale()), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . $product->getTranslation('slug', app()->getLocale());
+        $slug = $link . $slugWithoutCategories;
 
         // Handle duplicate slugs
         $originalSlug = $slug;

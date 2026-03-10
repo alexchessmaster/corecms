@@ -5,9 +5,10 @@ namespace App\Observers;
 use App\Events\SlugChangedEvent;
 use App\Models\Article;
 use App\Models\Category;
-use Illuminate\Support\Str;
 use App\Models\RedirectSlugChange;
+use App\Modules\Shared\Helpers\UrlHelper;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ArticleObserver
 {
@@ -79,10 +80,18 @@ class ArticleObserver
             return null;
         }
 
+        // Keep the last part of the url
+        $oldSlug = $article->getTranslation('slug', app()->getLocale());
+        $parts = explode('/', $oldSlug);
+        $slugWithoutCategories = end($parts);
+        if(empty($slugWithoutCategories)){
+            $slugWithoutCategories = UrlHelper::generateSlug($article->getTranslation('title', app()->getLocale(), false));
+        }
+
         // Build the full link
         $link = rtrim($article->category->getTranslation('slug', app()->getLocale()), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . $article->getTranslation('slug', app()->getLocale());
+        $slug = $link . $slugWithoutCategories;
 
         // Handle duplicate slugs
         $originalSlug = $slug;

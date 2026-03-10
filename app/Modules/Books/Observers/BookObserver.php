@@ -2,9 +2,10 @@
 
 namespace App\Modules\Books\Observers;
 
-use App\Modules\Books\Models\Book;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
+use App\Modules\Books\Models\Book;
+use App\Modules\Shared\Helpers\UrlHelper;
 use Illuminate\Support\Facades\Auth;
 
 class BookObserver
@@ -90,10 +91,18 @@ class BookObserver
             return null;
         }
 
+        // Keep the last part of the url
+        $oldSlug = $book->getTranslation('slug', app()->getLocale());
+        $parts = explode('/', $oldSlug);
+        $slugWithoutCategories = end($parts);
+        if(empty($slugWithoutCategories)){
+            $slugWithoutCategories = UrlHelper::generateSlug($book->getTranslation('title', app()->getLocale(), false));
+        }
+
         // Build the full link
         $link = rtrim($book->bookGenre->getTranslation('slug', app()->getLocale()), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . $book->getTranslation('slug', app()->getLocale());
+        $slug = $link . $slugWithoutCategories;
 
         // Handle duplicate slugs
         $originalSlug = $slug;

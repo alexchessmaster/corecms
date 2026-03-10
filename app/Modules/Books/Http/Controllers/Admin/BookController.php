@@ -71,7 +71,7 @@ class BookController extends Controller
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
             'book_genre_id' => 'required|exists:book_genres,id',
             'sitemap_exclude' => 'nullable',
@@ -101,7 +101,9 @@ class BookController extends Controller
         }
 
         $book->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        if (!empty($request->slug)) {
+            $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $book->setTranslation('description', app()->getLocale(), $request->input('description'));
         $book->book_genre_id = $request->input('book_genre_id');
         if (!empty($request->input('sitemap_exclude'))) {
@@ -148,7 +150,7 @@ class BookController extends Controller
         $request->validate([
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
             'book_genre_id' => 'required|exists:book_genres,id',
             'sitemap_exclude' => 'nullable',
@@ -173,7 +175,9 @@ class BookController extends Controller
             $book->setTranslation('image', app()->getLocale(), '/uploads/books/' . $filename);
         }
         $book->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        if ($request->slug !== $book->getTranslation('slug', app()->getLocale())) {
+            $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $book->setTranslation('description', app()->getLocale(), $request->input('description'));
         $book->book_genre_id = $request->input('book_genre_id');
         if (!empty($request->input('sitemap_exclude'))) {

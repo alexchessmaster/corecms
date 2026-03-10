@@ -17,9 +17,9 @@
            value="{{ isset($news) ? $news->getTranslation('title', app()->getLocale(), false) : '' }}" required>
 </div>
 <div class="mb-3">
-    <label for="slug" class="form-label required">Slug</label>
+    <label for="slug" class="form-label">Slug</label>
     <input type="text" class="form-control" id="slug" name="slug"
-        value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}" required>
+        value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}">
     @if (isset($news))
         <small>
             @php
@@ -201,7 +201,7 @@
 {{-- end select2 for tags --}}
 
 {{-- auto-fill slug from title --}}
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function () {
         const titleInput = document.getElementById('title');
         const slugInput = document.getElementById('slug');
@@ -220,7 +220,7 @@
             });
         }
     });
-</script>
+</script> --}}
 {{-- end auto-fill slug from title --}}
 
 {{-- status --}}

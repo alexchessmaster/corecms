@@ -9,6 +9,7 @@ use App\Models\Widgetable;
 use App\Modules\Books\Models\BookAuthor;
 use App\Modules\Books\Models\BookGenre;
 use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Repositories\LanguageRepository;
 use App\Stores\SettingStore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,7 +39,8 @@ class Book extends Model
     {
         $fullUrl = $this->slug;
 
-        $languages = Language::all();
+        $languageRepository = new LanguageRepository;
+        $languages = $languageRepository->all();
 
         $settingStore = new SettingStore;
         $bookPrefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX);

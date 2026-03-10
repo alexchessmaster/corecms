@@ -113,7 +113,7 @@
 <br>
 
 {{-- auto-fill slug from title --}}
-<script>
+{{-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         const titleInput = document.getElementById('title');
         const slugInput = document.getElementById('slug');
@@ -132,7 +132,7 @@
             });
         }
     });
-</script>
+</script> --}}
 {{-- end auto-fill slug from title --}}
 
 <script>

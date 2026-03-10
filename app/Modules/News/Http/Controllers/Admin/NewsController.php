@@ -101,7 +101,9 @@ class NewsController extends Controller
         }
 
         $news->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $news->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? str_replace(' ', '-', $request->input('title')));
+        if(!empty($request->slug)){
+            $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
@@ -168,7 +170,9 @@ class NewsController extends Controller
             $news->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
         $news->setTranslation('title', app()->getLocale(), $request->input('title'));
-        $news->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? str_replace(' ', '-', $request->input('title')));
+        if($request->slug !== $news->getTranslation('slug', app()->getLocale())){
+            $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
+        }
         $news->setTranslation('description', app()->getLocale(), $request->input('description'));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
