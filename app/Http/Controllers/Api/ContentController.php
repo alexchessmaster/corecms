@@ -34,6 +34,7 @@ use App\Modules\News\Http\Resources\NewsCategoryResource;
 use App\Modules\News\Http\Resources\NewsResource;
 use App\Modules\News\Models\News;
 use App\Modules\News\Models\NewsCategory;
+use App\Modules\News\Models\NewsTag;
 use App\Modules\Products\Http\Resources\ProductResource;
 use App\Modules\Products\Models\Product;
 use App\Modules\Shared\Enums\SettingKeyEnum;
@@ -175,8 +176,14 @@ class ContentController extends Controller
         $path = $parsedUrl['path'];
         // $query = $parsedUrl['query']; if isset($parsedUrl['query']) // not needed yet
 
-        // Is Page
-        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $path)->where('status', 'published')->first();
+        // Is Page include /en/news/2 for the new pagination
+        $pathArr = explode('/', $path);
+        $pageNumber = end($pathArr);
+        $tmpPath = $path;
+        if (is_numeric($pageNumber)) {
+            $tmpPath = substr($path, 0, -1 - strlen($pageNumber));
+        }
+        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $tmpPath)->where('status', 'published')->first();
         if ($page) {
             $responseData["page"] = PageResource::make($page);
             $responseData['content_type'] = 'page';
@@ -209,7 +216,7 @@ class ContentController extends Controller
         $articlePrefix = '';
         // $articlePrefixSetting->value is "articles" by default
         $settingsValue = $articlePrefixSetting->value;
-        if($articlePrefixSetting->is_translatable){
+        if ($articlePrefixSetting->is_translatable) {
             $settingsValue = unserialize($settingsValue)[$lang];
         }
         if (!empty($articlePrefixSetting) && !empty($settingsValue)) {
@@ -238,7 +245,7 @@ class ContentController extends Controller
         $productPrefix = '';
         // $productPrefixSetting->value is "products" by default
         $settingsValue = $productPrefixSetting->value;
-        if($productPrefixSetting->is_translatable){
+        if ($productPrefixSetting->is_translatable) {
             $settingsValue = unserialize($settingsValue)[$lang];
         }
         if (!empty($productPrefixSetting) && !empty($settingsValue)) {
@@ -267,7 +274,7 @@ class ContentController extends Controller
         $bookPrefix = '';
         // $bookPrefixSetting->value is "books" by default
         $settingsValue = $bookPrefixSetting->value;
-        if($bookPrefixSetting->is_translatable){
+        if ($bookPrefixSetting->is_translatable) {
             $settingsValue = unserialize($settingsValue)[$lang];
         }
         if (!empty($bookPrefixSetting) && !empty($settingsValue)) {
@@ -296,7 +303,7 @@ class ContentController extends Controller
         $newsPrefix = '';
         // $newsPrefixSetting->value is "news" by default
         $settingsValue = $newsPrefixSetting->value;
-        if($newsPrefixSetting->is_translatable){
+        if ($newsPrefixSetting->is_translatable) {
             $settingsValue = unserialize($settingsValue)[$lang];
         }
         if (!empty($newsPrefixSetting) && !empty($settingsValue)) {
@@ -340,78 +347,114 @@ class ContentController extends Controller
     public function fetchArticles()
     {
         $language = request()->query('lang');
-        // info($language);
         if ($language) {
             app()->setLocale($language);
         }
-        $category = request()->query('category') ?? "";
-        $tag = request()->query('tag') ?? "";
-        $sort = request()->query('sort');
 
-        $query = Article::query();
+        $categorySlug = request()->query('category') ?? "";
+        $tagName      = request()->query('tag') ?? "";
+        $authorId     = request()->query('author');
+        $sort         = request()->query('sort');
+        $start        = (int) request()->get('start', 0);
+        $length       = (int) request()->get('length', 12);
 
-        // Filter by category if provided
-        if (!empty($category) && $category !== 'null') {
-            $category = Category::where('slug->' . app()->getLocale(), '/' . Str::slug($category))->first();
-            if ($category) {
-                $query = $category->articles();
+        if ($length > 24) {
+            $length = 24;
+        }
+
+        $query = Article::with(['author', 'category', 'tags'])
+            ->where('status', 'published')
+            ->whereNotNull('title->' . app()->getLocale());
+
+        if (!empty($sort)) {
+            if ($sort === 'oldest') {
+                $query->orderBy('created_at', 'asc');        // was 'desc' — fixed
+            } elseif ($sort === 'views') {
+                $query->orderBy('views', 'desc');
+            } elseif ($sort === 'random') {
+                $query->inRandomOrder();
+            } elseif ($sort === 'title') {
+                $query->orderBy('title->' . app()->getLocale(), 'asc');
             } else {
-                return response()->json(['status' => 'error', 'message' => 'Category does not exist: '], 404);
+                $query->orderBy('created_at', 'desc');       // was 'asc' — fixed
             }
-        }
-
-        // Filter by tag if provided
-        if (!empty($tag)) {
-            $tag = Tag::where('name->' . app()->getLocale(), $tag)->first();
-            if ($tag) {
-                $query = $tag->articles();
-            }
-        }
-
-        if ($sort === 'oldest') {
-            $query = $query->orderBy('created_at', 'desc');
         } else {
-            $query = $query->orderBy('created_at', 'asc');
+            $query->orderBy('created_at', 'desc');
         }
 
-        return DataTables::of($query)
-            ->editColumn('title', function ($article) {
-                return $article->getTranslation('title', app()->getLocale());
-            })
-            ->editColumn('slug', function ($article) {
-                return $article->getTranslation('slug', app()->getLocale());
-            })
-            ->editColumn('description', function ($article) {
-                return $article->getTranslation('description', app()->getLocale());
-            })
-            ->editColumn('content', function ($article) {
-                return $article->getTranslation('content', app()->getLocale());
-            })
-            ->editColumn('image', function ($article) {
-                return str_starts_with($article->image, 'http')
-                    ? $article->image
-                    : config('app.url') . '/' . ltrim($article->image, '/');
-            })
-            ->editColumn('full_url', function ($article) {
-                return $article->full_url;
-            })
-            ->filter(function ($query) {
-                if (request()->has('search') && !empty(request()->search['value'])) {
-                    $searchValue = request()->search['value'];
-                    $query->where(function ($query) use ($searchValue) {
-                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
-                            ->orWhereRaw('LOWER(JSON_EXTRACT(content, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
-                    });
-                }
-            })
-            ->order(function ($query) {
-                if (request()->has('order')) {
-                    $orderColumn = request()->columns[request()->order[0]['column']]['data'];
-                    $orderDirection = request()->order[0]['dir'];
-                    $query->orderBy($orderColumn, $orderDirection);
-                }
-            })
-            ->make(true);
+        if (!empty($authorId)) {
+            $query->where('author_id', $authorId);
+        }
+
+        // Filter by category
+        if (!empty($categorySlug) && $categorySlug !== 'null') {
+            $category = Category::where('slug->' . app()->getLocale(), '/' . ltrim($categorySlug, '/'))->first();
+            if ($category) {
+                $query->where('category_id', $category->id);  // was replacing $query entirely — fixed
+            } else {
+                $query->whereRaw('1 = 0');                    // was returning 404 — fixed
+            }
+        }
+
+        // Filter by tag
+        if (!empty($tagName) && $tagName !== 'null') {
+            $tag = Tag::where('name->' . app()->getLocale(), $tagName)->first();
+            if ($tag) {
+                $query->whereHas('tags', function ($q) use ($tag) {
+                    $q->where('tags.id', $tag->id);           // was replacing $query entirely — fixed
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        // Search filter
+        if (request()->has('search') && !empty(request()->search)) {
+            $searchValue = request()->search;
+            $query->where(function ($q) use ($searchValue) {
+                $q->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
+                    ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
+            });
+        }
+
+        // Count BEFORE offset/limit
+        $recordsTotal = $query->count();
+
+        // Now paginate
+        $articles = $query->offset($start)->limit($length)->get();
+
+        $locale = app()->getLocale();
+
+        $data = $articles->map(function ($item) use ($locale) {
+            return [
+                'id'            => $item->id,
+                'user_id'       => $item->user_id,
+                'title'         => $item->getTranslation('title', $locale),
+                'slug'          => $item->getTranslation('slug', $locale),
+                'views'         => $item->views,
+                'description'   => $item->getTranslation('description', $locale),
+                'content'       => $item->getTranslation('content', $locale),
+                'image'         => FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($item, 'image')),
+                'category_id'   => $item->category_id,
+                'author_id'     => $item->author_id,
+                'status'        => $item->status,
+                'created_at'    => $item->created_at,
+                'updated_at'    => $item->updated_at,
+                'author'        => $item->author,
+                'category'      => $item->category,
+                'category_slug' => $item->category?->getTranslation('slug', $locale) ?? null,
+                'category_name' => $item->category?->getTranslation('name', $locale) ?? null,
+                'author_name'   => $item->author?->getTranslation('name', $locale) ?? null,
+                'full_url'      => $item->full_url,
+            ];
+        });
+
+        return response()->json([
+            'draw'            => (int) request()->get('draw', 0),
+            'recordsTotal'    => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data'            => $data,
+        ]);
     }
 
     public function fetchBooks()
@@ -420,90 +463,96 @@ class ContentController extends Controller
         if ($language) {
             app()->setLocale($language);
         }
+
         $bookGenre = request()->query('book_genre') ?? "";
-        $authorId = request()->query('author');
-        $sort = request()->query('sort');
-        $start = request()->get('start', 0);
-        $length = request()->get('length', 24);
+        $authorId  = request()->query('author');
+        $sort      = request()->query('sort');
+        $start     = (int) request()->get('start', 0);
+        $length    = (int) request()->get('length', 24);
+
         if ($length > 24) {
             $length = 24;
         }
 
         $query = Book::with(['author', 'bookGenre'])
-            ->where('status', 'published')->whereNotNull('title->' . app()->getLocale())
-            ->offset($start)
-            ->limit($length);
+            ->where('status', 'published')
+            ->whereNotNull('title->' . app()->getLocale());
 
-        if (! empty($sort)) {
+        if (!empty($sort)) {
             if ($sort === 'oldest') {
-                $query = $query->orderBy('created_at', 'desc');
-            } else if ($sort === 'views') {
-                $query = $query->orderBy('views', 'desc');
-            } else if ($sort === 'random') {
-                $query = $query->inRandomOrder();
-            } else if ($sort === 'title') {
-                $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
-            } else { // 'created_at'
-                $query = $query->orderBy('created_at', 'asc');
-            }
-        }
-
-        if (! empty($authorId)) {
-            $query = $query->where('author_id', $authorId);
-        }
-
-        // Filter by book genre if provided
-        if (!empty($bookGenre) && $bookGenre !== 'null') {
-            $bookGenre = BookGenre::where('slug->' . app()->getLocale(), '/' . ltrim($bookGenre), '/')->first();
-            if ($bookGenre) {
-                $query = $query->where('book_genre_id', $bookGenre->id);
+                $query->orderBy('created_at', 'asc');         // was 'desc' — fixed
+            } elseif ($sort === 'views') {
+                $query->orderBy('views', 'desc');
+            } elseif ($sort === 'random') {
+                $query->inRandomOrder();
+            } elseif ($sort === 'title') {
+                $query->orderBy('title->' . app()->getLocale(), 'asc');
             } else {
-                $query = $query->whereRaw('1 = 0');
+                $query->orderBy('created_at', 'desc');        // was 'asc' — fixed
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
+        if (!empty($authorId)) {
+            $query->where('author_id', $authorId);
+        }
+
+        if (!empty($bookGenre) && $bookGenre !== 'null') {
+            $genre = BookGenre::where('slug->' . app()->getLocale(), '/' . ltrim($bookGenre, '/'))->first(); // fixed: was ltrim($bookGenre), '/'
+            if ($genre) {
+                $query->where('book_genre_id', $genre->id);
+            } else {
+                $query->whereRaw('1 = 0');
             }
         }
 
-        return DataTables::of($query)
-            ->editColumn('title', function ($book) {
-                return $book->getTranslation('title', app()->getLocale());
-            })
-            ->editColumn('slug', function ($book) {
-                return $book->getTranslation('slug', app()->getLocale());
-            })
-            ->editColumn('description', function ($book) {
-                return $book->getTranslation('description', app()->getLocale());
-            })
-            ->editColumn('image', function ($book) {
-                return FileHelper::addDomainPrefixIfValueIsAFile($book->image);
-            })
-            ->editColumn('book_genre', function ($book) {
-                return $book?->bookGenre?->getTranslation('name', app()->getLocale()) ?? null;
-            })
-            ->addColumn('book_genre_slug', function ($book) {
-                return $book?->bookGenre?->getTranslation('slug', app()->getLocale()) ?? null;
-            })
-            ->addColumn('author_name', function ($book) {
-                return $book?->author?->getTranslation('name', app()->getLocale()) ?? null;
-            })
-            ->editColumn('full_url', function ($book) {
-                return $book->full_url;
-            })
-            ->filter(function ($query) {
-                if (request()->has('search') && !empty(request()->search)) {
-                    $searchValue = request()->search;
-                    $query->where(function ($query) use ($searchValue) {
-                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
-                            ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
-                    });
-                }
-            })
-            ->order(function ($query) {
-                if (request()->has('order')) {
-                    $orderColumn = request()->columns[request()->order[0]['column']]['data'];
-                    $orderDirection = request()->order[0]['dir'];
-                    $query->orderBy($orderColumn, $orderDirection);
-                }
-            })
-            ->make(true);
+        // Search filter
+        if (request()->has('search') && !empty(request()->search)) {
+            $searchValue = request()->search;
+            $query->where(function ($q) use ($searchValue) {
+                $q->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
+                    ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
+            });
+        }
+
+        // Count BEFORE offset/limit
+        $recordsTotal = $query->count();
+
+        // Now paginate
+        $books = $query->offset($start)->limit($length)->get();
+
+        $locale = app()->getLocale();
+
+        $data = $books->map(function ($item) use ($locale) {
+            return [
+                'id'              => $item->id,
+                'user_id'         => $item->user_id,
+                'title'           => $item->getTranslation('title', $locale),
+                'slug'            => $item->getTranslation('slug', $locale),
+                'views'           => $item->views,
+                'description'     => $item->getTranslation('description', $locale),
+                'image'           => FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($item, 'image')),
+                'book_genre_id'   => $item->book_genre_id,
+                'author_id'       => $item->author_id,
+                'status'          => $item->status,
+                'created_at'      => $item->created_at,
+                'updated_at'      => $item->updated_at,
+                'author'          => $item->author,
+                'book_genre'      => $item->bookGenre,
+                'book_genre_slug' => $item->bookGenre?->getTranslation('slug', $locale) ?? null,
+                'book_genre_name' => $item->bookGenre?->getTranslation('name', $locale) ?? null,
+                'author_name'     => $item->author?->getTranslation('name', $locale) ?? null,
+                'full_url'        => $item->full_url,
+            ];
+        });
+
+        return response()->json([
+            'draw'            => (int) request()->get('draw', 0),
+            'recordsTotal'    => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data'            => $data,
+        ]);
     }
 
     public function fetchNews()
@@ -513,96 +562,111 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
         $newsCategory = request()->query('c') ?? "";
-        $authorId = request()->query('author');
-        $sort = request()->query('sort');
-        $start = request()->get('start', 0);
-        $length = request()->get('length', 24);
+        $newsTag = request()->query('t') ?? "";
+        $authorId     = request()->query('author');
+        $sort         = request()->query('sort');
+        $start        = (int) request()->get('start', 0);
+        $length       = (int) request()->get('length', 12);
+
         if ($length > 24) {
             $length = 24;
         }
 
         $query = News::with(['author', 'category'])
-            ->where('status', 'published')->whereNotNull('title->' . app()->getLocale())
-            ->offset($start)
-            ->limit($length);
+            ->where('status', 'published')
+            ->whereNotNull('title->' . app()->getLocale());
 
-        if (! empty($sort)) {
+        if (!empty($sort)) {
             if ($sort === 'oldest') {
-                $query = $query->orderBy('news_date', 'asc');
-            } else if ($sort === 'views') {
-                $query = $query->orderBy('views', 'desc');
-            } else if ($sort === 'random') {
-                $query = $query->inRandomOrder();
-            } else if ($sort === 'title') {
-                $query = $query->orderBy('title->' . app()->getLocale(), 'asc');
-            } else { // 'newest'
-                $query = $query->orderBy('news_date', 'desc');
-            }
-        }
-
-        if (! empty($authorId)) {
-            $query = $query->where('author_id', $authorId);
-        }
-
-        // Filter by news category if provided
-        if (!empty($newsCategory) && $newsCategory !== 'null') {
-            $newsCategory = NewsCategory::where('slug->' . app()->getLocale(), '/' . ltrim($newsCategory, '/'))->first();
-            if ($newsCategory) {
-                $query = $query->where('news_category_id', $newsCategory->id);
+                $query->orderBy('news_date', 'asc');
+            } elseif ($sort === 'views') {
+                $query->orderBy('views', 'desc');
+            } elseif ($sort === 'random') {
+                $query->inRandomOrder();
+            } elseif ($sort === 'title') {
+                $query->orderBy('title->' . app()->getLocale(), 'asc');
             } else {
-                $query = $query->whereRaw('1 = 0');
+                $query->orderBy('news_date', 'desc');
+            }
+        } else {
+            $query->orderBy('news_date', 'desc');
+        }
+
+        if (!empty($authorId)) {
+            $query->where('author_id', $authorId);
+        }
+
+        if (!empty($newsCategory) && $newsCategory !== 'null') {
+            $category = NewsCategory::where('slug->' . app()->getLocale(), '/' . ltrim($newsCategory, '/'))->first();
+            if ($category) {
+                $query->where('news_category_id', $category->id);
+            } else {
+                $query->whereRaw('1 = 0');
             }
         }
 
-        return DataTables::of($query)
-            ->editColumn('title', function ($news) {
-                return $news->getTranslation('title', app()->getLocale());
-            })
-            ->editColumn('slug', function ($news) {
-                return $news->getTranslation('slug', app()->getLocale());
-            })
-            ->editColumn('description', function ($news) {
-                return $news->getTranslation('description', app()->getLocale());
-            })
-            ->editColumn('image', function ($news) {
-                return FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($news, 'image'));
-            })
-            ->editColumn('news_category_name', function ($news) {
-                return $news?->category?->getTranslation('name', app()->getLocale()) ?? null;
-            })
-            ->addColumn('news_category_slug', function ($news) {
-                return $news?->category?->getTranslation('slug', app()->getLocale()) ?? null;
-            })
-            ->addColumn('author_name', function ($news) {
-                return $news?->author?->getTranslation('name', app()->getLocale()) ?? null;
-            })
-            ->editColumn('full_url', function ($news) {
-                return $news->full_url;
-            })
-            ->editColumn('news_date', function ($news) {
-                return $news->news_date->format('Y-m-d');
-            })
-            ->filter(function ($query) {
-                if (request()->has('search') && !empty(request()->search)) {
-                    $searchValue = request()->search;
-                    $query->where(function ($query) use ($searchValue) {
-                        $query->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
-                            ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
-                    });
-                }
-            })
-            ->addColumn('prefix', function() {
-                $settingStore = new SettingStore;
-                return $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
-            })
-            ->order(function ($query) {
-                if (request()->has('order')) {
-                    $orderColumn = request()->columns[request()->order[0]['column']]['data'];
-                    $orderDirection = request()->order[0]['dir'];
-                    $query->orderBy($orderColumn, $orderDirection);
-                }
-            })
-            ->make(true);
+        if (!empty($newsTag) && $newsTag !== 'null') {
+            $tag = NewsTag::where('slug->' . app()->getLocale(), ltrim($newsTag, '/'))->first();
+            if ($tag) {
+                $query->whereHas('tags', function ($q) use ($tag) {
+                    $q->where('news_tags.id', $tag->id);
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        // Search filter
+        if (request()->has('search') && !empty(request()->search)) {
+            $searchValue = request()->search;
+            $query->where(function ($q) use ($searchValue) {
+                $q->whereRaw('LOWER(JSON_EXTRACT(title, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"'])
+                    ->orWhereRaw('LOWER(JSON_EXTRACT(description, "$.' . app()->getLocale() . '")) like ?', ['"%' . strtolower($searchValue) . '%"']);
+            });
+        }
+
+        // Count BEFORE offset/limit
+        $recordsTotal = $query->count();
+
+        // Now paginate
+        $news = $query->offset($start)->limit($length)->get();
+
+        $settingStore = new SettingStore;
+        $prefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
+        $locale = app()->getLocale();
+
+        $data = $news->map(function ($item) use ($prefix, $locale) {
+            return [
+                'id'                  => $item->id,
+                'user_id'             => $item->user_id,
+                'title'               => $item->getTranslation('title', $locale),
+                'slug'                => $item->getTranslation('slug', $locale),
+                'views'               => $item->views,
+                'description'         => $item->getTranslation('description', $locale),
+                'image'               => FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($item, 'image')),
+                'news_category_id'    => $item->news_category_id,
+                'author_id'           => $item->author_id,
+                'status'              => $item->status,
+                'scheduled_at'        => $item->scheduled_at,
+                'news_date'           => $item->news_date->format('Y-m-d'),
+                'created_at'          => $item->created_at,
+                'updated_at'          => $item->updated_at,
+                'author'              => $item->author,
+                'category'            => $item->category,
+                'news_category_slug'  => $item->category?->getTranslation('slug', $locale) ?? null,
+                'news_category_name'  => $item->category?->getTranslation('name', $locale) ?? null,
+                'author_name'         => $item->author?->getTranslation('name', $locale) ?? null,
+                'full_url'            => $item->full_url,
+                'prefix'              => $prefix,
+            ];
+        });
+
+        return response()->json([
+            'draw'            => (int) request()->get('draw', 0),
+            'recordsTotal'    => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data'            => $data,
+        ]);
     }
 
     public function fetchAuthors()
@@ -625,7 +689,7 @@ class ContentController extends Controller
         if ($language) {
             app()->setLocale($language);
         }
-        $bookGenres = BookGenre::where(function($query){
+        $bookGenres = BookGenre::where(function ($query) {
             $query->whereNull('hide_from_frontend')
                 ->orWhere('hide_from_frontend', false);
         })->withCount('books')->get();
@@ -641,7 +705,7 @@ class ContentController extends Controller
         if ($language) {
             app()->setLocale($language);
         }
-        $newsCategories = NewsCategory::where(function($query){
+        $newsCategories = NewsCategory::where(function ($query) {
             $query->whereNull('hide_from_frontend')
                 ->orWhere('hide_from_frontend', false);
         })->withCount('news')->get();

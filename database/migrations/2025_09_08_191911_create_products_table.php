@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('views')->default(0);
             $table->json('description')->nullable();
             $table->json('image')->nullable();
+            $table->json('image_medium')->nullable();
+            $table->json('image_thumbnail')->nullable();
             $table->json('price')->nullable();
             $table->integer('stock')->nullable();
             $table->unsignedBigInteger('product_category_id')->nullable();

@@ -60,6 +60,9 @@ class GenerateSitemapsCommand extends Command
             foreach ($tables as $table) {
                 $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
                 $frontendBaseUrl = $language->domain;
+                if(!str_starts_with($frontendBaseUrl, 'https://') && !str_starts_with($frontendBaseUrl, 'http://')) {
+                    $frontendBaseUrl = 'https://' . $frontendBaseUrl;
+                }
                 // var_dump($pages);
                 foreach ($pages as $page) {
                     if (array_key_exists('slug', $page)) {

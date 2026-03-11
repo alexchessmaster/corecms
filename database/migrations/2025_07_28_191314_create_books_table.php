@@ -17,6 +17,8 @@ return new class extends Migration
             $table->json('title');
             $table->json('description')->nullable();
             $table->json('image')->nullable();
+            $table->json('image_medium')->nullable();
+            $table->json('image_thumbnail')->nullable();
             $table->unsignedBigInteger('book_genre_id')->nullable();
             $table->enum('status', ['draft', 'published', 'scheduled'])->default('draft');
             $table->string('primary_language', 2)->nullable();

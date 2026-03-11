@@ -9,7 +9,7 @@
     <label for="exampleInputEmail1 required">Link</label>
     <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter link"
         name="link" value="{{ isset($menu) ? $menu->link : '' }}">
-    <small id="link" class="form-text text-muted">Link of the menu</small>
+    <small id="link" class="form-text text-muted">Link of the menu. It's better to start with "/" then the rest of the URL</small>
 </div>
 
 <div class="form-group">

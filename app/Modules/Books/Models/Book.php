@@ -23,7 +23,7 @@ class Book extends Model
     use HasTranslations;
 
     protected $guarded = [];
-    public $translatable = ['title', 'slug', 'description', 'image'];
+    public $translatable = ['title', 'slug', 'description', 'image', 'image_medium', 'image_thumbnail'];
     protected $casts = [
         'scheduled_at' => 'datetime',
         'created_at' => 'datetime',
