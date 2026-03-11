@@ -15,7 +15,7 @@ class Article extends Model
     use HasTranslations;
 
     protected $guarded = [];
-    public $translatable = ['title', 'slug', 'content', 'description', 'image'];
+    public $translatable = ['title', 'slug', 'content', 'description', 'image', 'image_medium', 'image_thumbnail'];
     protected $casts = [
         'scheduled_at' => 'datetime',
         'created_at' => 'datetime',
