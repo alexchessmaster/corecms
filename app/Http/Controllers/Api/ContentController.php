@@ -176,14 +176,7 @@ class ContentController extends Controller
         $path = $parsedUrl['path'];
         // $query = $parsedUrl['query']; if isset($parsedUrl['query']) // not needed yet
 
-        // Is Page include /en/news/2 for the new pagination
-        $pathArr = explode('/', $path);
-        $pageNumber = end($pathArr);
-        $tmpPath = $path;
-        if (is_numeric($pageNumber)) {
-            $tmpPath = substr($path, 0, -1 - strlen($pageNumber));
-        }
-        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $tmpPath)->where('status', 'published')->first();
+        $page = Page::withAllWidgetData()->where('slug->' . app()->getLocale(), $path)->where('status', 'published')->first();
         if ($page) {
             $responseData["page"] = PageResource::make($page);
             $responseData['content_type'] = 'page';
@@ -235,6 +228,7 @@ class ContentController extends Controller
                 'article_prefix' => $articlePrefix
             ]);
             $responseData['content_type'] = 'article';
+            $article->increment('views');
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -264,6 +258,7 @@ class ContentController extends Controller
                 'product_prefix' => $productPrefix
             ]);
             $responseData['content_type'] = 'product';
+            $product->increment('views');
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -293,6 +288,7 @@ class ContentController extends Controller
                 'book_prefix' => $bookPrefix
             ]);
             $responseData['content_type'] = 'book';
+            $book->increment('views');
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -322,6 +318,7 @@ class ContentController extends Controller
                 'news_prefix' => $newsPrefix
             ]);
             $responseData['content_type'] = 'news';
+            $news->increment('views');
 
             return response()->json(['data' => $responseData], $responseCode);
         }
