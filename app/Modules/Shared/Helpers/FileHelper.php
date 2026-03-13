@@ -21,7 +21,7 @@ class FileHelper
         }
 
         request()->validate([
-            $fileInputName => 'mimes:png,jpg,jpeg,mp3,mp4,avi,mkv,txt,pdf,doc,docx,webp,webm,svg|max:100123'
+            $fileInputName => 'mimes:png,jpg,jpeg,avif,mp3,mp4,avi,mkv,txt,pdf,doc,docx,webp,webm,svg|max:100123'
         ]);
 
         $f = $request->file($fileInputName);
@@ -38,7 +38,7 @@ class FileHelper
             return $value;
         }
 
-        $imageExtensions = ['gif', 'jpg', 'jpeg', 'png', 'svg', 'bmp', 'tiff', 'ico', 'webp', 'pdf', 'doc', 'docx', 'txt', 'mp3', 'mp4', 'mkv', 'ogg', 'avi', 'wmv', 'm4v', 'octet-stream'];
+        $imageExtensions = ['gif', 'jpg', 'jpeg', 'avif','png', 'svg', 'bmp', 'tiff', 'ico', 'webp', 'pdf', 'doc', 'docx', 'txt', 'mp3', 'mp4', 'mkv', 'ogg', 'avi', 'wmv', 'm4v', 'octet-stream'];
 
         $fileExtension = pathinfo($value, PATHINFO_EXTENSION);
 
@@ -52,5 +52,21 @@ class FileHelper
         }
 
         return $value;
+    }
+
+    /**
+     * @param string $imagePath is absolute path. ex: public_path($news->getTranslation('image', app()->getLocale(), false));
+     */
+    public static function getMediumThumbnailImagePaths(string $imagePath): array
+    {
+        $originalPath = $imagePath;
+        $filename = basename($originalPath);
+        $directory = dirname($originalPath);
+        $thumbnailDir = $directory . '/thumbnail';
+        $mediumDir = $directory . '/medium';
+        $thumbnailPath = $thumbnailDir . '/' . $filename;
+        $mediumPath = $mediumDir . '/' . $filename;
+
+        return ['medium' => $mediumPath, 'thumbnail' => $thumbnailPath];
     }
 }
