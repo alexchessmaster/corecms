@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IncreaseMemoryLimit
+class IncreaseMemoryLimitMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,7 +15,9 @@ class IncreaseMemoryLimit
      */
     public function handle(Request $request, Closure $next): Response
     {
-        ini_set('memory_limit', '512M');
+        ini_set('memory_limit', '1024M');
+        set_time_limit(300);
+        ini_set('max_execution_time', 300);
         return $next($request);
     }
 }
