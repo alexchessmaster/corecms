@@ -64,3 +64,26 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+increase the timeout to 300
+```
+sudo nano /etc/php/8.4/fpm/pool.d/www.conf
+request_terminate_timeout = 300
+```
+increase the timeout to 300
+increase memory limit
+```
+sudo nano /etc/php/8.4/fpm/php.ini
+max_execution_time = 300
+memory_limit = 1024M
+sudo systemctl reload php8.4-fpm
+```
+
+image process:
+```
+sudo apt install imagemagick -y
+sudo apt install pngquant -y
+sudo apt install jpegoptim -y
+```
+
