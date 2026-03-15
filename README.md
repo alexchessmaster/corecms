@@ -100,26 +100,16 @@ FRONTEND_REPOSITORY="git@gitlab.com:r...""
 
 permissions:
 ```
-/home/alex          → must be accessible to www-data
-/home/alex/.ssh     → must be accessible to www-data  
-/home/alex/.ssh/id_rsa  → must be readable by www-data
-
-# 1. Make www-data part of the alex group path
-sudo chown alex:www-data /home/alex
-sudo chmod 750 /home/alex
-
-sudo chown alex:www-data /home/alex/.ssh
-sudo chmod 750 /home/alex/.ssh
-
-sudo chown alex:www-data /home/alex/.ssh/id_rsa
-sudo chmod 640 /home/alex/.ssh/id_rsa
-
 # 2. Fix public directory permissions for sitemap generation
 sudo chown -R alex:www-data public
 sudo chmod -R 775 public
 
-# 3. Verify www-data can read the key
-sudo -u www-data cat /home/alex/.ssh/id_rsa
+# for frontend deployment:
+sudo cp /home/alex/.ssh/id_rsa /var/www/.ssh/id_rsa
+sudo chown www-data:www-data /var/www/.ssh/id_rsa
+sudo chmod 600 /var/www/.ssh/id_rsa
+sudo ssh-keyscan gitlab.com | sudo tee /var/www/.ssh/known_hosts
+sudo chown www-data:www-data /var/www/.ssh/known_hosts
 ```
 
 
