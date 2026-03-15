@@ -31,7 +31,7 @@ class DeployFrontendJob implements ShouldQueue
 set -e
 
 export HOME=/home/alex
-export GIT_SSH_COMMAND="ssh -i /home/alex/.ssh/id_rsa -o StrictHostKeyChecking=no"
+export GIT_SSH_COMMAND="ssh -i /var/www/.ssh/id_rsa -o StrictHostKeyChecking=no"
 
 APP_ROOT="{$appRoot}"
 REPO_URL="{$repoUrl}"

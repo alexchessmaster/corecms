@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schedule;
 use App\Modules\Booking\Jobs\GenerateTimeSlotsFromTemplatesJob;
 use App\Modules\Shared\Jobs\DeployFrontendJob;
 
-Schedule::command('redirects:remove-duplicate')->everyMinute()->withoutOverlapping();
-Schedule::command('redirects:unchain')->everyMinute()->withoutOverlapping();
+Schedule::command('redirects:remove-duplicate')->hourly()->withoutOverlapping();
+Schedule::command('redirects:unchain')->hourly()->withoutOverlapping();
 Schedule::command('sitemap:generate')->hourly()->then(function(){
     DeployFrontendJob::dispatch();
 });
