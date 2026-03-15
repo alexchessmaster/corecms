@@ -24,7 +24,7 @@
         $widgetableType = get_class($book); // Book
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
         $apiEndpoint = '/api/v1/books/' . $widgetableId;
-//        dd($widgetableType);
+        //        dd($widgetableType);
     } elseif (isset($bookGenre) && !empty($bookGenre)) {
         $model = $bookGenre;
         $widgetableId = $bookGenre->id;
@@ -62,7 +62,6 @@
 @endphp
 
 @push('styles')
-
 @endpush
 @push('scripts')
     <script>
@@ -150,7 +149,7 @@
     </div>
 @endif
 <script>
-    if(typeof tinymce !== 'undefined'){
+    if (typeof tinymce !== 'undefined') {
         // window.location.reload();
         console.error('typeof tinymce is undefined 63315')
     }
@@ -186,7 +185,7 @@
         widgetOption.setAttribute('data-value', widget.position);
 
         const imgEl = document.createElement('img');
-        if(widget?.image) {
+        if (widget?.image) {
             imgEl.src = widget.image;
         } else {
             imgEl.style.width = "100%";
@@ -219,19 +218,22 @@
             const formData = {};
 
             // Process all inputs
+            const fileReadPromises = [];
             form.querySelectorAll('input').forEach(input => {
                 if (input.type === 'file' && input.files.length > 0) {
-                    // Convert file to base64
                     const file = input.files[0];
-                    formData[input.name] =
-                        'Processing file...'; // Placeholder until conversion is done
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        formData[input.name] = event.target.result; // Base64 encoded string
-                    };
-                    reader.readAsDataURL(file);
+                    formData[input.name] = 'Processing file...';
+                    const promise = new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            formData[input.name] = event.target.result;
+                            resolve();
+                        };
+                        reader.onerror = resolve; // resolve even on error to not block
+                        reader.readAsDataURL(file);
+                    });
+                    fileReadPromises.push(promise);
                 } else {
-                    // Save non-file input values
                     formData[input.name] = input.value;
                 }
             });
@@ -247,14 +249,24 @@
                 formData[textarea.name] = textarea.value;
             });
 
-            console.log('save formData', formData)
+            // Wait for all file inputs to finish reading properly
+            await Promise.all(fileReadPromises);
 
-            // Wait for all file inputs to finish reading
-            await new Promise(resolve => setTimeout(resolve,
-                100)); // Ensure files are read (adjust time as necessary)
+            console.log('save formData', formData);
 
-            // Send the data to the backend
-            fetch("/api/widget-field-values", {
+            // Show persistent "Saving..." toast (timeOut: 0 = stays until cleared)
+            toastr.info('Saving...', '', {
+                timeOut: 0,
+                extendedTimeOut: 0,
+                closeButton: false,
+                tapToDismiss: false,
+                progressBar: false
+            });
+
+            console.log('saving toast shown');
+
+            try {
+                const res = await fetch("/api/widget-field-values", {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
@@ -262,17 +274,24 @@
                         "Authorization": "Bearer {{ $authToken }}"
                     },
                     body: JSON.stringify(formData)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    console.log('form saved !!!!!!!!', data);
-                    // emptyFieldEditContainer();
-
-                    toastr.success('Widget inputs updated successfully.');
-                }).catch(error => {
-                    console.error('Error saving widget inputs:', error, formData);
-                    toastr.error('Failed to save widget inputs.');
                 });
+
+                const data = await res.json();
+                console.log('form saved !!!!!!!!', data);
+
+                toastr.clear();
+                toastr.success('Saved!', '', {
+                    timeOut: 5000,
+                    extendedTimeOut: 5000,
+                });
+
+            } catch (error) {
+                console.error('Error saving widget inputs:', error, formData);
+                toastr.clear();
+                toastr.error('Failed to save', '', {
+                    timeOut: 5000
+                });
+            }
 
             console.log('save clicked', formData);
         });
@@ -798,11 +817,11 @@
     const allWidgetsList = [];
     const refreshWidgetList = () => {
         fetch("{!! $apiEndpoint !!}?lang={!! App::currentLocale() !!}", {
-            headers: {
-                'Authorization': 'Bearer {{ $authToken }}',
-                'Accept': 'application/json'
-            }
-        })
+                headers: {
+                    'Authorization': 'Bearer {{ $authToken }}',
+                    'Accept': 'application/json'
+                }
+            })
             .then(response => {
                 return response.json()
             })
