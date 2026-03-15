@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Field;
-use App\Models\Widgetable;
-use App\Models\FieldWidget;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use function Pest\Laravel\json;
-use App\Models\WidgetFieldValues;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreWidgetFieldValuesRequest;
-
 use App\Http\Requests\UpdateWidgetFieldValuesRequest;
+use App\Models\Field;
+use App\Models\FieldWidget;
+use App\Models\Widgetable;
+use App\Models\WidgetFieldValues;
+use App\Modules\Shared\Helpers\StrHelper;
+use App\Modules\Shared\Jobs\ProcessImageJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+use function Pest\Laravel\json;
 
 class WidgetFieldValuesController extends Controller
 {
@@ -67,6 +69,8 @@ class WidgetFieldValuesController extends Controller
         unset($inputs['widget-id']);
         unset($inputs['widget-locked']);
 
+        $fieldWidget = null;
+
         foreach ($inputs as $inputKey => $inputValue) {
             $inputKeyArr = explode('-', $inputKey);
 
@@ -99,10 +103,13 @@ class WidgetFieldValuesController extends Controller
 
                 // Check if the input is a file and no new value is provided
                 if (Str::startsWith($widgetFieldValue->value, '/uploads/') && empty($inputValue)) {
-                    $inputValue = $widgetFieldValue->getTranslation('value', $language); // Retain old value
+                    $inputValue = $widgetFieldValue->getTranslation('value', $language, false); // Retain old value
                 } elseif (Str::startsWith($inputValue, 'data:') && Str::contains($inputValue, ';base64,')) {
                     // Handle new file input
                     $inputValue = $this->handleBase64File($inputValue);
+                } else {
+                    // Plain text                    
+                    $inputValue = StrHelper::removeUnicodeCharacters($inputValue);
                 }
 
                 $widgetFieldValue->setTranslation('value', $language, $inputValue);
@@ -163,7 +170,7 @@ class WidgetFieldValuesController extends Controller
         }
 
         return response()->json([
-            'message' => 'saved'
+            'message' => isset($fieldWidget) ? $fieldWidget?->key . ' saved successfully.' : 'Form saved successfully.'
         ]);
     }
 
@@ -181,7 +188,7 @@ class WidgetFieldValuesController extends Controller
         $extension = Str::after($mimeType, '/');
         $extension = Str::before($extension, '+');
 
-        $fileName = uniqid() . '.' . $extension;
+        $fileName = Str::uuid() . '.' . $extension;
         $uploadDir = public_path('uploads');
         $filePath = $uploadDir . '/' . $fileName;
 
@@ -205,6 +212,9 @@ class WidgetFieldValuesController extends Controller
 
         fclose($input);
         fclose($output);
+
+        $fullPath = $uploadDir . '/' . $fileName;
+        ProcessImageJob::dispatch($fullPath, false);
 
         return '/uploads/' . $fileName;
     }
