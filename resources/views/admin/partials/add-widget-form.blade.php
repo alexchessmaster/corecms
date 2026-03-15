@@ -669,17 +669,61 @@
 
         divEl.appendChild(labelEl);
         divEl.appendChild(inputEl);
-        divEl.appendChild(inputEl);
 
         // If there's an old value, determine if it's an image or not
         if (item?.value) {
             const value = item.value;
-            const isImage = value.match(/(jpg|jpeg|png|gif|bmp|webp)/i);
-            if (isImage?.length === 2) {
+            const isImage = value.match(/\.(jpg|jpeg|png|gif|bmp|webp|svg)(\?.*)?$/i);
+            const isVideo = value.match(/\.(mkv|mov|mp4|avi|webm|ogv)(\?.*)?$/i);
+            if (isImage) {
                 imgEl.src = value;
                 imgEl.alt = 'Widget Image';
                 divEl.appendChild(imgEl);
+            } else if (isVideo) {
+                // Wrapper for positioning the play button overlay
+                const videoWrapper = document.createElement('div');
+                videoWrapper.style.position = 'relative';
+                videoWrapper.style.display = 'inline-block';
+                videoWrapper.classList.add('mt-2');
+
+                const videoEl = document.createElement('video');
+                videoEl.src = value;
+                videoEl.style.maxWidth = '100px';
+                videoEl.style.display = 'block';
+                videoEl.preload = 'metadata';
+
+                // Play button overlay
+                const playBtn = document.createElement('div');
+                playBtn.innerHTML = '▶';
+                playBtn.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.6);
+                    color: white;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 12px;
+                    cursor: pointer;
+                    pointer-events: none;
+                `;
+
+                // Click on wrapper opens video in new tab (or you can trigger play inline)
+                videoWrapper.style.cursor = 'pointer';
+                videoWrapper.addEventListener('click', () => {
+                    window.open(value, '_blank');
+                });
+
+                videoWrapper.appendChild(videoEl);
+                videoWrapper.appendChild(playBtn);
+                divEl.appendChild(videoWrapper);
             }
+
             aEl.href = value;
             aEl.download = value;
             divEl.appendChild(aEl);

@@ -18,9 +18,9 @@ class PageController extends Controller
     {
         if (!empty(request()->lang)) {
             app()->setLocale(request()->lang);
-        }
-
+        } 
         $page = Page::withAllWidgetData()->find($pageId);
+        $this->authorize('view', $page);
 
         return response()->json(PageResource::make($page));
     }

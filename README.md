@@ -87,3 +87,70 @@ sudo apt install pngquant -y
 sudo apt install jpegoptim -y
 ```
 
+.env:
+```
+OPENAI_API_KEY="sk-Ds..."
+AI_CHAT_MODE=true
+TRANSLATE_INPUTS_ONLINE=true
+
+# Deploy frontend
+APP_FRONTEND_ROOT="/home/alex/..."
+FRONTEND_REPOSITORY="git@gitlab.com:r...""
+```
+
+permissions:
+```
+/home/alex          → must be accessible to www-data
+/home/alex/.ssh     → must be accessible to www-data  
+/home/alex/.ssh/id_rsa  → must be readable by www-data
+
+# 1. Make www-data part of the alex group path
+sudo chown alex:www-data /home/alex
+sudo chmod 750 /home/alex
+
+sudo chown alex:www-data /home/alex/.ssh
+sudo chmod 750 /home/alex/.ssh
+
+sudo chown alex:www-data /home/alex/.ssh/id_rsa
+sudo chmod 640 /home/alex/.ssh/id_rsa
+
+# 2. Fix public directory permissions for sitemap generation
+sudo chown -R alex:www-data public
+sudo chmod -R 775 public
+
+# 3. Verify www-data can read the key
+sudo -u www-data cat /home/alex/.ssh/id_rsa
+```
+
+
+```
+[program:laravel-worker-example.com_backend-cronjob]
+process_name=%(program_name)s_%(process_num)02d
+command=php8.4 /home/alex/example.com_backend/artisan queue:listen
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/home/alex/example.com_backend/storage/logs/queue_worker.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=1
+
+[program:laravel-worker-example.com_backend-schedule]
+process_name=%(program_name)s_%(process_num)02d
+directory=/home/alex/example.com_backend/
+command=php8.4 artisan schedule:work
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/home/alex/example.com_backend/storage/logs/worker1.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=1
+```
+
+```
+sudo supervisorctl reread
+sudo supervisorctl update
+```

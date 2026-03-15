@@ -13,11 +13,11 @@ class NewsController extends Controller
 
     public function show($id)
     {
-        $news = News::withAllWidgetData()->find($id);
-        $this->authorize('view', $news);
         if(!empty(request()->lang)){
             app()->setLocale(request()->lang);
         }
+        $news = News::withAllWidgetData()->find($id);
+        $this->authorize('view', $news);
 
         return response()->json(NewsResource::make($news));
     }

@@ -1,8 +1,8 @@
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>
-    @if (isset($news) && $news->image)
+    @if (isset($news) && App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'image'))
         <div class="mb-2">
-            <img src="{{ $news->image }}" alt="Current Image" style="max-width: 150px; height: auto;">
+            <img src="{{ App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'image') }}" alt="Current Image" style="max-width: 150px; height: auto;">
         </div>
     @endif
     <div class="mb-2" id="preview-container" style="display: none;">

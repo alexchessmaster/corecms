@@ -21,7 +21,7 @@ class FileHelper
         }
 
         request()->validate([
-            $fileInputName => 'mimes:png,jpg,jpeg,avif,mp3,mp4,avi,mkv,txt,pdf,doc,docx,webp,webm,svg|max:100123'
+            $fileInputName => 'mimes:png,jpg,jpeg,avif,mp3,mp4,mov,avi,mkv,txt,pdf,doc,docx,webp,webm,svg|max:100123'
         ]);
 
         $f = $request->file($fileInputName);
@@ -38,7 +38,7 @@ class FileHelper
             return $value;
         }
 
-        $imageExtensions = ['gif', 'jpg', 'jpeg', 'avif','png', 'svg', 'bmp', 'tiff', 'ico', 'webp', 'pdf', 'doc', 'docx', 'txt', 'mp3', 'mp4', 'mkv', 'ogg', 'avi', 'wmv', 'm4v', 'octet-stream'];
+        $imageExtensions = ['gif', 'jpg', 'jpeg', 'avif','png', 'svg', 'bmp', 'tiff', 'ico', 'webm', 'webp', 'pdf', 'doc', 'docx', 'txt', 'mp3', 'mp4', 'mkv', 'ogg', 'avi', 'wmv', 'mov', 'm4v', 'octet-stream'];
 
         $fileExtension = pathinfo($value, PATHINFO_EXTENSION);
 
@@ -66,7 +66,9 @@ class FileHelper
         $mediumDir = $directory . '/medium';
         $thumbnailPath = $thumbnailDir . '/' . $filename;
         $mediumPath = $mediumDir . '/' . $filename;
+        $relativeMediumPath = substr($mediumPath, strpos($mediumPath, '/uploads/'));
+        $relativeThumbnailPath = substr($thumbnailPath, strpos($thumbnailPath, '/uploads/'));
 
-        return ['medium' => $mediumPath, 'thumbnail' => $thumbnailPath];
+        return ['medium' => $relativeMediumPath, 'thumbnail' => $relativeThumbnailPath];
     }
 }
