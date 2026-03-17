@@ -859,8 +859,8 @@
     let addWidgetButtonPosition = null;
 
     const allWidgetsList = [];
-    const refreshWidgetList = () => {
-        fetch("{!! $apiEndpoint !!}?lang={!! App::currentLocale() !!}", {
+    const refreshWidgetList = (translate = "false") => {
+        fetch("{!! $apiEndpoint !!}?lang={!! App::currentLocale() !!}&translate=" + translate, {
                 headers: {
                     'Authorization': 'Bearer {{ $authToken }}',
                     'Accept': 'application/json'
@@ -895,6 +895,10 @@
 
     document.getElementById('save-all').addEventListener('click', saveAllWidgets);
     document.getElementById('first-add-widget-btn').addEventListener('mousedown', saveAllWidgets);
+    document.getElementById('translate')?.addEventListener('click', ()=>{
+        console.info('Translate button clicked');
+        refreshWidgetList("true");
+    });
 </script>
 <script>
     // Close button inside the modal footer

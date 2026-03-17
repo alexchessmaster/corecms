@@ -65,11 +65,11 @@
     <input type="datetime-local" class="form-control" id="news_date" name="news_date"
         value="{{ old('news_date', isset($news->news_date) ? $news->news_date->format('Y-m-d\TH:i') : '') }}">
 </div>
-<div class="mb-3">
+{{-- Translatable inputs needed. Description is not translatable right now. <div class="mb-3">
     <label for="description" class="form-label">Description (Short)</label>
     <textarea class="form-control" id="description" name="description"
               rows="2">{{ isset($news) ? $news->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
-</div>
+</div> --}}
 <div class="mb-3">
     <label for="category_id" class="form-label required">Category</label>
     <select class="form-control" id="category_id" name="category_id" required>

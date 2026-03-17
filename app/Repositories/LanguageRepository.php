@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Language;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
+use Log;
 
 class LanguageRepository
 {
@@ -39,13 +40,31 @@ class LanguageRepository
         return count($this->allLanguages) > 1 ? true : false;
     }
 
-    public function getDefaultLanguage()
+    public function useSeparateDomain(): bool
     {
-        
+        return (bool)$this->allLanguages->first()->use_separate_domain;
     }
 
-    public function getCurrentLanguage()
-    {
+    public function getDefaultLanguage() {}
 
+    public function getCurrentLanguage() {}
+
+    /**
+     * @param string $lang ex. 'en', 'da'
+     */
+    public function getDomain(?string $lang = null): string
+    {
+        if ($lang === null) {
+            $lang = app()->getLocale();
+        }
+        $domain = $this->allLanguages->firstWhere('code', $lang)?->domain;
+        if (empty($domain)) {
+            Log::info('Domain not found in getDomain method in LanguageRepository.');
+        }
+        if (str_starts_with($domain, 'http://') || str_starts_with($domain, 'https://')) {
+            return $domain;
+        }
+
+        return 'https://' . $domain;
     }
 }

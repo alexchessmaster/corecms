@@ -86,7 +86,7 @@ class ProductController extends Controller
         $product->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '-' . $image->getClientOriginalName();
             $destinationPath = public_path('uploads/products');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
@@ -154,7 +154,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '-' . $image->getClientOriginalName();
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);

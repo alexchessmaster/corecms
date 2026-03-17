@@ -2,13 +2,16 @@
 
 namespace App\Modules\Books\Http\Resources;
 
-use App\Models\Language;
-use App\Modules\Shared\Helpers\FileHelper;
-use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource;
-use App\Modules\Books\Http\Resources\BookGenreResource;
-use App\Modules\Books\Http\Resources\BookAuthorResource;
 use App\Http\Resources\WidgetableResource;
+use App\Modules\Books\Http\Resources\BookAuthorResource;
+use App\Modules\Books\Http\Resources\BookGenreResource;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Modules\Shared\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\TranslationHelper;
+use App\Modules\Shared\Helpers\UrlHelper;
+use App\Repositories\LanguageRepository;
+use App\Stores\SettingStore;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BookResource extends JsonResource
@@ -20,17 +23,15 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $bookPrefix = $this->additional['book_prefix'] ?? null;
-
+        $settingStore = new SettingStore;
+        $bookPrefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX);
         $allUrls = [];
-        foreach(Language::all() as $language){
-            foreach($this->getTranslations('slug') as $lang => $slug){
+        $languageRepository = new LanguageRepository;
+        $languages = $languageRepository->all();
+        foreach ($languages as $language) {
+            foreach ($this->getTranslations('slug') as $lang => $slug) {
                 if($language->code === $lang){
-                    if($bookPrefix) {
-                        $allUrls[$lang] = $language->domain . $bookPrefix . $slug;
-                    }else{
-                        $allUrls[$lang] = $language->domain . $slug;
-                    }
+                    $allUrls[$lang] = UrlHelper::getFullUrlBySlug($slug, $this, null, $lang);
                 }
             }
         }
@@ -45,7 +46,19 @@ class BookResource extends JsonResource
             "description" => $this->description,
             "stars" => $this->stars,
             "content" => $this->content,
-            "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
+            "image_medium" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image_medium')
+            ) ?: FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
+            "image_thumbnail" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image_thumbnail')
+            ) ?: FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
             "book_genre_id" => $this->book_genre_id,
             "bookGenre" => $this->relationLoaded('bookGenre') ? new BookGenreResource($this->bookGenre) : null,
             "published_year" => $this->published_year,
@@ -57,6 +70,7 @@ class BookResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
+            'prefix' => $bookPrefix,
         ];
     }
 }

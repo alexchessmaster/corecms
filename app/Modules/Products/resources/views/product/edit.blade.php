@@ -5,6 +5,7 @@
     <div class="container">
         <a href="{{ route('admin.products.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new
             product</a>
+        <button class="btn btn-default float-right" id="translate">Translate to {{ strtoupper(app()->getLocale()) }}</button>
         <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype='multipart/form-data'>
             @csrf
             @method('PUT')
