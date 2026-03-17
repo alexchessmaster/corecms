@@ -2,11 +2,16 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Language;
-use Illuminate\Http\Request;
-use App\Http\Resources\TagResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\WidgetableResource;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Modules\Shared\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\TranslationHelper;
+use App\Modules\Shared\Helpers\UrlHelper;
+use App\Repositories\LanguageRepository;
+use App\Stores\SettingStore;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
@@ -18,21 +23,19 @@ class ArticleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $articlePrefix = $this->additional['article_prefix'] ?? null;
-
+        $settingStore = new SettingStore;
+        $articlePrefix = $settingStore->findByKey(SettingKeyEnum::ARTICLE_PREFIX);
         $allUrls = [];
-        foreach(Language::all() as $language){
-            foreach($this->getTranslations('slug') as $lang => $slug){
+        $languageRepository = new LanguageRepository;
+        $languages = $languageRepository->all();
+        foreach ($languages as $language) {
+            foreach ($this->getTranslations('slug') as $lang => $slug) {
                 if($language->code === $lang){
-                    if($articlePrefix) {
-                        $allUrls[$lang] = $language->domain . $articlePrefix . $slug;
-                    }else{
-                        $allUrls[$lang] = $language->domain . $slug;
-                    }
+                    $allUrls[$lang] = UrlHelper::getFullUrlBySlug($slug, $this, null, $lang);
                 }
             }
         }
-        
+
         // return parent::toArray($request);
         return [
             "id" => $this->id,
@@ -42,7 +45,19 @@ class ArticleResource extends JsonResource
             "full_url" => $this->full_url,
             "description" => $this->description,
             "content" => $this->content,
-            "image" => str_starts_with($this->image, 'http') ? $this->image : config('app.url') . $this->image,
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
+            "image_medium" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image_medium')
+            ) ?: FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
+            "image_thumbnail" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image_thumbnail')
+            ) ?: FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
             "category_id" => $this->category_id,
             "category" => $this->relationLoaded('category') ? new CategoryResource($this->category) : null,
             "tags" => $this->relationLoaded('tags') ? TagResource::collection($this->tags) : null,
@@ -50,6 +65,7 @@ class ArticleResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
+            'prefix' => $articlePrefix,
         ];
     }
 }

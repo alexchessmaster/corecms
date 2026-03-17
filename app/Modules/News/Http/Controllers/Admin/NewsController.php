@@ -8,10 +8,9 @@ use Illuminate\Http\Request;
 use App\Modules\News\Models\News;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
-use App\Http\Requests\StoreNewsRequest;
-use App\Http\Requests\UpdateNewsRequest;
 use Yajra\DataTables\Facades\DataTables;
 use App\Modules\News\Models\NewsCategory;
+use App\Modules\Shared\Helpers\StrHelper;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class NewsController extends Controller
@@ -70,7 +69,7 @@ class NewsController extends Controller
         $this->authorize('create', News::class);
 
         $request->validate([
-            'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
+            'image' => 'required|mimes:jpg,jpeg,png,webm,webp,gif,svg,avif|max:5000',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
@@ -89,7 +88,7 @@ class NewsController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '-' . $image->getClientOriginalName();
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
@@ -100,11 +99,11 @@ class NewsController extends Controller
             $news->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
 
-        $news->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $news->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
         if(!empty($request->slug)){
             $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $news->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $news->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
         $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
@@ -121,6 +120,8 @@ class NewsController extends Controller
         if ($request->has('tag_ids')) {
             $news->tags()->sync($request->input('tag_ids', []));
         }
+
+        // event(new NewsCreatedOrUpdatedEvent);
 
         return redirect()->route('admin.news.edit', [$news->id])->with('success', 'News created successfully.');
     }
@@ -143,7 +144,7 @@ class NewsController extends Controller
         $this->authorize('update', $news);
 
         $request->validate([
-            'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
+            'image' => 'nullable|mimes:jpg,jpeg,png,webm,webp,gif,svg,avif|max:5000',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
@@ -161,7 +162,7 @@ class NewsController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '-' . $image->getClientOriginalName();
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
@@ -169,11 +170,11 @@ class NewsController extends Controller
             $image->move($destinationPath, $filename);
             $news->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
-        $news->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $news->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
         if($request->slug !== $news->getTranslation('slug', app()->getLocale())){
             $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $news->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $news->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $news->news_category_id = $request->input('category_id');
         $news->status = $request->input('status');
         $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;

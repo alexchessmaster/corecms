@@ -2,12 +2,16 @@
 
 namespace App\Modules\Products\Http\Resources;
 
-use App\Models\Language;
-use App\Modules\Shared\Helpers\FileHelper;
-use Illuminate\Http\Request;
 use App\Http\Resources\WidgetableResource;
 use App\Modules\Products\Http\Resources\ProductAuthorResource;
 use App\Modules\Products\Http\Resources\ProductCategoryResource;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Modules\Shared\Helpers\FileHelper;
+use App\Modules\Shared\Helpers\TranslationHelper;
+use App\Modules\Shared\Helpers\UrlHelper;
+use App\Repositories\LanguageRepository;
+use App\Stores\SettingStore;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -19,17 +23,15 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $productPrefix = $this->additional['product_prefix'] ?? null;
-
+        $settingStore = new SettingStore;
+        $productPrefix = $settingStore->findByKey(SettingKeyEnum::PRODUCT_PREFIX);
         $allUrls = [];
-        foreach(Language::all() as $language){
-            foreach($this->getTranslations('slug') as $lang => $slug){
+        $languageRepository = new LanguageRepository;
+        $languages = $languageRepository->all();
+        foreach ($languages as $language) {
+            foreach ($this->getTranslations('slug') as $lang => $slug) {
                 if($language->code === $lang){
-                    if($productPrefix) {
-                        $allUrls[$lang] = $language->domain . $productPrefix . $slug;
-                    }else{
-                        $allUrls[$lang] = $language->domain . $slug;
-                    }
+                    $allUrls[$lang] = UrlHelper::getFullUrlBySlug($slug, $this, null, $lang);
                 }
             }
         }
@@ -44,7 +46,19 @@ class ProductResource extends JsonResource
             "description" => $this->description,
             "stars" => $this->stars,
             "content" => $this->content,
-            "image" => FileHelper::addDomainPrefixIfValueIsAFile($this->image),
+            "image" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
+            "image_medium" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image_medium')
+            ) ?: FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
+            "image_thumbnail" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image_thumbnail')
+            ) ?: FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'image')
+            ),
             "product_category_id" => $this->product_category_id,
             "productCategory" => $this->relationLoaded('productCategory') ? new ProductCategoryResource($this->productCategory) : null,
             "published_year" => $this->published_year,
@@ -56,6 +70,7 @@ class ProductResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
+            'prefix' => $productPrefix,
         ];
     }
 }

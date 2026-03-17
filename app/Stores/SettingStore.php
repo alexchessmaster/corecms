@@ -4,6 +4,7 @@ namespace App\Stores;
 
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Models\Setting;
+use App\Repositories\LanguageRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 
@@ -32,14 +33,18 @@ class SettingStore
         return $setting;
     }
 
-    public function findByKey(SettingKeyEnum $key)
+    public function findByKey(SettingKeyEnum $key, $languageCode = null)
     {
         $setting = $this->allSettings->firstWhere('key', $key->value);
         if (!$setting) {
             throw new ModelNotFoundException('The settings model not found for key: ' . $key->value);
         }
         if ($setting->is_translatable) {
-            $value = unserialize($setting->value)[app()->getLocale()];
+            if (empty($languageCode)) {
+                $value = unserialize($setting->value)[app()->getLocale()];
+            } else {
+                $value = unserialize($setting->value)[$languageCode];
+            }
         } else {
             $value = $setting->value;
         }
@@ -56,7 +61,7 @@ class SettingStore
 
         return $setting->is_translatable ? true : false;
     }
-    
+
     public function updateByKey(SettingKeyEnum $key, string $value): Setting
     {
         // not used anywhere, but take care of is_translatable later

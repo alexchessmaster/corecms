@@ -35,7 +35,8 @@ class WidgetableResource extends JsonResource
             'fields' => $widget->fieldWidgets->map(function ($fieldWidget) use ($fieldValues) {
                 $widgetFieldValue = $fieldValues->get($fieldWidget->id);
                 // $value = $widgetFieldValue?->getTranslation('value', app()->getLocale());
-                $value = TranslationHelper::firstAvailableValue($widgetFieldValue, 'value');
+                $translate = request()->query('translate') === 'true';
+                $value = TranslationHelper::firstAvailableValue($widgetFieldValue, 'value', $translate);
 
                 return [
                     'id' => $fieldWidget->field->id,

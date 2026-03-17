@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Language;
-use Illuminate\Http\Request;
-use App\Http\Resources\PageWidgetResource;
 use App\Http\Resources\WidgetableResource;
+use App\Models\Language;
+use App\Modules\Shared\Helpers\UrlHelper;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PageResource extends JsonResource
@@ -21,7 +21,7 @@ class PageResource extends JsonResource
         foreach(Language::all() as $language){
             foreach($this->getTranslations('slug') as $lang => $slug){
                 if($language->code === $lang){
-                    $allUrls[$lang] = $language->domain . $slug;
+                    $allUrls[$lang] = UrlHelper::getFullUrlBySlug($slug, $this, null, $lang);
                 }
             }
         }

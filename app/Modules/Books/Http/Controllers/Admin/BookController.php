@@ -89,7 +89,7 @@ class BookController extends Controller
         $book->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '-' . $image->getClientOriginalName();
             $destinationPath = public_path('uploads/books');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
@@ -166,7 +166,7 @@ class BookController extends Controller
         $book->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = time() . '-' . $image->getClientOriginalName();
             $destinationPath = public_path('uploads/books');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);

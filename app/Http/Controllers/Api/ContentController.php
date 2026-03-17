@@ -420,37 +420,15 @@ class ContentController extends Controller
         // Now paginate
         $articles = $query->offset($start)->limit($length)->get();
 
-        $locale = app()->getLocale();
-
-        $data = $articles->map(function ($item) use ($locale) {
-            return [
-                'id'            => $item->id,
-                'user_id'       => $item->user_id,
-                'title'         => $item->getTranslation('title', $locale),
-                'slug'          => $item->getTranslation('slug', $locale),
-                'views'         => $item->views,
-                'description'   => $item->getTranslation('description', $locale),
-                'content'       => $item->getTranslation('content', $locale),
-                'image'         => FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($item, 'image')),
-                'category_id'   => $item->category_id,
-                'author_id'     => $item->author_id,
-                'status'        => $item->status,
-                'created_at'    => $item->created_at,
-                'updated_at'    => $item->updated_at,
-                'author'        => $item->author,
-                'category'      => $item->category,
-                'category_slug' => $item->category?->getTranslation('slug', $locale) ?? null,
-                'category_name' => $item->category?->getTranslation('name', $locale) ?? null,
-                'author_name'   => $item->author?->getTranslation('name', $locale) ?? null,
-                'full_url'      => $item->full_url,
-            ];
-        });
+        $settingStore = new SettingStore;
+        $prefix = $settingStore->findByKey(SettingKeyEnum::ARTICLE_PREFIX);
 
         return response()->json([
             'draw'            => (int) request()->get('draw', 0),
             'recordsTotal'    => $recordsTotal,
             'recordsFiltered' => $recordsTotal,
-            'data'            => $data,
+            'data'            => ArticleResource::collection($articles),
+            'prefix'          => $prefix,
         ]);
     }
 
@@ -477,7 +455,7 @@ class ContentController extends Controller
 
         if (!empty($sort)) {
             if ($sort === 'oldest') {
-                $query->orderBy('created_at', 'asc');         // was 'desc' — fixed
+                $query->orderBy('created_at', 'asc');
             } elseif ($sort === 'views') {
                 $query->orderBy('views', 'desc');
             } elseif ($sort === 'random') {
@@ -485,7 +463,7 @@ class ContentController extends Controller
             } elseif ($sort === 'title') {
                 $query->orderBy('title->' . app()->getLocale(), 'asc');
             } else {
-                $query->orderBy('created_at', 'desc');        // was 'asc' — fixed
+                $query->orderBy('created_at', 'desc');
             }
         } else {
             $query->orderBy('created_at', 'desc');
@@ -519,36 +497,15 @@ class ContentController extends Controller
         // Now paginate
         $books = $query->offset($start)->limit($length)->get();
 
-        $locale = app()->getLocale();
-
-        $data = $books->map(function ($item) use ($locale) {
-            return [
-                'id'              => $item->id,
-                'user_id'         => $item->user_id,
-                'title'           => $item->getTranslation('title', $locale),
-                'slug'            => $item->getTranslation('slug', $locale),
-                'views'           => $item->views,
-                'description'     => $item->getTranslation('description', $locale),
-                'image'           => FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($item, 'image')),
-                'book_genre_id'   => $item->book_genre_id,
-                'author_id'       => $item->author_id,
-                'status'          => $item->status,
-                'created_at'      => $item->created_at,
-                'updated_at'      => $item->updated_at,
-                'author'          => $item->author,
-                'book_genre'      => $item->bookGenre,
-                'book_genre_slug' => $item->bookGenre?->getTranslation('slug', $locale) ?? null,
-                'book_genre_name' => $item->bookGenre?->getTranslation('name', $locale) ?? null,
-                'author_name'     => $item->author?->getTranslation('name', $locale) ?? null,
-                'full_url'        => $item->full_url,
-            ];
-        });
+        $settingStore = new SettingStore;
+        $prefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX);
 
         return response()->json([
             'draw'            => (int) request()->get('draw', 0),
             'recordsTotal'    => $recordsTotal,
             'recordsFiltered' => $recordsTotal,
-            'data'            => $data,
+            'data'            => BookResource::collection($books),
+            'prefix'          => $prefix,
         ]);
     }
 
@@ -630,39 +587,13 @@ class ContentController extends Controller
 
         $settingStore = new SettingStore;
         $prefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
-        $locale = app()->getLocale();
-
-        $data = $news->map(function ($item) use ($prefix, $locale) {
-            return [
-                'id'                  => $item->id,
-                'user_id'             => $item->user_id,
-                'title'               => $item->getTranslation('title', $locale),
-                'slug'                => $item->getTranslation('slug', $locale),
-                'views'               => $item->views,
-                'description'         => $item->getTranslation('description', $locale),
-                'image'               => FileHelper::addDomainPrefixIfValueIsAFile(TranslationHelper::firstAvailableValue($item, 'image')),
-                'news_category_id'    => $item->news_category_id,
-                'author_id'           => $item->author_id,
-                'status'              => $item->status,
-                'scheduled_at'        => $item->scheduled_at,
-                'news_date'           => $item->news_date->format('Y-m-d'),
-                'created_at'          => $item->created_at,
-                'updated_at'          => $item->updated_at,
-                'author'              => $item->author,
-                'category'            => $item->category,
-                'news_category_slug'  => $item->category?->getTranslation('slug', $locale) ?? null,
-                'news_category_name'  => $item->category?->getTranslation('name', $locale) ?? null,
-                'author_name'         => $item->author?->getTranslation('name', $locale) ?? null,
-                'full_url'            => $item->full_url,
-                'prefix'              => $prefix,
-            ];
-        });
 
         return response()->json([
             'draw'            => (int) request()->get('draw', 0),
             'recordsTotal'    => $recordsTotal,
             'recordsFiltered' => $recordsTotal,
-            'data'            => $data,
+            'data'            => NewsResource::collection($news),
+            'prefix'          => $prefix,
         ]);
     }
 

@@ -3,6 +3,9 @@
 namespace App\Modules\Shared\Helpers;
 
 use App\Models\Language;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Repositories\LanguageRepository;
+use App\Stores\SettingStore;
 
 class UrlHelper
 {
@@ -34,7 +37,7 @@ class UrlHelper
         return $url;
     }
 
-    /** Generate slug from title */
+    /** Generate slug from title without non-standard characters*/
     public static function generateSlug(string $string): string
     {
         // 1. Normalize UTF-8 characters (optional, keeps letters readable)
@@ -51,5 +54,51 @@ class UrlHelper
         $string = strtolower($string);
 
         return $string;
+    }
+
+    /**
+     * @param string $slug
+     * @param $model either this should have value or $prefix
+     * @param string|null $lang 
+     * use:
+     *  $settingStore->getFullUrlBySlug($slug, $this, null, $lang) 
+     *  or
+     *  $settingStore->getFullUrlBySlug($slug, null, $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang) 
+     * @return string ex. https://example.com/en/articles/learn/how-to-know
+     */
+    public static function getFullUrlBySlug(string $slug, $model = null, $prefix = '', $lang = null): string
+    {
+        $settingStore = new SettingStore;
+        $languageRepository = new LanguageRepository;
+        $languageRepository->all();
+        if ($lang === null) {
+            $lang = app()->getLocale();
+        }
+        $url = $languageRepository->getDomain($lang);
+        if (!$languageRepository->useSeparateDomain()) {
+            $url = $url . '/' . $lang;
+        }
+        if (empty($slug) || $slug === '/' || (empty($model) && empty($prefix))) {
+            return $url;
+        }
+        if (!empty($model)) {
+            $table = $model->getTable();
+            if ($table === 'news') {
+                $prefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang);
+            } else if ($table === 'books') {
+                $prefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX, $lang);
+            } else if ($table === 'products') {
+                $prefix = $settingStore->findByKey(SettingKeyEnum::PRODUCT_PREFIX, $lang);
+            } else if ($table === 'articles') {
+                $prefix = $settingStore->findByKey(SettingKeyEnum::ARTICLE_PREFIX, $lang);
+            } else if ($table === 'pages') {
+                $prefix = '';
+            }
+        }
+        $url .= '/' . ltrim($prefix, '/');
+
+        // later check if category hierarchy is true or false
+
+        return $url . '/' . ltrim($slug, '/');
     }
 }

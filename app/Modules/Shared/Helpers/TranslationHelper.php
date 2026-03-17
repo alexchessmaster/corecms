@@ -21,8 +21,13 @@ class TranslationHelper
                     $fileExtension = pathinfo($value, PATHINFO_EXTENSION);
                     if (!in_array(strtolower($fileExtension), $imageExtensions)) {
                         if (!(str_starts_with($value, 'http://') || str_starts_with($value, 'https://'))){
-                            if(config('app.translate_inputs_online') === true || config('app.translate_inputs_online') === 'true'){
-                                $value = TranslationService::translate($value, $language->code);
+                            if(config('app.translate_inputs_online') === true && $translate === true){
+                                $englishValue = $model?->getTranslation($column, "en", false); // It is better to translate from English language to other languages
+                                if($englishValue){
+                                    $value = TranslationService::translate($englishValue, $language->code);
+                                } else {
+                                    $value = TranslationService::translate($value, $language->code);
+                                }
                                 // $value = 'TRANSLATED ' . TranslationService::translate($value, $language->code);
                             }else{
                                 $value = 'NOT_TRANSLATED_' . strtoupper($languageCode) . ' ' . $value;

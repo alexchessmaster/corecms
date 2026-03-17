@@ -5,6 +5,7 @@
     <div class="container">
         <a href="{{ route('admin.books.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new
             book</a>
+        <button class="btn btn-default float-right" id="translate">Translate to {{ strtoupper(app()->getLocale()) }}</button>
         <form action="{{ route('admin.books.update', $book) }}" method="POST" enctype='multipart/form-data'>
             @csrf
             @method('PUT')

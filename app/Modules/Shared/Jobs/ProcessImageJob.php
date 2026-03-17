@@ -26,7 +26,6 @@ class ProcessImageJob //implements ShouldQueue
 
     public function handle()
     {
-        // \Log::info('$this->imagePath' . json_encode($this->imagePath));
         $originalPath = realpath($this->imagePath) ?: $this->imagePath;
         $filename = basename($originalPath);
         $directory = dirname($originalPath);
@@ -75,6 +74,8 @@ class ProcessImageJob //implements ShouldQueue
             $this->optimize($thumbnailPath);
             $this->optimize($mediumPath);
         }
+
+        \Log::info('ProcessImageJob finished: ' . $this->imagePath);
     }
 
     private function optimize(string $path)
