@@ -14,7 +14,8 @@
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
-        value="{{ isset($book) ? $book->getTranslation('title', app()->getLocale(), false) : '' }}" required>
+           style="{{ !empty($news->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
+           value="{{ isset($news) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'title', true) : '' }}" required>
 </div>
 <div class="mb-3">
     <label for="slug" class="form-label required">Slug</label>

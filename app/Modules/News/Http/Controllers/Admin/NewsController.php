@@ -32,6 +32,12 @@ class NewsController extends Controller
                 ->addColumn('category', function ($news) {
                     return $news->category?->getTranslation('name', app()->getLocale());
                 })
+                ->addColumn('translated_languages', function ($news) {
+                    $translations = $news->getTranslations('title');
+                    $keys = array_keys($translations);
+                    sort($keys);
+                    return implode(' - ', $keys);
+                })
                 ->addColumn('actions', function ($news) {
                     return '
                     <a href="' . route('admin.news.edit', $news) . '" class="btn btn-sm btn-warning">

@@ -18,6 +18,7 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Status</th>
+                        <th>Translated languages</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -39,14 +40,17 @@
                         { data: 'title', name: 'title' },
                         { data: 'category', name: 'category' },
                         { data: 'status', name: 'status' },
+                        { data: 'translated_languages', name: 'translated_languages' },
                         { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
                     ],
                     columnDefs: [
                         { targets: "_all", defaultContent: "" },
                         { targets: [0], width: "5%" },
-                        { targets: [1], width: "30%" },
-                        { targets: [2], width: "20%" },
-                        { targets: [3], width: "25%" },
+                        { targets: [1], width: "50%" },
+                        { targets: [2], width: "10%" },
+                        { targets: [3], width: "10%" },
+                        { targets: [4], width: "5%" },
+                        { targets: [5], width: "30%" },
                     ],
                     language: {
                         search: "Filter records:",

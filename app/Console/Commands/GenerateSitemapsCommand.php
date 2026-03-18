@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use App\Models\Article;
 use App\Models\Setting;
 use App\Models\Language;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Modules\Shared\Helpers\UrlHelper;
+use App\Stores\SettingStore;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use Illuminate\Support\Carbon;
@@ -34,6 +37,9 @@ class GenerateSitemapsCommand extends Command
         $languages = Language::all(); // Add more languages as needed
         $settings = Setting::get()->keyBy('key');
 
+        $settingStore = new SettingStore();
+
+
         $defaultFrequencyChangePages = $settings->get('default-sitemap-change-frequency-pages')->value;
         $defaultFrequencyChangeArticles = $settings->get('default-sitemap-change-frequency-articles')->value;
         $defaultFrequencyChangeBooks = $settings->get('default-sitemap-change-frequency-books')->value;
@@ -49,58 +55,75 @@ class GenerateSitemapsCommand extends Command
         $frontendBaseUrl = '';
         $tables = ['pages', 'articles', 'books', 'products', 'news'];
         foreach ($languages as $language) {
-            $articlePrefix = $this->getPrefixSettingsValue('article-prefix', $language);
-            $bookPrefix = $this->getPrefixSettingsValue('book-prefix', $language);
-            $productPrefix = $this->getPrefixSettingsValue('product-prefix', $language);
-            $newsPrefix = $this->getPrefixSettingsValue('news-prefix', $language);
+            $articlePrefix = '/' . trim($this->getPrefixSettingsValue('article-prefix', $language), '/');
+            $bookPrefix = '/' . trim($this->getPrefixSettingsValue('book-prefix', $language), '/');
+            $productPrefix = '/' . trim($this->getPrefixSettingsValue('product-prefix', $language), '/');
+            $newsPrefix = '/' . trim($this->getPrefixSettingsValue('news-prefix', $language), '/');
+
+            $newsPrefix = '/' . ltrim($settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $language->code), '/');
+            // if($language->code === 'da'){
+                
+            //     dd($newsPrefix . ' ' . $language->code);
+            // }
 
             $lang = $language->code;
             // dd($lang);
             $sitemap = Sitemap::create();
             foreach ($tables as $table) {
                 $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
-                $frontendBaseUrl = $language->domain;
-                if(!str_starts_with($frontendBaseUrl, 'https://') && !str_starts_with($frontendBaseUrl, 'http://')) {
-                    $frontendBaseUrl = 'https://' . $frontendBaseUrl;
-                }
+                // $frontendBaseUrl = $language->domain;
+                // if(!str_starts_with($frontendBaseUrl, 'https://') && !str_starts_with($frontendBaseUrl, 'http://')) {
+                //     $frontendBaseUrl = 'https://' . $frontendBaseUrl;
+                // }
                 // var_dump($pages);
                 foreach ($pages as $page) {
                     if (array_key_exists('slug', $page)) {
-                        if ($language->use_separate_domain) {
-                            if ($table === 'articles') {
-                                $prefix = "{$articlePrefix}";
-                            } elseif ($table === 'books') {
-                                $prefix = "{$bookPrefix}";
-                            } elseif ($table === 'products') {
-                                $prefix = "{$productPrefix}";
-                            } elseif ($table === 'news') {
-                                $prefix = "{$newsPrefix}";
-                            } else {
-                                $prefix = '';
-                            }
-                            $url = Url::create("{$frontendBaseUrl}{$prefix}{$page['slug']}");
-                            // Add alternate links for all available translations
-                            foreach ($page['alternates'] as $altLang => $altSlug) {
-                                $langTmp = $languages->where('code', $altLang)->first();
-                                $url->addAlternate("{$langTmp->domain}{$prefix}{$altSlug}", $altLang);
-                            }
-                        } else {
-                            if ($table === 'articles') {
-                                $prefix = "{$articlePrefix}";
-                            } elseif ($table === 'books') {
-                                $prefix = "{$bookPrefix}";
-                            } elseif ($table === 'products') {
-                                $prefix = "{$productPrefix}";
-                            } elseif ($table === 'news') {
-                                $prefix = "{$newsPrefix}";
-                            } else {
-                                $prefix = '';
-                            }
-                            $url = Url::create("{$frontendBaseUrl}/{$lang}{$prefix}{$page['slug']}");
-                            // Add alternate links for all available translations
-                            foreach ($page['alternates'] as $altLang => $altSlug) {
-                                $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$prefix}{$altSlug}", $altLang);
-                            }
+//                         if ($language->use_separate_domain) {
+//                             if ($table === 'articles') {
+//                                 $prefix = "{$articlePrefix}";
+//                             } elseif ($table === 'books') {
+//                                 $prefix = "{$bookPrefix}";
+//                             } elseif ($table === 'products') {
+//                                 $prefix = "{$productPrefix}";
+//                             } elseif ($table === 'news') {
+//                                 $prefix = "{$newsPrefix}";
+//                             } else {
+//                                 $prefix = '';
+//                             }
+//                             $url = Url::create("{$frontendBaseUrl}{$prefix}{$page['slug']}");
+//                             // Add alternate links for all available translations
+//                             foreach ($page['alternates'] as $altLang => $altSlug) {
+//                                 $langTmp = $languages->where('code', $altLang)->first();
+//                                 $url->addAlternate("{$langTmp->domain}{$prefix}{$altSlug}", $altLang);
+//                             }
+//                         } else {
+//                             // if ($table === 'articles') {
+//                             //     $prefix = "{$articlePrefix}";
+//                             // } elseif ($table === 'books') {
+//                             //     $prefix = "{$bookPrefix}";
+//                             // } elseif ($table === 'products') {
+//                             //     $prefix = "{$productPrefix}";
+//                             // } elseif ($table === 'news') {
+//                             //     $prefix = "{$newsPrefix}";
+//                             // } else {
+//                             //     $prefix = '';
+//                             // }
+// //                             if($language->code === 'da' && strlen($page['slug'])>15){
+// //                                 dd();
+// //                             }
+//                             // $url = Url::create("{$frontendBaseUrl}/{$lang}{$prefix}{$page['slug']}");
+//                             $url = Url::create(UrlHelper::getFullUrlBySlug($page['slug'], $table, '', $language->code));
+//                             // Add alternate links for all available translations
+//                             foreach ($page['alternates'] as $altLang => $altSlug) {
+                                
+//                                 $url->addAlternate(UrlHelper::getFullUrlBySlug($altSlug, $table, '', $altLang));
+//                                 // $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$prefix}{$altSlug}", $altLang);
+//                             }
+//                         }
+
+                        $url = Url::create(UrlHelper::getFullUrlBySlug($page['slug'], $table, '', $language->code));
+                        foreach ($page['alternates'] as $altLang => $altSlug) {
+                            $url->addAlternate(UrlHelper::getFullUrlBySlug($altSlug, $table, '', $altLang), $altLang);
                         }
 
                         $item = $page['item'];
