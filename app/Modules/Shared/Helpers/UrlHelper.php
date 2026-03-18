@@ -40,6 +40,84 @@ class UrlHelper
     /** Generate slug from title without non-standard characters*/
     public static function generateSlug(string $string): string
     {
+        $replaceSlugLetters = [
+
+            // Danish / Norwegian
+            'æ' => 'ae',
+            'Æ' => 'Ae',
+            'ø' => 'o',
+            'Ø' => 'O',
+            'å' => 'aa',
+            'Å' => 'Aa',
+
+            // Swedish
+            'ä' => 'a',
+            'Ä' => 'A',
+            'ö' => 'o',
+            'Ö' => 'O',
+
+            // German
+            'ä' => 'ae',
+            'Ä' => 'Ae',
+            'ö' => 'oe',
+            'Ö' => 'Oe',
+            'ü' => 'ue',
+            'Ü' => 'Ue',
+            'ß' => 'ss',
+
+            // Dutch
+            'é' => 'e',
+            'É' => 'E',
+            'è' => 'e',
+            'È' => 'E',
+            'ë' => 'e',
+            'Ë' => 'E',
+            'ï' => 'i',
+            'Ï' => 'I',
+
+            // French
+            'à' => 'a',
+            'À' => 'A',
+            'â' => 'a',
+            'Â' => 'A',
+            'ç' => 'c',
+            'Ç' => 'C',
+            'é' => 'e',
+            'É' => 'E',
+            'è' => 'e',
+            'È' => 'E',
+            'ê' => 'e',
+            'Ê' => 'E',
+            'ë' => 'e',
+            'Ë' => 'E',
+            'î' => 'i',
+            'Î' => 'I',
+            'ï' => 'i',
+            'Ï' => 'I',
+            'ô' => 'o',
+            'Ô' => 'O',
+            'ù' => 'u',
+            'Ù' => 'U',
+            'û' => 'u',
+            'Û' => 'U',
+            'ü' => 'u',
+            'Ü' => 'U', // (French usage)
+
+            // Persian numbers → Latin
+            '۰' => '0',
+            '۱' => '1',
+            '۲' => '2',
+            '۳' => '3',
+            '۴' => '4',
+            '۵' => '5',
+            '۶' => '6',
+            '۷' => '7',
+            '۸' => '8',
+            '۹' => '9',
+
+        ];
+        $string = strtr($string, $replaceSlugLetters);
+
         // 1. Normalize UTF-8 characters (optional, keeps letters readable)
         // $string = iconv('UTF-32', 'ASCII//TRANSLIT//IGNORE', $string);
         // 1. Remove all unwanted characters (punctuation, symbols, zero-width)
@@ -66,8 +144,13 @@ class UrlHelper
      *  $settingStore->getFullUrlBySlug($slug, null, $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang) 
      * @return string ex. https://example.com/en/articles/learn/how-to-know
      */
-    public static function getFullUrlBySlug(string $slug, $model = null, $prefix = '', $lang = null): string
+    public static function getFullUrlBySlug(string $slug, $modelOrTable = null, $prefix = '', $lang = null): string
     {
+        if ($modelOrTable !== null && gettype($modelOrTable) === 'string') {
+            $table = $modelOrTable;
+        } else {
+            $table = $modelOrTable->getTable();
+        }
         $settingStore = new SettingStore;
         $languageRepository = new LanguageRepository;
         $languageRepository->all();
@@ -78,11 +161,10 @@ class UrlHelper
         if (!$languageRepository->useSeparateDomain()) {
             $url = $url . '/' . $lang;
         }
-        if (empty($slug) || $slug === '/' || (empty($model) && empty($prefix))) {
+        if (empty($slug) || $slug === '/' || (empty($modelOrTable) && empty($prefix))) {
             return $url;
         }
-        if (!empty($model)) {
-            $table = $model->getTable();
+        if (!empty($modelOrTable)) {
             if ($table === 'news') {
                 $prefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang);
             } else if ($table === 'books') {
@@ -95,10 +177,14 @@ class UrlHelper
                 $prefix = '';
             }
         }
-        $url .= '/' . ltrim($prefix, '/');
+        $prefix = trim($prefix, '/');
+        if(!empty($prefix)){
+            $prefix = '/' . $prefix;
+        }
+        $url .= $prefix;
+        $url .= '/' . trim($slug, '/');
 
         // later check if category hierarchy is true or false
-
-        return $url . '/' . ltrim($slug, '/');
+        return $url;
     }
 }
