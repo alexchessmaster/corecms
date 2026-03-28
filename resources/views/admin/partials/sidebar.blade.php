@@ -30,7 +30,7 @@
             <!-- Dashboard and Analytics -->
             @if($settings->firstWhere('key', 'is-website-links-active')?->value === "true")
                 <li class="nav-item">
-                    <a href="{{ env('APP_URL') }}" class="nav-link" target="_blank">
+                    <a href="{{ App\Modules\Shared\Helpers\UrlHelper::getFullUrlBySlug('/') }}" class="nav-link" target="_blank">
                         <i class="nav-icon fas fa-desktop"></i>
                         <p>
                             Website

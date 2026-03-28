@@ -146,10 +146,12 @@ class UrlHelper
      */
     public static function getFullUrlBySlug(string $slug, $modelOrTable = null, $prefix = '', $lang = null): string
     {
-        if ($modelOrTable !== null && gettype($modelOrTable) === 'string') {
-            $table = $modelOrTable;
-        } else {
-            $table = $modelOrTable->getTable();
+        if($modelOrTable !== null){
+            if (gettype($modelOrTable) === 'string') {
+                $table = $modelOrTable;
+            } else {
+                $table = $modelOrTable->getTable();
+            }
         }
         $settingStore = new SettingStore;
         $languageRepository = new LanguageRepository;
