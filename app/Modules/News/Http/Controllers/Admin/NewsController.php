@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\Shared\Helpers\StrHelper;
+use App\Modules\Shared\Helpers\TranslationHelper;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class NewsController extends Controller
@@ -27,7 +28,7 @@ class NewsController extends Controller
             return DataTables::of($news)
                 ->editColumn('title', function ($news) {
                     $title = $news->getTranslation('title', app()->getLocale(), false);
-                    return $title ?: '-Not translated-' . $news->getTranslation('title', app()->getLocale(), true);
+                    return $title ?: '-Not translated-' . TranslationHelper::firstAvailableValue($news, 'title', false);
                 })
                 ->addColumn('category', function ($news) {
                     return $news->category?->getTranslation('name', app()->getLocale());

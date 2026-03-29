@@ -142,6 +142,8 @@ Route::get('test', function () {
     // }
     
 
+    // News::query()->update(['sitemap_exclude' => true]);
+
     
     return 'done!';
 });

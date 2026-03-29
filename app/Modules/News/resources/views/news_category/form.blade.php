@@ -42,7 +42,8 @@
         <img id="image-preview" style="max-width: 150px; height: auto;" />
     </div>
     <input type="file" class="form-control" id="image" name="image"
-        @if (!(isset($newsCategory) && $newsCategory->image)) required @endif>
+        {{-- @if (!(isset($newsCategory) && $newsCategory->image)) required @endif --}}
+    >
 </div>
 
 @include('admin.partials.sitemap-form')

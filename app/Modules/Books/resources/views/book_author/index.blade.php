@@ -40,6 +40,12 @@
                             orderable: false,
                             searchable: false
                         }
+                    ],
+                    pagingType: "full_numbers",
+                    lengthMenu: [10, 25, 50, 100, 200, 1000],
+                    pageLength: 25,
+                    order: [
+                        [0, 'desc']
                     ]
                 });
             });

@@ -3,12 +3,14 @@
         $model = $page;
     } elseif (isset($article)) {
         $model = $article;
-    } elseif (isset($article)) {
-        $model = $article;
-    } elseif (isset($bookGenre)) {
-        $model = $bookGenre;
-    } elseif (isset($category)) {
-        $model = $category;
+    } elseif (isset($book)) {
+        $model = $book;
+    } elseif (isset($product)) {
+        $model = $product;
+    } elseif (isset($news)) {
+        $model = $news;
+    } else {
+        // model is not set, create a new entity
     }
 @endphp
 
@@ -19,6 +21,8 @@
             <label for="sitemap_priority" class="form-label">Sitemap priority</label>
             <select class="form-control" id="sitemap_priority" name="sitemap_priority">
                 <option value="">Default</option>
+                <option value="0.0" {{ isset($model) && $model->sitemap_priority == '0.0' ? 'selected' : '' }}>
+                    0.0</option>
                 <option value="0.1" {{ isset($model) && $model->sitemap_priority == '0.1' ? 'selected' : '' }}>
                     0.1</option>
                 <option value="0.2" {{ isset($model) && $model->sitemap_priority == '0.2' ? 'selected' : '' }}>
@@ -71,6 +75,10 @@
                 <option value="yearly"
                     {{ isset($model) && $model->sitemap_change_frequency == 'yearly' ? 'selected' : '' }}>
                     yearly
+                </option>
+                <option value="never"
+                    {{ isset($model) && $model->sitemap_change_frequency == 'never' ? 'selected' : '' }}>
+                    never
                 </option>
             </select>
             <small id="name" class="form-text text-muted">Do not change it if you don't know

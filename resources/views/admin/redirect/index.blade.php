@@ -105,7 +105,7 @@
                     },
                     pagingType: "full_numbers",
                     lengthMenu: [5, 25, 50, 100, 200, 1000],
-                    pageLength: 5,
+                    pageLength: 50,
                 });
             });
         </script>

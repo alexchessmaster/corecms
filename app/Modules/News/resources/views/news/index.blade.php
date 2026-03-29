@@ -28,29 +28,75 @@
 
     @push('scripts')
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
                 $('#news-table').DataTable({
                     processing: true,
                     serverSide: true,
                     responsive: true,
                     autoWidth: false,
                     ajax: "{{ route('admin.news.index') }}",
-                    columns: [
-                        { data: 'id', name: 'id' },
-                        { data: 'title', name: 'title' },
-                        { data: 'category', name: 'category' },
-                        { data: 'status', name: 'status' },
-                        { data: 'translated_languages', name: 'translated_languages' },
-                        { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
+                    columns: [{
+                            data: 'id',
+                            name: 'id'
+                        },
+                        {
+                            data: 'title',
+                            name: 'title',
+                            render: function(data, type, row) {
+                                if (!data || data.includes('-Not translated-')) {
+                                    return `<span style="background-color:orange;">${data}</span>`;
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            data: 'category',
+                            name: 'category'
+                        },
+                        {
+                            data: 'status',
+                            name: 'status'
+                        },
+                        {
+                            data: 'translated_languages',
+                            name: 'translated_languages'
+                        },
+                        {
+                            data: 'actions',
+                            name: 'actions',
+                            orderable: false,
+                            searchable: false,
+                            className: 'text-center'
+                        }
                     ],
-                    columnDefs: [
-                        { targets: "_all", defaultContent: "" },
-                        { targets: [0], width: "5%" },
-                        { targets: [1], width: "50%" },
-                        { targets: [2], width: "10%" },
-                        { targets: [3], width: "10%" },
-                        { targets: [4], width: "5%" },
-                        { targets: [5], width: "30%" },
+                    columnDefs: [{
+                            targets: "_all",
+                            defaultContent: ""
+                        },
+                        {
+                            targets: [0],
+                            width: "5%"
+                        },
+                        {
+                            targets: [1],
+                            width: "50%"
+                        },
+                        {
+                            targets: [2],
+                            width: "10%"
+                        },
+                        {
+                            targets: [3],
+                            width: "10%"
+                        },
+                        {
+                            targets: [4],
+                            width: "5%"
+                        },
+                        {
+                            targets: [5],
+                            width: "30%"
+                        },
                     ],
                     language: {
                         search: "Filter records:",
@@ -64,7 +110,9 @@
                     pagingType: "full_numbers",
                     lengthMenu: [10, 25, 50, 100, 200, 1000],
                     pageLength: 25,
-                    order: [[0, 'desc']]
+                    order: [
+                        [0, 'desc']
+                    ]
                 });
             });
         </script>
