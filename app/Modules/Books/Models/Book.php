@@ -10,7 +10,7 @@ use App\Modules\Books\Models\BookAuthor;
 use App\Modules\Books\Models\BookGenre;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Repositories\LanguageRepository;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -39,13 +39,13 @@ class Book extends Model
     {
         $fullUrl = $this->slug;
 
-        $languageRepository = new LanguageRepository;
+        $languageRepository = app(LanguageRepository::class);
         $languages = $languageRepository->all();
 
-        $settingStore = new SettingStore;
-        $bookPrefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $bookPrefix = $settingRepository->findByKey(SettingKeyEnum::BOOK_PREFIX);
 
-        $multipleLanguages = $settingStore->isTranslatable(SettingKeyEnum::BOOK_PREFIX);
+        $multipleLanguages = $settingRepository->isTranslatable(SettingKeyEnum::BOOK_PREFIX);
 
         if (!empty($bookPrefix)) {
             $bookPrefix = '/' . trim($bookPrefix, '/');

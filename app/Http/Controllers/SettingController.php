@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 use App\Http\Requests\StoreSettingRequest;
 use App\Http\Requests\UpdateSettingRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -12,7 +12,7 @@ class SettingController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(private SettingStore $settings) {}
+    public function __construct(private SettingRepository $settingRepository) {}
 
     /**
      * Display a listing of the resource.
@@ -21,7 +21,7 @@ class SettingController extends Controller
     {
         $this->authorize('viewAny', Setting::class);
 
-        $settings = Setting::get();
+        $settings = $this->settingRepository->all();
 
         return view('admin.setting.index', compact('settings'));
     }
@@ -55,7 +55,7 @@ class SettingController extends Controller
      */
     public function edit($settingId)
     {
-        $setting = $this->settings->findById($settingId);
+        $setting = $this->settingRepository->findById($settingId);
         $this->authorize('view', $setting);
 
         $values = [];
@@ -71,7 +71,7 @@ class SettingController extends Controller
      */
     public function update(UpdateSettingRequest $request, int $settingId)
     {
-        $setting = $this->settings->findById($settingId);
+        $setting = $this->settingRepository->findById($settingId);
         $this->authorize('update', $setting);
         if ($request->has('is_translatable')) {
             $values = $request->all();

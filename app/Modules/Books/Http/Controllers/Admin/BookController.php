@@ -3,15 +3,16 @@
 namespace App\Modules\Books\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Books\Models\Book;
 use App\Models\Widget;
-use App\Modules\Books\Models\BookGenre;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use App\Modules\Books\Http\Requests\StoreBookRequest;
 use App\Modules\Books\Http\Requests\UpdateBookRequest;
-use Yajra\DataTables\Facades\DataTables;
+use App\Modules\Books\Models\Book;
+use App\Modules\Books\Models\BookGenre;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class BookController extends Controller
 {
@@ -89,7 +90,7 @@ class BookController extends Controller
         $book->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '-' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('uploads/books');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
@@ -166,7 +167,7 @@ class BookController extends Controller
         $book->user_id = auth()->id();
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '-' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('uploads/books');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
