@@ -26,7 +26,7 @@ class ProductResource extends JsonResource
         $settingStore = new SettingStore;
         $productPrefix = $settingStore->findByKey(SettingKeyEnum::PRODUCT_PREFIX);
         $allUrls = [];
-        $languageRepository = new LanguageRepository;
+        $languageRepository = app(LanguageRepository::class);
         $languages = $languageRepository->all();
         foreach ($languages as $language) {
             foreach ($this->getTranslations('slug') as $lang => $slug) {
@@ -70,6 +70,7 @@ class ProductResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
+            'sitemap_exclude' => $this->sitemap_exclude,
             'prefix' => $productPrefix,
         ];
     }
