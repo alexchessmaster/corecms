@@ -10,6 +10,7 @@ use App\Modules\Products\Models\Product;
 use App\Modules\Products\Models\ProductCategory;
 use App\Models\Redirect;
 use App\Models\RedirectSlugChange;
+use App\Modules\News\Models\News;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,6 +36,7 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
         $slugChanges = RedirectSlugChange::where('checked', false)->get();
 
         foreach ($slugChanges as $change) {
+            // handle articles, books, products, news, pages
             DB::transaction(function () use ($change) {
                 if ($change->type === 'category_updated') {
                     // Handle category slug update
@@ -72,6 +74,18 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
                 } elseif ($change->type === 'product_deleted') {
                     // Handle product deletion
                     $this->handleProductDeletion($change);
+                } elseif ($change->type === 'news_category_updated') {
+                    // Handle news category slug update
+                    $this->handleNewsCategorySlugUpdate($change);
+                } elseif ($change->type === 'news_category_deleted') {
+                    // Handle news category deletion
+                    $this->handleNewsCategoryDeletion($change);
+                } elseif ($change->type === 'news_updated') {
+                    // Handle news slug update
+                    $this->handleNewsSlugUpdate($change);
+                } elseif ($change->type === 'news_deleted') {
+                    // Handle news deletion
+                    $this->handleNewsDeletion($change);
                 } elseif ($change->type === 'page_updated') {
                     // Handle page slug update
                     $this->handlePageSlugUpdate($change);
@@ -373,6 +387,104 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
     private function handleProductDeletion(RedirectSlugChange $change)
     {
         // Create a redirect for the deleted product
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => '/410', // Redirect to a custom 404 page or another fallback
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle product category slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleNewsCategorySlugUpdate(RedirectSlugChange $change)
+    {
+        $newsCollection = News::where('slug->' . $change->language, 'LIKE', $change->old_slug . '%')->get();
+        foreach ($newsCollection as $news) {
+            $oldNewsSlug = $news->slug;
+            $newNewsSlug = str_replace($change->old_slug, $change->new_slug, $news->slug);
+
+            // Update news slug
+            $news->setTranslation('slug', $change->language, $newNewsSlug);
+            $news->save();
+
+            // Create redirect for the news
+            Redirect::create([
+                'from' => $oldNewsSlug,
+                'to' => $newNewsSlug,
+                'language' => $change->language,
+            ]);
+        }
+
+        // Create redirect for the news category
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle News category deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleNewsCategoryDeletion(RedirectSlugChange $change)
+    {
+        $newsCollection = News::where('slug->' . $change->language, 'LIKE', $change->old_slug . '%')->get();
+        foreach ($newsCollection as $news) {
+            $oldNewsSlug = $news->slug;
+
+            if ($change->new_slug === '/') {
+                $newNewsSlug = str_replace($change->old_slug, '/uncategorized', $oldNewsSlug);
+            } else {
+                $newNewsSlug = str_replace($change->old_slug, $change->new_slug, $oldNewsSlug);
+            }
+
+            // Update News slug
+            $news->setTranslation('slug', $change->language, $newNewsSlug);
+            $news->save();
+
+            Redirect::create([
+                'from' => $oldNewsSlug,
+                'to' => $newNewsSlug,
+                'language' => $change->language,
+            ]);
+        }
+
+        // Create a redirect for the News category itself to a placeholder or 404 page
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle News slug update.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleNewsSlugUpdate(RedirectSlugChange $change)
+    {
+        // Directly create a redirect for the News
+        Redirect::create([
+            'from' => $change->old_slug,
+            'to' => $change->new_slug,
+            'language' => $change->language,
+        ]);
+    }
+
+    /**
+     * Handle News deletion.
+     *
+     * @param RedirectSlugChange $change
+     */
+    private function handleNewsDeletion(RedirectSlugChange $change)
+    {
+        // Create a redirect for the deleted News
         Redirect::create([
             'from' => $change->old_slug,
             'to' => '/410', // Redirect to a custom 404 page or another fallback
