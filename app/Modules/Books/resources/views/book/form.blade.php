@@ -24,9 +24,9 @@
     @if (isset($book))
         <small>
             @php
-                $settingStore = new App\Stores\SettingStore();
+                $settingRepository = new App\Repositories\SettingRepository();
                 // get the prefix from settings
-                $prefix = $settingStore->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::BOOK_PREFIX);
+                $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::BOOK_PREFIX);
             @endphp
             <a href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
                         $book->getTranslation('slug', app()->getLocale(), false),

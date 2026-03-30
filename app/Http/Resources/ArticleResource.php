@@ -10,7 +10,7 @@ use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
 use App\Repositories\LanguageRepository;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,10 +23,10 @@ class ArticleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $settingStore = new SettingStore;
-        $articlePrefix = $settingStore->findByKey(SettingKeyEnum::ARTICLE_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $articlePrefix = $settingRepository->findByKey(SettingKeyEnum::ARTICLE_PREFIX);
         $allUrls = [];
-        $languageRepository = new LanguageRepository;
+        $languageRepository = app(LanguageRepository::class);
         $languages = $languageRepository->all();
         foreach ($languages as $language) {
             foreach ($this->getTranslations('slug') as $lang => $slug) {
@@ -65,6 +65,7 @@ class ArticleResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
+            'sitemap_exclude' => $this->sitemap_exclude,
             'prefix' => $articlePrefix,
         ];
     }

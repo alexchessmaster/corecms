@@ -44,15 +44,26 @@
                         },
                         {
                             data: 'commentable_type',
-                            name: 'commentable_type'
+                            name: 'commentable_type',
+                            render: function(data, type, row){
+                                const lastPart = data.split("\\").pop();
+                                return `${lastPart}<div title="${data}" style="color:gray; font-size: 10px;">${data}</div>`;
+                            }
                         },
                         {
                             data: 'commentable_id',
-                            name: 'commentable_id'
+                            name: 'commentable_id',
+                            render: function(data, type, row){
+                                console.log('row', row)
+                                return `<a >${data}</a>`;
+                            }
                         },
                         {
                             data: 'user_id',
-                            name: 'user_id'
+                            name: 'user_id',
+                            render: function(data, type, row){
+                                return data || row?.email
+                            }
                         },
                         {
                             data: 'content',
@@ -67,7 +78,16 @@
                         },
                         {
                             data: 'created_at',
-                            name: 'created_at'
+                            name: 'created_at',
+                            render: function(data) {
+                                if (!data) return '-';
+                                const date = new Date(data);
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const time = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                                return `${year}-${month}-${day} ${time}`;
+                            }
                         },
                         {
                             data: 'actions',

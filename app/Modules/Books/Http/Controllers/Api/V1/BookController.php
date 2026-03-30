@@ -22,4 +22,9 @@ class BookController extends Controller
 
         return response()->json(BookResource::make($book));
     }
+
+    public function removeBookLanguage()
+    {
+        
+    }
 }

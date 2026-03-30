@@ -5,7 +5,7 @@ namespace App\Modules\Shared\Helpers;
 use App\Models\Language;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Repositories\LanguageRepository;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 
 class UrlHelper
 {
@@ -139,9 +139,9 @@ class UrlHelper
      * @param $model either this should have value or $prefix
      * @param string|null $lang 
      * use:
-     *  $settingStore->getFullUrlBySlug($slug, $this, null, $lang) 
+     *  $settingRepository->getFullUrlBySlug($slug, $this, null, $lang) 
      *  or
-     *  $settingStore->getFullUrlBySlug($slug, null, $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang) 
+     *  $settingRepository->getFullUrlBySlug($slug, null, $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang) 
      * @return string ex. https://example.com/en/articles/learn/how-to-know
      */
     public static function getFullUrlBySlug(string $slug, $modelOrTable = null, $prefix = '', $lang = null): string
@@ -153,7 +153,7 @@ class UrlHelper
                 $table = $modelOrTable->getTable();
             }
         }
-        $settingStore = new SettingStore;
+        $settingRepository = app(SettingRepository::class);
         $languageRepository = app(LanguageRepository::class);
         $languageRepository->all();
         if ($lang === null) {
@@ -168,13 +168,13 @@ class UrlHelper
         }
         if (!empty($modelOrTable)) {
             if ($table === 'news') {
-                $prefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang);
+                $prefix = $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang);
             } else if ($table === 'books') {
-                $prefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX, $lang);
+                $prefix = $settingRepository->findByKey(SettingKeyEnum::BOOK_PREFIX, $lang);
             } else if ($table === 'products') {
-                $prefix = $settingStore->findByKey(SettingKeyEnum::PRODUCT_PREFIX, $lang);
+                $prefix = $settingRepository->findByKey(SettingKeyEnum::PRODUCT_PREFIX, $lang);
             } else if ($table === 'articles') {
-                $prefix = $settingStore->findByKey(SettingKeyEnum::ARTICLE_PREFIX, $lang);
+                $prefix = $settingRepository->findByKey(SettingKeyEnum::ARTICLE_PREFIX, $lang);
             } else if ($table === 'pages') {
                 $prefix = '';
             }

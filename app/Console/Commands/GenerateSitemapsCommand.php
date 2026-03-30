@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Setting;
 use App\Models\Language;
 use App\Modules\Shared\Helpers\UrlHelper;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use Illuminate\Support\Carbon;
@@ -35,7 +35,7 @@ class GenerateSitemapsCommand extends Command
         $languages = Language::all();
         $settings = Setting::get()->keyBy('key');
 
-        $settingStore = new SettingStore();
+        $settingRepository = app(SettingRepository::class);
 
         $defaultFrequencyChangePages = $settings->get('default-sitemap-change-frequency-pages')->value;
         $defaultFrequencyChangeArticles = $settings->get('default-sitemap-change-frequency-articles')->value;

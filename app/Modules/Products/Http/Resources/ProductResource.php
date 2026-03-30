@@ -10,7 +10,7 @@ use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
 use App\Repositories\LanguageRepository;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,8 +23,8 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $settingStore = new SettingStore;
-        $productPrefix = $settingStore->findByKey(SettingKeyEnum::PRODUCT_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $productPrefix = $settingRepository->findByKey(SettingKeyEnum::PRODUCT_PREFIX);
         $allUrls = [];
         $languageRepository = app(LanguageRepository::class);
         $languages = $languageRepository->all();

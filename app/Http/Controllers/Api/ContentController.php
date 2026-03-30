@@ -38,12 +38,8 @@ use App\Modules\News\Models\NewsTag;
 use App\Modules\Products\Http\Resources\ProductResource;
 use App\Modules\Products\Models\Product;
 use App\Modules\Shared\Enums\SettingKeyEnum;
-use App\Modules\Shared\Helpers\FileHelper;
-use App\Modules\Shared\Helpers\TranslationHelper;
-use App\Modules\Shared\Helpers\UrlHelper;
 use App\Repositories\LanguageRepository;
-use App\Stores\SettingStore;
-use Illuminate\Support\Str;
+use App\Repositories\SettingRepository;
 use Yajra\DataTables\Facades\DataTables;
 
 class ContentController extends Controller
@@ -102,7 +98,7 @@ class ContentController extends Controller
             return response()->json(["status" => "error", "message" => "\"path\" should start with '/'"], 400);
         }
         $lang = request()->query('lang');
-        $languageRepository = new LanguageRepository;
+        $languageRepository = app(LanguageRepository::class);
         $languages = $languageRepository->all();
         if ($languages->count() < 2) {
             // site is not multilingual (test it later)
@@ -420,8 +416,8 @@ class ContentController extends Controller
         // Now paginate
         $articles = $query->offset($start)->limit($length)->get();
 
-        $settingStore = new SettingStore;
-        $prefix = $settingStore->findByKey(SettingKeyEnum::ARTICLE_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $prefix = $settingRepository->findByKey(SettingKeyEnum::ARTICLE_PREFIX);
 
         return response()->json([
             'draw'            => (int) request()->get('draw', 0),
@@ -497,8 +493,8 @@ class ContentController extends Controller
         // Now paginate
         $books = $query->offset($start)->limit($length)->get();
 
-        $settingStore = new SettingStore;
-        $prefix = $settingStore->findByKey(SettingKeyEnum::BOOK_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $prefix = $settingRepository->findByKey(SettingKeyEnum::BOOK_PREFIX);
 
         return response()->json([
             'draw'            => (int) request()->get('draw', 0),
@@ -585,8 +581,8 @@ class ContentController extends Controller
         // Now paginate
         $news = $query->offset($start)->limit($length)->get();
 
-        $settingStore = new SettingStore;
-        $prefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $prefix = $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX);
 
         return response()->json([
             'draw'            => (int) request()->get('draw', 0),
