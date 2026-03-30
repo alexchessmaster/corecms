@@ -11,7 +11,7 @@ class TranslationHelper
     {
         $value = $model?->getTranslation($column, app()->getLocale(), false);
         if (empty($value)) {
-            $languageRepository = new LanguageRepository;
+            $languageRepository = app(LanguageRepository::class);
             $languages = $languageRepository->all();
             foreach ($languages as $language) {
                 $value = $model?->getTranslation($column, $language->code, false);

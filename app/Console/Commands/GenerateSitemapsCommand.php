@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Article;
 use App\Models\Setting;
 use App\Models\Language;
-use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Shared\Helpers\UrlHelper;
 use App\Stores\SettingStore;
 use Spatie\Sitemap\Sitemap;
@@ -34,18 +32,17 @@ class GenerateSitemapsCommand extends Command
      */
     public function handle()
     {
-        $languages = Language::all(); // Add more languages as needed
+        $languages = Language::all();
         $settings = Setting::get()->keyBy('key');
 
         $settingStore = new SettingStore();
-
 
         $defaultFrequencyChangePages = $settings->get('default-sitemap-change-frequency-pages')->value;
         $defaultFrequencyChangeArticles = $settings->get('default-sitemap-change-frequency-articles')->value;
         $defaultFrequencyChangeBooks = $settings->get('default-sitemap-change-frequency-books')->value;
         $defaultFrequencyChangeProducts = $settings->get('default-sitemap-change-frequency-products')->value;
         $defaultFrequencyChangeNews = $settings->get('default-sitemap-change-frequency-news')->value;
-        
+
         $defaultPriorityPages = $settings->get('default-sitemap-priority-pages')->value;
         $defaultPriorityArticles = $settings->get('default-sitemap-priority-articles')->value;
         $defaultPriorityBooks = $settings->get('default-sitemap-priority-books')->value;
@@ -54,74 +51,18 @@ class GenerateSitemapsCommand extends Command
 
         $frontendBaseUrl = '';
         $tables = ['pages', 'articles', 'books', 'products', 'news'];
+
         foreach ($languages as $language) {
-            $articlePrefix = '/' . trim($this->getPrefixSettingsValue('article-prefix', $language), '/');
-            $bookPrefix = '/' . trim($this->getPrefixSettingsValue('book-prefix', $language), '/');
-            $productPrefix = '/' . trim($this->getPrefixSettingsValue('product-prefix', $language), '/');
-            $newsPrefix = '/' . trim($this->getPrefixSettingsValue('news-prefix', $language), '/');
-
-            $newsPrefix = '/' . ltrim($settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX, $language->code), '/');
-            // if($language->code === 'da'){
-                
-            //     dd($newsPrefix . ' ' . $language->code);
-            // }
-
             $lang = $language->code;
-            // dd($lang);
             $sitemap = Sitemap::create();
+
             foreach ($tables as $table) {
                 $pages = $this->getPagesOrArticlesForLanguage($table, $lang);
-                // $frontendBaseUrl = $language->domain;
-                // if(!str_starts_with($frontendBaseUrl, 'https://') && !str_starts_with($frontendBaseUrl, 'http://')) {
-                //     $frontendBaseUrl = 'https://' . $frontendBaseUrl;
-                // }
-                // var_dump($pages);
+
                 foreach ($pages as $page) {
                     if (array_key_exists('slug', $page)) {
-//                         if ($language->use_separate_domain) {
-//                             if ($table === 'articles') {
-//                                 $prefix = "{$articlePrefix}";
-//                             } elseif ($table === 'books') {
-//                                 $prefix = "{$bookPrefix}";
-//                             } elseif ($table === 'products') {
-//                                 $prefix = "{$productPrefix}";
-//                             } elseif ($table === 'news') {
-//                                 $prefix = "{$newsPrefix}";
-//                             } else {
-//                                 $prefix = '';
-//                             }
-//                             $url = Url::create("{$frontendBaseUrl}{$prefix}{$page['slug']}");
-//                             // Add alternate links for all available translations
-//                             foreach ($page['alternates'] as $altLang => $altSlug) {
-//                                 $langTmp = $languages->where('code', $altLang)->first();
-//                                 $url->addAlternate("{$langTmp->domain}{$prefix}{$altSlug}", $altLang);
-//                             }
-//                         } else {
-//                             // if ($table === 'articles') {
-//                             //     $prefix = "{$articlePrefix}";
-//                             // } elseif ($table === 'books') {
-//                             //     $prefix = "{$bookPrefix}";
-//                             // } elseif ($table === 'products') {
-//                             //     $prefix = "{$productPrefix}";
-//                             // } elseif ($table === 'news') {
-//                             //     $prefix = "{$newsPrefix}";
-//                             // } else {
-//                             //     $prefix = '';
-//                             // }
-// //                             if($language->code === 'da' && strlen($page['slug'])>15){
-// //                                 dd();
-// //                             }
-//                             // $url = Url::create("{$frontendBaseUrl}/{$lang}{$prefix}{$page['slug']}");
-//                             $url = Url::create(UrlHelper::getFullUrlBySlug($page['slug'], $table, '', $language->code));
-//                             // Add alternate links for all available translations
-//                             foreach ($page['alternates'] as $altLang => $altSlug) {
-                                
-//                                 $url->addAlternate(UrlHelper::getFullUrlBySlug($altSlug, $table, '', $altLang));
-//                                 // $url->addAlternate("{$frontendBaseUrl}/{$altLang}{$prefix}{$altSlug}", $altLang);
-//                             }
-//                         }
-
                         $url = Url::create(UrlHelper::getFullUrlBySlug($page['slug'], $table, '', $language->code));
+
                         foreach ($page['alternates'] as $altLang => $altSlug) {
                             $url->addAlternate(UrlHelper::getFullUrlBySlug($altSlug, $table, '', $altLang), $altLang);
                         }
@@ -134,32 +75,91 @@ class GenerateSitemapsCommand extends Command
                     }
                 }
             }
+
             $sitemapPath = public_path("sitemap-{$lang}.xml");
             $sitemap->writeToFile($sitemapPath);
             $this->info("Generated sitemap for {$lang}: {$sitemapPath}");
+
+            $this->generateNewsSitemap($language, $settings, $lang);
         }
 
-        // Generate Sitemap Index
         $this->generateSitemapIndex($languages, $frontendBaseUrl);
 
         return 0;
     }
 
+    /**
+     * Generate a Google News-compliant sitemap for a given language.
+     * Only includes news published within the last 48 hours (Google's requirement).
+     */
+    private function generateNewsSitemap($language, $settings, $lang)
+    {
+        $cutoff = Carbon::now()->subHours(48);
+
+        $newsItems = \DB::table('news')
+            ->where('status', 'published')
+            ->where(function ($query) {
+                $query->whereNull('sitemap_exclude')
+                    ->orWhere('sitemap_exclude', false);
+            })
+            ->where('created_at', '>=', $cutoff)
+            ->get(['id', 'slug', 'title', 'created_at', 'updated_at', 'sitemap_priority', 'sitemap_change_frequency']);
+
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
+        <urlset
+            xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+            xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+        </urlset>');
+
+        foreach ($newsItems as $newsItem) {
+            $slugs = json_decode($newsItem->slug, true);
+
+            if (!array_key_exists($lang, $slugs) || empty($slugs[$lang])) {
+                continue;
+            }
+
+            $fullUrl = UrlHelper::getFullUrlBySlug($slugs[$lang], 'news', '', $lang);
+
+            $titles = json_decode($newsItem->title, true);
+            $title = is_array($titles)
+                ? ($titles[$lang] ?? reset($titles))
+                : $newsItem->title;
+
+            $urlNode = $xml->addChild('url');
+            $urlNode->addChild('loc', htmlspecialchars($fullUrl));
+            $urlNode->addChild('lastmod', Carbon::createFromFormat('Y-m-d H:i:s', $newsItem->updated_at)->toAtomString());
+
+            $newsNode = $urlNode->addChild('news:news', '', 'http://www.google.com/schemas/sitemap-news/0.9');
+            $publicationNode = $newsNode->addChild('news:publication', '', 'http://www.google.com/schemas/sitemap-news/0.9');
+            $publicationNode->addChild('news:name', ltrim(htmlspecialchars($language->domain), 'https://'), 'http://www.google.com/schemas/sitemap-news/0.9');
+            $publicationNode->addChild('news:language', $lang, 'http://www.google.com/schemas/sitemap-news/0.9');
+            $newsNode->addChild('news:publication_date', Carbon::createFromFormat('Y-m-d H:i:s', $newsItem->created_at)->toAtomString(), 'http://www.google.com/schemas/sitemap-news/0.9');
+            $newsNode->addChild('news:title', htmlspecialchars($title), 'http://www.google.com/schemas/sitemap-news/0.9');
+        }
+
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+        $dom->loadXML($xml->asXML());
+
+        $newsPath = public_path("sitemap-news-{$lang}.xml");
+        $dom->save($newsPath);
+        $this->info("Generated news sitemap for {$lang}: {$newsPath}");
+    }
+
     private function getPagesOrArticlesForLanguage($table, $lang)
     {
-        // Fetch articles with available slugs for the given language
         return \DB::table($table)
             ->where('status', 'published')
             ->whereNull('sitemap_exclude')
             ->orWhere('sitemap_exclude', false)
             ->get(['id', 'slug', 'sitemap_priority', 'sitemap_change_frequency', 'updated_at'])
             ->map(function ($pageOrArticle) use ($lang) {
-                // Decode the slug JSON safely
                 $slugs = json_decode($pageOrArticle->slug, true);
                 if (array_key_exists($lang, $slugs)) {
                     return [
-                        'slug' => $slugs[$lang], // Get the slug for the current language
-                        'alternates' => collect($slugs)->filter(), // Remove null or empty slugs
+                        'slug' => $slugs[$lang],
+                        'alternates' => collect($slugs)->filter(),
                         'item' => $pageOrArticle,
                     ];
                 } else {
@@ -173,27 +173,23 @@ class GenerateSitemapsCommand extends Command
         $sitemapIndex = new \Spatie\Sitemap\SitemapIndex();
 
         foreach ($languages as $language) {
-            if ($language->use_separate_domain) {
-                $sitemapIndex->add("{$language->domain}/sitemap-{$language->code}.xml");
-            } else {
-                $sitemapIndex->add("{$baseUrl}/sitemap-{$language->code}.xml");
-            }
+            $sitemapIndex->add("{$language->domain}/sitemap-{$language->code}.xml");
+            $sitemapIndex->add("{$language->domain}/sitemap-news-{$language->code}.xml");
         }
 
         $sitemapIndexPath = public_path('sitemap.xml');
         $sitemapIndex->writeToFile($sitemapIndexPath);
-
         $this->info("Generated sitemap index: {$sitemapIndexPath}");
     }
 
     private function getPrefixSettingsValue($settingsKey, $language)
     {
         $setting = Setting::where('key', $settingsKey)->firstOrFail();
-        $value =  $setting->value;
-        if($setting->is_translatable){
+        $value = $setting->value;
+        if ($setting->is_translatable) {
             $value = unserialize($value)[$language->code];
         }
-        if(empty($value)){
+        if (empty($value)) {
             return '';
         }
 

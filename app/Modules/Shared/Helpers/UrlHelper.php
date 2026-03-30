@@ -154,7 +154,7 @@ class UrlHelper
             }
         }
         $settingStore = new SettingStore;
-        $languageRepository = new LanguageRepository;
+        $languageRepository = app(LanguageRepository::class);
         $languageRepository->all();
         if ($lang === null) {
             $lang = app()->getLocale();

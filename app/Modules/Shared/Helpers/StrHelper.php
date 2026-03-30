@@ -231,6 +231,9 @@ class StrHelper
         "&#x2E3A;" => '-',                       // Two-em dash
         "\u{2E3B}" => '-',
         "&#x2E3B;" => '-',                       // Three-em dash
+        '&#8212;'   => '-',   // decimal
+        '—' => '-', // em dash (U+2014)
+        '―' => '-', // horizontal bar (U+2015)
 
         // Spaces
         "\u{00A0}" => ' ',
@@ -391,6 +394,7 @@ class StrHelper
                 self::INVISIBLE_CHARS,
                 self::DIRECTION_CHARS,
                 self::PERSIAN_FIXES,
+                self::TYPOGRAPHIC_FIXES,
             ),
             'danish' => array_merge(
                 self::INVISIBLE_CHARS,
