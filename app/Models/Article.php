@@ -32,34 +32,6 @@ class Article extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-    public function getFullUrlAttribute()
-    {
-        $fullUrl = $this->slug;
-
-        $articlePrefix = cache()->remember('article-prefix', 3600, function () {
-            return Setting::where('key', 'article-prefix')->value('value');
-        });
-
-        if (!empty($articlePrefix)) {
-            $articlePrefix = '/' . trim($articlePrefix, '/');
-            $fullUrl = $articlePrefix . $fullUrl;
-        }
-
-        $languages = Language::all();
-        $multipleLanguages = cache()->remember('is-multiple-languages', 3600, function () use ($languages) {
-            return count($languages) > 1;
-        });
-
-        if ($multipleLanguages) {
-            $lang = app()->getLocale();
-            if (! $languages->value('use_separate_domain')) {
-                $fullUrl = '/' . $lang . $fullUrl;
-            }
-        }
-
-        return $fullUrl;
-    }
-
     public function scopeWithAllWidgetData($query)
     {
         return $query->with([

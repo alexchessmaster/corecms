@@ -5,7 +5,10 @@ namespace App\Modules\News\Observers;
 use App\Modules\News\Models\News;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
+use App\Modules\Shared\Actions\DeleteImageAction;
+use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
+use App\Modules\Shared\Jobs\ProcessImageJob;
 use Illuminate\Support\Facades\Auth;
 
 class NewsObserver
@@ -15,7 +18,7 @@ class NewsObserver
      */
     public function creating(News $news): void
     {
-        if (empty($news->getTranslation('slug', app()->getLocale()))) {
+        if (empty($news->getTranslation('slug', app()->getLocale(), false))) {
             $news->setTranslation('slug', app()->getLocale(), $this->generateSlug($news));
         }
     }
@@ -32,6 +35,14 @@ class NewsObserver
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);
+
+        $newImagePath = public_path($news->getTranslation('image', app()->getLocale(), false));
+        ProcessImageJob::dispatch($newImagePath);
+
+        $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
+        $news->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+        $news->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+        $news->saveQuietly();
     }
 
     /**
@@ -39,7 +50,12 @@ class NewsObserver
      */
     public function updating(News $news)
     {
-        if ($news->isDirty('news_category_id') || $news->isDirty('title') || $news->isDirty('slug') || empty($news->getTranslation('slug', app()->getLocale()))) {
+        if (
+            $news->isDirty('news_category_id')
+            || $news->isDirty('title')
+            || $news->isDirty('slug')
+            || empty($news->getTranslation('slug', app()->getLocale(), false))
+        ) {
             $news->setTranslation('slug', app()->getLocale(), $this->generateSlug($news, $news->id));
         }
     }
@@ -62,6 +78,22 @@ class NewsObserver
                 event(new SlugChangedEvent());
             }
         }
+
+        if ($news->isDirty('image')) {
+            if (is_array($news->getOriginal('image')) && array_key_exists(app()->getLocale(), $news->getOriginal('image'))) {
+                $oldImagePath = public_path($news->getOriginal('image')[app()->getLocale()]);
+                DeleteImageAction::deleteModelImages($oldImagePath);
+            }
+            $newImage = $news->getTranslation('image', app()->getLocale(), false);
+            if (!empty($newImage)) {
+                $newImagePath = public_path($newImage);
+                ProcessImageJob::dispatch($newImagePath);
+                $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
+                $news->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+                $news->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+                $news->saveQuietly();
+            }
+        }
     }
 
     /**
@@ -78,6 +110,9 @@ class NewsObserver
         ]);
 
         event(new SlugChangedEvent());
+
+        $oldImagePath = public_path($news->getTranslation('image', app()->getLocale()));
+        DeleteImageAction::deleteModelImages($oldImagePath);
     }
 
     /**
@@ -91,17 +126,17 @@ class NewsObserver
         }
 
         // Keep the last part of the url
-        $oldSlug = $news->getTranslation('slug', app()->getLocale());
+        $oldSlug = $news->getTranslation('slug', app()->getLocale(), false);
         $parts = explode('/', $oldSlug);
         $slugWithoutCategories = end($parts);
-        if(empty($slugWithoutCategories)){
+        if (empty($slugWithoutCategories)) {
             $slugWithoutCategories = UrlHelper::generateSlug($news->getTranslation('title', app()->getLocale(), false));
         }
 
         // Build the full link
-        $link = rtrim($news->category->getTranslation('slug', app()->getLocale()), '/') . '/';
+        $link = rtrim($news->category->getTranslation('slug', app()->getLocale(), false), '/') . '/';
         $link = '/' . ltrim($link, '/');
-        $slug = $link . $slugWithoutCategories;     
+        $slug = $link . $slugWithoutCategories;
 
         // Handle duplicate slugs
         $originalSlug = $slug;

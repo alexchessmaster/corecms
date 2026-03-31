@@ -6,5 +6,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->prefix('api/v1')->name('api.v1.')->group(function () {
     Route::apiResource('/products', ProductController::class);
+    Route::put('/{id}/{lang}', [ProductController::class, 'removeProductLanguage'])->name('products.removeProductLanguage');
     Route::apiResource('/product-categories', ProductCategoryController::class);
 });

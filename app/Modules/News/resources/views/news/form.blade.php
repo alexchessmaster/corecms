@@ -14,7 +14,7 @@
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
-           style="{{ !empty($news->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
+           style="{{ isset($news) && !empty($news->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
            value="{{ isset($news) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'title', true) : '' }}" required>
 </div>
 <div class="mb-3">
@@ -24,9 +24,9 @@
     @if (isset($news))
         <small>
             @php
-                $settingStore = new App\Stores\SettingStore;
+                $settingRepository = new App\Repositories\SettingRepository;
                 // get the prefix from settings
-                $prefix = $settingStore->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::NEWS_PREFIX)
+                $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::NEWS_PREFIX)
             @endphp
             <a href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
                         $news->getTranslation('slug', app()->getLocale(), false),
@@ -201,29 +201,6 @@
 </script>
 {{-- end select2 for tags --}}
 
-{{-- auto-fill slug from title --}}
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const titleInput = document.getElementById('title');
-        const slugInput = document.getElementById('slug');
-
-        if (titleInput && slugInput && !slugInput.disabled) {
-            titleInput.addEventListener('blur', function () {
-                if (slugInput.value.trim() === '') {
-                    slugInput.value = titleInput.value
-                        .toLowerCase()
-                        .trim()
-                        .replace(/\s+/g, '-')
-                        .replace(/[^\u0600-\u06FF\w-]/g, '')
-                        .replace(/-+/g, '-')
-                        .replace(/^-+|-+$/g, '');
-                }
-            });
-        }
-    });
-</script> --}}
-{{-- end auto-fill slug from title --}}
-
 {{-- status --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -241,7 +218,11 @@
         statusSelect.addEventListener('change', toggleScheduledInput);
         toggleScheduledInput();
     });
+</script>
+{{-- end status --}}
 
+{{-- show image --}}
+<script>
     const imageInput = document.getElementById('image');
     const previewContainer = document.getElementById('preview-container');
     const previewImage = document.getElementById('image-preview');
@@ -267,4 +248,4 @@
         }
     });
 </script>
-{{-- end status --}}
+{{-- end show image --}}

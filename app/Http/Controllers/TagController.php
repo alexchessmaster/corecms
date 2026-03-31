@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TagResource;
+use App\Models\Tag;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', Tag::class);
@@ -41,17 +42,39 @@ class TagController extends Controller
         return view('admin.tag.index');
     }
 
+    public function selectTags(Request $request)
+    {
+        if (!empty(request()->lang)) {
+            app()->setLocale(request()->lang);
+        }
+
+        $query = Tag::query();
+
+        // Search functionality for Select2
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw("LOWER(JSON_EXTRACT(name, '$." . app()->getLocale() . "')) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("LOWER(JSON_EXTRACT(name, '$.en')) LIKE ?", ["%{$search}%"]);
+            });
+        }
+
+        $tags = $query->paginate(50);
+
+        return TagResource::collection($tags);
+    }
+
     public function create()
     {
         $this->authorize('create', Tag::class);
-        
+
         return view('admin.tag.create');
     }
 
     public function store(Request $request)
     {
         $this->authorize('create', Tag::class);
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -67,7 +90,7 @@ class TagController extends Controller
     public function edit(Tag $tag)
     {
         $this->authorize('view', $tag);
-        
+
         return view('admin.tag.edit', compact('tag'));
     }
 
@@ -87,7 +110,7 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         $this->authorize('delete', $tag);
-        
+
         $tag->delete();
         return redirect()->route('admin.tags.index')->with('success', 'Tag deleted successfully.');
     }

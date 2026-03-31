@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
-use App\Models\Page;
-use App\Models\Widget;
+use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\File;
-use Yajra\DataTables\Facades\DataTables;
+use App\Models\Page;
+use App\Models\Tag;
+use App\Models\Widget;
+use App\Modules\Shared\Helpers\StrHelper;
+use App\Modules\Shared\Jobs\GenerateSitemapsJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class ArticleController extends Controller
 {
@@ -30,12 +33,18 @@ class ArticleController extends Controller
                     return $title ?: '-Not translated-' . $article->getTranslation('title', app()->getLocale(), true);
                 })
                 ->addColumn('category', function ($article) {
-                    return $article->category->getTranslation('name', app()->getLocale());
+                    return $article->category->getTranslation('name', app()->getLocale(), false);
                 })
                 ->addColumn('tags', function ($article) {
                     return $article->tags->map(function ($tag) {
                         return '<span class="badge bg-info text-dark">' . $tag->getTranslation('name', app()->getLocale()) . '</span>';
                     })->implode(' ');
+                })
+                ->addColumn('translated_languages', function ($tag) {
+                    $translations = $tag->getTranslations('title');
+                    $keys = array_keys($translations);
+                    sort($keys);
+                    return implode(' - ', $keys);
                 })
                 ->addColumn('actions', function ($article) {
                     return '
@@ -64,8 +73,10 @@ class ArticleController extends Controller
         $categories = Category::all();
         $tags = Tag::all();
         $allWidgets = Widget::where('active', true)->get();
+        $user = auth()->user();
+        $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.article.create', compact('categories', 'tags', 'allWidgets'));
+        return view('admin.article.create', compact('categories', 'tags', 'allWidgets', 'authToken'));
     }
 
     public function store(Request $request)
@@ -78,8 +89,7 @@ class ArticleController extends Controller
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
             'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
+            'tag_ids' => 'nullable',
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
@@ -91,8 +101,9 @@ class ArticleController extends Controller
         $article = new Article;
         $article->user_id = auth()->id();
         if ($request->hasFile('image')) {
+            $folderName = 'articles';
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('uploads/articles');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
@@ -100,15 +111,17 @@ class ArticleController extends Controller
                 chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
-            $article->setTranslation('image', app()->getLocale(), '/uploads/articles/' . $filename);
+            $article->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
 
-        $article->setTranslation('title', app()->getLocale(), $request->input('title'));
-        if(!empty($request->slug)){
+        $article->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
+        if (!empty($request->slug)) {
             $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $article->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $article-- > setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $article->category_id = $request->input('category_id');
+
+        // Sitemap
         if (!empty($request->input('sitemap_exclude'))) {
             $article->sitemap_exclude = true;
         } else {
@@ -116,10 +129,16 @@ class ArticleController extends Controller
         }
         if (!empty($request->input('sitemap_priority'))) {
             $article->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $article->sitemap_priority = null;
         }
         if (!empty($request->input('sitemap_change_frequency'))) {
             $article->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $article->sitemap_change_frequency = null;
         }
+        // End sitemap
+
         if (!empty($request->input('primary_language'))) {
             $article->primary_language = $request->input('primary_language');
             if ($request->input('primary_language') === 'default') {
@@ -130,7 +149,12 @@ class ArticleController extends Controller
         $article->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
 
         $article->save();
-        $article->tags()->sync($request->input('tags', []));
+
+        // Sync tags if provided after save
+        $article->tags()->sync($request->input('tag_ids', []));
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->route('admin.articles.edit', [$article->id])->with('success', 'Article created successfully.');
     }
@@ -161,30 +185,34 @@ class ArticleController extends Controller
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string',
             'scheduled_at' => 'nullable|date',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
+            'tag_ids' => 'nullable',
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
         ]);
         $article->user_id = auth()->id();
+
         if ($request->hasFile('image')) {
+            $folderName = 'articles';
             $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('uploads/articles');
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
             }
             $image->move($destinationPath, $filename);
-            $article->setTranslation('image', app()->getLocale(), '/uploads/articles/' . $filename);
+            $article->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
-        $article->setTranslation('title', app()->getLocale(), $request->input('title'));
-        if($request->slug !== $article->getTranslation('slug', app()->getLocale())){
+
+        $article->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
+        if ($request->slug !== $article->getTranslation('slug', app()->getLocale())) {
             $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $article->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $article->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $article->category_id = $request->input('category_id');
+
+        // Sitemap
         if (!empty($request->input('sitemap_exclude'))) {
             $article->sitemap_exclude = true;
         } else {
@@ -192,10 +220,16 @@ class ArticleController extends Controller
         }
         if (!empty($request->input('sitemap_priority'))) {
             $article->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $article->sitemap_priority = null;
         }
         if (!empty($request->input('sitemap_change_frequency'))) {
             $article->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $article->sitemap_change_frequency = null;
         }
+        // End sitemap
+
         if (!empty($request->input('primary_language'))) {
             $article->primary_language = $request->input('primary_language');
             if ($request->input('primary_language') === 'default') {
@@ -206,7 +240,12 @@ class ArticleController extends Controller
         $article->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
 
         $article->save();
-        $article->tags()->sync($request->input('tags', []));
+
+        // Sync tags if provided after save
+        $article->tags()->sync($request->input('tag_ids', []));
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->back()->with('success', 'Article updated successfully.');
     }
@@ -214,8 +253,12 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         $this->authorize('delete', $article);
-        
+
         $article->delete();
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
+
         return redirect()->route('admin.articles.index')->with('success', 'Article deleted successfully.');
     }
 }

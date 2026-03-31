@@ -42,7 +42,7 @@ class ArticleResource extends JsonResource
             "title" => $this->title,
             "slug" => $this->slug,
             "all_urls" => $allUrls,
-            "full_url" => $this->full_url,
+            "full_url" => UrlHelper::getFullUrlBySlug($this->slug, $this, null, app()->getLocale(), true),
             "description" => $this->description,
             "content" => $this->content,
             "image" => FileHelper::addDomainPrefixIfValueIsAFile(

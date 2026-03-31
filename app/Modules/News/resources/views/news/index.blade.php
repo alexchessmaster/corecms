@@ -42,12 +42,6 @@
                         {
                             data: 'title',
                             name: 'title',
-                            render: function(data, type, row) {
-                                if (!data || data.includes('-Not translated-')) {
-                                    return `<span style="background-color:orange;">${data}</span>`;
-                                }
-                                return data;
-                            }
                         },
                         {
                             data: 'category',
@@ -59,7 +53,13 @@
                         },
                         {
                             data: 'translated_languages',
-                            name: 'translated_languages'
+                            name: 'translated_languages',
+                            render: function(data, type, row) {
+                                if (!data.includes('{{ app()->getLocale() }}')) {
+                                    return `<span style="background-color:orange;">${data}</span>`;
+                                }
+                                return data;
+                            }
                         },
                         {
                             data: 'actions',
@@ -79,7 +79,7 @@
                         },
                         {
                             targets: [1],
-                            width: "50%"
+                            width: "30%"
                         },
                         {
                             targets: [2],
@@ -87,15 +87,15 @@
                         },
                         {
                             targets: [3],
-                            width: "10%"
+                            width: "15%"
                         },
                         {
                             targets: [4],
-                            width: "5%"
+                            width: "20%"
                         },
                         {
                             targets: [5],
-                            width: "30%"
+                            width: "20%"
                         },
                     ],
                     language: {

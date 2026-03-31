@@ -144,7 +144,7 @@ class UrlHelper
      *  $settingRepository->getFullUrlBySlug($slug, null, $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang) 
      * @return string ex. https://example.com/en/articles/learn/how-to-know
      */
-    public static function getFullUrlBySlug(string $slug, $modelOrTable = null, $prefix = '', $lang = null): string
+    public static function getFullUrlBySlug(string $slug, $modelOrTable = null, $prefix = null, $lang = null, $onlyPath = false): string
     {
         if($modelOrTable !== null){
             if (gettype($modelOrTable) === 'string') {
@@ -159,9 +159,12 @@ class UrlHelper
         if ($lang === null) {
             $lang = app()->getLocale();
         }
-        $url = $languageRepository->getDomain($lang);
-        if (!$languageRepository->useSeparateDomain()) {
-            $url = $url . '/' . $lang;
+        $url = '';
+        if(empty($onlyPath)){
+            $url = $languageRepository->getDomain($lang);
+            if (!$languageRepository->useSeparateDomain()) {
+                $url = $url . '/' . $lang;
+            }
         }
         if (empty($slug) || $slug === '/' || (empty($modelOrTable) && empty($prefix))) {
             return $url;
