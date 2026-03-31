@@ -2,6 +2,7 @@
 
 namespace App\Modules\News\Http\Controllers\Admin;
 
+use App\Modules\Shared\Jobs\GenerateSitemapsJob;
 use App\Models\Widget;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -86,16 +87,17 @@ class NewsController extends Controller
             'tag_ids' => 'nullable',
             'scheduled_at' => 'nullable|date',
             'news_date' => 'nullable|date',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
+            'sitemap_exclude' => 'nullable',
         ]);
 
         $news = new News;
         $news->user_id = auth()->id();
-
-        $folderName = 'news';
-
         if ($request->hasFile('image')) {
+            $folderName = 'news';
             $image = $request->file('image');
-            $filename = time() . '-' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
@@ -107,7 +109,7 @@ class NewsController extends Controller
         }
 
         $news->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
-        if(!empty($request->slug)){
+        if (!empty($request->slug)) {
             $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
         $news->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
@@ -121,12 +123,31 @@ class NewsController extends Controller
             $news->author_id = $request->author_id;
         }
 
+        // Sitemap
+        if (!empty($request->input('sitemap_exclude'))) {
+            $news->sitemap_exclude = true;
+        } else {
+            $news->sitemap_exclude = null;
+        }
+        if (!empty($request->input('sitemap_priority'))) {
+            $news->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $news->sitemap_priority = null;
+        }
+        if (!empty($request->input('sitemap_change_frequency'))) {
+            $news->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $news->sitemap_change_frequency = null;
+        }
+        // End sitemap
+
         $news->save();
 
         // Sync tags if provided after save
-        if ($request->has('tag_ids')) {
-            $news->tags()->sync($request->input('tag_ids', []));
-        }
+        $news->tags()->sync($request->input('tag_ids', []));
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         // event(new NewsCreatedOrUpdatedEvent);
 
@@ -161,15 +182,17 @@ class NewsController extends Controller
             'tag_ids' => 'nullable',
             'scheduled_at' => 'nullable|date',
             'news_date' => 'nullable|date',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
+            'sitemap_exclude' => 'nullable',
         ]);
 
         $news->user_id = auth()->id();
 
-        $folderName = 'news';
-
         if ($request->hasFile('image')) {
+            $folderName = 'news';
             $image = $request->file('image');
-            $filename = time() . '-' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
@@ -177,8 +200,9 @@ class NewsController extends Controller
             $image->move($destinationPath, $filename);
             $news->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
+
         $news->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
-        if($request->slug !== $news->getTranslation('slug', app()->getLocale())){
+        if ($request->slug !== $news->getTranslation('slug', app()->getLocale())) {
             $news->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
         $news->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
@@ -187,16 +211,33 @@ class NewsController extends Controller
         $news->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $news->news_date = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : null;
         $news->created_at = request()->news_date ? \Carbon\Carbon::parse(request()->news_date) : now();
-        if ($request->author_id) {
-            $news->author_id = $request->author_id;
+        $news->author_id = $request->input('author_id') ?: null;
+
+        // Sitemap
+        if (!empty($request->input('sitemap_exclude'))) {
+            $news->sitemap_exclude = true;
+        } else {
+            $news->sitemap_exclude = null;
         }
+        if (!empty($request->input('sitemap_priority'))) {
+            $news->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $news->sitemap_priority = null;
+        }
+        if (!empty($request->input('sitemap_change_frequency'))) {
+            $news->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $news->sitemap_change_frequency = null;
+        }
+        // End sitemap
 
         $news->save();
 
         // Sync tags if provided after save
-        if ($request->has('tag_ids')) {
-            $news->tags()->sync($request->input('tag_ids', []));
-        }
+        $news->tags()->sync($request->input('tag_ids', []));
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->back()->with('success', 'News updated successfully.');
     }
@@ -206,6 +247,9 @@ class NewsController extends Controller
         $this->authorize('delete', $news);
 
         $news->delete();
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->route('admin.news.index')->with('success', 'News deleted successfully.');
     }

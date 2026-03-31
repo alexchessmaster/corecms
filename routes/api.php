@@ -54,6 +54,7 @@ Route::middleware([
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/pages', PageController::class);
     Route::apiResource('/articles', ArticleController::class);
+    Route::put('/{id}/{lang}', [ArticleController::class, 'removeArticleLanguage'])->name('api.v1.articles.removeArticleLanguage');
     Route::apiResource('/categories', CategoryController::class);
     Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update'])->middleware([IncreaseMemoryLimitMiddleware::class]);
     Route::patch('/widgets/attach', [WidgetController::class, 'attach']);

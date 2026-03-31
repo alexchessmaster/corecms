@@ -8,6 +8,8 @@ use App\Modules\Books\Http\Requests\StoreBookRequest;
 use App\Modules\Books\Http\Requests\UpdateBookRequest;
 use App\Modules\Books\Models\Book;
 use App\Modules\Books\Models\BookGenre;
+use App\Modules\Shared\Helpers\StrHelper;
+use App\Modules\Shared\Jobs\GenerateSitemapsJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -32,6 +34,12 @@ class BookController extends Controller
                 })
                 ->addColumn('book_genre', function ($book) {
                     return $book->bookGenre->getTranslation('name', app()->getLocale());
+                })
+                ->addColumn('translated_languages', function ($book) {
+                    $translations = $book->getTranslations('title');
+                    $keys = array_keys($translations);
+                    sort($keys);
+                    return implode(' - ', $keys);
                 })
                 ->addColumn('actions', function ($book) {
                     return '
@@ -101,12 +109,14 @@ class BookController extends Controller
             $book->setTranslation('image', app()->getLocale(), '/uploads/books/' . $filename);
         }
 
-        $book->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $book->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
         if (!empty($request->slug)) {
             $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $book->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $book->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $book->book_genre_id = $request->input('book_genre_id');
+
+        // Sitemap
         if (!empty($request->input('sitemap_exclude'))) {
             $book->sitemap_exclude = true;
         } else {
@@ -114,10 +124,16 @@ class BookController extends Controller
         }
         if (!empty($request->input('sitemap_priority'))) {
             $book->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $book->sitemap_priority = null;
         }
         if (!empty($request->input('sitemap_change_frequency'))) {
             $book->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $book->sitemap_change_frequency = null;
         }
+        // End sitemap
+
         $book->primary_language = app()->getLocale(); // Default to current locale
         $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
@@ -129,6 +145,9 @@ class BookController extends Controller
         $book->total_pages = $request->input('total_pages');
 
         $book->save();
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->route('admin.books.edit', [$book->id])->with('success', 'Book created successfully.');
     }
@@ -165,7 +184,9 @@ class BookController extends Controller
             'total_pages' => 'nullable|integer|min:0',
         ]);
         $book->user_id = auth()->id();
+
         if ($request->hasFile('image')) {
+            $folderName = 'products';
             $image = $request->file('image');
             $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path('uploads/books');
@@ -175,12 +196,15 @@ class BookController extends Controller
             $image->move($destinationPath, $filename);
             $book->setTranslation('image', app()->getLocale(), '/uploads/books/' . $filename);
         }
+
         $book->setTranslation('title', app()->getLocale(), $request->input('title'));
         if ($request->slug !== $book->getTranslation('slug', app()->getLocale())) {
             $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
         $book->setTranslation('description', app()->getLocale(), $request->input('description'));
         $book->book_genre_id = $request->input('book_genre_id');
+
+        // Sitemap
         if (!empty($request->input('sitemap_exclude'))) {
             $book->sitemap_exclude = true;
         } else {
@@ -188,20 +212,27 @@ class BookController extends Controller
         }
         if (!empty($request->input('sitemap_priority'))) {
             $book->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $book->sitemap_priority = null;
         }
         if (!empty($request->input('sitemap_change_frequency'))) {
             $book->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $book->sitemap_change_frequency = null;
         }
+        // End sitemap
+
         $book->status = $request->input('status');
         $book->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $book->published_year = $request->input('published_year');
-        if (!empty($request->input('book_author_id'))) {
-            $book->author_id = $request->input('book_author_id');
-        }
+        $book->author_id = $request->input('author_id') ?: null;
         $book->views = $request->input('views') || 0;
         $book->total_pages = $request->input('total_pages');
 
         $book->save();
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->back()->with('success', 'Book updated successfully.');
     }
@@ -210,6 +241,9 @@ class BookController extends Controller
     {
         $this->authorize('delete', $book);
         $book->delete();
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->route('admin.books.index')->with('success', 'Book deleted successfully.');
     }

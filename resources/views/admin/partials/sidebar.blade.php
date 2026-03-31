@@ -94,6 +94,7 @@
             @endif
             @if($settings->firstWhere('key', 'is-article-active')?->value === "true")
                 @if(auth()->user()->can('view categories') || auth()->user()->can('view own categories'))
+                    <div style="border: 1px rgb(55, 67, 71) solid"></div>
                     <li class="nav-item">
                         <a href="/admin/categories" class="nav-link">
                             <i class="nav-icon fas fa-folder"></i>
@@ -114,7 +115,6 @@
                     </li>
                 @endif
                 @if(auth()->user()->can('view articles') || auth()->user()->can('view own articles'))
-                    <div style="border: 1px rgb(55, 67, 71) solid"></div>
                     <li class="nav-item">
                         <a href="/admin/articles" class="nav-link">
                             <i class="nav-icon fas fa-file-alt"></i>

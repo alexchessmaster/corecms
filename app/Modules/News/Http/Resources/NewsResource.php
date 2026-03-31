@@ -11,7 +11,7 @@ use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
 use App\Repositories\LanguageRepository;
-use App\Stores\SettingStore;
+use App\Repositories\SettingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,10 +24,10 @@ class NewsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $settingStore = new SettingStore;
-        $newsPrefix = $settingStore->findByKey(SettingKeyEnum::NEWS_PREFIX);
+        $settingRepository = app(SettingRepository::class);
+        $newsPrefix = $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX);
         $allUrls = [];
-        $languageRepository = new LanguageRepository;
+        $languageRepository = app(LanguageRepository::class);
         $languages = $languageRepository->all();
         foreach($languages as $language){
             foreach($this->getTranslations('slug') as $lang => $slug){
@@ -42,7 +42,7 @@ class NewsResource extends JsonResource
             "title" => $this->title,
             "slug" => $this->slug,
             "all_urls" => $allUrls,
-            "full_url" => $this->full_url,
+            "full_url" => UrlHelper::getFullUrlBySlug($this->slug, $this, null, app()->getLocale(), true),
             "description" => $this->description,
             "news_date" => $this->news_date->format('Y-m-d'),
             "stars" => $this->stars,
@@ -72,6 +72,7 @@ class NewsResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
+            'sitemap_exclude' => $this->sitemap_exclude,
             'prefix' => $newsPrefix,
         ];
     }

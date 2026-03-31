@@ -55,6 +55,7 @@ Route::group([
     Route::resource('templates', PageController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('articles', ArticleController::class);
+    Route::get('article-tags/select', [TagController::class, 'selectTags'])->name('article-tags.select-tags');
     Route::resource('comments', CommentableController::class);
     Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
@@ -35,7 +36,7 @@ class Product extends Model
         ]);
     }
 
-    public function scopeVisibleTo($query, User $user)
+    public function scopeVisibleTo($query, User $user): Builder
     {
         if($user->can('view products')) {
             return $query;

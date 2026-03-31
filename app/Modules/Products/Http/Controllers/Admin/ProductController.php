@@ -5,14 +5,14 @@ namespace App\Modules\Products\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Widget;
 use App\Modules\Products\Models\Product;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Modules\Products\Models\ProductCategory;
-use Illuminate\Support\Facades\File;
-use Yajra\DataTables\Facades\DataTables;
-use App\Modules\Products\Http\Requests\StoreProductRequest;
-use App\Modules\Products\Http\Requests\UpdateProductRequest;
+use App\Modules\Shared\Helpers\StrHelper;
+use App\Modules\Shared\Jobs\GenerateSitemapsJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
@@ -31,7 +31,13 @@ class ProductController extends Controller
                     return $title ?: '-Not translated-' . $product->getTranslation('title', app()->getLocale(), true);
                 })
                 ->addColumn('category', function ($product) {
-                    return $product->category?->getTranslation('name', app()->getLocale());
+                    return $product->category->getTranslation('name', app()->getLocale(), false);
+                })
+                ->addColumn('translated_languages', function ($product) {
+                    $translations = $product->getTranslations('title');
+                    $keys = array_keys($translations);
+                    sort($keys);
+                    return implode(' - ', $keys);
                 })
                 ->addColumn('actions', function ($product) {
                     return '
@@ -46,7 +52,7 @@ class ProductController extends Controller
                     </form>
                 ';
                 })
-                ->rawColumns(['actions', 'name'])
+                ->rawColumns(['actions'])
                 ->make(true);
         }
 
@@ -79,41 +85,64 @@ class ProductController extends Controller
             'price' => 'nullable|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
             'author_id' => 'nullable|int',
-            'tag_ids' => 'nullable'
+            'tag_ids' => 'nullable',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
+            'sitemap_exclude' => 'nullable',
         ]);
 
         $product = new Product;
         $product->user_id = auth()->id();
         if ($request->hasFile('image')) {
+            $folderName = 'products';
             $image = $request->file('image');
-            $filename = time() . '-' . $image->getClientOriginalName();
-            $destinationPath = public_path('uploads/products');
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
                 chown($destinationPath, 'www-data');
                 chgrp($destinationPath, 'www-data');
             }
             $image->move($destinationPath, $filename);
-            $product->setTranslation('image', app()->getLocale(), '/uploads/products/' . $filename);
+            $product->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
 
-        $product->setTranslation('title', app()->getLocale(), $request->input('title'));
+        $product->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
         if (!empty($request->slug)) {
             $product->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $product->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $product->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $product->product_category_id = $request->input('category_id');
         $product->status = $request->input('status');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock') ?? 0;
         $product->author_id = $request->input('author_id') ?? null;
 
+        // Sitemap
+        if (!empty($request->input('sitemap_exclude'))) {
+            $product->sitemap_exclude = true;
+        } else {
+            $product->sitemap_exclude = null;
+        }
+        if (!empty($request->input('sitemap_priority'))) {
+            $product->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $product->sitemap_priority = null;
+        }
+        if (!empty($request->input('sitemap_change_frequency'))) {
+            $product->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $product->sitemap_change_frequency = null;
+        }
+        // End sitemap
+
         $product->save();
 
         // Sync tags if provided after save
-        if ($request->has('tag_ids')) {
-            $product->tags()->sync($request->input('tag_ids', []));
-        }
+        $product->tags()->sync($request->input('tag_ids', []));
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->route('admin.products.edit', [$product->id])->with('success', 'Product created successfully.');
     }
@@ -145,16 +174,18 @@ class ProductController extends Controller
             'price' => 'nullable|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
             'author_id' => 'nullable|int',
-            'tag_ids' => 'nullable'
+            'tag_ids' => 'nullable',
+            'sitemap_priority' => 'nullable',
+            'sitemap_change_frequency' => 'nullable',
+            'sitemap_exclude' => 'nullable',
         ]);
 
         $product->user_id = auth()->id();
 
-        $folderName = 'products';
-
         if ($request->hasFile('image')) {
+            $folderName = 'products';
             $image = $request->file('image');
-            $filename = time() . '-' . $image->getClientOriginalName();
+            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
             $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0755, true);
@@ -162,23 +193,44 @@ class ProductController extends Controller
             $image->move($destinationPath, $filename);
             $product->setTranslation('image', app()->getLocale(), "/uploads/$folderName/" . $filename);
         }
-        $product->setTranslation('title', app()->getLocale(), $request->input('title'));
+
+        $product->setTranslation('title', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('title')));
         if ($request->slug !== $product->getTranslation('slug', app()->getLocale())) {
             $product->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $product->setTranslation('description', app()->getLocale(), $request->input('description'));
+        $product->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $product->product_category_id = $request->input('category_id');
         $product->status = $request->input('status');
+        $product->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
         $product->price = $request->input('price');
         $product->stock = $request->input('stock') ?? 0;
-        $product->author_id = $request->input('author_id') ?? null;
+        $product->author_id = $request->input('author_id') ?: null;
+
+        // Sitemap
+        if (!empty($request->input('sitemap_exclude'))) {
+            $product->sitemap_exclude = true;
+        } else {
+            $product->sitemap_exclude = null;
+        }
+        if (!empty($request->input('sitemap_priority'))) {
+            $product->sitemap_priority = $request->input('sitemap_priority');
+        } else {
+            $product->sitemap_priority = null;
+        }
+        if (!empty($request->input('sitemap_change_frequency'))) {
+            $product->sitemap_change_frequency = $request->input('sitemap_change_frequency');
+        } else {
+            $product->sitemap_change_frequency = null;
+        }
+        // End sitemap
 
         $product->save();
 
         // Sync tags if provided after save
-        if ($request->has('tag_ids')) {
-            $product->tags()->sync($request->input('tag_ids', []));
-        }
+        $product->tags()->sync($request->input('tag_ids', []));
+
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->back()->with('success', 'Product updated successfully.');
     }
@@ -188,6 +240,9 @@ class ProductController extends Controller
         $this->authorize('delete', $product);
 
         $product->delete();
+        
+        // Dispatch sitemap regeneration to queue.
+        GenerateSitemapsJob::dispatch();
 
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
     }

@@ -5,7 +5,10 @@ namespace App\Modules\Books\Observers;
 use App\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use App\Modules\Books\Models\Book;
+use App\Modules\Shared\Actions\DeleteImageAction;
+use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
+use App\Modules\Shared\Jobs\ProcessImageJob;
 use Illuminate\Support\Facades\Auth;
 
 class BookObserver
@@ -15,7 +18,7 @@ class BookObserver
      */
     public function creating(Book $book): void
     {
-        if (empty($book->getTranslation('slug', app()->getLocale()))) {
+        if (empty($book->getTranslation('slug', app()->getLocale(), false))) {
             $book->setTranslation('slug', app()->getLocale(), $this->generateSlug($book));
         }
     }
@@ -32,6 +35,14 @@ class BookObserver
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);
+
+        $newImagePath = public_path($book->getTranslation('image', app()->getLocale(), false));
+        ProcessImageJob::dispatch($newImagePath);
+
+        $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
+        $book->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+        $book->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+        $book->saveQuietly();
     }
 
     /**
@@ -39,7 +50,7 @@ class BookObserver
      */
     public function updating(Book $book)
     {
-        if ($book->isDirty('book_genre_id') || $book->isDirty('title') || $book->isDirty('slug') || empty($book->getTranslation('slug', app()->getLocale()))) {
+        if ($book->isDirty('book_genre_id') || $book->isDirty('title') || $book->isDirty('slug') || empty($book->getTranslation('slug', app()->getLocale(), false))) {
             $book->setTranslation('slug', app()->getLocale(), $this->generateSlug($book, $book->id));
         }
     }
@@ -63,6 +74,22 @@ class BookObserver
                 event(new SlugChangedEvent());
             }
         }
+
+        if ($book->isDirty('image')) {
+            if (is_array($book->getOriginal('image')) && array_key_exists(app()->getLocale(), $book->getOriginal('image'))) {
+                $oldImagePath = public_path($book->getOriginal('image')[app()->getLocale()]);
+                DeleteImageAction::deleteModelImages($oldImagePath);
+            }
+            $newImage = $book->getTranslation('image', app()->getLocale(), false);
+            if (!empty($newImage)) {
+                $newImagePath = public_path($newImage);
+                ProcessImageJob::dispatch($newImagePath);
+                $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
+                $book->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+                $book->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+                $book->saveQuietly();
+            }
+        }
     }
 
     /**
@@ -79,6 +106,9 @@ class BookObserver
         ]);
 
         event(new SlugChangedEvent());
+
+        $oldImagePath = public_path($book->getTranslation('image', app()->getLocale()));
+        DeleteImageAction::deleteModelImages($oldImagePath);
     }
 
     /**
@@ -92,7 +122,7 @@ class BookObserver
         }
 
         // Keep the last part of the url
-        $oldSlug = $book->getTranslation('slug', app()->getLocale());
+        $oldSlug = $book->getTranslation('slug', app()->getLocale(), false);
         $parts = explode('/', $oldSlug);
         $slugWithoutCategories = end($parts);
         if(empty($slugWithoutCategories)){
@@ -100,7 +130,7 @@ class BookObserver
         }
 
         // Build the full link
-        $link = rtrim($book->bookGenre->getTranslation('slug', app()->getLocale()), '/') . '/';
+        $link = rtrim($book->bookGenre->getTranslation('slug', app()->getLocale(), false), '/') . '/';
         $link = '/' . ltrim($link, '/');
         $slug = $link . $slugWithoutCategories;
 

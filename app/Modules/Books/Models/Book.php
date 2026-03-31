@@ -35,33 +35,6 @@ class Book extends Model
         return $this->belongsTo(BookGenre::class);
     }
 
-    public function getFullUrlAttribute()
-    {
-        $fullUrl = $this->slug;
-
-        $languageRepository = app(LanguageRepository::class);
-        $languages = $languageRepository->all();
-
-        $settingRepository = app(SettingRepository::class);
-        $bookPrefix = $settingRepository->findByKey(SettingKeyEnum::BOOK_PREFIX);
-
-        $multipleLanguages = $settingRepository->isTranslatable(SettingKeyEnum::BOOK_PREFIX);
-
-        if (!empty($bookPrefix)) {
-            $bookPrefix = '/' . trim($bookPrefix, '/');
-            $fullUrl = $bookPrefix . $fullUrl;
-        }
-
-        if ($multipleLanguages) {
-            $lang = app()->getLocale();
-            if (! $languages->value('use_separate_domain')) {
-                $fullUrl = '/' . $lang . $fullUrl;
-            }
-        }
-
-        return $fullUrl;
-    }
-
     public function scopeWithAllWidgetData($query)
     {
         return $query->with([

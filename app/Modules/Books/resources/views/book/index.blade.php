@@ -18,6 +18,7 @@
                         <th>Title</th>
                         <th>Book Genre</th>
                         <th>Status</th>
+                        <th>Translated languages</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -39,14 +40,25 @@
                         { data: 'title', name: 'title' },
                         { data: 'book_genre', name: 'book_genre' },
                         { data: 'status', name: 'status' },
+                        {
+                            data: 'translated_languages',
+                            name: 'translated_languages',
+                            render: function(data, type, row) {
+                                if (!data.includes('{{app()->getLocale()}}')) {
+                                    return `<span style="background-color:orange;">${data}</span>`;
+                                }
+                                return data;
+                            }
+                        },
                         { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
                     ],
                     columnDefs: [
                         { targets: "_all", defaultContent: "" }, // Prevents undefined cells
                         { targets: [0], width: "5%" },
                         { targets: [1], width: "30%" }, // Set widths of the columns
-                        { targets: [2], width: "20%" },
-                        { targets: [3], width: "25%" },
+                        { targets: [2], width: "10%" },
+                        { targets: [3], width: "5%" },
+                        { targets: [4], width: "30%" },
                     ],
                     language: {
                         search: "Filter records:",

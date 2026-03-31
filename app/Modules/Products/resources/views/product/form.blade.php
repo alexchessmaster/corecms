@@ -14,7 +14,9 @@
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
-        value="{{ isset($product) ? $product->getTranslation('title', app()->getLocale(), false) : '' }}" required>
+        style="{{ isset($product) && !empty($product->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
+        value="{{ isset($product) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($product, 'title', true) : '' }}"
+        required>
 </div>
 @if (isset($product))
     <div class="mb-3">
@@ -24,11 +26,12 @@
         @if (isset($product))
             <small>
                 @php
-                    $settingRepository = new App\Repositories\SettingRepository();
+                    $settingRepository = app(App\Repositories\SettingRepository::class);
                     // get the prefix from settings
                     $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::PRODUCT_PREFIX);
                 @endphp
-                <a href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+                <a
+                    href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
                         $product->getTranslation('slug', app()->getLocale(), false),
                         session('lang'),
                         $prefix,
