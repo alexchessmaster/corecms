@@ -4,7 +4,7 @@ namespace App\Modules\News\Observers;
 
 use Illuminate\Support\Str;
 use App\Modules\News\Models\NewsCategory;
-use App\Events\SlugChangedEvent;
+use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,7 +41,7 @@ class NewsCategoryObserver
             $newsCategory->isDirty('slug')
             || $newsCategory->isDirty('parent_id')
             || empty($newsCategory->getTranslation('slug', app()->getLocale()))
-        ) {            
+        ) {
             $newsCategory->setTranslation('slug', app()->getLocale(), $this->generateSlug($newsCategory, $newsCategory->id));
         }
     }

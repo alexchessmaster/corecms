@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Modules\Shared\Services;
 
 use App\Modules\AiChat\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Http;

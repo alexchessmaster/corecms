@@ -2,7 +2,7 @@
 
 namespace App\Modules\Products\Observers;
 
-use App\Events\SlugChangedEvent;
+use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use App\Modules\Products\Models\Product;
 use App\Modules\Shared\Actions\DeleteImageAction;
