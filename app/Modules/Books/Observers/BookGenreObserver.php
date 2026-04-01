@@ -3,7 +3,7 @@
 namespace App\Modules\Books\Observers;
 
 use App\Modules\Books\Models\BookGenre;
-use App\Events\SlugChangedEvent;
+use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,8 +36,8 @@ class BookGenreObserver
      */
     public function updating(BookGenre $bookGenre)
     {
-        if ($bookGenre->isDirty('name') 
-            || $bookGenre->isDirty('parent_id') 
+        if ($bookGenre->isDirty('name')
+            || $bookGenre->isDirty('parent_id')
             || empty($bookGenre->getTranslation('slug', app()->getLocale()))
         ) {
             $bookGenre->setTranslation('slug', app()->getLocale(), $this->generateSlug($bookGenre, $bookGenre->id));

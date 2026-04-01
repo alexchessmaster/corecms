@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Category;
 use Illuminate\Support\Str;
-use App\Events\SlugChangedEvent;
+use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,8 +37,8 @@ class CategoryObserver
      */
     public function updating(Category $category)
     {
-        if ($category->isDirty('name') 
-            || $category->isDirty('parent_id') 
+        if ($category->isDirty('name')
+            || $category->isDirty('parent_id')
             || empty($category->getTranslation('slug', app()->getLocale()))
         ) {
             $category->setTranslation('slug', app()->getLocale(), $this->generateSlug($category, $category->id));

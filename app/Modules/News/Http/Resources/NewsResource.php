@@ -62,7 +62,6 @@ class NewsResource extends JsonResource
             ),
             "news_category_id" => $this->news_category_id,
             "category" => $this->relationLoaded('category') ? new NewsCategoryResource($this->category) : '',
-            "published_year" => $this->published_year,
             "author_id" => $this->author_id,
             "author" => $this->relationLoaded('author') ? new NewsAuthorResource($this->author) : null,
             "tags" => $this->relationLoaded('tags') ? NewsTagResource::collection($this->tags) : [],
