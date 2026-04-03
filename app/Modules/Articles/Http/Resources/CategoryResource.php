@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Modules\Articles\Http\Resources;
 
+use App\Http\Resources\WidgetableResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\ArticleResource;
+use App\Modules\Articles\Http\Resources\ArticleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource

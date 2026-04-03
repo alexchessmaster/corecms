@@ -16,7 +16,7 @@
             @csrf
             @method('PUT')
 
-            @include('admin.roles.form')
+            @include('users::roles.form')
 
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary">

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Articles\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TagResource;
-use App\Models\Tag;
+use App\Modules\Articles\Http\Resources\TagResource;
+use App\Modules\Articles\Models\Tag;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -39,7 +39,7 @@ class TagController extends Controller
                 ->make(true);
         }
 
-        return view('admin.tag.index');
+        return view('articles::tag.index');
     }
 
     public function selectTags(Request $request)
@@ -68,7 +68,7 @@ class TagController extends Controller
     {
         $this->authorize('create', Tag::class);
 
-        return view('admin.tag.create');
+        return view('articles::tag.create');
     }
 
     public function store(Request $request)
@@ -91,7 +91,7 @@ class TagController extends Controller
     {
         $this->authorize('view', $tag);
 
-        return view('admin.tag.edit', compact('tag'));
+        return view('articles::tag.edit', compact('tag'));
     }
 
     public function update(Request $request, Tag $tag)

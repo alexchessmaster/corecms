@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shared\Jobs;
 
-use App\Models\Article;
+use App\Modules\Articles\Models\Article;
 use App\Modules\Books\Models\Book;
 use App\Modules\Books\Models\BookGenre;
 use App\Models\Page;

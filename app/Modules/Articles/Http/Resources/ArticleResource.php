@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Modules\Articles\Http\Resources;
 
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\TagResource;
+use App\Modules\Articles\Http\Resources\CategoryResource;
+use App\Modules\Articles\Http\Resources\TagResource;
 use App\Http\Resources\WidgetableResource;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Shared\Helpers\FileHelper;

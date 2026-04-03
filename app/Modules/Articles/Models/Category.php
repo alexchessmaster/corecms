@@ -1,40 +1,40 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Articles\Models;
 
-use App\Models\Tag;
-use App\Models\Category;
+use App\Models\User;
+use App\Models\Widget;
 use App\Models\Widgetable;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Article extends Model
+class Category extends Model
 {
     use HasTranslations;
 
-    protected $guarded = [];
-    public $translatable = ['title', 'slug', 'content', 'description', 'image', 'image_medium', 'image_thumbnail'];
-    protected $casts = [
-        'scheduled_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected $fillable = ['name', 'slug', 'description', 'parent_id', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
+    public $translatable = ['name', 'slug', 'description'];
+    protected $with = ['parent'];
 
-    public function category()
+    public function parent()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    public function tags()
+    public function children()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
     }
 
     public function scopeWithAllWidgetData($query)
     {
-        return $query->with([
+        return $this->with([
             'widgetables.widget.fieldWidgets.field',
             'widgetables.widgetFieldValues.fieldWidget.field',
         ]);
@@ -42,11 +42,11 @@ class Article extends Model
 
     public function scopeVisibleTo($query, User $user)
     {
-        if ($user->can('view articles')) {
+        if($user->can('view category')) {
             return $query;
         }
 
-        if ($user->can('view own articles')) {
+        if($user->can('view own category')) {
             return $query->where('user_id', $user->id);
         }
     }

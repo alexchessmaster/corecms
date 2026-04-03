@@ -15,8 +15,7 @@
             @csrf
             @method('PUT')
 
-            @include('admin.article.form')
-
+            @include('articles::article.form')
 
             <button type="submit" class="btn btn-primary" onclick="clickSaveAll(event)">Update</button>
         </form>

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Articles\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
-use App\Models\Article;
 
 class Tag extends Model
 {

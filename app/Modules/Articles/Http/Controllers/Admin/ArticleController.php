@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Articles\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Article;
-use App\Models\Category;
+use App\Modules\Articles\Models\Article;
+use App\Modules\Articles\Models\Category;
 use App\Models\Page;
-use App\Models\Tag;
+use App\Modules\Articles\Models\Tag;
 use App\Models\Widget;
 use App\Modules\Shared\Helpers\StrHelper;
 use App\Modules\Shared\Jobs\GenerateSitemapsJob;
@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use function App\Http\Controllers\setTranslation;
 
 class ArticleController extends Controller
 {
@@ -63,7 +64,7 @@ class ArticleController extends Controller
                 ->make(true);
         }
 
-        return view('admin.article.index');
+        return view('articles::article.index');
     }
 
     public function create()
@@ -76,7 +77,7 @@ class ArticleController extends Controller
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.article.create', compact('categories', 'tags', 'allWidgets', 'authToken'));
+        return view('articles::article.create', compact('categories', 'tags', 'allWidgets', 'authToken'));
     }
 
     public function store(Request $request)
@@ -170,7 +171,7 @@ class ArticleController extends Controller
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.article.edit', compact('article', 'categories', 'tags', 'allWidgets', 'authToken'));
+        return view('articles::article.edit', compact('article', 'categories', 'tags', 'allWidgets', 'authToken'));
     }
 
     public function update(Request $request, Article $article)

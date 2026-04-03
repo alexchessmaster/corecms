@@ -1,32 +1,20 @@
 <?php
 
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentableController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PageController;
-use App\Modules\Users\Http\Controllers\Admin\PermissionController;
-use App\Modules\Users\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\RedirectController;
-use App\Modules\Users\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\TagController;
+use App\Modules\Articles\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\TranslationTextController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UrlLogController;
-use App\Modules\Users\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\WidgetController;
 use App\Http\Middleware\LanguageAdminMiddleware;
-use App\Models\Language;
-use App\Models\WidgetFieldValues;
-use App\Modules\News\Models\News;
-use App\Modules\Shared\Helpers\StrHelper;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 Route::get('/', function () {
     abort(403);
@@ -49,11 +37,8 @@ Route::group([
     Route::post('widgets/sort', [WidgetController::class, 'sort'])->name('widgets.sort');
     Route::resource('fields', FieldController::class);
     Route::resource('templates', PageController::class);
-    Route::resource('categories', CategoryController::class);
-    Route::resource('articles', ArticleController::class);
     Route::get('article-tags/select', [TagController::class, 'selectTags'])->name('article-tags.select-tags');
     Route::resource('comments', CommentableController::class);
-    Route::resource('tags', TagController::class);
     Route::resource('redirects', RedirectController::class);
     Route::get('url-logs/statistics', [UrlLogController::class, 'statistic'])->name('url-logs.statistics');
     Route::resource('url-logs', UrlLogController::class);
@@ -65,13 +50,6 @@ Route::group([
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-//Route::middleware('auth')->group(function () {
-//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-//});
-
 
 Route::get('test', function () {
     app()->setLocale('fa');
