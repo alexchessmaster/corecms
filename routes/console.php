@@ -9,6 +9,8 @@ Schedule::command('redirects:unchain')->hourly()->withoutOverlapping();
 Schedule::command('sitemap:generate')->hourly()->then(function(){
     DeployFrontendJob::dispatch();
 });
+
 Schedule::command('backup:database')->daily();
+
 Schedule::command('booking:release-expired')->everyMinute();
 Schedule::job(new GenerateTimeSlotsFromTemplatesJob())->daily();

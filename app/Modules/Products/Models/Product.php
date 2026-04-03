@@ -5,7 +5,7 @@ namespace App\Modules\Products\Models;
 use App\Models\User;
 use App\Models\Widget;
 use App\Models\Widgetable;
-use App\Modules\Products\Models\ProductAuthor;
+use App\Modules\Users\Models\Author;
 use App\Modules\Products\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
@@ -54,7 +54,7 @@ class Product extends Model
         return $this->morphMany(Widgetable::class, 'widgetable')->orderBy('position');
     }
 
-    public function widgets()
+    public function widgets(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
         return $this->hasManyThrough(
             Widget::class,
@@ -66,18 +66,18 @@ class Product extends Model
         )->where('widgetables.widgetable_type', self::class);
     }
 
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id', 'id');
     }
 
-    public function tags()
+    public function tags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(ProductTag::class, 'product_tag_pivot', 'product_id', 'product_tag_id');
     }
 
-    public function author()
+    public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(ProductAuthor::class, 'author_id', 'id');
+        return $this->belongsTo(Author::class, 'author_id', 'id');
     }
 }

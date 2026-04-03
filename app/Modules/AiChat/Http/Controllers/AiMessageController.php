@@ -3,8 +3,8 @@
 namespace App\Modules\AiChat\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAiMessageRequest;
-use App\Http\Requests\UpdateAiMessageRequest;
+use App\Modules\AiChat\Http\Requests\StoreAiMessageRequest;
+use App\Modules\AiChat\Http\Requests\UpdateAiMessageRequest;
 use App\Modules\AiChat\Models\AiMessage;
 use App\Modules\AiChat\Models\AiChat;
 use Illuminate\Http\Request;
