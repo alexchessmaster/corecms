@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Observers;
+namespace App\Modules\Articles\Observers;
 
 use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Modules\Articles\Models\Article;
