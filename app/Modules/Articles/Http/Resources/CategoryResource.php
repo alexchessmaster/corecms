@@ -2,7 +2,7 @@
 
 namespace App\Modules\Articles\Http\Resources;
 
-use App\Http\Resources\WidgetableResource;
+use App\Modules\Widgets\Http\Resources\WidgetableResource;
 use Illuminate\Http\Request;
 use App\Modules\Articles\Http\Resources\ArticleResource;
 use Illuminate\Http\Resources\Json\JsonResource;

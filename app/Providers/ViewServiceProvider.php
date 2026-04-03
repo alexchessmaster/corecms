@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Language;
-use App\Models\Setting;
+use App\Modules\Languages\Models\Language;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 

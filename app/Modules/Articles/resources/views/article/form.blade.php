@@ -6,32 +6,33 @@
         </div>
     @endif
     <div class="mb-2" id="preview-container" style="display: none;">
-        <img id="image-preview" style="max-width: 150px; height: auto;" />
+        <img id="image-preview" style="max-width: 150px; height: auto;"/>
     </div>
     <input type="file" class="form-control" id="image" name="image"
-        @if (!(isset($article) && $article->image)) required @endif>
+           @if (!(isset($article) && $article->image)) required @endif>
 </div>
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
-        style="{{ isset($article) && !empty($article->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
-        value="{{ isset($article) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($article, 'title', true) : '' }}"
-        required>
+           style="{{ isset($article) && !empty($article->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
+           value="{{ isset($article) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($article, 'title', true) : '' }}"
+           required>
 </div>
 @if (isset($article))
     <div class="mb-3">
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
-            value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}" disabled>
+               value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}"
+               disabled>
         @if (isset($article))
             <small>
                 @php
-                    $settingRepository = app(App\Repositories\SettingRepository::class);
+                    $settingRepository = app(\App\Modules\Settings\Repositories\SettingRepository::class);
                     // get the prefix from settings
                     $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::ARTICLE_PREFIX);
                 @endphp
                 <a
-                    href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+                        href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
                         $article->getTranslation('slug', app()->getLocale(), false),
                         session('lang'),
                         $prefix,
@@ -64,12 +65,13 @@
     <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
         <label for="scheduled_at">Scheduled At</label>
         <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
-            value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
+               value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
     </div>
 </div>
 <div class="mb-3">
     <label for="description" class="form-label required">Description</label>
-    <textarea class="form-control" id="description" name="description" rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
+    <textarea class="form-control" id="description" name="description"
+              rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
     <label for="category_id" class="form-label required">Category</label>
@@ -77,7 +79,7 @@
         @foreach ($categories as $category)
             @if (!empty($category->getTranslation('name', app()->getLocale(), false)))
                 <option value="{{ $category->id }}"
-                    {{ isset($article) && $article->category_id == $category->id ? 'selected' : '' }}>
+                        {{ isset($article) && $article->category_id == $category->id ? 'selected' : '' }}>
                     {{ $category->getTranslation('name', app()->getLocale()) }}
                 </option>
             @endif
@@ -98,7 +100,7 @@
     </select>
 </div>
 
-@include('admin.partials.sitemap-form')
+@include('shared::partials.sitemap-form')
 
 <br>
 
@@ -145,7 +147,7 @@
 
 {{-- status --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const statusSelect = document.getElementById('status');
         const scheduledGroup = document.getElementById('scheduled_at_group');
 
@@ -174,7 +176,7 @@
     const currentImageContainer = document.getElementById('current-image-container');
 
     // Event listener for image input
-    imageInput.addEventListener('change', function(event) {
+    imageInput.addEventListener('change', function (event) {
         const file = event.target.files[0]; // Get the selected file
 
         if (file) {

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 use App\Modules\Books\Http\Controllers\Admin\BookGenreController;
 use App\Modules\Books\Http\Controllers\Admin\BookAuthorController;
 use Illuminate\Support\Facades\Route;

@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Roles')
 @section('content-body')
 
@@ -58,7 +58,7 @@
                                 <a href="{{ route('admin.roles.edit', $role) }}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <form action="{{ route('admin.roles.destroy', $role) }}" method="POST" 
+                                <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
                                       class="d-inline" onsubmit="return confirm('Are you sure you want to delete this role?')">
                                     @csrf
                                     @method('DELETE')

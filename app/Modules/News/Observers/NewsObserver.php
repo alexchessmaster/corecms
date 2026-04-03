@@ -4,7 +4,7 @@ namespace App\Modules\News\Observers;
 
 use App\Modules\News\Models\News;
 use App\Modules\Shared\Events\SlugChangedEvent;
-use App\Models\RedirectSlugChange;
+use App\Modules\Redirects\Models\RedirectSlugChange;
 use App\Modules\Shared\Actions\DeleteImageAction;
 use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\UrlHelper;

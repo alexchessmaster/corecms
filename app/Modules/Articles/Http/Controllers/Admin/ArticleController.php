@@ -5,9 +5,9 @@ namespace App\Modules\Articles\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Modules\Articles\Models\Article;
 use App\Modules\Articles\Models\Category;
-use App\Models\Page;
+use App\Modules\Pages\Models\Page;
 use App\Modules\Articles\Models\Tag;
-use App\Models\Widget;
+use App\Modules\Widgets\Models\Widget;
 use App\Modules\Shared\Helpers\StrHelper;
 use App\Modules\Shared\Jobs\GenerateSitemapsJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -105,7 +105,7 @@ class ArticleController extends Controller
             $folderName = 'articles';
             $image = $request->file('image');
             $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('uploads/articles');
+            $destinationPath = public_path("uploads/$folderName");
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
                 chown($destinationPath, 'www-data');
@@ -119,7 +119,7 @@ class ArticleController extends Controller
         if (!empty($request->slug)) {
             $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $article-- > setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
+        $article-> setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $article->category_id = $request->input('category_id');
 
         // Sitemap

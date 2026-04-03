@@ -3,7 +3,7 @@
 namespace App\Modules\Products\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Widget;
+use App\Modules\Widgets\Models\Widget;
 use App\Modules\Products\Models\Product;
 use App\Modules\Products\Models\ProductCategory;
 use App\Modules\Shared\Helpers\StrHelper;
@@ -240,7 +240,7 @@ class ProductController extends Controller
         $this->authorize('delete', $product);
 
         $product->delete();
-        
+
         // Dispatch sitemap regeneration to queue.
         GenerateSitemapsJob::dispatch();
 

@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Edit Product Category')
 @section('content-card-body')
 
@@ -12,6 +12,6 @@
 </div>
 
 <br><br>
-@include('admin.partials.add-widget-form')
+@include('shared::partials.add-widget-form')
 
 @endsection

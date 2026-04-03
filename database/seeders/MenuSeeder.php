@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Menu;
+use App\Modules\Menus\Models\Menu;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -31,7 +31,7 @@ class MenuSeeder extends Seeder
             'fa' => 'Services',
         ]);
         $servicesMenu->setTranslations('link', [
-            'fa' => '#', //Str::slug('Services'), 
+            'fa' => '#', //Str::slug('Services'),
         ]);
         $servicesMenu->parent_id = null;
         $servicesMenu->order = $i++;

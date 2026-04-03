@@ -3,7 +3,7 @@
 namespace App\Modules\Shared\Helpers;
 
 use App\Modules\Shared\Services\TranslationService;
-use App\Repositories\LanguageRepository;
+use App\Modules\Languages\Repositories\LanguageRepository;
 
 class TranslationHelper
 {

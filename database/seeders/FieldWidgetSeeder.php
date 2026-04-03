@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\FieldWidget;
+use App\Modules\Widgets\Models\FieldWidget;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

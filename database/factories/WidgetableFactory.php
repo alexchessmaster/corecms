@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Widgetable>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Widgets\Models\Widgetable>
  */
 class WidgetableFactory extends Factory
 {

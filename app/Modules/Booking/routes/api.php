@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\LanguageApiMiddleware;
+use App\Modules\Languages\Http\Middleware\LanguageApiMiddleware;
 use App\Modules\Booking\Http\Controllers\Api\V1\BookingAppointmentController;
 use App\Modules\Booking\Http\Controllers\Api\V1\BookingAvailabilityController;
 use App\Modules\Booking\Http\Controllers\Api\V1\BookingReservationController;

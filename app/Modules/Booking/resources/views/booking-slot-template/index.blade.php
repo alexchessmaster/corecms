@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Booking Slot Templates')
 @section('content-body')
     <div class="container">

@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Setting;
-use App\Models\Language;
+use App\Modules\Settings\Models\Setting;
+use App\Modules\Languages\Models\Language;
 use App\Modules\Shared\Helpers\UrlHelper;
-use App\Repositories\SettingRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use Illuminate\Support\Carbon;

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 use App\Modules\Products\Http\Controllers\Admin\ProductController;
 use App\Modules\Products\Http\Controllers\Admin\ProductTagController;
 use App\Modules\Products\Http\Controllers\Admin\ProductCategoryController;

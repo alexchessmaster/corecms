@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Setting;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +15,7 @@ return new class extends Migration
     {
         // empty the table since I didn't modify the settings much
         \DB::table('settings')->truncate();
-        
+
         // Call the SettingSeeder using Artisan
         \Artisan::call('db:seed', [
             '--class' => 'Database\\Seeders\\SettingSeeder',
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
+
     }
 };

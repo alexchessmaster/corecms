@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Create Tag')
 @section('content-card-body')
 

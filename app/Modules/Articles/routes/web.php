@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\LanguageController;
-use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Modules\Languages\Http\Controllers\Admin\LanguageController;
+use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 use App\Modules\Articles\Http\Controllers\Admin\ArticleController;
 use App\Modules\Articles\Http\Controllers\Admin\CategoryController;
 use App\Modules\Articles\Http\Controllers\Admin\TagController;
@@ -18,4 +18,5 @@ Route::middleware([
     Route::resource('categories', CategoryController::class);
     Route::resource('articles', ArticleController::class);
     Route::resource('tags', TagController::class);
+    Route::get('article-tags/select', [TagController::class, 'selectTags'])->name('article-tags.select-tags');
 });

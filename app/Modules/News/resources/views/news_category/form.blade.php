@@ -6,7 +6,7 @@
 <div class="mb-3">
     <label for="slug" class="form-label" >Slug</label>
     <input type="text" class="form-control" id="slug" name="slug"
-        value="{{ isset($newsCategory) ? $newsCategory->getTranslation('slug', app()->getLocale(), false) : '' }}" 
+        value="{{ isset($newsCategory) ? $newsCategory->getTranslation('slug', app()->getLocale(), false) : '' }}"
         @if(isset($newsCategory))
             required
         @endif
@@ -46,11 +46,11 @@
     >
 </div>
 
-@include('admin.partials.sitemap-form')
+@include('shared::partials.sitemap-form')
 
 <br>
 
-{{-- @include('admin.partials.tinymce-full') --}}
+{{-- @include('shared::partials.tinymce-full') --}}
 
 {{-- auto-fill slug from title --}}
 <script>

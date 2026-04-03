@@ -1,11 +1,11 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'View Booking Time Slot')
 @section('content-body')
     <div class="container">
         <div class="card">
             <div class="card-body">
                 <h3 class="mb-4">Time Slot Details</h3>
-                
+
                 <div class="row mb-3">
                     <div class="col-md-3"><strong>ID:</strong></div>
                     <div class="col-md-9">{{ $timeSlot->id }}</div>
@@ -81,7 +81,7 @@
                 <hr>
 
                 <h4 class="mt-4 mb-3">Reservations ({{ $timeSlot->reservations->count() }})</h4>
-                
+
                 @if($timeSlot->reservations->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered">

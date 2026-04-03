@@ -5,7 +5,7 @@ namespace App\Modules\Articles\Observers;
 use App\Modules\Articles\Models\Category;
 use Illuminate\Support\Str;
 use App\Modules\Shared\Events\SlugChangedEvent;
-use App\Models\RedirectSlugChange;
+use App\Modules\Redirects\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryObserver

@@ -4,7 +4,7 @@ namespace App\Modules\Books\Observers;
 
 use App\Modules\Books\Models\BookGenre;
 use App\Modules\Shared\Events\SlugChangedEvent;
-use App\Models\RedirectSlugChange;
+use App\Modules\Redirects\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
 class BookGenreObserver

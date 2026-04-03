@@ -2,7 +2,7 @@
 
 namespace App\Modules\Books\Seeders;
 
-use App\Models\Language;
+use App\Modules\Languages\Models\Language;
 use App\Modules\Books\Models\BookGenre;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;

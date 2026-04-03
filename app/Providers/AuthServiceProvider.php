@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Policies\RolePolicy;
-use App\Policies\PermissionPolicy;
+use App\Modules\Users\Policies\RolePolicy;
+use App\Modules\Users\Policies\PermissionPolicy;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;

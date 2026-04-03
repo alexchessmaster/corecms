@@ -3,8 +3,8 @@
 namespace App\Modules\Products\Models;
 
 use App\Models\User;
-use App\Models\Widget;
-use App\Models\Widgetable;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Widgets\Models\Widgetable;
 use App\Modules\Users\Models\Author;
 use App\Modules\Products\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Model;

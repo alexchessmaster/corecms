@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\WidgetFieldValues>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Widgets\Models\WidgetFieldValues>
  */
 class WidgetFieldValuesFactory extends Factory
 {

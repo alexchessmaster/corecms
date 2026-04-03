@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Booking Calendar')
 @section('content-body')
 <style>
@@ -106,41 +106,41 @@
     <div class="navigation-buttons">
         <div>
             @if($view === 'month')
-                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->subMonth()->format('Y-m-d')]) }}" 
+                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->subMonth()->format('Y-m-d')]) }}"
                    class="btn btn-secondary">
                     <i class="fas fa-chevron-left"></i> Previous Month
                 </a>
             @elseif($view === 'week')
-                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->subWeek()->format('Y-m-d')]) }}" 
+                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->subWeek()->format('Y-m-d')]) }}"
                    class="btn btn-secondary">
                     <i class="fas fa-chevron-left"></i> Previous Week
                 </a>
             @else
-                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->subDay()->format('Y-m-d')]) }}" 
+                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->subDay()->format('Y-m-d')]) }}"
                    class="btn btn-secondary">
                     <i class="fas fa-chevron-left"></i> Previous Day
                 </a>
             @endif
         </div>
-        
-        <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => now()->format('Y-m-d')]) }}" 
+
+        <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => now()->format('Y-m-d')]) }}"
            class="btn btn-primary">
             <i class="fas fa-calendar-day"></i> Today
         </a>
 
         <div>
             @if($view === 'month')
-                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->addMonth()->format('Y-m-d')]) }}" 
+                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->addMonth()->format('Y-m-d')]) }}"
                    class="btn btn-secondary">
                     Next Month <i class="fas fa-chevron-right"></i>
                 </a>
             @elseif($view === 'week')
-                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->addWeek()->format('Y-m-d')]) }}" 
+                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->addWeek()->format('Y-m-d')]) }}"
                    class="btn btn-secondary">
                     Next Week <i class="fas fa-chevron-right"></i>
                 </a>
             @else
-                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->addDay()->format('Y-m-d')]) }}" 
+                <a href="{{ route('admin.booking-reservations.calendar', ['view' => $view, 'date' => $startDate->copy()->addDay()->format('Y-m-d')]) }}"
                    class="btn btn-secondary">
                     Next Day <i class="fas fa-chevron-right"></i>
                 </a>
@@ -150,23 +150,23 @@
 
     <!-- View Options -->
     <div class="view-buttons">
-        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'today']) }}" 
+        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'today']) }}"
            class="btn btn-{{ $view === 'today' ? 'primary' : 'outline-primary' }}">
             <i class="fas fa-sun"></i> Today
         </a>
-        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'today_tomorrow']) }}" 
+        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'today_tomorrow']) }}"
            class="btn btn-{{ $view === 'today_tomorrow' ? 'primary' : 'outline-primary' }}">
             <i class="fas fa-calendar-plus"></i> Today & Tomorrow
         </a>
-        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'week']) }}" 
+        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'week']) }}"
            class="btn btn-{{ $view === 'week' ? 'primary' : 'outline-primary' }}">
             <i class="fas fa-calendar-week"></i> This Week
         </a>
-        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'month']) }}" 
+        <a href="{{ route('admin.booking-reservations.calendar', ['view' => 'month']) }}"
            class="btn btn-{{ $view === 'month' ? 'primary' : 'outline-primary' }}">
             <i class="fas fa-calendar-alt"></i> This Month
         </a>
-        <a href="{{ route('admin.booking-reservations.index') }}" 
+        <a href="{{ route('admin.booking-reservations.index') }}"
            class="btn btn-outline-secondary">
             <i class="fas fa-list"></i> List View
         </a>
@@ -202,12 +202,12 @@
                         <p class="text-muted" style="padding: 10px;">No reservations for this day.</p>
                     @else
                         @foreach($dayReservations->sortBy(function($res) { return $res->timeSlot->start_time; }) as $reservation)
-                            <div class="reservation-block status-{{ $reservation->status }}" 
+                            <div class="reservation-block status-{{ $reservation->status }}"
                                  onclick="showReservationModal({{ $reservation->id }})"
                                  data-id="{{ $reservation->id }}">
                                 <div class="reservation-time">
                                     <i class="fas fa-clock"></i>
-                                    {{ $reservation->timeSlot->start_time->format('H:i') }} - 
+                                    {{ $reservation->timeSlot->start_time->format('H:i') }} -
                                     {{ $reservation->timeSlot->end_time->format('H:i') }}
                                 </div>
                                 <div class="reservation-name">
@@ -271,10 +271,10 @@
 // Update current date and time every second
 function updateDateTime() {
     const now = new Date();
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
@@ -292,86 +292,86 @@ function showReservationModal(reservationId) {
     const modal = new bootstrap.Modal(document.getElementById('reservationModal'));
     const modalContent = document.getElementById('modalContent');
     const editLink = document.getElementById('editReservationLink');
-    
+
     // Set edit link
     editLink.href = '/admin/booking-reservations/' + reservationId + '/edit';
-    
+
     // Show loading
     modalContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-    
+
     // Fetch reservation details
     fetch('/admin/booking-reservations/' + reservationId + '/details')
         .then(response => response.json())
         .then(data => {
             let html = '<div class="reservation-details-content">';
-            
+
             // Status
             let statusBadge = data.status === 'confirmed' ? 'success' : (data.status === 'pending' ? 'warning' : 'danger');
             html += '<div class="info-row">';
             html += '<span class="info-label">Status:</span>';
             html += '<span class="badge bg-' + statusBadge + '">' + data.status.toUpperCase() + '</span>';
             html += '</div>';
-            
+
             // Personal Info
             html += '<div class="info-row"><span class="info-label">Name:</span>' + data.name + '</div>';
             html += '<div class="info-row"><span class="info-label">Email:</span>' + data.email + '</div>';
-            
+
             if (data.mobile_number) {
                 html += '<div class="info-row"><span class="info-label">Mobile:</span>' + data.mobile_number + '</div>';
             }
-            
+
             if (data.age) {
                 html += '<div class="info-row"><span class="info-label">Age:</span>' + data.age + '</div>';
             }
-            
+
             // User info
             if (data.user) {
                 html += '<div class="info-row"><span class="info-label">Registered User:</span>' + data.user.name + ' (' + data.user.email + ')</div>';
             } else {
                 html += '<div class="info-row"><span class="info-label">Booking Type:</span><span class="badge bg-secondary">Guest Booking</span></div>';
             }
-            
+
             // Time Slot
             if (data.time_slot) {
-                html += '<div class="info-row"><span class="info-label">Time Slot:</span>' + 
-                        new Date(data.time_slot.start_time).toLocaleString() + ' - ' + 
+                html += '<div class="info-row"><span class="info-label">Time Slot:</span>' +
+                        new Date(data.time_slot.start_time).toLocaleString() + ' - ' +
                         new Date(data.time_slot.end_time).toLocaleTimeString() + '</div>';
-                html += '<div class="info-row"><span class="info-label">Capacity:</span>' + 
+                html += '<div class="info-row"><span class="info-label">Capacity:</span>' +
                         data.time_slot.max_capacity + '</div>';
             }
-            
+
             // Service
             if (data.service) {
                 html += '<div class="info-row"><span class="info-label">Service:</span>' + data.service + '</div>';
             }
-            
+
             // Expires At
             if (data.expires_at) {
-                html += '<div class="info-row"><span class="info-label">Expires At:</span>' + 
+                html += '<div class="info-row"><span class="info-label">Expires At:</span>' +
                         new Date(data.expires_at).toLocaleString() + '</div>';
             }
-            
+
             // Comments
             if (data.comments) {
-                html += '<div class="info-row"><span class="info-label">Comments:</span><br><div class="mt-2 p-2 border rounded">' + 
+                html += '<div class="info-row"><span class="info-label">Comments:</span><br><div class="mt-2 p-2 border rounded">' +
                         data.comments + '</div></div>';
             }
-            
+
             // Timestamps
-            html += '<div class="info-row"><span class="info-label">Created:</span>' + 
+            html += '<div class="info-row"><span class="info-label">Created:</span>' +
                     new Date(data.created_at).toLocaleString() + '</div>';
-            html += '<div class="info-row"><span class="info-label">Updated:</span>' + 
+            html += '<div class="info-row"><span class="info-label">Updated:</span>' +
                     new Date(data.updated_at).toLocaleString() + '</div>';
-            
+
             html += '</div>';
-            
+
             modalContent.innerHTML = html;
         })
         .catch(error => {
             modalContent.innerHTML = '<div class="alert alert-danger">Error loading reservation details.</div>';
             console.error('Error:', error);
         });
-    
+
     modal.show();
 }
 </script>

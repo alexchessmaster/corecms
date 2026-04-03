@@ -1,5 +1,5 @@
 {{-- admin.categories.edit --}}
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Categories')
 @section('content-body')
 

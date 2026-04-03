@@ -5,7 +5,7 @@ namespace App\Modules\News\Observers;
 use Illuminate\Support\Str;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\Shared\Events\SlugChangedEvent;
-use App\Models\RedirectSlugChange;
+use App\Modules\Redirects\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
 
 class NewsCategoryObserver

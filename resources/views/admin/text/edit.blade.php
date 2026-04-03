@@ -1,7 +1,7 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Edit text')
 @section('content-card-body')
-    
+
     <script>
         tinymce.init({
             selector: '.tinymce',
@@ -16,7 +16,7 @@
         @php
             $textsSeparatedByLang = App\Helpers\TranslateHelper::htmlToJson($text->value);
         @endphp
-        @foreach ($textsSeparatedByLang as $lang => $value) 
+        @foreach ($textsSeparatedByLang as $lang => $value)
             <div>
                 <span class="btn btn-info">Edit {{ $lang }}:</span>
             </div>
@@ -24,8 +24,8 @@
             <hr>
             <br>
         @endforeach
-        
+
         <input type="submit" class="btn btn-success" value="Save">
     </form>
-    
+
 @endsection

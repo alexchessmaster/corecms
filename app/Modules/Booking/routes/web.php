@@ -4,7 +4,7 @@ use App\Modules\Booking\Http\Controllers\BookingReservationController;
 use App\Modules\Booking\Http\Controllers\BookingSlotTemplateController;
 use App\Modules\Booking\Http\Controllers\BookingTimeSlotController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 
 Route::middleware([
     'web', LanguageAdminMiddleware::class, 'auth', 'verified',

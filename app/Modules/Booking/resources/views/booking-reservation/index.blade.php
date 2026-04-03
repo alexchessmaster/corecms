@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Booking Reservations')
 @section('content-body')
     <div class="container">
@@ -47,7 +47,7 @@
                             </td>
                             <td>
                                 @if($reservation->timeSlot)
-                                    {{ $reservation->timeSlot->start_time->format('Y-m-d H:i') }} - 
+                                    {{ $reservation->timeSlot->start_time->format('Y-m-d H:i') }} -
                                     {{ $reservation->timeSlot->end_time->format('H:i') }}
                                 @else
                                     <span class="text-muted">N/A</span>
