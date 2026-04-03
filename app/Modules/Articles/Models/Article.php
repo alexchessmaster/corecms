@@ -1,40 +1,39 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Articles\Models;
 
-use App\Models\Article;
+use App\Models\User;
+use App\Models\Widget;
 use App\Models\Widgetable;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Category extends Model
+class Article extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['name', 'slug', 'description', 'parent_id', 'sitemap_exclude', 'sitemap_priority', 'sitemap_change_frequency', 'primary_language'];
-    public $translatable = ['name', 'slug', 'description'];
-    protected $with = ['parent'];
+    protected $guarded = [];
+    public $translatable = ['title', 'slug', 'content', 'description', 'image', 'image_medium', 'image_thumbnail'];
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
-    public function parent()
+    public function category()
     {
-        return $this->belongsTo(Category::class, 'parent_id');
+        return $this->belongsTo(Category::class);
     }
 
-    public function children()
+    public function tags()
     {
-        return $this->hasMany(Category::class, 'parent_id');
-    }
-
-    public function articles()
-    {
-        return $this->hasMany(Article::class);
+        return $this->belongsToMany(Tag::class);
     }
 
     public function scopeWithAllWidgetData($query)
     {
-        return $this->with([
+        return $query->with([
             'widgetables.widget.fieldWidgets.field',
             'widgetables.widgetFieldValues.fieldWidget.field',
         ]);
@@ -42,11 +41,11 @@ class Category extends Model
 
     public function scopeVisibleTo($query, User $user)
     {
-        if($user->can('view category')) {
+        if ($user->can('view articles')) {
             return $query;
         }
 
-        if($user->can('view own category')) {
+        if ($user->can('view own articles')) {
             return $query->where('user_id', $user->id);
         }
     }

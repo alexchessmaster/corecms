@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Category;
+use App\Modules\Articles\Models\Category;
 use Illuminate\Support\Str;
 use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Models\RedirectSlugChange;

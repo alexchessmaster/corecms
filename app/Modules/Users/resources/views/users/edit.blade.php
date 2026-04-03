@@ -6,7 +6,7 @@
         @method('patch')
         @csrf
 
-        @include('admin.users.form')
+        @include('users::users.form')
 
         <input type="submit" class="btn btn-success" value="Save">
     </form>

@@ -2,14 +2,14 @@
 
 namespace App\Modules\Shared\Http\Controllers\Api\V2;
 
-use App\Models\Tag;
+use App\Modules\Articles\Models\Tag;
 use App\Modules\Books\Models\Book;
 use App\Models\Menu;
 use App\Models\Page;
-use App\Models\Article;
+use App\Modules\Articles\Models\Article;
 use App\Modules\Products\Models\Product;
 use App\Models\Setting;
-use App\Models\Category;
+use App\Modules\Articles\Models\Category;
 use App\Models\Language;
 use App\Models\Redirect;
 use App\Modules\Books\Models\BookGenre;
@@ -19,16 +19,16 @@ use App\Models\Commentable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TranslationText;
-use App\Http\Resources\TagResource;
+use App\Modules\Articles\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
 use App\Modules\Books\Http\Resources\BookResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
 use App\Modules\Users\Http\Resources\UserResource;
-use App\Http\Resources\ArticleResource;
+use App\Modules\Articles\Http\Resources\ArticleResource;
 use App\Modules\Products\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;
-use App\Http\Resources\CategoryResource;
+use App\Modules\Articles\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\RedirectResource;
 use Yajra\DataTables\Facades\DataTables;

@@ -3,16 +3,16 @@
 namespace App\Modules\Books\Http\Controllers\Api\V1;
 
 use App\Models\Page;
-use App\Models\Article;
-use App\Models\Category;
+use App\Modules\Articles\Models\Article;
+use App\Modules\Articles\Models\Category;
 use App\Modules\Books\Models\BookGenre;
 use App\Models\PageWidget;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PageResource;
-use App\Http\Resources\ArticleResource;
-use App\Http\Resources\CategoryResource;
+use App\Modules\Articles\Http\Resources\ArticleResource;
+use App\Modules\Articles\Http\Resources\CategoryResource;
 use App\Modules\Books\Http\Resources\BookGenreResource;
 
 class BookGenreController extends Controller

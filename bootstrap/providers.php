@@ -11,4 +11,5 @@ return [
     App\Modules\Books\Providers\BooksModuleServiceProvider::class,
     App\Modules\Products\Providers\ProductsModuleServiceProvider::class,
     App\Modules\Users\Providers\UsersModuleServiceProvider::class,
+    App\Modules\Articles\Providers\ArticlesModuleServiceProvider::class,
 ];

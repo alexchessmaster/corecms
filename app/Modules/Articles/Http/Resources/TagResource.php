@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Modules\Articles\Http\Resources;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\ArticleResource;
+use App\Modules\Articles\Http\Resources\ArticleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TagResource extends JsonResource

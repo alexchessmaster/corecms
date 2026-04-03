@@ -5,10 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\WidgetController;
 use App\Http\Middleware\LanguageApiMiddleware;
-use App\Http\Controllers\Api\ArticleController;
+use App\Modules\Articles\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\ContentController;
 use App\Modules\Shared\Http\Controllers\Api\V2\ContentController as ContentControllerV1;
-use App\Http\Controllers\Api\CategoryController;
+use App\Modules\Articles\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\LogVisitedUrlMiddleware;
 use App\Http\Controllers\Api\CommonDataController;
 use App\Http\Controllers\Api\WidgetableController;
@@ -53,8 +53,7 @@ Route::middleware([
 // Used in admin-panel
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/pages', PageController::class);
-    Route::apiResource('/articles', ArticleController::class);
-    Route::put('/{id}/{lang}', [ArticleController::class, 'removeArticleLanguage'])->name('api.v1.articles.removeArticleLanguage');
+
     Route::apiResource('/categories', CategoryController::class);
     Route::patch('/widget-field-values', [WidgetFieldValuesController::class, 'update'])->middleware([IncreaseMemoryLimitMiddleware::class]);
     Route::patch('/widgets/attach', [WidgetController::class, 'attach']);

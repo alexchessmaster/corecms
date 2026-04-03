@@ -6,7 +6,7 @@
     <form action="{{ route('admin.tags.update', $tag) }}" method="POST">
         @csrf
         @method('PUT')
-        @include('admin.tag.form')
+        @include('articles::tag.form')
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

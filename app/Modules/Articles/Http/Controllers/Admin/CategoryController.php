@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Modules\Articles\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Widget;
-use App\Models\Category;
+use App\Modules\Articles\Models\Category;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class CategoryController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', Category::class);
@@ -30,12 +31,12 @@ class CategoryController extends Controller
                 ->first();
             if($category){
                 $currentName = $category->getTranslation('name', $lang['code'], false);
-                
+
                 // Only set translations if current name is Uncategorized, null, or empty
                 if (empty($currentName) || $currentName === 'Uncategorized') {
                     $category->setTranslations('name', $nameTranslations);
                 }
-                
+
                 $category->setTranslations('slug', $slugTranslations);
                 $category->save();
 
@@ -73,7 +74,7 @@ class CategoryController extends Controller
                 ->make(true);
         }
 
-        return view('admin.category.index');
+        return view('articles::category.index');
     }
 
     public function create()
@@ -82,7 +83,7 @@ class CategoryController extends Controller
 
         $categories = Category::whereNull('parent_id')->get();
 
-        return view('admin.category.create', compact('categories'));
+        return view('articles::category.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -130,7 +131,7 @@ class CategoryController extends Controller
 
     public function edit($categoryId)
     {
-        
+
         $category = Category::withAllWidgetData()->findOrFail($categoryId);
         $this->authorize('update', $category);
 
@@ -139,7 +140,7 @@ class CategoryController extends Controller
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
-        return view('admin.category.edit', compact('category', 'categories', 'allWidgets', 'authToken'));
+        return view('articles::category.edit', compact('category', 'categories', 'allWidgets', 'authToken'));
     }
 
     public function update(Request $request, Category $category)
@@ -186,7 +187,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $this->authorize('delete', $category);
-        
+
         // uncategorized in en and other languages are the same
         $newCategory = $category->parent ?? Category::where("slug->" . "en", '/uncategorized')->first();
         if (!$newCategory) {

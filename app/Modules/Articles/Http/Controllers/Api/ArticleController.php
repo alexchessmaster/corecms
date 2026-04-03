@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Modules\Articles\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ArticleResource;
-use App\Models\Article;
+use App\Modules\Articles\Http\Resources\ArticleResource;
+use App\Modules\Articles\Models\Article;
 use App\Modules\Shared\Jobs\GenerateSitemapsJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ArticleController extends Controller
 {
     use AuthorizesRequests;
-    
+
     public function show($articleId)
     {
         if (!empty(request()->lang)) {

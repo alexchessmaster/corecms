@@ -1,4 +1,4 @@
-@extends('resources.views.admin.partials.app')
+@extends('admin.partials.app')
 @section('content-card-title', 'Edit Permission')
 @section('content-body')
 
@@ -16,7 +16,7 @@
             @csrf
             @method('PUT')
 
-            @include('permissions.form')
+            @include('users::permissions.form')
 
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary">

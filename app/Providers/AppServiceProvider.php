@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Article;
-use App\Models\Category;
+use App\Modules\Articles\Models\Article;
+use App\Modules\Articles\Models\Category;
 use App\Models\Language;
 use App\Modules\Shared\Services\OpenAiService;
 use App\Modules\Shared\Events\SlugChangedEvent;
