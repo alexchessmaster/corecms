@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\FormContactUsController;
 use App\Http\Middleware\CacheControlHeaderMiddleware;
 use App\Http\Controllers\Api\FormNewsletterController;
 use App\Http\Controllers\Api\WidgetFieldValuesController;
-use App\Http\Middleware\IncreaseMemoryLimitMiddleware;
+use App\Modules\Shared\Http\Middleware\IncreaseMemoryLimitMiddleware;
 
 // Used in the frontend
 // Deprecated. These routes are for the existing frontend apps. For new apps use: App/Modules/Shared/routes/api.php

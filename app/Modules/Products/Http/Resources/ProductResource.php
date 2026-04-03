@@ -3,7 +3,7 @@
 namespace App\Modules\Products\Http\Resources;
 
 use App\Http\Resources\WidgetableResource;
-use App\Modules\Products\Http\Resources\ProductAuthorResource;
+use App\Modules\Users\Http\Resources\AuthorResource;
 use App\Modules\Products\Http\Resources\ProductCategoryResource;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Shared\Helpers\FileHelper;
@@ -63,7 +63,7 @@ class ProductResource extends JsonResource
             "productCategory" => $this->relationLoaded('productCategory') ? new ProductCategoryResource($this->productCategory) : null,
             "published_year" => $this->published_year,
             "author_id" => $this->author_id,
-            "author" => $this->relationLoaded('author') ? new ProductAuthorResource($this->author) : null,
+            "author" => $this->relationLoaded('author') ? new AuthorResource($this->author) : null,
             "views" => $this->views,
             "total_pages" => $this->total_pages,
             "primary_language" => $this->primary_language,

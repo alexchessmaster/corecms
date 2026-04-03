@@ -24,7 +24,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Books\Http\Resources\BookResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\PageResource;
-use App\Http\Resources\UserResource;
+use App\Modules\Users\Http\Resources\UserResource;
 use App\Http\Resources\ArticleResource;
 use App\Modules\Products\Http\Resources\ProductResource;
 use App\Http\Resources\SettingResource;

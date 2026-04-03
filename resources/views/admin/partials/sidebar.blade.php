@@ -5,7 +5,7 @@
             <img src="/AdminLTE-3.2.0/dist/img/user0-160x160.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-            <a href="/" class="d-block">{{ Auth::check() ? Auth::user()->email : '' }}</a>
+            <a href="/admin/profile" class="d-block">{{ Auth::check() ? Auth::user()->email : '' }}</a>
         </div>
     </div>
 
@@ -97,7 +97,7 @@
                     <div style="border: 1px rgb(55, 67, 71) solid"></div>
                     <li class="nav-item">
                         <a href="/admin/categories" class="nav-link">
-                            <i class="nav-icon fas fa-folder"></i>
+                            <i class="nav-icon fas fa-file-alt"></i>
                             <p>
                                 Articles Categories
                             </p>
@@ -107,7 +107,7 @@
                 @if(auth()->user()->can('view tags') || auth()->user()->can('view own tags'))
                     <li class="nav-item">
                         <a href="/admin/tags" class="nav-link">
-                            <i class="nav-icon fas fa-tag"></i>
+                            <i class="nav-icon fas fa-file-alt"></i>
                             <p>
                                 Articles Tags
                             </p>
@@ -147,16 +147,6 @@
                         </a>
                     </li>
                 @endif
-                @if(auth()->user()->can('view product authors') || auth()->user()->can('view own product authors'))
-                    <li class="nav-item">
-                        <a href="/admin/product-authors" class="nav-link">
-                            <i class="nav-icon fas fa-book"></i>
-                            <p>
-                                Product Authors
-                            </p>
-                        </a>
-                    </li>
-                @endif
                 @if(auth()->user()->can('view products') || auth()->user()->can('view own products'))
                     <li class="nav-item">
                         <a href="/admin/products" class="nav-link">
@@ -186,16 +176,6 @@
                             <i class="nav-icon fas fa-newspaper"></i>
                             <p>
                                 News Tags
-                            </p>
-                        </a>
-                    </li>
-                @endif
-                @if(auth()->user()->can('view news authors') || auth()->user()->can('view own news authors'))
-                    <li class="nav-item">
-                        <a href="/admin/news-authors" class="nav-link">
-                            <i class="nav-icon fas fa-newspaper"></i>
-                            <p>
-                                News Authors
                             </p>
                         </a>
                     </li>
@@ -382,6 +362,16 @@
                     </li>
                 @endcan
             @endcan
+            @if(auth()->user()->can('view authors') || auth()->user()->can('view own authors'))
+                <li class="nav-item">
+                    <a href="/admin/authors" class="nav-link">
+                        <i class="nav-icon fas fa-pen"></i>
+                        <p>
+                            Authors
+                        </p>
+                    </a>
+                </li>
+            @endif
             @can('view settings')
                 <li class="nav-item">
                     <a href="/admin/settings" class="nav-link">
@@ -415,7 +405,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan 
+                @endcan
             @endcan
         </ul>
     </nav>

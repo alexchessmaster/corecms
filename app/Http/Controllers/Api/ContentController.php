@@ -13,7 +13,7 @@ use App\Http\Resources\RedirectResource;
 use App\Http\Resources\SettingResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\TranslationTextResource;
-use App\Http\Resources\UserResource;
+use App\Modules\Users\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Commentable;

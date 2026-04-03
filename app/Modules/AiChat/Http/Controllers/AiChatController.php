@@ -3,8 +3,8 @@
 namespace App\Modules\AiChat\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAiChatRequest;
-use App\Http\Requests\UpdateAiChatRequest;
+use App\Modules\AiChat\Http\Requests\StoreAiChatRequest;
+use App\Modules\AiChat\Http\Requests\UpdateAiChatRequest;
 use App\Modules\AiChat\Models\AiChat;
 use App\Modules\AiChat\Models\AiMessage;
 use App\Modules\AiChat\Models\AiPersona;

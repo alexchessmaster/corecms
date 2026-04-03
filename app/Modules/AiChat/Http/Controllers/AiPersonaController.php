@@ -3,8 +3,8 @@
 namespace App\Modules\AiChat\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAiPersonaRequest;
-use App\Http\Requests\UpdateAiPersonaRequest;
+use App\Modules\AiChat\Http\Requests\StoreAiPersonaRequest;
+use App\Modules\AiChat\Http\Requests\UpdateAiPersonaRequest;
 use App\Modules\AiChat\Models\AiPersona;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;

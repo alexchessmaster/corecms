@@ -10,4 +10,5 @@ return [
     App\Modules\News\Providers\NewsModuleServiceProvider::class,
     App\Modules\Books\Providers\BooksModuleServiceProvider::class,
     App\Modules\Products\Providers\ProductsModuleServiceProvider::class,
+    App\Modules\Users\Providers\UsersModuleServiceProvider::class,
 ];
