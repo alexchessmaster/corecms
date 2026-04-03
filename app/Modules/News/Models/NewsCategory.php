@@ -3,8 +3,8 @@
 namespace App\Modules\News\Models;
 
 use App\Models\User;
-use App\Models\Widget;
-use App\Models\Widgetable;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Widgets\Models\Widgetable;
 use App\Modules\News\Models\News;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;

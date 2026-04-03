@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Redirect>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Modules\Redirects\Models\Redirect>
  */
 class RedirectFactory extends Factory
 {

@@ -4,13 +4,13 @@ namespace App\Modules\Articles\Http\Resources;
 
 use App\Modules\Articles\Http\Resources\CategoryResource;
 use App\Modules\Articles\Http\Resources\TagResource;
-use App\Http\Resources\WidgetableResource;
+use App\Modules\Widgets\Http\Resources\WidgetableResource;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
-use App\Repositories\LanguageRepository;
-use App\Repositories\SettingRepository;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

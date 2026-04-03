@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Edit Author')
 @section('content-card-body')
 
@@ -14,6 +14,6 @@
     </form>
 
     {{-- <br><br>
-    @include('admin.partials.add-widget-form') --}}
+    @include('shared::partials.add-widget-form') --}}
 
 @endsection

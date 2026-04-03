@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Booking Reservation Details')
 @section('content-body')
     <div class="container">
@@ -17,7 +17,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Reservation Information</h5>
-                
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <strong>Status:</strong>

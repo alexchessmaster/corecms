@@ -4,11 +4,11 @@ namespace App\Providers;
 
 use App\Modules\Articles\Models\Article;
 use App\Modules\Articles\Models\Category;
-use App\Models\Language;
+use App\Modules\Languages\Models\Language;
 use App\Modules\Shared\Services\OpenAiService;
 use App\Modules\Shared\Events\SlugChangedEvent;
-use App\Observers\ArticleObserver;
-use App\Observers\CategoryObserver;
+use App\Modules\Articles\Observers\ArticleObserver;
+use App\Modules\Articles\Observers\CategoryObserver;
 use Illuminate\Support\Facades\URL;
 use App\Modules\AiChat\Contracts\AiServiceInterface;
 use Illuminate\Support\Facades\Event;
@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\Shared\Listeners\HandleSlugChangeListener;
-use App\Repositories\LanguageRepository;
-use App\Repositories\SettingRepository;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,13 +39,6 @@ class AppServiceProvider extends ServiceProvider
         URL::forceScheme('https');
 
         Model::preventLazyLoading();
-
-        Article::observe(ArticleObserver::class);
-        // Book::observe(BookObserver::class);
-        // BookGenre::observe(BookGenreObserver::class);
-        Category::observe(CategoryObserver::class);
-        // Product::observe(ProductObserver::class);
-        // ProductCategory::observe(ProductCategoryObserver::class);
 
         Event::listen(SlugChangedEvent::class, HandleSlugChangeListener::class);
 

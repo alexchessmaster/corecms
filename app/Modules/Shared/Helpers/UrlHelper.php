@@ -2,10 +2,10 @@
 
 namespace App\Modules\Shared\Helpers;
 
-use App\Models\Language;
+use App\Modules\Languages\Models\Language;
 use App\Modules\Shared\Enums\SettingKeyEnum;
-use App\Repositories\LanguageRepository;
-use App\Repositories\SettingRepository;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 
 class UrlHelper
 {
@@ -137,11 +137,11 @@ class UrlHelper
     /**
      * @param string $slug
      * @param $model either this should have value or $prefix
-     * @param string|null $lang 
+     * @param string|null $lang
      * use:
-     *  $settingRepository->getFullUrlBySlug($slug, $this, null, $lang) 
+     *  $settingRepository->getFullUrlBySlug($slug, $this, null, $lang)
      *  or
-     *  $settingRepository->getFullUrlBySlug($slug, null, $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang) 
+     *  $settingRepository->getFullUrlBySlug($slug, null, $settingRepository->findByKey(SettingKeyEnum::NEWS_PREFIX, $lang), $lang)
      * @return string ex. https://example.com/en/articles/learn/how-to-know
      */
     public static function getFullUrlBySlug(string $slug, $modelOrTable = null, $prefix = null, $lang = null, $onlyPath = false): string

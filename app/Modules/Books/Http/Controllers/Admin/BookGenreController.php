@@ -3,8 +3,8 @@
 namespace App\Modules\Books\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Widget;
-use App\Models\Language;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Languages\Models\Language;
 use App\Modules\Books\Models\BookGenre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Modules\Articles\Models\Category;
-use App\Models\Language;
+use App\Modules\Languages\Models\Language;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 

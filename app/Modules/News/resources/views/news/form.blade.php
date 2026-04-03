@@ -2,7 +2,8 @@
     <label for="image" class="form-label">Image</label>
     @if (isset($news) && App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'image'))
         <div class="mb-2">
-            <img src="{{ App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'image') }}" alt="Current Image" style="max-width: 150px; height: auto;">
+            <img src="{{ App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'image') }}"
+                 alt="Current Image" style="max-width: 150px; height: auto;">
         </div>
     @endif
     <div class="mb-2" id="preview-container" style="display: none;">
@@ -15,16 +16,17 @@
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
            style="{{ isset($news) && !empty($news->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
-           value="{{ isset($news) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'title', true) : '' }}" required>
+           value="{{ isset($news) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'title', true) : '' }}"
+           required>
 </div>
 <div class="mb-3">
     <label for="slug" class="form-label">Slug</label>
     <input type="text" class="form-control" id="slug" name="slug"
-        value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}">
+           value="{{ isset($news) ? $news->getTranslation('slug', app()->getLocale(), false) : '' }}">
     @if (isset($news))
         <small>
             @php
-                $settingRepository = new App\Repositories\SettingRepository;
+                $settingRepository = new \App\Modules\Settings\Repositories\SettingRepository;
                 // get the prefix from settings
                 $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::NEWS_PREFIX)
             @endphp
@@ -64,7 +66,7 @@
 <div class="mb-3">
     <label for="news_date">News date</label>
     <input type="datetime-local" class="form-control" id="news_date" name="news_date"
-        value="{{ old('news_date', isset($news->news_date) ? $news->news_date->format('Y-m-d\TH:i') : '') }}">
+           value="{{ old('news_date', isset($news->news_date) ? $news->news_date->format('Y-m-d\TH:i') : '') }}">
 </div>
 {{-- Translatable inputs needed. Description is not translatable right now. <div class="mb-3">
     <label for="description" class="form-label">Description (Short)</label>
@@ -110,7 +112,7 @@
     </select>
 </div>
 
-@include('admin.partials.sitemap-form')
+@include('shared::partials.sitemap-form')
 
 <br>
 
@@ -154,7 +156,7 @@
 
         // Trigger change event to ensure the pre-selected option is properly loaded
         @if (isset($news) && $news->author_id && $news->author)
-            $('#author_id').trigger('change');
+        $('#author_id').trigger('change');
         @endif
     });
 </script>

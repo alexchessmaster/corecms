@@ -11,7 +11,7 @@
         <form action="{{ route('admin.booking-reservations.update', $reservation->id) }}" method="POST">
             @csrf
             @method('PUT')
-            @include('booking-reservation.form')
+            @include('bookings::booking-reservation.form')
             <button type="submit" class="btn btn-primary">Update Reservation</button>
         </form>
     </div>

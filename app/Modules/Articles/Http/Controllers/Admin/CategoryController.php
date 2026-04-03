@@ -3,9 +3,9 @@
 namespace App\Modules\Articles\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Widget;
+use App\Modules\Widgets\Models\Widget;
 use App\Modules\Articles\Models\Category;
-use App\Models\Language;
+use App\Modules\Languages\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Setting;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -198,7 +198,7 @@ class SettingSeeder extends Seeder
                 'description' => 'The default sitemap-change-priority for news'
             ],
 
-            
+
             [
                 'key' => 'notification-email-enabled',
                 'value' => 'false',

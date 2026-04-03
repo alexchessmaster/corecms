@@ -2,16 +2,16 @@
 
 namespace App\Modules\News\Models;
 
-use App\Models\Language;
-use App\Models\Setting;
+use App\Modules\Languages\Models\Language;
+use App\Modules\Settings\Models\Setting;
 use App\Models\User;
-use App\Models\Widget;
-use App\Models\Widgetable;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Widgets\Models\Widgetable;
 use App\Modules\News\Models\NewsAuthor;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\Shared\Enums\SettingKeyEnum;
-use App\Repositories\LanguageRepository;
-use App\Repositories\SettingRepository;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

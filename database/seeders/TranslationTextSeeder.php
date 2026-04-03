@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 
-use App\Models\TranslationText;
+use App\Modules\TranslationTexts\Models\TranslationText;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

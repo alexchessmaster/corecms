@@ -2,15 +2,15 @@
 
 namespace App\Modules\Books\Models;
 
-use App\Models\Language;
+use App\Modules\Languages\Models\Language;
 use App\Models\User;
-use App\Models\Widget;
-use App\Models\Widgetable;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Widgets\Models\Widgetable;
 use App\Modules\Books\Models\BookAuthor;
 use App\Modules\Books\Models\BookGenre;
 use App\Modules\Shared\Enums\SettingKeyEnum;
-use App\Repositories\LanguageRepository;
-use App\Repositories\SettingRepository;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;

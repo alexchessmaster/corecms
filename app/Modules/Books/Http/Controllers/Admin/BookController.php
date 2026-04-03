@@ -3,7 +3,7 @@
 namespace App\Modules\Books\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Widget;
+use App\Modules\Widgets\Models\Widget;
 use App\Modules\Books\Http\Requests\StoreBookRequest;
 use App\Modules\Books\Http\Requests\UpdateBookRequest;
 use App\Modules\Books\Models\Book;

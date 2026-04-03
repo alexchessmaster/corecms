@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Page;
-use App\Models\Field;
-use App\Models\Widget;
-use App\Models\Language;
+use App\Modules\Pages\Models\Page;
+use App\Modules\Widgets\Models\Field;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Languages\Models\Language;
 use App\Models\FieldValue;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -15,10 +15,10 @@ class FieldSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
      */
     public function run(): void
     {

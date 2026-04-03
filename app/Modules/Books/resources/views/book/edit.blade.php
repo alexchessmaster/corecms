@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Edit Book')
 @section('content-body')
 
@@ -8,7 +8,7 @@
         <span class="float-right">
             <button class="btn btn-default" id="translate" type="button">Translate to
                 {{ strtoupper(app()->getLocale()) }}</button>
-            <button class="btn btn-danger" id="remove-language" 
+            <button class="btn btn-danger" id="remove-language"
             {{ isset($book) && !empty($book->getTranslation('slug', app()->getLocale(), false)) ?: 'hidden' }}
             >Remove {{ strtoupper(app()->getLocale()) }} <i
                     class="fa fa-trash"></i></button>
@@ -27,7 +27,7 @@
     <br>
     <br>
 
-    @include('admin.partials.add-widget-form')
+    @include('shared::partials.add-widget-form')
 
 @endsection
 

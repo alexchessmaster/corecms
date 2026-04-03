@@ -3,7 +3,7 @@
 namespace App\Modules\News\Http\Controllers\Admin;
 
 use App\Modules\Shared\Jobs\GenerateSitemapsJob;
-use App\Models\Widget;
+use App\Modules\Widgets\Models\Widget;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Modules\News\Models\News;

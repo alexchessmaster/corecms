@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 use App\Modules\News\Http\Controllers\Admin\NewsController;
 use App\Modules\News\Http\Controllers\Admin\NewsTagController;
 use App\Modules\News\Http\Controllers\Admin\NewsAuthorController;

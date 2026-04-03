@@ -5,7 +5,7 @@ namespace App\Modules\Books\Http\Resources;
 use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use App\Modules\Books\Http\Resources\BookResource;
-use App\Http\Resources\WidgetableResource;
+use App\Modules\Widgets\Http\Resources\WidgetableResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BookGenreResource extends JsonResource

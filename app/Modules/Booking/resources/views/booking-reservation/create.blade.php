@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Create Booking Reservation')
 @section('content-body')
     <div class="container">
@@ -10,7 +10,7 @@
         </div>
         <form action="{{ route('admin.booking-reservations.store') }}" method="POST">
             @csrf
-            @include('admin.booking-reservation.form')
+            @include('bookings::booking-reservation.form')
             <button type="submit" class="btn btn-primary">Create Reservation</button>
         </form>
     </div>

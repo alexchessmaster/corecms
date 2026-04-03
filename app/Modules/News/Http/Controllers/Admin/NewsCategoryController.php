@@ -2,8 +2,8 @@
 
 namespace App\Modules\News\Http\Controllers\Admin;
 
-use App\Models\Widget;
-use App\Models\Language;
+use App\Modules\Widgets\Models\Widget;
+use App\Modules\Languages\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Controller;

@@ -1,4 +1,4 @@
-@extends('admin.partials.app')
+@extends('shared::partials.app')
 @section('content-card-title', 'Create Role')
 @section('content-body')
 
@@ -11,8 +11,8 @@
 
     <form action="{{ route('admin.roles.store') }}" method="POST">
         @csrf
-        @include('admin.roles.form')
-        
+        @include('users::roles.form')
+
         <div class="mt-3">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Create Role

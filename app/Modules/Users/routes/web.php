@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\LanguageController;
-use App\Http\Middleware\LanguageAdminMiddleware;
+use App\Modules\Languages\Http\Controllers\Admin\LanguageController;
+use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 use App\Modules\Users\Http\Controllers\Admin\AuthorController;
 use App\Modules\Users\Http\Controllers\Admin\PermissionController;
 use App\Modules\Users\Http\Controllers\Admin\ProfileController;

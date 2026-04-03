@@ -3,7 +3,7 @@
 namespace App\Modules\Products\Observers;
 
 use App\Modules\Shared\Events\SlugChangedEvent;
-use App\Models\RedirectSlugChange;
+use App\Modules\Redirects\Models\RedirectSlugChange;
 use App\Modules\Products\Models\Product;
 use App\Modules\Shared\Actions\DeleteImageAction;
 use App\Modules\Shared\Helpers\FileHelper;

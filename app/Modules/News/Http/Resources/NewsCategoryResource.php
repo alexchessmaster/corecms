@@ -4,7 +4,7 @@ namespace App\Modules\News\Http\Resources;
 
 use App\Modules\Shared\Helpers\FileHelper;
 use Illuminate\Http\Request;
-use App\Http\Resources\WidgetableResource;
+use App\Modules\Widgets\Http\Resources\WidgetableResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class NewsCategoryResource extends JsonResource
