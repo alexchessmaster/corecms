@@ -1,8 +1,9 @@
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>
-    @if (isset($article) && $article->image)
+    @if (isset($articles) && App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($articles, 'image'))
         <div class="mb-2">
-            <img src="{{ $article->image }}" alt="Current Image" style="max-width: 150px; height: auto;">
+            <img src="{{ App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($articles, 'image') }}"
+                 alt="Current Image" style="max-width: 150px; height: auto;">
         </div>
     @endif
     <div class="mb-2" id="preview-container" style="display: none;">
@@ -22,8 +23,7 @@
     <div class="mb-3">
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
-               value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}"
-               disabled>
+               value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}">
         @if (isset($article))
             <small>
                 @php
