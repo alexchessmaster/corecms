@@ -4,13 +4,14 @@ namespace App\Modules\Articles\Http\Resources;
 
 use App\Modules\Articles\Http\Resources\CategoryResource;
 use App\Modules\Articles\Http\Resources\TagResource;
-use App\Modules\Widgets\Http\Resources\WidgetableResource;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Settings\Repositories\SettingRepository;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
-use App\Modules\Languages\Repositories\LanguageRepository;
-use App\Modules\Settings\Repositories\SettingRepository;
+use App\Modules\Users\Http\Resources\AuthorResource;
+use App\Modules\Widgets\Http\Resources\WidgetableResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -61,9 +62,12 @@ class ArticleResource extends JsonResource
             "category_id" => $this->category_id,
             "category" => $this->relationLoaded('category') ? new CategoryResource($this->category) : null,
             "tags" => $this->relationLoaded('tags') ? TagResource::collection($this->tags) : null,
+            "author_id" => $this->author_id,
+            "author" => $this->relationLoaded('author') ? new AuthorResource($this->author) : null,
+            // "views" => $this->views,
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at,
+            "updated_at" => $this->updated_at->format('Y-m-d'),
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,
             'sitemap_exclude' => $this->sitemap_exclude,
             'prefix' => $articlePrefix,

@@ -3,7 +3,6 @@
 use App\Modules\Languages\Http\Middleware\LanguageAdminMiddleware;
 use App\Modules\News\Http\Controllers\Admin\NewsController;
 use App\Modules\News\Http\Controllers\Admin\NewsTagController;
-use App\Modules\News\Http\Controllers\Admin\NewsAuthorController;
 use App\Modules\News\Http\Controllers\Admin\NewsCategoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +13,4 @@ Route::middleware([
     Route::resource('news-categories', NewsCategoryController::class);
     Route::get('news-tags/select', [NewsTagController::class, 'selectTags'])->name('news-tags.select-tags');
     Route::resource('news-tags', NewsTagController::class);
-    Route::get('news-authors/select', [NewsAuthorController::class, 'selectAuthor'])->name('news-authors.select-author');
-    Route::resource('news-authors', NewsAuthorController::class);
 });

@@ -2,7 +2,6 @@
 
 namespace App\Modules\News\Observers;
 
-use Illuminate\Support\Str;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Modules\Redirects\Models\RedirectSlugChange;
@@ -78,7 +77,7 @@ class NewsCategoryObserver
             return "/" . $link;
         }
 
-        $slug = $newsCategory->getTranslation('slug', app()->getLocale());
+        $slug = $newsCategory->getTranslation('slug', app()->getLocale(), false);
 
         // Root news category check
         if (empty($newsCategory->parent_id)) {

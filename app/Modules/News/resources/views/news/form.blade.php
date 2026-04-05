@@ -16,7 +16,7 @@
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
            style="{{ isset($news) && !empty($news->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
-           value="{{ isset($news) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'title', true) : '' }}"
+           value="{{ isset($news) ? \App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($news, 'title', true) : '' }}"
            required>
 </div>
 <div class="mb-3">
@@ -26,7 +26,7 @@
     @if (isset($news))
         <small>
             @php
-                $settingRepository = new \App\Modules\Settings\Repositories\SettingRepository;
+                $settingRepository = app(\App\Modules\Settings\Repositories\SettingRepository::class);
                 // get the prefix from settings
                 $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::NEWS_PREFIX)
             @endphp
@@ -121,7 +121,7 @@
     jQuery(document).ready(function ($) {
         $('#author_id').select2({
             ajax: {
-                url: '/admin/news-authors/select?lang={!! App::currentLocale() !!}',
+                url: '/admin/authors/select?lang={!! App::currentLocale() !!}',
                 dataType: 'json',
                 delay: 300,
                 headers: {

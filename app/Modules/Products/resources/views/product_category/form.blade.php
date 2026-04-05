@@ -10,8 +10,8 @@
         @if(isset($productCategory))
             required
         @endif
-        disabled
     >
+    <small class="text-muted">Should start with "/"</small>
 </div>
 <div class="mb-3">
     <label for="parent_id" class="form-label">Parent productCategory</label>
@@ -31,7 +31,13 @@
         {{ isset($productCategory) ? $productCategory->getTranslation('description', app()->getLocale(), false) : '' }}
     </textarea>
 </div>
-
+<div class="form-control custom-checkbox">
+    <input class="custom-control-input custom-control-input-danger" type="checkbox"
+        name="hide_from_frontend" id="hide_from_frontend" value="1"
+        @checked(old('hide_from_frontend', isset($productCategory) ? $productCategory->hide_from_frontend : false))>
+    <label for="hide_from_frontend" class="custom-control-label">Hide it from frontend</label>
+</div>
+<br>
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>
     @if (isset($productCategory) && $productCategory->image)
@@ -51,3 +57,26 @@
 <br>
 
 {{-- @include('shared::partials.tinymce-full') --}}
+
+{{-- auto-fill slug from title --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const titleInput = document.getElementById('name');
+        const slugInput = document.getElementById('slug');
+
+        if (titleInput && slugInput && !slugInput.disabled) {
+            titleInput.addEventListener('blur', function () {
+                if (slugInput.value.trim() === '') {
+                    slugInput.value = titleInput.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\u0600-\u06FF\w-]/g, '')
+                        .replace(/-+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                }
+            });
+        }
+    });
+</script>
+{{-- end auto-fill slug from title --}}

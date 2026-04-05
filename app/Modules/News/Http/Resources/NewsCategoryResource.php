@@ -29,6 +29,7 @@ class NewsCategoryResource extends JsonResource
             "news" => $this->relationLoaded('news') ? NewsResource::collection($this->books) : [],
             "news_count" => $this->news_count ?? null, // check it
             "primary_language" => $this->primary_language,
+            "hide_from_frontend" => $this->hide_from_frontend,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,

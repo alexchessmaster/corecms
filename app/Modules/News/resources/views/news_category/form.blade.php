@@ -11,6 +11,7 @@
             required
         @endif
     >
+    <small class="text-muted">Should start with "/"</small>
 </div>
 <div class="mb-3">
     <label for="parent_id" class="form-label">Parent News Category</label>
@@ -30,7 +31,13 @@
         {{ isset($newsCategory) ? $newsCategory->getTranslation('description', app()->getLocale(), false) : '' }}
     </textarea>
 </div>
-
+<div class="custom-control custom-checkbox">
+    <input class="custom-control-input custom-control-input-danger" type="checkbox"
+        name="hide_from_frontend" id="hide_from_frontend" value="1"
+        @checked(old('hide_from_frontend', isset($newsCategory) ? $newsCategory->hide_from_frontend : false))>
+    <label for="hide_from_frontend" class="custom-control-label">Hide it from frontend</label>
+</div>
+<br>
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>
     @if (isset($newsCategory) && $newsCategory->image)

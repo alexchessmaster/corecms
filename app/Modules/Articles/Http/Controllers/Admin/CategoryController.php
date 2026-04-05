@@ -17,9 +17,11 @@ class CategoryController extends Controller
     {
         $this->authorize('viewAny', Category::class);
 
+        // Ensure /uncategorized news-category exists for each language
         $languages = Language::get();
         $languageCodes = collect($languages)->pluck('code')->toArray();
 
+        // Create or update /uncategorized for each language using setTranslations()
         $nameTranslations = [];
         $slugTranslations = [];
         foreach ($languages as $lang) {
@@ -31,16 +33,10 @@ class CategoryController extends Controller
                 ->first();
             if($category){
                 $currentName = $category->getTranslation('name', $lang['code'], false);
-
-                // Only set translations if current name is Uncategorized, null, or empty
-                if (empty($currentName) || $currentName === 'Uncategorized') {
-                    $category->setTranslations('name', $nameTranslations);
-                }
-
                 $category->setTranslations('slug', $slugTranslations);
                 $category->save();
 
-                break;
+                break;// Only need to create one, since all translations are set at once
             }
         }
 
@@ -99,6 +95,7 @@ class CategoryController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
 
         $category = new Category;
@@ -106,6 +103,7 @@ class CategoryController extends Controller
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->setTranslation('slug', app()->getLocale(), $request->slug);
         $category->parent_id = $request->input('parent_id');
+        $category->hide_from_frontend = $request->boolean('hide_from_frontend');
         $category->description = $request->input('description');
         if(!empty($request->input('sitemap_exclude'))){
             $category->sitemap_exclude = true;
@@ -156,11 +154,13 @@ class CategoryController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
         $category->user_id = auth()->id();
         $category->setTranslation('name', app()->getLocale(), $request->name);
         $category->setTranslation('slug', app()->getLocale(), $request->slug);
         $category->parent_id = $request->input('parent_id');
+        $category->hide_from_frontend = $request->boolean('hide_from_frontend');
         $category->description = $request->input('description');
         if(!empty($request->input('sitemap_exclude'))){
             $category->sitemap_exclude = true;

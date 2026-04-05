@@ -5,8 +5,10 @@ namespace App\Modules\Articles\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Modules\Articles\Http\Resources\TagResource;
 use App\Modules\Articles\Models\Tag;
+use App\Modules\Shared\Helpers\TranslationHelper;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
@@ -17,12 +19,16 @@ class TagController extends Controller
         $this->authorize('viewAny', Tag::class);
 
         if ($request->ajax()) {
-            $data = Tag::visibleTo(auth()->user())->select(['id', 'name']);
+            $data = Tag::visibleTo(auth()->user())->select(['id', 'name', 'slug']);
             return datatables()
                 ->of($data)
                 ->editColumn('name', function ($item) {
                     $text = $item->getTranslation('name', app()->getLocale(), false);
-                    return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), true);
+                    return $text ?: '-Not translated- ' . TranslationHelper::firstAvailableValue($item, 'name', false);
+                })
+                ->editColumn('slug', function ($item) {
+                    $text = $item->getTranslation('slug', app()->getLocale(), false);
+                    return $text ?: '-Not translated- ' . TranslationHelper::firstAvailableValue($item, 'slug', false);
                 })
                 ->addColumn('actions', function ($row) {
                     $editUrl = route('admin.tags.edit', $row->id);
@@ -77,10 +83,12 @@ class TagController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ]);
 
         $tag = new Tag;
         $tag->setTranslation('name', app()->getLocale(), $request->input('name'));
+        $tag->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? Str::slug($request->input('name')));
         $tag->user_id = auth()->id();
         $tag->save();
 
@@ -99,9 +107,11 @@ class TagController extends Controller
         $this->authorize('update', $tag);
         $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255',
         ]);
         $tag->user_id = auth()->id();
         $tag->setTranslation('name', app()->getLocale(), $request->input('name'));
+        $tag->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? Str::slug($request->input('name')));
         $tag->save();
 
         return redirect()->route('admin.tags.index')->with('success', 'Tag updated successfully.');
@@ -112,6 +122,7 @@ class TagController extends Controller
         $this->authorize('delete', $tag);
 
         $tag->delete();
+        
         return redirect()->route('admin.tags.index')->with('success', 'Tag deleted successfully.');
     }
 }

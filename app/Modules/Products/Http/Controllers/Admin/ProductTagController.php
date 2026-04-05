@@ -3,13 +3,14 @@
 namespace App\Modules\Products\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Products\Http\Resources\ProductTagResource;
-use App\Modules\Products\Models\ProductTag;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Modules\Products\Http\Requests\StoreProductTagRequest;
 use App\Modules\Products\Http\Requests\UpdateProductTagRequest;
+use App\Modules\Products\Http\Resources\ProductTagResource;
+use App\Modules\Products\Models\ProductTag;
+use App\Modules\Shared\Helpers\TranslationHelper;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductTagController extends Controller
 {
@@ -25,11 +26,11 @@ class ProductTagController extends Controller
                 ->of($data)
                 ->editColumn('name', function ($item) {
                     $text = $item->getTranslation('name', app()->getLocale(), false);
-                    return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), true);
+                    return $text ?: '-Not translated- ' . TranslationHelper::firstAvailableValue($item, 'name', false);
                 })
                 ->editColumn('slug', function ($item) {
                     $text = $item->getTranslation('slug', app()->getLocale(), false);
-                    return $text ?: '-Not translated- ' . $item->getTranslation('slug', app()->getLocale(), true);
+                    return $text ?: '-Not translated- ' . TranslationHelper::firstAvailableValue($item, 'name', false);
                 })
                 ->addColumn('actions', function ($row) {
                     $editUrl = route('admin.product-tags.edit', $row->id);

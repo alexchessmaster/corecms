@@ -2,12 +2,13 @@
 
 namespace App\Modules\News\Http\Controllers\Admin;
 
-use App\Modules\News\Models\NewsTag;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Modules\News\Http\Resources\NewsTagResource;
+use App\Modules\News\Models\NewsTag;
+use App\Modules\Shared\Helpers\TranslationHelper;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NewsTagController extends Controller
 {
@@ -23,11 +24,11 @@ class NewsTagController extends Controller
                 ->of($data)
                 ->editColumn('name', function ($item) {
                     $text = $item->getTranslation('name', app()->getLocale(), false);
-                    return $text ?: '-Not translated- ' . $item->getTranslation('name', app()->getLocale(), true);
+                    return $text ?: '-Not translated- ' . TranslationHelper::firstAvailableValue($item, 'name', false);
                 })
                 ->editColumn('slug', function ($item) {
                     $text = $item->getTranslation('slug', app()->getLocale(), false);
-                    return $text ?: '-Not translated- ' . $item->getTranslation('slug', app()->getLocale(), true);
+                    return $text ?: '-Not translated- ' . TranslationHelper::firstAvailableValue($item, 'slug', false);
                 })
                 ->addColumn('actions', function ($row) {
                     $editUrl = route('admin.news-tags.edit', $row->id);
@@ -86,9 +87,9 @@ class NewsTagController extends Controller
         ]);
 
         $newsTag = new NewsTag;
-        $newsTag->user_id = auth()->id();
         $newsTag->setTranslation('name', app()->getLocale(), $request->input('name'));
         $newsTag->setTranslation('slug', app()->getLocale(), $request->input('slug') ?? Str::slug($request->input('name')));
+        $newsTag->user_id = auth()->id();
         $newsTag->save();
 
         return redirect()->route('admin.news-tags.index')->with('success', 'Tag created successfully.');

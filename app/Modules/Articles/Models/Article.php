@@ -3,11 +3,12 @@
 namespace App\Modules\Articles\Models;
 
 use App\Models\User;
+use App\Modules\Users\Models\Author;
 use App\Modules\Widgets\Models\Widget;
 use App\Modules\Widgets\Models\Widgetable;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Translatable\HasTranslations;
 
 class Article extends Model
 {
@@ -65,5 +66,10 @@ class Article extends Model
             'id',
             'widget_id'
         )->where('widgetables.widgetable_type', self::class);
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(Author::class, 'author_id', 'id');
     }
 }

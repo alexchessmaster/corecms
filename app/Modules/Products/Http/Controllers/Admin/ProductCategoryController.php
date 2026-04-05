@@ -98,6 +98,7 @@ class ProductCategoryController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
 
         $productCategory = new ProductCategory;
@@ -118,6 +119,7 @@ class ProductCategoryController extends Controller
         $productCategory->setTranslation('name', app()->getLocale(), $request->name);
         $productCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $productCategory->parent_id = $request->input('parent_id');
+        $productCategory->hide_from_frontend = $request->boolean('hide_from_frontend');
         $productCategory->setTranslation('description', app()->getLocale(), $request->input('description'));
         if (!empty($request->input('sitemap_exclude'))) {
             $productCategory->sitemap_exclude = true;
@@ -168,6 +170,7 @@ class ProductCategoryController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
         $productCategory->user_id = auth()->id();
         if ($request->hasFile('image')) {
@@ -185,6 +188,7 @@ class ProductCategoryController extends Controller
         $productCategory->setTranslation('name', app()->getLocale(), $request->name);
         $productCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $productCategory->parent_id = $request->input('parent_id');
+        $productCategory->hide_from_frontend = $request->boolean('hide_from_frontend');
         $productCategory->description = $request->input('description');
         if (!empty($request->input('sitemap_exclude'))) {
             $productCategory->sitemap_exclude = true;

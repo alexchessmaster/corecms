@@ -182,6 +182,7 @@
     });
 </script>
 
+{{-- status --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const statusSelect = document.getElementById('status');
@@ -198,7 +199,11 @@
         statusSelect.addEventListener('change', toggleScheduledInput);
         toggleScheduledInput();
     });
+</script>
+{{-- end status --}}
 
+{{-- show image --}}
+<script>
     const imageInput = document.getElementById('image');
     const previewContainer = document.getElementById('preview-container');
     const previewImage = document.getElementById('image-preview');
@@ -224,3 +229,4 @@
         }
     });
 </script>
+{{-- end show image --}}

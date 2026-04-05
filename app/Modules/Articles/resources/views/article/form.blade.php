@@ -3,27 +3,27 @@
     @if (isset($articles) && App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($articles, 'image'))
         <div class="mb-2">
             <img src="{{ App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($articles, 'image') }}"
-                 alt="Current Image" style="max-width: 150px; height: auto;">
+                alt="Current Image" style="max-width: 150px; height: auto;">
         </div>
     @endif
     <div class="mb-2" id="preview-container" style="display: none;">
-        <img id="image-preview" style="max-width: 150px; height: auto;"/>
+        <img id="image-preview" style="max-width: 150px; height: auto;" />
     </div>
-    <input type="file" class="form-control" id="image" name="image"
-           @if (!(isset($article) && $article->image)) required @endif>
+    <input type="file" class="form-control" id="image" 
+           name="image" {{-- @if (!(isset($article) && $article->image)) required @endif --}}>
 </div>
 <div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
-           style="{{ isset($article) && !empty($article->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
-           value="{{ isset($article) ? App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($article, 'title', true) : '' }}"
-           required>
+        style="{{ isset($article) && !empty($article->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"
+        value="{{ isset($article) ? \App\Modules\Shared\Helpers\TranslationHelper::firstAvailableValue($article, 'title', true) : '' }}"
+        required>
 </div>
 @if (isset($article))
     <div class="mb-3">
         <label for="slug" class="form-label required">Slug</label>
         <input type="text" class="form-control" id="slug" name="slug"
-               value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}">
+            value="{{ isset($article) ? $article->getTranslation('slug', app()->getLocale(), false) : '' }}">
         @if (isset($article))
             <small>
                 @php
@@ -32,7 +32,7 @@
                     $prefix = $settingRepository->findByKey(App\Modules\Shared\Enums\SettingKeyEnum::ARTICLE_PREFIX);
                 @endphp
                 <a
-                        href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
+                    href="{{ \App\Modules\Shared\Helpers\UrlHelper::getFrontendUrl(
                         $article->getTranslation('slug', app()->getLocale(), false),
                         session('lang'),
                         $prefix,
@@ -51,27 +51,22 @@
     <div class="form-group">
         <label for="status">Status</label>
         <select id="status" name="status" class="form-control">
-            <option value="draft" {{ old('status', $page->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft
+            <option value="draft" {{ isset($article) && $article->status === 'draft' ? 'selected' : '' }}>Draft</option>
+            <option value="published" {{ isset($article) && $article->status === 'published' ? 'selected' : '' }}>Published
             </option>
-            <option value="published" {{ old('status', $page->status ?? '') == 'published' ? 'selected' : '' }}>
-                Published
-            </option>
-            <option value="scheduled" {{ old('status', $page->status ?? '') == 'scheduled' ? 'selected' : '' }}>
-                Scheduled
+            <option value="scheduled" {{ isset($article) && $article->status === 'scheduled' ? 'selected' : '' }}>Scheduled
             </option>
         </select>
     </div>
-
     <div class="form-group mt-2" id="scheduled_at_group" style="display: none;">
         <label for="scheduled_at">Scheduled At</label>
         <input type="datetime-local" class="form-control" id="scheduled_at" name="scheduled_at"
-               value="{{ old('scheduled_at', isset($page->scheduled_at) ? $page->scheduled_at->format('Y-m-d\TH:i') : '') }}">
+               value="{{ old('scheduled_at', isset($article->scheduled_at) ? $article->scheduled_at->format('Y-m-d\TH:i') : '') }}">
     </div>
 </div>
 <div class="mb-3">
     <label for="description" class="form-label required">Description</label>
-    <textarea class="form-control" id="description" name="description"
-              rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
+    <textarea class="form-control" id="description" name="description" rows="2">{{ isset($article) ? $article->getTranslation('description', app()->getLocale(), false) : '' }}</textarea>
 </div>
 <div class="mb-3">
     <label for="category_id" class="form-label required">Category</label>
@@ -79,7 +74,7 @@
         @foreach ($categories as $category)
             @if (!empty($category->getTranslation('name', app()->getLocale(), false)))
                 <option value="{{ $category->id }}"
-                        {{ isset($article) && $article->category_id == $category->id ? 'selected' : '' }}>
+                    {{ isset($article) && $article->category_id == $category->id ? 'selected' : '' }}>
                     {{ $category->getTranslation('name', app()->getLocale()) }}
                 </option>
             @endif
@@ -100,17 +95,27 @@
     </select>
 </div>
 
+<div class="mb-3">
+    <label for="author_id" class="form-label">Author</label>
+    <select class="form-control" id="author_id" name="author_id" style="width: 100%;">
+        @if (isset($article) && $article->author_id && $article->author)
+            <option value="{{ $article->author_id }}" selected>
+                {{ $article->author->getTranslation('name', app()->getLocale(), false) ?: $article->author->getTranslation('name', 'en', true) }}
+            </option>
+        @endif
+    </select>
+</div>
+
 @include('shared::partials.sitemap-form')
 
 <br>
 
-{{-- select2 for tags --}}
+{{-- select2 for author --}}
 <script>
     jQuery(document).ready(function ($) {
-        $('#tag_ids').select2({
-            multiple: true,
+        $('#author_id').select2({
             ajax: {
-                url: '/admin/article-tags/select?lang={!! App::currentLocale() !!}',
+                url: '/admin/authors/select?lang={!! App::currentLocale() !!}',
                 dataType: 'json',
                 delay: 300,
                 headers: {
@@ -124,7 +129,54 @@
                     };
                 },
                 processResults: function (data) {
-                    const results = data.data.map(function (tag) {
+                    const results = data.data.map(function (author) {
+                        return {
+                            id: author.id,
+                            text: author.name
+                        };
+                    });
+
+                    return {
+                        results: results
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Type to search for an author...',
+            minimumInputLength: 0,
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Trigger change event to ensure the pre-selected option is properly loaded
+        @if (isset($news) && $news->author_id && $news->author)
+        $('#author_id').trigger('change');
+        @endif
+    });
+</script>
+{{-- end select2 for author --}}
+
+{{-- select2 for tags --}}
+<script>
+    jQuery(document).ready(function($) {
+        $('#tag_ids').select2({
+            multiple: true,
+            ajax: {
+                url: '/admin/article-tags/select?lang={!! App::currentLocale() !!}',
+                dataType: 'json',
+                delay: 300,
+                headers: {
+                    'Authorization': 'Bearer {{ $authToken ?? '' }}',
+                    'Accept': 'application/json'
+                },
+                data: function(params) {
+                    return {
+                        search: params.term,
+                        page: params.page || 1
+                    };
+                },
+                processResults: function(data) {
+                    const results = data.data.map(function(tag) {
                         return {
                             id: tag.id,
                             text: tag.name
@@ -147,7 +199,7 @@
 
 {{-- status --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const statusSelect = document.getElementById('status');
         const scheduledGroup = document.getElementById('scheduled_at_group');
 
@@ -160,8 +212,6 @@
         }
 
         statusSelect.addEventListener('change', toggleScheduledInput);
-
-        // Run on load to handle edit forms and validation error repopulation
         toggleScheduledInput();
     });
 </script>
@@ -176,7 +226,7 @@
     const currentImageContainer = document.getElementById('current-image-container');
 
     // Event listener for image input
-    imageInput.addEventListener('change', function (event) {
+    imageInput.addEventListener('change', function(event) {
         const file = event.target.files[0]; // Get the selected file
 
         if (file) {

@@ -5,41 +5,40 @@ namespace App\Modules\Shared\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Modules\Articles\Http\Resources\ArticleResource;
 use App\Modules\Articles\Http\Resources\CategoryResource;
-use App\Modules\Comments\Http\Resources\CommentableResource;
-use App\Modules\Languages\Http\Resources\LanguageResource;
-use App\Modules\Menus\Http\Resources\MenuResource;
-use App\Modules\Pages\Http\Resources\PageResource;
-use App\Modules\Redirects\Http\Resources\RedirectResource;
-use App\Modules\Settings\Http\Resources\SettingResource;
-use App\Modules\Articles\Http\Resources\TagResource;
-use App\Modules\TranslationTexts\Http\Resources\TranslationTextResource;
-use App\Modules\Users\Http\Resources\UserResource;
 use App\Modules\Articles\Models\Article;
 use App\Modules\Articles\Models\Category;
-use App\Modules\Comments\Models\Commentable;
-use App\Modules\Languages\Models\Language;
-use App\Modules\Menus\Models\Menu;
-use App\Modules\Pages\Models\Page;
-use App\Modules\Redirects\Models\Redirect;
-use App\Modules\Settings\Models\Setting;
 use App\Modules\Articles\Models\Tag;
-use App\Modules\TranslationTexts\Models\TranslationText;
 use App\Modules\Books\Http\Resources\BookAuthorResource;
 use App\Modules\Books\Http\Resources\BookGenreResource;
 use App\Modules\Books\Http\Resources\BookResource;
 use App\Modules\Books\Models\Book;
 use App\Modules\Books\Models\BookAuthor;
 use App\Modules\Books\Models\BookGenre;
+use App\Modules\Comments\Http\Resources\CommentableResource;
+use App\Modules\Comments\Models\Commentable;
+use App\Modules\Languages\Http\Resources\LanguageResource;
+use App\Modules\Languages\Models\Language;
+use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Menus\Http\Resources\MenuResource;
+use App\Modules\Menus\Models\Menu;
 use App\Modules\News\Http\Resources\NewsCategoryResource;
 use App\Modules\News\Http\Resources\NewsResource;
 use App\Modules\News\Models\News;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\News\Models\NewsTag;
+use App\Modules\Pages\Http\Resources\PageResource;
+use App\Modules\Pages\Models\Page;
 use App\Modules\Products\Http\Resources\ProductResource;
 use App\Modules\Products\Models\Product;
-use App\Modules\Shared\Enums\SettingKeyEnum;
-use App\Modules\Languages\Repositories\LanguageRepository;
+use App\Modules\Redirects\Http\Resources\RedirectResource;
+use App\Modules\Redirects\Models\Redirect;
+use App\Modules\Settings\Http\Resources\SettingResource;
+use App\Modules\Settings\Models\Setting;
 use App\Modules\Settings\Repositories\SettingRepository;
+use App\Modules\Shared\Enums\SettingKeyEnum;
+use App\Modules\TranslationTexts\Http\Resources\TranslationTextResource;
+use App\Modules\TranslationTexts\Models\TranslationText;
+use App\Modules\Users\Http\Resources\UserResource;
 use Yajra\DataTables\Facades\DataTables;
 
 class ContentController extends Controller
@@ -180,24 +179,6 @@ class ContentController extends Controller
             return response()->json(['data' => $responseData], $responseCode);
         }
 
-        // Is Category
-        $category = Category::with(['children', 'parent'])->where('slug->' . app()->getLocale(), $path)->where('status', 'published')->first(); //with(['articles' => fn($query) => $query->limit(10)])->
-        if ($category) {
-            $responseData["category"] = CategoryResource::make($category);
-            $responseData['content_type'] = 'category';
-
-            return response()->json(['data' => $responseData], $responseCode);
-        }
-
-        // Is Tag
-        $tag = Tag::where('name->' . app()->getLocale(), $path)->first(); // with(['articles' => fn($query) => $query->limit(10)])->
-        if ($tag) {
-            $responseData["tag"] = TagResource::make($tag);
-            $responseData['content_type'] = 'tag';
-
-            return response()->json(['data' => $responseData], $responseCode);
-        }
-
         // Is Article
         //can be empty or 'articles' can be change depends on your need some websites like to have /articles before the slug of each article
         $articlePrefixSetting = $settings->where('key', 'article-prefix')->first();
@@ -213,7 +194,7 @@ class ContentController extends Controller
             $articlePath = substr($path, strlen($articlePrefix));
         }
         $article = Article::withAllWidgetData()
-            ->with(['category', 'tags'])
+            ->with(['category', 'tags', 'author'])
             ->where('slug->' . app()->getLocale(), $articlePath)
             ->where('status', 'published')
             ->first();
@@ -243,7 +224,7 @@ class ContentController extends Controller
             $productPath = substr($path, strlen($productPrefix));
         }
         $product = Product::withAllWidgetData()
-            ->with(['category'])
+            ->with(['category', 'tags', 'author'])
             ->where('slug->' . app()->getLocale(), $productPath)
             ->where('status', 'published')
             ->first();
@@ -273,7 +254,7 @@ class ContentController extends Controller
             $bookPath = substr($path, strlen($bookPrefix));
         }
         $book = Book::withAllWidgetData()
-            ->with(['bookGenre'])
+            ->with(['bookGenre', 'author'])
             ->where('slug->' . app()->getLocale(), $bookPath)
             ->where('status', 'published')
             ->first();
@@ -639,23 +620,20 @@ class ContentController extends Controller
         ]);
     }
 
-    public function fetchCategories()
+    public function fetchArticleCategories()
     {
         $language = request()->query('lang');
         if ($language) {
             app()->setLocale($language);
         }
+        $categories = Category::where(function ($query) {
+            $query->whereNull('hide_from_frontend')
+                ->orWhere('hide_from_frontend', false);
+        })->withCount('news')->get();
 
-        $categoriesQuery = Category::query();
-
-        return DataTables::of($categoriesQuery)
-            ->editColumn('name', function ($category) {
-                return $category->name;
-            })
-            ->editColumn('slug', function ($category) {
-                return $category->slug;
-            })
-            ->make(true);
+        return response()->json([
+            'data' => CategoryResource::collection($categories)
+        ]);
     }
 
     public function fetchBookComments()
