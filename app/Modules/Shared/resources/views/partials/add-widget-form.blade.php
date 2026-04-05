@@ -4,7 +4,7 @@
         $widgetableId = $page->id;
         $widgetableType = get_class($page);
         $widgetableType = str_replace('\\', '\\\\', $widgetableType);
-        $apiEndpoint = '/api/v1/pages/' . $widgetableId;
+        $apiEndpoint = '/api/pages/' . $widgetableId;
         // dd($widgetableType);
     } elseif (isset($article) && !empty($article)) {
         $model = $article;

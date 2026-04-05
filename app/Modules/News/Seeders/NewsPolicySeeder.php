@@ -27,7 +27,6 @@ class NewsPolicySeeder extends Seeder
             $resources = [
                 "$modelName tags",
                 "$modelName categories",
-                "$modelName authors",
                 "$modelName",
             ];
 
@@ -68,7 +67,6 @@ class NewsPolicySeeder extends Seeder
             $editorResources = [
                 "$modelName tags",
                 "$modelName categories",
-                "$modelName authors",
                 "$modelName",
             ];
 
@@ -87,7 +85,6 @@ class NewsPolicySeeder extends Seeder
             $authorResources = [
                 "$modelName tags",
                 "$modelName categories",
-                "$modelName authors",
                 "$modelName",
             ];
 

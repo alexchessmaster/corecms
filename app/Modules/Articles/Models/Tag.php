@@ -10,8 +10,8 @@ class Tag extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['name'];
-    public $translatable = ['name'];
+    protected $fillable = ['name', 'slug', 'user_id'];
+    public $translatable = ['name', 'slug'];
 
     public function scopeVisibleTo($query, User $user)
     {

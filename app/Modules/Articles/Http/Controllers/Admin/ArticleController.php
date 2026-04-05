@@ -26,7 +26,7 @@ class ArticleController extends Controller
         $this->authorize('viewAny', Article::class);
 
         if ($request->ajax()) {
-            $articles = Article::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'category_id'])->with(['category', 'tags']);
+            $articles = Article::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'category_id', 'status'])->with(['category', 'tags']);
 
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {
@@ -91,6 +91,7 @@ class ArticleController extends Controller
             'description' => 'nullable|string|max:1500',
             'category_id' => 'required|exists:categories,id',
             'tag_ids' => 'nullable',
+            'author_id' => 'nullable|int',
             'sitemap_exclude' => 'nullable',
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
@@ -119,8 +120,10 @@ class ArticleController extends Controller
         if (!empty($request->slug)) {
             $article->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
-        $article-> setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
+        $article->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $article->category_id = $request->input('category_id');
+
+        $article->author_id = $request->input('author_id') ?: null;
 
         // Sitemap
         if (!empty($request->input('sitemap_exclude'))) {
@@ -185,6 +188,7 @@ class ArticleController extends Controller
             'description' => 'nullable|string|max:1500',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string',
+            'author_id' => 'nullable|int',
             'scheduled_at' => 'nullable|date',
             'tag_ids' => 'nullable',
             'sitemap_exclude' => 'nullable',
@@ -212,6 +216,7 @@ class ArticleController extends Controller
         }
         $article->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $article->category_id = $request->input('category_id');
+        $article->author_id = $request->input('author_id') ?: null;
 
         // Sitemap
         if (!empty($request->input('sitemap_exclude'))) {
@@ -237,8 +242,8 @@ class ArticleController extends Controller
                 $article->primary_language = null;
             }
         }
-        $article->status = request()->status;
-        $article->scheduled_at = request()->scheduled_at ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
+        $article->status = request()->input('status');
+        $article->scheduled_at = request()->input('scheduled_at') ? \Carbon\Carbon::parse(request()->scheduled_at) : null;
 
         $article->save();
 

@@ -124,6 +124,7 @@
 
 <br>
 
+{{-- status --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const statusSelect = document.getElementById('status');
@@ -140,7 +141,11 @@
         statusSelect.addEventListener('change', toggleScheduledInput);
         toggleScheduledInput();
     });
+</script>
+{{-- end status --}}
 
+{{-- show image --}}
+<script>
     const imageInput = document.getElementById('image');
     const previewContainer = document.getElementById('preview-container');
     const previewImage = document.getElementById('image-preview');
@@ -166,13 +171,14 @@
         }
     });
 </script>
+{{-- end show image --}}
 
 {{-- select2 for author --}}
 <script>
     jQuery(document).ready(function ($) {
         $('#author_id').select2({
             ajax: {
-                url: '/admin/product-authors/select?lang={!! App::currentLocale() !!}',
+                url: '/admin/authors/select?lang={!! App::currentLocale() !!}',
                 dataType: 'json',
                 delay: 300,
                 headers: {

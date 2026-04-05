@@ -9,6 +9,7 @@ Schedule::command('redirects:unchain')->hourly()->withoutOverlapping();
 Schedule::command('sitemap:generate')->hourly()->then(function(){
     DeployFrontendJob::dispatch();
 });
+Schedule::command('handle-schedule')->everyFifteenMinutes();
 
 Schedule::command('backup:database')->daily();
 

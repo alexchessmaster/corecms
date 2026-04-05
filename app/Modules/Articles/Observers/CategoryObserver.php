@@ -3,7 +3,6 @@
 namespace App\Modules\Articles\Observers;
 
 use App\Modules\Articles\Models\Category;
-use Illuminate\Support\Str;
 use App\Modules\Shared\Events\SlugChangedEvent;
 use App\Modules\Redirects\Models\RedirectSlugChange;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +25,7 @@ class CategoryObserver
         RedirectSlugChange::create([
             'old_slug' => null,
             'new_slug' => $category->getTranslation('slug', app()->getLocale()),
-            'type' => 'category_created',
+            'type' => 'article_category_created',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);
@@ -52,6 +51,7 @@ class CategoryObserver
     {
         $slug = rtrim($this->getFullLink($category), '/');
         $slug = '/' . ltrim($slug, '/');
+
         // Handle duplicate slugs
         $originalSlug = $slug;
         $counter = 2;
@@ -75,11 +75,14 @@ class CategoryObserver
         if (empty($category)) {
             return "/" . $link;
         }
-        $slug = Str::slug($category->name);
+
+        $slug = $category->getTranslation('slug', app()->getLocale(), false);
+
         // Root category check
         if (empty($category->parent_id)) {
             return $slug . "/" . $link;
         }
+
         $parentCategory = Category::find($category->parent_id);
         // Recursive call for parent category
         return $this->getFullLink($parentCategory, $slug . "/");
@@ -92,12 +95,10 @@ class CategoryObserver
     {
         if ($category->isDirty('slug')) {
             if (array_key_exists(app()->getLocale(), $category->getOriginal('slug'))) {
-
-
                 RedirectSlugChange::create([
                     'old_slug' => $category->getOriginal('slug')[app()->getLocale()],
                     'new_slug' => $category->getTranslation('slug', app()->getLocale()),
-                    'type' => 'category_updated',
+                    'type' => 'article_category_updated',
                     'user_id' => Auth::id() ?? null,
                     'language' => app()->getLocale(),
                 ]);
@@ -115,7 +116,7 @@ class CategoryObserver
         RedirectSlugChange::create([
             'old_slug' => $category->getTranslation('slug', app()->getLocale()),
             'new_slug' => $category?->parent?->getTranslation('slug', app()->getLocale()) ?? '/',
-            'type' => 'category_deleted',
+            'type' => 'article_category_deleted',
             'user_id' => Auth::id() ?? null,
             'language' => app()->getLocale(),
         ]);

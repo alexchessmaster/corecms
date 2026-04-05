@@ -38,13 +38,13 @@ class CreateRedirectOnSlugChangeJob implements ShouldQueue
         foreach ($slugChanges as $change) {
             // handle articles, books, products, news, pages
             DB::transaction(function () use ($change) {
-                if ($change->type === 'category_updated') {
+                if ($change->type === 'article_category_updated') {
                     // Handle category slug update
                     $this->handleCategorySlugUpdate($change);
                 } elseif ($change->type === 'article_updated') {
                     // Handle article slug update
                     $this->handleArticleSlugUpdate($change);
-                } elseif ($change->type === 'category_deleted') {
+                } elseif ($change->type === 'article_category_deleted') {
                     // Handle category deletion
                     $this->handleCategoryDeletion($change);
                 } elseif ($change->type === 'article_deleted') {

@@ -11,6 +11,7 @@
             required
         @endif
     >
+    <small class="text-muted">Should start with "/"</small>
 </div>
 <div class="mb-3">
     <label for="parent_id" class="form-label">Parent bookGenre</label>
@@ -36,6 +37,7 @@
         @checked(old('hide_from_frontend', isset($bookGenre) ? $bookGenre->hide_from_frontend : false))>
     <label for="hide_from_frontend" class="custom-control-label">Hide it from frontend</label>
 </div>
+<br>
 <div class="mb-3">
     <label for="image" class="form-label">Image</label>
     @if (isset($bookGenre) && $bookGenre->image)

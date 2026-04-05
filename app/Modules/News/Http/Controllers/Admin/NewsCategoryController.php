@@ -90,6 +90,7 @@ class NewsCategoryController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
 
         $newsCategory = new NewsCategory;
@@ -110,6 +111,7 @@ class NewsCategoryController extends Controller
         $newsCategory->setTranslation('name', app()->getLocale(), $request->name);
         $newsCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $newsCategory->parent_id = $request->input('parent_id');
+        $newsCategory->hide_from_frontend = $request->boolean('hide_from_frontend');
         $newsCategory->setTranslation('description', app()->getLocale(), $request->input('description'));
         if (!empty($request->input('sitemap_exclude'))) {
             $newsCategory->sitemap_exclude = true;
@@ -160,6 +162,7 @@ class NewsCategoryController extends Controller
             'sitemap_priority' => 'nullable',
             'sitemap_change_frequency' => 'nullable',
             'primary_language' => 'nullable|string',
+            'hide_from_frontend' => 'sometimes|boolean',
         ]);
         $newsCategory->user_id = auth()->id();
         if ($request->hasFile('image')) {
@@ -177,6 +180,7 @@ class NewsCategoryController extends Controller
         $newsCategory->setTranslation('name', app()->getLocale(), $request->name);
         $newsCategory->setTranslation('slug', app()->getLocale(), $request->slug ?? \Str::slug($request->name));
         $newsCategory->parent_id = $request->input('parent_id');
+        $newsCategory->hide_from_frontend = $request->boolean('hide_from_frontend');
         $newsCategory->description = $request->input('description');
         if (!empty($request->input('sitemap_exclude'))) {
             $newsCategory->sitemap_exclude = true;

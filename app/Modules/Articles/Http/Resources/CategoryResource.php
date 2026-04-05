@@ -28,6 +28,7 @@ class CategoryResource extends JsonResource
             "articles" => $this->relationLoaded('articles') ? ArticleResource::collection($this->articles) : null,
             "template_page_id" => $this->template_page_id,
             "primary_language" => $this->primary_language,
+            "hide_from_frontend" => $this->hide_from_frontend,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             'widgets' => $this->relationLoaded('widgetables') ? WidgetableResource::collection($this->widgetables->sortBy('position')) : null,

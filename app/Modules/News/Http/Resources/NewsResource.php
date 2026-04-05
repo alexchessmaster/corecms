@@ -2,16 +2,16 @@
 
 namespace App\Modules\News\Http\Resources;
 
-use App\Modules\Widgets\Http\Resources\WidgetableResource;
-use App\Modules\News\Http\Resources\NewsAuthorResource;
+use App\Modules\Languages\Repositories\LanguageRepository;
 use App\Modules\News\Http\Resources\NewsCategoryResource;
 use App\Modules\News\Http\Resources\NewsTagResource;
+use App\Modules\Settings\Repositories\SettingRepository;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Shared\Helpers\FileHelper;
 use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Helpers\UrlHelper;
-use App\Modules\Languages\Repositories\LanguageRepository;
-use App\Modules\Settings\Repositories\SettingRepository;
+use App\Modules\Users\Http\Resources\AuthorResource;
+use App\Modules\Widgets\Http\Resources\WidgetableResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -62,10 +62,10 @@ class NewsResource extends JsonResource
             ),
             "news_category_id" => $this->news_category_id,
             "category" => $this->relationLoaded('category') ? new NewsCategoryResource($this->category) : '',
-            "author_id" => $this->author_id,
-            "author" => $this->relationLoaded('author') ? new NewsAuthorResource($this->author) : null,
             "tags" => $this->relationLoaded('tags') ? NewsTagResource::collection($this->tags) : [],
-            "views" => $this->views,
+            "author_id" => $this->author_id,
+            "author" => $this->relationLoaded('author') ? new AuthorResource($this->author) : null,
+            // "views" => $this->views,
             "total_pages" => $this->total_pages,
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,

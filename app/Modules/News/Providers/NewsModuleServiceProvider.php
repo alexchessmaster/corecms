@@ -3,14 +3,12 @@
 namespace App\Modules\News\Providers;
 
 use App\Modules\News\Models\News;
-use App\Modules\News\Models\NewsAuthor;
 use Illuminate\Support\ServiceProvider;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\News\Models\NewsTag;
 use App\Modules\News\Policies\NewsPolicy;
 use App\Modules\News\Observers\NewsObserver;
 use App\Modules\News\Observers\NewsCategoryObserver;
-use App\Modules\News\Policies\NewsAuthorPolicy;
 use App\Modules\News\Policies\NewsCategoryPolicy;
 use App\Modules\News\Policies\NewsTagPolicy;
 use Illuminate\Support\Facades\Gate;

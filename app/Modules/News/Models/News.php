@@ -7,11 +7,11 @@ use App\Modules\Settings\Models\Setting;
 use App\Models\User;
 use App\Modules\Widgets\Models\Widget;
 use App\Modules\Widgets\Models\Widgetable;
-use App\Modules\News\Models\NewsAuthor;
 use App\Modules\News\Models\NewsCategory;
 use App\Modules\Shared\Enums\SettingKeyEnum;
 use App\Modules\Languages\Repositories\LanguageRepository;
 use App\Modules\Settings\Repositories\SettingRepository;
+use App\Modules\Users\Models\Author;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -83,6 +83,6 @@ class News extends Model
 
     public function author()
     {
-        return $this->belongsTo(NewsAuthor::class, 'author_id', 'id');
+        return $this->belongsTo(Author::class, 'author_id', 'id');
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Modules\Users\Models;
 
 use App\Models\User;
+use App\Modules\Articles\Models\Article;
+use App\Modules\News\Models\News;
 use App\Modules\Products\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
@@ -10,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Author extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductAuthorFactory> */
+    /** @use HasFactory<\Database\Factories\AuthorFactory> */
     use HasFactory;
     use HasTranslations;
 
@@ -22,6 +24,16 @@ class Author extends Model
         'date_of_death' => 'datetime',
     ];
 
+    public function articles()
+    {
+        return $this->hasMany(Article::class, 'author_id', 'id');
+    }
+
+    public function news()
+    {
+        return $this->hasMany(News::class, 'author_id', 'id');
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class, 'author_id', 'id');
@@ -29,11 +41,11 @@ class Author extends Model
 
     public function scopeVisibleTo($query, User $user)
     {
-        if($user->can('view product authors')) {
+        if($user->can('view authors')) {
             return $query;
         }
 
-        if($user->can('view own product authors')) {
+        if($user->can('view own authors')) {
             return $query->where('user_id', $user->id);
         }
 
