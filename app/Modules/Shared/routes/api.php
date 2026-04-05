@@ -16,15 +16,15 @@ Route::middleware([
     Route::get('/fetch-translations', [ContentController::class, 'fetchTranslations']);
     Route::get('/fetch-authors', [ContentController::class, 'fetchAuthors']);
     
-    Route::get('/fetch-books', [ContentController::class, 'fetchBooks'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
-    Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
-    Route::get('/fetch-book-comments', [ContentController::class, 'fetchBookComments']);
-    Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
-    
     Route::get('/fetch-articles', [ContentController::class, 'fetchArticles'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
     Route::get('/fetch-article-categories', [ContentController::class, 'fetchArticleCategories']);
     Route::get('/fetch-article-comments', [ContentController::class, 'fetchArticleComments']);
     Route::post('/store-article-comments', [ContentController::class, 'storeArticleComments'])->middleware('throttle:10,1');
+    
+    Route::get('/fetch-books', [ContentController::class, 'fetchBooks'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
+    Route::get('/fetch-book-genres', [ContentController::class, 'fetchBookGenres']);
+    Route::get('/fetch-book-comments', [ContentController::class, 'fetchBookComments']);
+    Route::post('/store-book-comments', [ContentController::class, 'storeBookComments'])->middleware('throttle:1,1');
 
     Route::get('/fetch-news', [ContentController::class, 'fetchNews'])->middleware([LogVisitedUrlMiddleware::class, CacheControlHeaderMiddleware::class]);
     Route::get('/fetch-news-categories', [ContentController::class, 'fetchNewsCategories']);
