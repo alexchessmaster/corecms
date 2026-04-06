@@ -134,7 +134,7 @@ class CategoryController extends Controller
         $this->authorize('update', $category);
 
         $categories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 

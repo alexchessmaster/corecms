@@ -149,7 +149,7 @@ class ProductCategoryController extends Controller
         $this->authorize('update', $productCategory);
 
         $productCategories = ProductCategory::whereNull('parent_id')->where('id', '!=', $productCategory->id)->get();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 

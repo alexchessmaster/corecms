@@ -66,7 +66,7 @@ class BookController extends Controller
         $this->authorize('create', Book::class);
 
         $bookGenres = BookGenre::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
@@ -157,7 +157,7 @@ class BookController extends Controller
         $book = Book::withAllWidgetData()->findOrFail($bookId);
         $this->authorize('update', $book);
         $bookGenres = BookGenre::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 

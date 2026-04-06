@@ -325,7 +325,7 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
 
-        $categorySlug = request()->query('category') ?? "";
+        $categorySlug = request()->query('c') ?? "";
         $tagName      = request()->query('tag') ?? "";
         $authorId     = request()->query('author');
         $sort         = request()->query('sort');
@@ -629,7 +629,7 @@ class ContentController extends Controller
         $categories = Category::where(function ($query) {
             $query->whereNull('hide_from_frontend')
                 ->orWhere('hide_from_frontend', false);
-        })->withCount('news')->get();
+        })->withCount('articles')->get();
 
         return response()->json([
             'data' => CategoryResource::collection($categories)
@@ -722,6 +722,88 @@ class ContentController extends Controller
         $book->total_votes = $book->total_votes + 1;
         $book->stars = $totalStars / $book->total_votes;
         $book->save();
+
+        return response()->json(['message' => 'Comment saved successfully'], 201);
+    }
+
+    public function fetchArticleComments()
+    {
+        $language = request()->query('lang');
+        if ($language) {
+            app()->setLocale($language);
+        }
+        $start = request()->get('start', 0);
+        $length = request()->get('length', 24);
+        if ($length > 24) {
+            $length = 24;
+        }
+
+        $articleSlug = request()->query('article_slug');
+
+        $articleSlug = urldecode($articleSlug);
+
+        $article = Article::with(['comments' => function ($query) use ($start, $length) {
+            return $query->where('content->' . app()->getLocale(), '!=', null)
+                ->where('status', 'approved')
+                ->orderBy('created_at', 'desc')
+                ->offset($start)
+                ->limit($length)
+                ->get();
+        }])->where('slug->' . app()->getLocale(), $articleSlug)
+            ->where('status', 'published')
+            ->first();
+
+        if ($article === null) {
+            return response()->json([
+                'data' => [],
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => CommentableResource::collection($article->comments)
+        ]);
+    }
+
+    public function storeArticleComments()
+    {
+        $name = request()->name;
+        $email = request()->email;
+        $content = request()->content;
+        $stars = request()->stars;
+        $lang = request()->lang;
+        $articleSlug = request()->article_slug;
+
+        if (!$articleSlug || !$lang || !$content || !$name || !$email) {
+            return response()->json(['error' => 'Invalid inputs'], 400);
+        }
+
+        if (strlen($lang) === 2) {
+            app()->setLocale($lang);
+        } else {
+            return response()->json(['error' => 'Language not specified'], 400);
+        }
+
+        // check later why it's needed:
+        $articleSlug = urldecode($articleSlug);
+
+        $article = Article::where('slug->' . app()->getLocale(), $articleSlug)->first();
+
+        if (!$article) {
+            return response()->json([
+                'data' => [],
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        $comment = new Commentable();
+        $comment->commentable_type = 'App\Modules\Articles\Models\Article';
+        $comment->commentable_id = $article->id;
+        $comment->setTranslation('content', app()->getLocale(), $content);
+        $comment->name = $name;
+        $comment->email = $email;
+        $comment->stars = $stars;
+        $comment->save();
 
         return response()->json(['message' => 'Comment saved successfully'], 201);
     }

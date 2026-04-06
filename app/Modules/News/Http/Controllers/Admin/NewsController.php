@@ -65,7 +65,7 @@ class NewsController extends Controller
         $this->authorize('create', News::class);
 
         $categories = NewsCategory::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
@@ -160,7 +160,7 @@ class NewsController extends Controller
         $this->authorize('update', $news);
 
         $categories = NewsCategory::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 

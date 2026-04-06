@@ -6,7 +6,7 @@
         @csrf
         @method('PUT')
 
-        @include('translation-text.form')
+        @include('translation-texts::translation-text.form')
 
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
