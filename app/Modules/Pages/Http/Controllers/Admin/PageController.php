@@ -119,7 +119,7 @@ class PageController extends Controller
         $this->authorize('update', $page);
         $page->user_id = auth()->id();
         $pageWidgets = $page->widgets;
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 

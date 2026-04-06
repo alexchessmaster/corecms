@@ -32,6 +32,25 @@
         @endif
     </div>
 
+    <div class="form-group">
+        <label for="exampleFormControlSelect12 required">Position</label>
+        <select class="form-control" name="order" id="exampleFormControlSelect12">
+            @if (isset($widget))
+                <option value="">- Keep current position</option>
+            @endif
+            <option value="0">- First item</option>
+            @foreach ($widgets as $item)
+                @if (isset($widget))
+                    @if ($item->id !== $widget->id)
+                        <option value="{{ $item->order }}">AFTER: {{ $item->name }}</option>
+                    @endif
+                @else
+                    <option value="{{ $item->order }}">AFTER: {{ $item->name }}</option>
+                @endif
+            @endforeach
+        </select>
+    </div>
+
     <div class="mb-3">
         <label for="active" class="form-label">Is Active</label>
         <select name="active" id="active" class="form-control" required>
@@ -41,12 +60,17 @@
     </div>
 
     <div class="mb-3">
-        <label for="locked_fields_value" class="form-label">The field values are always locked in different places</label>
+        <label for="locked_fields_value" class="form-label">The field values are always locked in different
+            places</label>
         <select name="locked_fields_value" id="locked_fields_value" class="form-control" required>
-            <option value="0" {{ isset($widget) && $widget->locked_fields_value == false ? 'selected' : '' }}>Normal</option>
-            <option value="1" {{ isset($widget) && $widget->locked_fields_value == true ? 'selected' : '' }}>Locked</option>
+            <option value="0" {{ isset($widget) && $widget->locked_fields_value == false ? 'selected' : '' }}>
+                Normal</option>
+            <option value="1" {{ isset($widget) && $widget->locked_fields_value == true ? 'selected' : '' }}>
+                Locked
+            </option>
         </select>
-        <small id="" class="form-text text-muted">For example for the "Footer widget" or "Big Header widget" we always need same values in every page.</small>
+        <small id="" class="form-text text-muted">For example for the "Footer widget" or "Big Header widget" we
+            always need same values in every page.</small>
     </div>
 
     {{-- <hr>

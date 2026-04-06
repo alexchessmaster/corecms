@@ -102,6 +102,7 @@ class CommentableController extends Controller
         $data = $request->validated();
         $comment->fill($data);
         $comment->setTranslation('content', app()->getLocale(), $data['content']);
+        $comment->stars = !empty($data['stars']) ? $data['stars'] : 0;
         $comment->save();
 
         return redirect()->back()->with('success', 'Comment updated successfully.');

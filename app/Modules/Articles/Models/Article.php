@@ -3,6 +3,7 @@
 namespace App\Modules\Articles\Models;
 
 use App\Models\User;
+use App\Modules\Comments\Models\Commentable;
 use App\Modules\Users\Models\Author;
 use App\Modules\Widgets\Models\Widget;
 use App\Modules\Widgets\Models\Widgetable;
@@ -71,5 +72,10 @@ class Article extends Model
     public function author()
     {
         return $this->belongsTo(Author::class, 'author_id', 'id');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Commentable::class, 'commentable');
     }
 }

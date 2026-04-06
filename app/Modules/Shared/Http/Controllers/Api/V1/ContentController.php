@@ -325,7 +325,7 @@ class ContentController extends Controller
             app()->setLocale($language);
         }
 
-        $categorySlug = request()->query('category') ?? "";
+        $categorySlug = request()->query('c') ?? "";
         $tagName      = request()->query('tag') ?? "";
         $authorId     = request()->query('author');
         $sort         = request()->query('sort');
@@ -742,7 +742,14 @@ class ContentController extends Controller
 
         $articleSlug = urldecode($articleSlug);
 
-        $article = Article::where('slug->' . app()->getLocale(), $articleSlug)
+        $article = Article::with(['comments' => function ($query) use ($start, $length) {
+            return $query->where('content->' . app()->getLocale(), '!=', null)
+                ->where('status', 'approved')
+                ->orderBy('created_at', 'desc')
+                ->offset($start)
+                ->limit($length)
+                ->get();
+        }])->where('slug->' . app()->getLocale(), $articleSlug)
             ->where('status', 'published')
             ->first();
 
@@ -753,17 +760,8 @@ class ContentController extends Controller
             ], 404);
         }
 
-        $comments = Commentable::where('commentable_type', 'App\Modules\Articles\Models\Articles')
-            ->where('commentable_id', $article->id)
-            ->where('content->' . app()->getLocale(), '!=', null)
-            ->where('status', 'approved')
-            ->orderBy('created_at', 'desc')
-            ->offset($start)
-            ->limit($length)
-            ->get();
-
         return response()->json([
-            'data' => CommentableResource::collection($comments)
+            'data' => CommentableResource::collection($article->comments)
         ]);
     }
 

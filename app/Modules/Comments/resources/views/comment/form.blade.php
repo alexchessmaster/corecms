@@ -8,21 +8,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="commentable_type">Content Type</label>
-                <select class="form-control @error('commentable_type') is-invalid @enderror" id="commentable_type"
-                    name="commentable_type" required>
-                    <option value="">Select Content Type</option>
-                    <option value="App\Models\Book"
-                        {{ old('commentable_type', $comment->commentable_type ?? '') == 'App\Models\Book' ? 'selected' : '' }}>
-                        Book
-                    </option>
-                    <option value="App\Models\Article"
-                        {{ old('commentable_type', $comment->commentable_type ?? '') == 'App\Models\Article' ? 'selected' : '' }}>
-                        Article
-                    </option>
-                </select>
-                @error('commentable_type')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input class="form-control" name="commentable_type" required value="{{ $comment?->commentable_type }}">
             </div>
         </div>
 

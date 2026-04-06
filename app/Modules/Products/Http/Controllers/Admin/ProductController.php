@@ -64,7 +64,7 @@ class ProductController extends Controller
         $this->authorize('create', Product::class);
 
         $categories = ProductCategory::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
@@ -153,7 +153,7 @@ class ProductController extends Controller
         $this->authorize('update', $product);
 
         $categories = ProductCategory::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 

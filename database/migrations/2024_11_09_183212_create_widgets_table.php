@@ -19,8 +19,9 @@ return new class extends Migration
             $table->string('user_note')->nullable();
             $table->string('image')->nullable();
             // $table->enum('type', ['page', 'template'])->default('page');
-            $table->boolean('active')->default(true);
+            // $table->integer('order')->default(10); // added in another migration
             $table->boolean('locked_fields_value')->default(false);
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

@@ -73,7 +73,7 @@ class ArticleController extends Controller
 
         $categories = Category::all();
         $tags = Tag::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
@@ -170,7 +170,7 @@ class ArticleController extends Controller
 
         $categories = Category::all();
         $tags = Tag::all();
-        $allWidgets = Widget::where('active', true)->get();
+        $allWidgets = Widget::where('active', true)->orderBy('order')->get();
         $user = auth()->user();
         $authToken = $user->createToken('admin-token')->plainTextToken;
 
