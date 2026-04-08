@@ -7,7 +7,7 @@
         @csrf
         @method('PUT')
         @include('products::product_category.form')
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>
 

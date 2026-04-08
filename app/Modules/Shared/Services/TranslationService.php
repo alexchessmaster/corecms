@@ -14,7 +14,7 @@ class TranslationService
         if (empty($toLang)) {
             $toLang = app()->getLocale();
         }
-        $prompt = "Translate the following text after semicolon from $fromLang to $toLang and only return the translated text;";
+        $prompt = "Translate the following text after the pipe line from $fromLang to $toLang and only return the translated text | ";
         Log::info('translate from: ' . $value);
 
         try {

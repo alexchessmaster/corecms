@@ -897,6 +897,7 @@
     document.getElementById('first-add-widget-btn').addEventListener('mousedown', saveAllWidgets);
     document.getElementById('translate')?.addEventListener('click', ()=>{
         console.info('Translate button clicked');
+        toastr.info('translating');
         refreshWidgetList("true");
     });
 </script>

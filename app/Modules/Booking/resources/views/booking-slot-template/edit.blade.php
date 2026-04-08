@@ -5,6 +5,6 @@
         @csrf
         @method('PATCH')
         @include('bookings::booking-slot-template.form')
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-success">Update</button>
     </form>
 @endsection

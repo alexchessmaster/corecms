@@ -6,7 +6,7 @@
     <form action="{{ route('admin.news-categories.store') }}" method="POST"  enctype='multipart/form-data'>
         @csrf
         @include('news::news_category.form')
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
 </div>
 

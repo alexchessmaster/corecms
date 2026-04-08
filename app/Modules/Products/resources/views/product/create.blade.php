@@ -8,7 +8,7 @@
 
         @include('products::product.form')
 
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
 </div>
 

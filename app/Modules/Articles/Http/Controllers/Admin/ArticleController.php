@@ -5,16 +5,18 @@ namespace App\Modules\Articles\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Modules\Articles\Models\Article;
 use App\Modules\Articles\Models\Category;
-use App\Modules\Pages\Models\Page;
 use App\Modules\Articles\Models\Tag;
-use App\Modules\Widgets\Models\Widget;
+use App\Modules\Pages\Models\Page;
 use App\Modules\Shared\Helpers\StrHelper;
+use App\Modules\Shared\Helpers\TranslationHelper;
 use App\Modules\Shared\Jobs\GenerateSitemapsJob;
+use App\Modules\Widgets\Models\Widget;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+
 use function App\Http\Controllers\setTranslation;
 
 class ArticleController extends Controller
@@ -31,7 +33,7 @@ class ArticleController extends Controller
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {
                     $title = $article->getTranslation('title', app()->getLocale(), false);
-                    return $title ?: '-Not translated-' . $article->getTranslation('title', app()->getLocale(), true);
+                    return $title ?: '-Not translated-' . TranslationHelper::firstAvailableValue($article, 'title', false);
                 })
                 ->addColumn('category', function ($article) {
                     return $article->category->getTranslation('name', app()->getLocale(), false);

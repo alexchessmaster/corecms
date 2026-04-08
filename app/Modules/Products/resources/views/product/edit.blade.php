@@ -3,7 +3,7 @@
 @section('content-body')
 
     <div class="container">
-        <a href="{{ route('admin.products.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new
+        <a href="{{ route('admin.products.create') }}" class="btn btn-info"><strong style="">+ </strong>Add a new
             product</a>
         <span class="float-right">
             <button class="btn btn-default" id="translate" type="button">Translate to
@@ -18,7 +18,7 @@
 
             @include('products::product.form')
 
-            <button type="submit" class="btn btn-primary" onclick="clickSaveAll(event)">Update</button>
+            <button type="submit" class="btn btn-success" onclick="clickSaveAll(event)">Update</button>
         </form>
     </div>
 

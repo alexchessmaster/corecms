@@ -18,7 +18,7 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Status</th>
-                        <th>Translated languages</th>
+                        <th>Languages</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>

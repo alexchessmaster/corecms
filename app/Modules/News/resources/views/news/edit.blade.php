@@ -3,7 +3,7 @@
 @section('content-body')
 
     <div class="container">
-        <a href="{{ route('admin.news.create') }}" class="btn btn-success"><strong style="">+ </strong>Add a new news</a>
+        <a href="{{ route('admin.news.create') }}" class="btn btn-info"><strong style="">+ </strong>Add a new news</a>
         <span class="float-right">
             <button class="btn btn-default" id="translate" type="button">Translate to
                 {{ strtoupper(app()->getLocale()) }}</button>
@@ -18,7 +18,7 @@
             @include('news::news.form')
 
 
-            <button type="submit" class="btn btn-primary" onclick="clickSaveAll(event)">Update</button>
+            <button type="submit" class="btn btn-success" onclick="clickSaveAll(event)">Update</button>
         </form>
     </div>
 
