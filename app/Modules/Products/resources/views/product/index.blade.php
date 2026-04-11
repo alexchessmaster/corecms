@@ -18,7 +18,8 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Status</th>
-                        <th>Translated languages</th>
+                        <th>Date</th>
+                        <th>Languages</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -50,6 +51,12 @@
                         {
                             data: 'status',
                             name: 'status'
+                        },
+                        {
+                            data: 'date',
+                            name: 'date',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'translated_languages',
@@ -91,11 +98,15 @@
                         },
                         {
                             targets: [4],
-                            width: "20%"
+                            width: "10%"
                         },
                         {
                             targets: [5],
-                            width: "15%"
+                            width: "10%"
+                        },
+                        {
+                            targets: [6],
+                            width: "20%"
                         },
                     ],
                     language: {

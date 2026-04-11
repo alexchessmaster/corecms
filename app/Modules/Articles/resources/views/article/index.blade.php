@@ -18,6 +18,7 @@
                         <th>Title</th>
                         <th>Category</th>
                         <th>Tags</th>
+                        <th>Date</th>
                         <th>Languages</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -50,6 +51,12 @@
                         {
                             data: 'tags',
                             name: 'tags',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'date',
+                            name: 'date',
                             orderable: false,
                             searchable: false
                         },
@@ -93,10 +100,14 @@
                         },
                         {
                             targets: [4],
-                            width: "20%"
+                            width: "10%"
                         },
                         {
                             targets: [5],
+                            width: "10%"
+                        },
+                        {
+                            targets: [6],
                             width: "20%"
                         },
                     ],

@@ -28,7 +28,7 @@ class ArticleController extends Controller
         $this->authorize('viewAny', Article::class);
 
         if ($request->ajax()) {
-            $articles = Article::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'category_id', 'status'])->with(['category', 'tags']);
+            $articles = Article::visibleTo(auth()->user())->select(['id', 'title', 'slug', 'category_id', 'status', 'updated_at', 'scheduled_at'])->with(['category', 'tags']);
 
             return DataTables::of($articles)
                 ->editColumn('title', function ($article) {
@@ -43,8 +43,15 @@ class ArticleController extends Controller
                         return '<span class="badge bg-info text-dark">' . $tag->getTranslation('name', app()->getLocale()) . '</span>';
                     })->implode(' ');
                 })
-                ->addColumn('translated_languages', function ($tag) {
-                    $translations = $tag->getTranslations('title');
+                ->addColumn('date', function ($item) {
+                    return match($item->status){
+                        'scheduled' => '<span class="badge bg-info text-dark">Scheduled at:</span>' . $item->scheduled_at,
+                        'draft' => '<span class="badge bg-warning text-dark">Draft</span>' . $item->scheduled_at,
+                        default => '<span class="badge bg-success text-dark">Updated at:</span>' . $item->updated_at,
+                    };
+                })
+                ->addColumn('translated_languages', function ($article) {
+                    $translations = $article->getTranslations('title');
                     $keys = array_keys($translations);
                     sort($keys);
                     return implode(' - ', $keys);
@@ -62,7 +69,7 @@ class ArticleController extends Controller
                     </form>
                 ';
                 })
-                ->rawColumns(['categories', 'tags', 'actions', 'title'])
+                ->rawColumns(['categories', 'tags', 'actions', 'title', 'date'])
                 ->make(true);
         }
 
@@ -87,7 +94,7 @@ class ArticleController extends Controller
         $this->authorize('create', Article::class);
 
         $request->validate([
-            'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
+            'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',

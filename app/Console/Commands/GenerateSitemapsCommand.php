@@ -94,6 +94,7 @@ class GenerateSitemapsCommand extends Command
      */
     private function generateNewsSitemap($language, $settings, $lang)
     {
+        // 48 hours to keep the news in the news sitemap. The news should be for ever in the normal sitemap as well
         $cutoff = Carbon::now()->subHours(48);
 
         $newsItems = \DB::table('news')
