@@ -36,13 +36,14 @@ class ArticleObserver
             'language' => app()->getLocale(),
         ]);
 
-        $newImagePath = public_path($article->getTranslation('image', app()->getLocale(), false));
-        ProcessImageJob::dispatch($newImagePath);
-
-        $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
-        $article->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
-        $article->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
-        $article->saveQuietly();
+        $imagePath = public_path($article->getTranslation('image', app()->getLocale(), false));
+        if ($imagePath && file_exists(public_path($imagePath))) {
+            ProcessImageJob::dispatch($imagePath);
+            $imagesArr = FileHelper::getMediumThumbnailImagePaths($imagePath);
+            $article->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+            $article->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+            $article->saveQuietly();
+        }
     }
 
     /**

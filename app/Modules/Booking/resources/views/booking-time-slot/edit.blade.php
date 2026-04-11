@@ -5,7 +5,7 @@
         @csrf
         @method('PATCH')
         @include('bookings::booking-time-slot.form')
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-success">Update</button>
         <a href="{{ route('admin.booking-time-slots.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 @endsection

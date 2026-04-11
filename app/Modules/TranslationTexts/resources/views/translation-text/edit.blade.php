@@ -8,7 +8,7 @@
 
         @include('translation-texts::translation-text.form')
 
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-success">Update</button>
     </form>
 
 @endsection

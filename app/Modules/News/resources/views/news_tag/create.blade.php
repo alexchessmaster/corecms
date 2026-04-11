@@ -6,7 +6,7 @@
         <form action="{{ route('admin.news-tags.store') }}" method="POST">
             @csrf
             @include('news::news_tag.form')
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-success">Save</button>
         </form>
     </div>
 

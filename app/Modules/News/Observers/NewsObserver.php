@@ -36,13 +36,15 @@ class NewsObserver
             'language' => app()->getLocale(),
         ]);
 
-        $newImagePath = public_path($news->getTranslation('image', app()->getLocale(), false));
-        ProcessImageJob::dispatch($newImagePath);
+        $imagePath = public_path($news->getTranslation('image', app()->getLocale(), false));
+        if ($imagePath && file_exists(public_path($imagePath))) {
+            ProcessImageJob::dispatch($imagePath);
 
-        $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
-        $news->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
-        $news->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
-        $news->saveQuietly();
+            $imagesArr = FileHelper::getMediumThumbnailImagePaths($imagePath);
+            $news->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+            $news->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+            $news->saveQuietly();
+        }
     }
 
     /**

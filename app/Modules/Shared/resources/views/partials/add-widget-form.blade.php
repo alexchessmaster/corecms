@@ -618,22 +618,40 @@
                 selector: `#textarea-` + widget.id + '-' + item.field_widget,
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
-                    'pagebreak',
-                    'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-                    'table', 'help', 'wordcount', 'emoticons', 'codesample', 'directionality',
+                    'pagebreak', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime',
+                    'media', 'table', 'help', 'wordcount', 'emoticons', 'codesample', 'directionality',
                     'nonbreaking', 'save', 'template'
                 ],
                 toolbar: [
                     'undo redo | bold italic underline strikethrough | forecolor backcolor | fontselect fontsizeselect formatselect',
-                    'outdent indent | numlist bullist checklist | link | removeformat' +
-                    ' emoticons | table'
+                    'numlist bullist checklist | link | blockquote | removeformat | emoticons | table | increaseHeight decreaseHeight'
                 ],
-                // toolbar_mode: 'floating',
-                // menubar: false,
+                height: 600,
+                resize: true, // draggable bottom-right resize handle
+                setup: function(editor) {
+                    // Increase Height Button
+                    editor.ui.registry.addButton('increaseHeight', {
+                        text: '🔼 Height +',
+                        onAction: function() {
+                            let container = editor.getContainer();
+                            container.style.height = (container.offsetHeight + 300) + 'px';
+                        }
+                    });
+
+                    // Decrease Height Button
+                    editor.ui.registry.addButton('decreaseHeight', {
+                        text: '🔽 Height -',
+                        onAction: function() {
+                            let container = editor.getContainer();
+                            let newHeight = Math.max(200, container.offsetHeight - 300);
+                            container.style.height = newHeight + 'px';
+                        }
+                    });
+                },
                 @if (session('lang') === 'fa')
                     directionality: 'rtl',
                 @endif
-            }
+            };
         }
         if (size === 'large' || size === 'small' || size === 'text') {
             tinymce.init(tinyConfig);
@@ -895,8 +913,9 @@
 
     document.getElementById('save-all').addEventListener('click', saveAllWidgets);
     document.getElementById('first-add-widget-btn').addEventListener('mousedown', saveAllWidgets);
-    document.getElementById('translate')?.addEventListener('click', ()=>{
+    document.getElementById('translate')?.addEventListener('click', () => {
         console.info('Translate button clicked');
+        toastr.info('translating');
         refreshWidgetList("true");
     });
 </script>

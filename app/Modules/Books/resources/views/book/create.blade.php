@@ -6,7 +6,7 @@
     <form action="{{ route('admin.books.store') }}" method="POST" enctype='multipart/form-data'>
         @csrf
         @include('books::book.form')
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
 </div>
 

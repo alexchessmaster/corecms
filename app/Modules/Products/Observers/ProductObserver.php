@@ -37,13 +37,15 @@ class ProductObserver
             'language' => app()->getLocale(),
         ]);
 
-        $newImagePath = public_path($product->getTranslation('image', app()->getLocale(), false));
-        ProcessImageJob::dispatch($newImagePath);
+        $imagePath = public_path($product->getTranslation('image', app()->getLocale(), false));
+        if ($imagePath && file_exists(public_path($imagePath))) {
+            ProcessImageJob::dispatch($imagePath);
 
-        $imagesArr = FileHelper::getMediumThumbnailImagePaths($newImagePath);
-        $product->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
-        $product->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
-        $product->saveQuietly();
+            $imagesArr = FileHelper::getMediumThumbnailImagePaths($imagePath);
+            $product->setTranslation('image_medium', app()->getLocale(), $imagesArr['medium']);
+            $product->setTranslation('image_thumbnail', app()->getLocale(), $imagesArr['thumbnail']);
+            $product->saveQuietly();
+        }
     }
 
     /**

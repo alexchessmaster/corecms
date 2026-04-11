@@ -6,7 +6,7 @@
     <form action="{{ route('admin.categories.store') }}" method="POST">
         @csrf
         @include('articles::category.form')
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
 </div>
 

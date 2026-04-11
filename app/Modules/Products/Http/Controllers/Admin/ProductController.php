@@ -23,7 +23,7 @@ class ProductController extends Controller
         $this->authorize('viewAny', Product::class);
 
         if ($request->ajax()) {
-            $products = Product::visibleTo(auth()->user())->with(['category'])->select(['id', 'title', 'slug', 'product_category_id', 'status']);
+            $products = Product::visibleTo(auth()->user())->with(['category'])->select(['id', 'title', 'slug', 'product_category_id', 'status', 'updated_at', 'scheduled_at']);
 
             return DataTables::of($products)
                 ->editColumn('title', function ($product) {
@@ -32,6 +32,13 @@ class ProductController extends Controller
                 })
                 ->addColumn('category', function ($product) {
                     return $product->category->getTranslation('name', app()->getLocale(), false);
+                })
+                ->addColumn('date', function ($item) {
+                    return match($item->status){
+                        'scheduled' => '<span class="badge bg-info text-dark">Scheduled at:</span>' . $item->scheduled_at,
+                        'draft' => '<span class="badge bg-warning text-dark">Draft</span>' . $item->scheduled_at,
+                        default => '<span class="badge bg-success text-dark">Updated at:</span>' . $item->updated_at,
+                    };
                 })
                 ->addColumn('translated_languages', function ($product) {
                     $translations = $product->getTranslations('title');
@@ -52,7 +59,7 @@ class ProductController extends Controller
                     </form>
                 ';
                 })
-                ->rawColumns(['actions'])
+                ->rawColumns(['actions', 'date'])
                 ->make(true);
         }
 

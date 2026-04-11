@@ -24,7 +24,7 @@ class NewsController extends Controller
         $this->authorize('viewAny', News::class);
 
         if ($request->ajax()) {
-            $news = News::visibleTo(auth()->user())->with(['category'])->select(['id', 'title', 'slug', 'news_category_id', 'status']);
+            $news = News::visibleTo(auth()->user())->with(['category'])->select(['id', 'title', 'slug', 'news_category_id', 'status', 'news_date', 'scheduled_at']);
 
             return DataTables::of($news)
                 ->editColumn('title', function ($news) {
@@ -33,6 +33,13 @@ class NewsController extends Controller
                 })
                 ->addColumn('category', function ($news) {
                     return $news->category?->getTranslation('name', app()->getLocale());
+                })
+                ->addColumn('date', function ($item) {
+                    return match($item->status){
+                        'scheduled' => '<span class="badge bg-info text-dark">Scheduled at:</span>' . $item->scheduled_at,
+                        'draft' => '<span class="badge bg-warning text-dark">Draft</span>' . $item->scheduled_at,
+                        default => '<span class="badge bg-success text-dark">News date:</span>' . $item->news_date,
+                    };
                 })
                 ->addColumn('translated_languages', function ($news) {
                     $translations = $news->getTranslations('title');
