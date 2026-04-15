@@ -29,3 +29,4 @@ class OpenAiService implements AiServiceInterface
         return $response->json();
     }
 }
+ 

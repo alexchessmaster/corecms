@@ -14,7 +14,7 @@ class TranslationService
         if (empty($toLang)) {
             $toLang = app()->getLocale();
         }
-        $prompt = "Translate the following text after the pipe line from $fromLang to $toLang and only return the translated text | ";
+        $prompt = "Translate the following text after the pipe line from $fromLang to $toLang and only return the translated text and also preserve the HTML code if there is a verse from Quran keep it as it is. | ";
         Log::info('translate from: ' . $value);
 
         try {
