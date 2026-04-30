@@ -106,16 +106,14 @@ class GenerateSitemapsCommand extends Command
             ->where('created_at', '>=', $cutoff)
             ->get(['id', 'slug', 'title', 'created_at', 'updated_at', 'sitemap_priority', 'sitemap_change_frequency']);
 
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-        <urlset
-            xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-            xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
-        </urlset>');
+        $rootXml = '<?xml version="1.0" encoding="UTF-8"?>'
+            . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"></urlset>';
+        $xml = new \SimpleXMLElement($rootXml);
 
         foreach ($newsItems as $newsItem) {
             $slugs = json_decode($newsItem->slug, true);
 
-            if (!array_key_exists($lang, $slugs) || empty($slugs[$lang])) {
+            if (!is_array($slugs) || !array_key_exists($lang, $slugs) || empty($slugs[$lang])) {
                 continue;
             }
 
@@ -141,7 +139,11 @@ class GenerateSitemapsCommand extends Command
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
-        $dom->loadXML($xml->asXML());
+
+        $xmlContents = $xml->asXML();
+        if ($xmlContents === false || !$dom->loadXML($xmlContents)) {
+            $dom->loadXML($rootXml);
+        }
 
         $newsPath = public_path("sitemap-news-{$lang}.xml");
         $dom->save($newsPath);
@@ -152,12 +154,14 @@ class GenerateSitemapsCommand extends Command
     {
         return \DB::table($table)
             ->where('status', 'published')
-            ->whereNull('sitemap_exclude')
-            ->orWhere('sitemap_exclude', false)
+            ->where(function ($query) {
+                $query->whereNull('sitemap_exclude')
+                    ->orWhere('sitemap_exclude', false);
+            })
             ->get(['id', 'slug', 'sitemap_priority', 'sitemap_change_frequency', 'updated_at'])
             ->map(function ($pageOrArticle) use ($lang) {
                 $slugs = json_decode($pageOrArticle->slug, true);
-                if (array_key_exists($lang, $slugs)) {
+                if (is_array($slugs) && array_key_exists($lang, $slugs)) {
                     return [
                         'slug' => $slugs[$lang],
                         'alternates' => collect($slugs)->filter(),
