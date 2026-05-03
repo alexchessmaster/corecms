@@ -187,21 +187,22 @@
         const imgEl = document.createElement('img');
         if (widget?.image) {
             imgEl.src = widget.image;
-        } else {
-            imgEl.style.width = "100%";
-            imgEl.style.height = "100%";
-            imgEl.style.objectFit = "cover";
-            imgEl.style.background = "linear-gradient(90deg, rgba(0,0,0,0.3), rgba(255,255,255,0.1))";
+        // } else {
+        //     imgEl.style.width = "100%";
+        //     imgEl.style.height = "100%";
+        //     imgEl.style.objectFit = "cover";
+        //     imgEl.style.background = "linear-gradient(90deg, rgba(0,0,0,0.3), rgba(255,255,255,0.1))";
+        // }
+            imgEl.style.height = 'auto';
+            imgEl.style.maxHeight = '400px';
+            imgEl.style.width = '100%';
+            imgEl.style.objectFit = 'contain';
+            imgEl.classList.add('col-md-5', 'card-img-left', 'img-fluid', 'd-md-block');
         }
-        imgEl.style.height = 'auto';
-        imgEl.style.maxHeight = '400px';
-        imgEl.style.width = '100%';
-        imgEl.style.objectFit = 'contain';
-        imgEl.classList.add('col-md-5', 'card-img-left', 'img-fluid', 'd-md-block');
         // hidden on mobile, shown on md+
 
         const cardBody = document.createElement('div');
-        cardBody.classList.add('col-md-6', 'card-body', 'text-center', 'flex-fill');
+        cardBody.classList.add(widget?.image ? 'col-md-6' : 'col-md-12', 'card-body', 'text-center', 'flex-fill');
 
         const cardTitle = document.createElement('h2');
         cardTitle.classList.add('card-title');
@@ -623,7 +624,7 @@
                     'nonbreaking', 'save', 'template'
                 ],
                 toolbar: [
-                    'undo redo | bold italic underline strikethrough | forecolor backcolor | fontselect fontsizeselect formatselect',
+                    'undo redo | bold italic underline strikethrough | forecolor backcolor | blocks',
                     'numlist bullist checklist | link | blockquote | removeformat | emoticons | table | increaseHeight decreaseHeight'
                 ],
                 height: 600,
