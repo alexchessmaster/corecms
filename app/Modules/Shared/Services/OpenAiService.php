@@ -21,7 +21,6 @@ class OpenAiService implements AiServiceInterface
             'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json',
         ])->post($this->baseUrl . '/chat/completions', $payload);
-
         if ($response->failed()) {
             throw new \Exception('OpenAI API request failed: ' . $response->body());
         }
