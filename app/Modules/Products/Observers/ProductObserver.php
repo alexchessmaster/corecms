@@ -20,7 +20,10 @@ class ProductObserver
     public function creating(Product $product): void
     {
         if (empty($product->getTranslation('slug', app()->getLocale(), false))) {
-            $product->setTranslation('slug', app()->getLocale(), $this->generateSlug($product));
+            $slug = $this->generateSlug($product);
+            if (!empty($slug)) {
+                $product->setTranslation('slug', app()->getLocale(), $slug);
+            }
         }
     }
 
@@ -59,7 +62,10 @@ class ProductObserver
             || $product->isDirty('slug')
             || empty($product->getTranslation('slug', app()->getLocale(), false))
         ) {
-            $product->setTranslation('slug', app()->getLocale(), $this->generateSlug($product, $product->id));
+            $slug = $this->generateSlug($product, $product->id);
+            if (!empty($slug)) {
+                $product->setTranslation('slug', app()->getLocale(), $slug);
+            }
         }
     }
 
@@ -128,20 +134,32 @@ class ProductObserver
             return null;
         }
 
-        // Keep the last part of the url
-        $oldSlug = $product->getTranslation('slug', app()->getLocale(), false);
-        $parts = explode('/', $oldSlug);
-        $slugWithoutCategories = end($parts);
-        if (empty($slugWithoutCategories)) {
-            $slugWithoutCategories = UrlHelper::generateSlug($product->getTranslation('title', app()->getLocale(), false));
+        $oldSlug = trim($product->getTranslation('slug', app()->getLocale(), false), '/');
+        $slugWithoutCategories = '';
+
+        if (!empty($oldSlug)) {
+            $parts = explode('/', $oldSlug);
+            $slugWithoutCategories = end($parts);
+            if (empty($slugWithoutCategories) || preg_match('/^-[0-9]+$/', $slugWithoutCategories)) {
+                $slugWithoutCategories = '';
+            }
         }
 
-        // Build the full link
-        $link = rtrim($product->category->getTranslation('slug', app()->getLocale(), false), '/') . '/';
-        $link = '/' . ltrim($link, '/');
-        $slug = $link . $slugWithoutCategories;
+        if (empty($slugWithoutCategories)) {
+            $title = $product->getTranslation('title', app()->getLocale(), false);
+            if (empty($title)) {
+                return null;
+            }
 
-        // Handle duplicate slugs
+            $slugWithoutCategories = UrlHelper::generateSlug($title);
+            if (empty($slugWithoutCategories)) {
+                return null;
+            }
+        }
+
+        $link = '/' . trim($product->category->getTranslation('slug', app()->getLocale(), false), '/');
+        $slug = rtrim($link, '/') . '/' . trim($slugWithoutCategories, '/');
+
         $originalSlug = $slug;
         $counter = 2;
 

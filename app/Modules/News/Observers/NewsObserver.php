@@ -19,7 +19,10 @@ class NewsObserver
     public function creating(News $news): void
     {
         if (empty($news->getTranslation('slug', app()->getLocale(), false))) {
-            $news->setTranslation('slug', app()->getLocale(), $this->generateSlug($news));
+            $slug = $this->generateSlug($news);
+            if (!empty($slug)) {
+                $news->setTranslation('slug', app()->getLocale(), $slug);
+            }
         }
     }
 
@@ -58,7 +61,10 @@ class NewsObserver
             || $news->isDirty('slug')
             || empty($news->getTranslation('slug', app()->getLocale(), false))
         ) {
-            $news->setTranslation('slug', app()->getLocale(), $this->generateSlug($news, $news->id));
+            $slug = $this->generateSlug($news, $news->id);
+            if (!empty($slug)) {
+                $news->setTranslation('slug', app()->getLocale(), $slug);
+            }
         }
     }
 
@@ -127,20 +133,32 @@ class NewsObserver
             return null;
         }
 
-        // Keep the last part of the url
-        $oldSlug = $news->getTranslation('slug', app()->getLocale(), false);
-        $parts = explode('/', $oldSlug);
-        $slugWithoutCategories = end($parts);
-        if (empty($slugWithoutCategories)) {
-            $slugWithoutCategories = UrlHelper::generateSlug($news->getTranslation('title', app()->getLocale(), false));
+        $oldSlug = trim($news->getTranslation('slug', app()->getLocale(), false), '/');
+        $slugWithoutCategories = '';
+
+        if (!empty($oldSlug)) {
+            $parts = explode('/', $oldSlug);
+            $slugWithoutCategories = end($parts);
+            if (empty($slugWithoutCategories) || preg_match('/^-[0-9]+$/', $slugWithoutCategories)) {
+                $slugWithoutCategories = '';
+            }
         }
 
-        // Build the full link
-        $link = rtrim($news->category->getTranslation('slug', app()->getLocale(), false), '/') . '/';
-        $link = '/' . ltrim($link, '/');
-        $slug = $link . $slugWithoutCategories;
+        if (empty($slugWithoutCategories)) {
+            $title = $news->getTranslation('title', app()->getLocale(), false);
+            if (empty($title)) {
+                return null;
+            }
 
-        // Handle duplicate slugs
+            $slugWithoutCategories = UrlHelper::generateSlug($title);
+            if (empty($slugWithoutCategories)) {
+                return null;
+            }
+        }
+
+        $link = '/' . trim($news->category->getTranslation('slug', app()->getLocale(), false), '/');
+        $slug = rtrim($link, '/') . '/' . trim($slugWithoutCategories, '/');
+
         $originalSlug = $slug;
         $counter = 2;
 

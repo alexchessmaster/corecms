@@ -60,7 +60,7 @@ class NewsController extends Controller
                     </form>
                 ';
                 })
-                ->rawColumns(['actions', 'name'])
+                ->rawColumns(['actions', 'date'])
                 ->make(true);
         }
 

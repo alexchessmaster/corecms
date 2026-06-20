@@ -23,17 +23,12 @@ class Book extends Model
     use HasTranslations;
 
     protected $guarded = [];
-    public $translatable = ['title', 'slug', 'description', 'image', 'image_medium', 'image_thumbnail'];
+    public $translatable = ['title', 'slug', 'pdf','description', 'image', 'image_medium', 'image_thumbnail', 'page_image_folder'];
     protected $casts = [
         'scheduled_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-
-    public function bookGenre()
-    {
-        return $this->belongsTo(BookGenre::class);
-    }
 
     public function scopeWithAllWidgetData($query)
     {
@@ -72,6 +67,11 @@ class Book extends Model
             'id',
             'widget_id'
         )->where('widgetables.widgetable_type', self::class);
+    }
+
+    public function bookGenre()
+    {
+        return $this->belongsTo(BookGenre::class);
     }
 
     public function author()

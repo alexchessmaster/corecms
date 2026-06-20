@@ -19,7 +19,10 @@ class BookObserver
     public function creating(Book $book): void
     {
         if (empty($book->getTranslation('slug', app()->getLocale(), false))) {
-            $book->setTranslation('slug', app()->getLocale(), $this->generateSlug($book));
+            $slug = $this->generateSlug($book);
+            if (!empty($slug)) {
+                $book->setTranslation('slug', app()->getLocale(), $slug);
+            }
         }
     }
 
@@ -51,7 +54,10 @@ class BookObserver
     public function updating(Book $book)
     {
         if ($book->isDirty('book_genre_id') || $book->isDirty('title') || $book->isDirty('slug') || empty($book->getTranslation('slug', app()->getLocale(), false))) {
-            $book->setTranslation('slug', app()->getLocale(), $this->generateSlug($book, $book->id));
+            $slug = $this->generateSlug($book, $book->id);
+            if (!empty($slug)) {
+                $book->setTranslation('slug', app()->getLocale(), $slug);
+            }
         }
     }
 
@@ -116,25 +122,37 @@ class BookObserver
      */
     private function generateSlug(Book $book, $ignoreId = null)
     {
-        $bookGenreId = $book->bookGenre->id ?? null;
-        if (!$bookGenreId) {
+        $bookGenre = $book->bookGenre;
+        if (!$bookGenre) {
             return null;
         }
 
-        // Keep the last part of the url
-        $oldSlug = $book->getTranslation('slug', app()->getLocale(), false);
-        $parts = explode('/', $oldSlug);
-        $slugWithoutCategories = end($parts);
-        if(empty($slugWithoutCategories)){
-            $slugWithoutCategories = UrlHelper::generateSlug($book->getTranslation('title', app()->getLocale(), false));
+        $oldSlug = trim($book->getTranslation('slug', app()->getLocale(), false), '/');
+        $slugWithoutCategories = '';
+
+        if (!empty($oldSlug)) {
+            $parts = explode('/', $oldSlug);
+            $slugWithoutCategories = end($parts);
+            if (empty($slugWithoutCategories) || preg_match('/^-[0-9]+$/', $slugWithoutCategories)) {
+                $slugWithoutCategories = '';
+            }
         }
 
-        // Build the full link
-        $link = rtrim($book->bookGenre->getTranslation('slug', app()->getLocale(), false), '/') . '/';
-        $link = '/' . ltrim($link, '/');
-        $slug = $link . $slugWithoutCategories;
+        if (empty($slugWithoutCategories)) {
+            $title = $book->getTranslation('title', app()->getLocale(), false);
+            if (empty($title)) {
+                return null;
+            }
 
-        // Handle duplicate slugs
+            $slugWithoutCategories = UrlHelper::generateSlug($title);
+            if (empty($slugWithoutCategories)) {
+                return null;
+            }
+        }
+
+        $link = '/' . trim($bookGenre->getTranslation('slug', app()->getLocale(), false), '/');
+        $slug = rtrim($link, '/') . '/' . trim($slugWithoutCategories, '/');
+
         $originalSlug = $slug;
         $counter = 2;
 

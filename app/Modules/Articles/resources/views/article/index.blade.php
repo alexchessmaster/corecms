@@ -57,8 +57,8 @@
                         {
                             data: 'date',
                             name: 'date',
-                            orderable: false,
-                            searchable: false
+                            orderable: true,
+                            searchable: true
                         },
                         {
                             data: 'translated_languages',

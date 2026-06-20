@@ -79,6 +79,7 @@ class BookController extends Controller
 
         $request->validate([
             'image' => 'required|mimes:jpg,jpeg,png,webm,gif|max:5000',
+            'pdf' => 'nullable|mimes:pdf|max:100000',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
@@ -113,6 +114,20 @@ class BookController extends Controller
         if (!empty($request->slug)) {
             $book->setTranslation('slug', app()->getLocale(), $request->input('slug'));
         }
+
+        if ($request->hasFile('pdf')) {
+            $pdf = $request->file('pdf');
+            $pdfFilename = Str::uuid() . '.' . $pdf->getClientOriginalExtension();
+            $destinationPath = public_path('uploads/books');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0775, true);
+                chown($destinationPath, 'www-data');
+                chgrp($destinationPath, 'www-data');
+            }
+            $pdf->move($destinationPath, $pdfFilename);
+            $book->setTranslation('pdf', app()->getLocale(), '/uploads/books/' . $pdfFilename);
+        }
+
         $book->setTranslation('description', app()->getLocale(), StrHelper::removeUnicodeCharacters($request->input('description')));
         $book->book_genre_id = $request->input('book_genre_id');
 
@@ -146,6 +161,10 @@ class BookController extends Controller
 
         $book->save();
 
+        if ($request->hasFile('pdf')) {
+            \App\Modules\Books\Jobs\FillBookPageImageFolderJob::dispatch($book);
+        }
+
         // Dispatch sitemap regeneration to queue.
         GenerateSitemapsJob::dispatch();
 
@@ -169,6 +188,7 @@ class BookController extends Controller
         $this->authorize('update', $book);
         $request->validate([
             'image' => 'nullable|mimes:jpg,jpeg,png,webm,gif|max:5000',
+            'pdf' => 'nullable|mimes:pdf|max:100000',
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1500',
@@ -195,6 +215,32 @@ class BookController extends Controller
             }
             $image->move($destinationPath, $filename);
             $book->setTranslation('image', app()->getLocale(), '/uploads/books/' . $filename);
+        }
+
+        if ($request->filled('remove_pdf')) {
+            if ($book->getTranslation('pdf', app()->getLocale(), false)) {
+                $oldPdfPath = public_path($book->getTranslation('pdf', app()->getLocale(), false));
+                if (File::exists($oldPdfPath)) {
+                    File::delete($oldPdfPath);
+                }
+            }
+            $book->setTranslation('pdf', app()->getLocale(), null);
+            $book->setTranslation('page_image_folder', app()->getLocale(), null);
+        } elseif ($request->hasFile('pdf')) {
+            $pdf = $request->file('pdf');
+            $pdfFilename = Str::uuid() . '.' . $pdf->getClientOriginalExtension();
+            $destinationPath = public_path('uploads/books');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+            if ($book->getTranslation('pdf', app()->getLocale(), false)) {
+                $oldPdfPath = public_path($book->getTranslation('pdf', app()->getLocale(), false));
+                if (File::exists($oldPdfPath)) {
+                    File::delete($oldPdfPath);
+                }
+            }
+            $pdf->move($destinationPath, $pdfFilename);
+            $book->setTranslation('pdf', app()->getLocale(), '/uploads/books/' . $pdfFilename);
         }
 
         $book->setTranslation('title', app()->getLocale(), $request->input('title'));
@@ -230,6 +276,10 @@ class BookController extends Controller
         $book->total_pages = $request->input('total_pages');
 
         $book->save();
+
+        if ($request->hasFile('pdf')) {
+            \App\Modules\Books\Jobs\FillBookPageImageFolderJob::dispatch($book);
+        }
 
         // Dispatch sitemap regeneration to queue.
         GenerateSitemapsJob::dispatch();

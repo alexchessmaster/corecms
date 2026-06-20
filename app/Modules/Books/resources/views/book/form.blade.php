@@ -12,6 +12,20 @@
            @if (!(isset($book) && $book->image)) required @endif>
 </div>
 <div class="mb-3">
+    <label for="pdf" class="form-label">PDF</label>
+    @if (isset($book) && $book->getTranslation('pdf', app()->getLocale(), false))
+        <div class="mb-2">
+            <a href="{{ $book->getTranslation('pdf', app()->getLocale(), false) }}" target="_blank" rel="noopener">View current PDF</a>
+        </div>
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" value="1" id="remove_pdf" name="remove_pdf">
+            <label class="form-check-label" for="remove_pdf">Remove current PDF</label>
+        </div>
+    @endif
+    <input type="file" class="form-control" id="pdf" name="pdf" accept="application/pdf">
+    <small class="form-text text-muted">Upload a PDF version of the book.</small>
+</div>
+<div class="mb-3">
     <label for="title" class="form-label required">Title</label>
     <input type="text" class="form-control" id="title" name="title"
            style="{{ isset($book) && !empty($book->getTranslation('slug', app()->getLocale(), false)) ?: 'background-color:lightgreen' }}"

@@ -44,6 +44,9 @@ class BookResource extends JsonResource
             "all_urls" => $allUrls,
             "full_url" => UrlHelper::getFullUrlBySlug($this->slug, $this, null, app()->getLocale(), true),
             "description" => $this->description,
+            "pdf" => FileHelper::addDomainPrefixIfValueIsAFile(
+                TranslationHelper::firstAvailableValue($this, 'pdf')
+            ),
             "stars" => $this->stars,
             "content" => $this->content,
             "image" => FileHelper::addDomainPrefixIfValueIsAFile(
@@ -66,6 +69,7 @@ class BookResource extends JsonResource
             "author" => $this->relationLoaded('author') ? new BookAuthorResource($this->author) : null,
             "views" => $this->views,
             "total_pages" => $this->total_pages,
+            "page_image_folder" => empty($this->page_image_folder) ? null : rtrim(config('app.url'), '/') . '/' . ltrim($this->page_image_folder, '/'),
             "primary_language" => $this->primary_language,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,

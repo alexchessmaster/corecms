@@ -205,7 +205,15 @@ class ContentController extends Controller
                 'article_prefix' => $articlePrefix
             ]);
             $responseData['content_type'] = 'article';
-            $article->increment('views');
+
+            $article->timestamps = false;
+            if (is_numeric($article->views)) {
+                $article->increment('views', 1);
+            } else {
+                $article->views = 0;
+                $article->save();
+            }
+            $article->timestamps = true;
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -235,7 +243,15 @@ class ContentController extends Controller
                 'product_prefix' => $productPrefix
             ]);
             $responseData['content_type'] = 'product';
-            $product->increment('views');
+
+            $product->timestamps = false;
+            if (is_numeric($product->views)) {
+                $product->increment('views', 1);
+            } else {
+                $product->views = 0;
+                $product->save();
+            }
+            $product->timestamps = true;
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -265,7 +281,15 @@ class ContentController extends Controller
                 'book_prefix' => $bookPrefix
             ]);
             $responseData['content_type'] = 'book';
-            $book->increment('views');
+
+            $book->timestamps = false;
+            if (is_numeric($book->views)) {
+                $book->increment('views', 1);
+            } else {
+                $book->views = 0;
+                $book->save();
+            }
+            $book->timestamps = true;
 
             return response()->json(['data' => $responseData], $responseCode);
         }
@@ -295,7 +319,15 @@ class ContentController extends Controller
                 'news_prefix' => $newsPrefix
             ]);
             $responseData['content_type'] = 'news';
-            $news->increment('views');
+            
+            $news->timestamps = false;
+            if (is_numeric($news->views)) {
+                $news->increment('views', 1);
+            } else {
+                $news->views = 0;
+                $news->save();
+            }
+            $news->timestamps = true;
 
             return response()->json(['data' => $responseData], $responseCode);
         }
