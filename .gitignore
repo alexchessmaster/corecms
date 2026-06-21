@@ -25,5 +25,5 @@ yarn-error.log
 !/storage/certs/example.test.key
 !/storage/certs/example.test.pem
 /public/sitemap*
-/public/uploads
+# /public/uploads
 deploy-frontend-script.sh
